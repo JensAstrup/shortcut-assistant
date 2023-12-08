@@ -13,3 +13,14 @@ layout: default
 Take your Shortcut experience to the next level and streamline your project planning and development. Download our extension today and watch your productivity soar! 🚀✨
 
 Get started now and make every story a success!
+
+## Installation 
+To get started, make sure you have Developer Mode enabled in your Chrome or Arc (or any other Chromium-based) browser.
+
+1. Open a new tab and navigate to `chrome://extensions/` for Chrome or `arc://extensions/` for Arc.
+2. Ensure developer mode is enabled (top right corner of the page)
+3. Download the extension from this page.
+4. Unzip the downloaded file.
+5. Finally, simply drag and drop the uncompressed folder onto the extensions page.
+
+You're all set to supercharge your Shortcut experience!
