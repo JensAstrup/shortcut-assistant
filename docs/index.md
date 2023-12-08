@@ -24,3 +24,14 @@ To get started, make sure you have Developer Mode enabled in your Chrome or Arc 
 5. Finally, simply drag and drop the uncompressed folder onto the extensions page.
 
 You're all set to supercharge your Shortcut experience!
+
+## Setup
+1. Following installation open the extension by clicking on the robot icon
+2. Navigate to the settings tab and enter an OpenAI API Key
+3. Press Save
+
+## Using the Analyze Feature
+1. When you have a story in view, open the extension
+2. Click "Analyze Story"
+3. Note that it can take a bit for the analysis to complete
+4. Implementation questions will be pasted into the story comment input once analysis is completed
