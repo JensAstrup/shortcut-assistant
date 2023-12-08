@@ -22,5 +22,6 @@
       "js": ["js/analyzeContentScript.js", "js/developmentTime.js"]
     }
   ],
-  "host_permissions": ["https://api.openai.com/*"]
+  "host_permissions": ["https://api.openai.com/*"],
+  "update_url": "https://myhost.com/mytestextension/updates.xml"
 }
