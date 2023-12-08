@@ -15,9 +15,7 @@ async function callOpenAI(description) {
     });
 }
 function resizeTextareaToFitContent(textarea) {
-    // Set the textarea's height to 'auto' to get the correct scroll height
     textarea.style.height = 'auto';
-    // Set the textarea's height to its scroll height
     textarea.style.height = textarea.scrollHeight + 'px';
 }
 
