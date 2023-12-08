@@ -2,7 +2,7 @@
 layout: default
 ---
 
-# Shortcut Assistant 🚀
+# Shortcut Assistant 
 
 🔍 Analyze Stories with OpenAI: Say goodbye to uncertainty. Our extension leverages the power of OpenAI to provide you with a list of implementation questions, helping you refine and improve your stories.
 
