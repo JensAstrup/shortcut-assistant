@@ -1,6 +1,6 @@
-title: Minimal theme
+title: Shortcut Assistant
 logo: /assets/img/assistant.png
-description: Minimal is a theme for GitHub Pages.
+description: Streamline your Shortcut project management with our Chrome extension, using OpenAI to analyze stories, tracking deadlines with emojis, and keeping private notes for ultimate efficiency.
 show_downloads: true
 google_analytics:
 theme: jekyll-theme-minimal
