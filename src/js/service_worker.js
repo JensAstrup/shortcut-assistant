@@ -1,3 +1,9 @@
+const PROMPT = "You help make sure that tickets are ready for development. What sorts of technical questions should I ask before beginning development. The basic fundamentals of our application are already setup and not open questions (database, etc). We utilize Django and React. Do not ask questions about the following: 1. Unit Testing 2. Basic Architecture Setup (Database, etc) 3. Deadlines 4) Concurrency\n" +
+    "\n" +
+    "Examples of good questions: - Are there performance or scalability requirements or considerations for the feature?' - What user roles and permissions need to be accounted for within this feature? - What new monitoring or alerting should be put in place? - Should we consider implementing a feature flag' - Have all instances where the deprecated model is used been identified\n" +
+    "Examples of bad questions: - What are the technical and business requirements for the feature?(too broad) - How will the system access and query the Customers database?(implementation already known) - What are the specific user story requirements and how do they align with the broader application requirements? (too broad)\n" +
+    "\n" +
+    "Give the top 5 questions in a concise manner, just state the questions without any intro. "
 const sleep = (ms) => {
     return new Promise((resolve) => {
         setTimeout(resolve, ms);
@@ -16,82 +22,43 @@ async function getOpenAiToken() {
         }
     } catch (error) {
         console.error('Error getting OpenAI token:', error);
-        throw error; // Or handle the error as appropriate
+        throw error;
     }
 }
-const apiHeaders = {"Content-Type": "application/json", "OpenAI-Beta": "assistants=v1"};
 
-async function fetchAPI(url, method = 'GET', body=null) {
+async function fetchCompletion(description) {
     const openAIToken = await getOpenAiToken();
-    const headers = {...apiHeaders, "Authorization": `Bearer ${openAIToken}`};
-    const options = {method, headers};
-    if (method !== 'GET' && body) {
-        options.body = JSON.stringify(body);
-    }
-    const response = await fetch(url, options);
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    headers.append('Authorization', 'Bearer ' + openAIToken);
+
+    const requestBody = {
+        "model": "gpt-3.5-turbo",
+        "messages": [
+            {
+                "role": "system",
+                "content": PROMPT
+            },
+            {
+                "role": "user",
+                "content": description
+            }
+        ]
+    };
+
+    const options = {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(requestBody)
+    };
+
+    const response = await fetch('https://api.openai.com/v1/chat/completions', options)
     return response.json();
 }
 
-async function fetchOpenAIAssistant() {
-    return fetchAPI("https://api.openai.com/v1/assistants/asst_BkzaS0v8wHUBDiYkDImKvDn0");
-}
-
-async function fetchOpenAIThreads() {
-    return fetchAPI("https://api.openai.com/v1/threads", 'POST', {});
-}
-
-async function postMessageToThread(threadId, messageContent) {
-    return fetchAPI(`https://api.openai.com/v1/threads/${threadId}/messages`, 'POST', {
-        "role": "user",
-        "content": messageContent.prompt
-    });
-}
-
-async function createRunInThread(threadId) {
-    return fetchAPI(`https://api.openai.com/v1/threads/${threadId}/runs`, 'POST', {
-        "assistant_id": 'asst_BkzaS0v8wHUBDiYkDImKvDn0',
-    });
-}
-
-async function fetchRunDetails(threadId, runId) {
-    return fetchAPI(`https://api.openai.com/v1/threads/${threadId}/runs/${runId}`);
-}
-
-async function fetchMessagesFromThread(threadId) {
-    return fetchAPI(`https://api.openai.com/v1/threads/${threadId}/messages`);
-}
-
-
 async function callOpenAI(description, tabId) {
-    await fetchOpenAIAssistant();
-
-    let threadIdData = await fetchOpenAIThreads();
-    let threadId = threadIdData.id;
-
-    await postMessageToThread(threadId, description);
-
-    let runIdData = await createRunInThread(threadId);
-    let runId = runIdData.id;
-
-    let runData = await fetchRunDetails(threadId, runId);
-    let runStatus = runData.status;
-
-    let count = 0;
-    while ((runStatus === 'in_progress' || runStatus === 'queued') && count < 6) {
-        await sleep(5000);
-        runData = await fetchRunDetails(threadId, runId);
-        runStatus = runData.status;
-        count += 1;
-    }
-
-    if (runStatus === 'in_progress') {
-        await sleep(7000);
-        await fetchRunDetails(threadId, runId);
-    }
-
-    let messagesData = await fetchMessagesFromThread(threadId);
-    let message = messagesData.data[0].content[0].text.value;
-
+    let messagesData = await fetchCompletion(description);
+    let message = messagesData.choices[0].message.content;
     chrome.tabs.sendMessage(tabId, {"message": "setOpenAiResponse", "data": message});
 }
 
