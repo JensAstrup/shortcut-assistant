@@ -1,8 +1,10 @@
+const ANALYZE_BUTTON_ID = 'analyzeButton';
+const ANALYZE_MESSAGE = {message: 'analyzeStoryDescription'};
 
-
-document.getElementById('analyzeButton').addEventListener('click', async function() {
-    console.log('analyzeStoryDescription')
-    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, {message: 'analyzeStoryDescription'});
+async function analyzeStoryDetails() {
+    chrome.tabs.query({active: true, currentWindow: true}, function (activeTabs) {
+        chrome.tabs.sendMessage(activeTabs[0].id, ANALYZE_MESSAGE);
     });
-});
+}
+
+document.getElementById(ANALYZE_BUTTON_ID).addEventListener('click', analyzeStoryDetails);
