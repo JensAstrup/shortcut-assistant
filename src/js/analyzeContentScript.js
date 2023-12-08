@@ -1,3 +1,4 @@
+
 const sleep = (ms) => {
     return new Promise((resolve) => {
         setTimeout(resolve, ms);
@@ -22,17 +23,11 @@ function resizeTextareaToFitContent(textarea) {
 
 chrome.runtime.onMessage.addListener(
 async function (request, sender, sendResponse) {
-    console.log('analyze request received')
     const activeTabUrl = window.location.href
-    console.log(activeTabUrl)
     if (request.message === 'analyzeStoryDescription') {
         if (activeTabUrl.includes('story')) {
             const description = extractStoryDescription()
-            console.log(description)
             chrome.runtime.sendMessage({action: 'callOpenAI', data: { prompt: description }});
-        }
-        else{
-            console.log(activeTabUrl)
         }
     }
     if (request.message === 'setOpenAiResponse') {

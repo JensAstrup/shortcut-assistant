@@ -19,115 +19,87 @@ async function getOpenAiToken() {
         throw error; // Or handle the error as appropriate
     }
 }
+const apiHeaders = {"Content-Type": "application/json", "OpenAI-Beta": "assistants=v1"};
 
+async function fetchAPI(url, method = 'GET', body=null) {
+    const openAIToken = await getOpenAiToken();
+    const headers = {...apiHeaders, "Authorization": `Bearer ${openAIToken}`};
+    const options = {method, headers};
+    if (method !== 'GET' && body) {
+        options.body = JSON.stringify(body);
+    }
+    const response = await fetch(url, options);
+    return response.json();
+}
 
 async function fetchOpenAIAssistant() {
-    const openAIToken = await getOpenAiToken();
-    const url = "https://api.openai.com/v1/assistants/asst_BkzaS0v8wHUBDiYkDImKvDn0";
-    const headers = {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${openAIToken}`,
-        "OpenAI-Beta": "assistants=v1"
-    };
-    const response = await fetch(url, {headers: headers});
-    return response.json();
+    return fetchAPI("https://api.openai.com/v1/assistants/asst_BkzaS0v8wHUBDiYkDImKvDn0");
 }
 
 async function fetchOpenAIThreads() {
-    const openAIToken = await getOpenAiToken();
-    const url = "https://api.openai.com/v1/threads";
-    const headers = {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${openAIToken}`,
-        "OpenAI-Beta": "assistants=v1"
-    };
-    const response = await fetch(url, {method: 'POST', headers: headers, body: ''});
-    return response.json();
+    return fetchAPI("https://api.openai.com/v1/threads", 'POST', {});
 }
 
 async function postMessageToThread(threadId, messageContent) {
-    const openAIToken = await getOpenAiToken();
-    const url = `https://api.openai.com/v1/threads/${threadId}/messages`;
-    const headers = {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${openAIToken}`,
-        "OpenAI-Beta": "assistants=v1"
-    };
-    const body = JSON.stringify({
+    return fetchAPI(`https://api.openai.com/v1/threads/${threadId}/messages`, 'POST', {
         "role": "user",
         "content": messageContent.prompt
     });
-    const response = await fetch(url, {method: 'POST', headers: headers, body: body});
-    return response.json();
 }
 
 async function createRunInThread(threadId) {
-    const openAIToken = await getOpenAiToken();
-    const url = `https://api.openai.com/v1/threads/${threadId}/runs`;
-    const headers = {
-        "Authorization": `Bearer ${openAIToken}`,
-        "Content-Type": "application/json",
-        "OpenAI-Beta": "assistants=v1"
-    };
-    const body = JSON.stringify({
+    return fetchAPI(`https://api.openai.com/v1/threads/${threadId}/runs`, 'POST', {
         "assistant_id": 'asst_BkzaS0v8wHUBDiYkDImKvDn0',
     });
-    const response = await fetch(url, {method: 'POST', headers: headers, body: body});
-    return response.json();
 }
 
 async function fetchRunDetails(threadId, runId) {
-    const openAIToken = await getOpenAiToken();
-    const url = `https://api.openai.com/v1/threads/${threadId}/runs/${runId}`;
-    const headers = {
-        "Authorization": `Bearer ${openAIToken}`,
-        "OpenAI-Beta": "assistants=v1"
-    };
-    const response = await fetch(url, {headers: headers});
-    return response.json();
+    return fetchAPI(`https://api.openai.com/v1/threads/${threadId}/runs/${runId}`);
 }
 
 async function fetchMessagesFromThread(threadId) {
-    const openAIToken = await getOpenAiToken();
-    const url = `https://api.openai.com/v1/threads/${threadId}/messages`;
-    const headers = {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${openAIToken}`,
-        "OpenAI-Beta": "assistants=v1"
-    };
-    const response = await fetch(url, {headers: headers});
-    return response.json();
+    return fetchAPI(`https://api.openai.com/v1/threads/${threadId}/messages`);
 }
 
 
 async function callOpenAI(description, tabId) {
     await fetchOpenAIAssistant();
-    const threadIdData = await fetchOpenAIThreads();
-    const threadId = threadIdData.id
+
+    let threadIdData = await fetchOpenAIThreads();
+    let threadId = threadIdData.id;
+
     await postMessageToThread(threadId, description);
-    const runIdData = await createRunInThread(threadId);
-    const runId = runIdData.id
+
+    let runIdData = await createRunInThread(threadId);
+    let runId = runIdData.id;
+
     let runData = await fetchRunDetails(threadId, runId);
-    let runStatus = runData.status
-    let count = 0
+    let runStatus = runData.status;
+
+    let count = 0;
     while ((runStatus === 'in_progress' || runStatus === 'queued') && count < 6) {
-        await sleep(2500)
+        await sleep(5000);
         runData = await fetchRunDetails(threadId, runId);
+        runStatus = runData.status;
         count += 1;
     }
+
     if (runStatus === 'in_progress') {
-        await sleep(5000);
+        await sleep(7000);
         await fetchRunDetails(threadId, runId);
     }
-    const messagesData = await fetchMessagesFromThread(threadId);
-    const message = messagesData.data[0].content[0].text.value
+
+    let messagesData = await fetchMessagesFromThread(threadId);
+    let message = messagesData.data[0].content[0].text.value;
+
     chrome.tabs.sendMessage(tabId, {"message": "setOpenAiResponse", "data": message});
 }
 
 chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
     if (request.action === 'callOpenAI') {
+        console.log('Analyzing')
         await callOpenAI(request.data.prompt, sender.tab.id).then(response => {
-            console.log(response)
+            chrome.runtime.sendMessage({ message: "OpenAIResponseCompleted" });
             sendResponse({data: response});
         });
         return true; // Indicates an asynchronous response

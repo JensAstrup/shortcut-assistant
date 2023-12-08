@@ -1,18 +1,3 @@
-function getActiveTabUrl() {
-    return new Promise((resolve, reject) => {
-        chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-            if (chrome.runtime.lastError) {
-                reject(chrome.runtime.lastError);
-            } else if (tabs.length === 0) {
-                reject(new Error("No active tab found"));
-            } else {
-                let activeTab = tabs[0];
-                let activeTabUrl = activeTab.url;
-                resolve(activeTabUrl);
-            }
-        });
-    });
-}
 document.getElementById('saveKeyButton').addEventListener('click', async function() {
     var openAIToken = document.getElementById('openAIToken').value;
     chrome.storage.sync.set({'openAIToken': openAIToken })

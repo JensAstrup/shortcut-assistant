@@ -1,13 +1,20 @@
+function getStoryNotesInput() {
+    return document.getElementById('storyNotes');
+}
+
+function getNotesKey(storyId) {
+    return "notes_" + storyId;
+}
+
 function getActiveTabUrl() {
     return new Promise((resolve, reject) => {
-        chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+        chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
             if (chrome.runtime.lastError) {
                 reject(chrome.runtime.lastError);
             } else if (tabs.length === 0) {
                 reject(new Error("No active tab found"));
             } else {
-                let activeTab = tabs[0];
-                let activeTabUrl = activeTab.url;
+                let activeTabUrl = tabs[0].url;
                 resolve(activeTabUrl);
             }
         });
@@ -15,64 +22,49 @@ function getActiveTabUrl() {
 }
 
 async function getStoryId() {
-    const url = await getActiveTabUrl()
-    const regex = /\/story\/(\d+)/;
-    const match = url.match(regex);
+    const url = await getActiveTabUrl();
+    const match = url.match(/\/story\/(\d+)/);
 
-    if (match) {
-        const storyId = match[1];
-        console.log("Story ID:", storyId);
-        return storyId
-    } else {
-        console.log("Story ID not found");
-    }
+    return match ? match[1] : null;
 }
-async function setNotes() {
-    const storyNotesInput = document.getElementById('storyNotes')
-    const storyId = await getStoryId()
-    const key = "notes_" + storyId
-    console.log(key)
+
+async function fetchAndSetNotes() {
+    const key = getNotesKey(await getStoryId());
+    const storyNotesInput = getStoryNotesInput();
+
     chrome.storage.sync.get(key).then((result) => {
-        const value = result[key]
+        const value = result[key];
         if (value !== undefined) {
-            storyNotesInput.value = result[key]
+            storyNotesInput.value = value;
         }
     });
 }
 
-document.getElementById('saveButton').addEventListener('click', async function() {
-    const storyNotesInput = document.getElementById('storyNotes')
-    const storyId = await getStoryId()
-    const data = {['notes_' + storyId]: storyNotesInput.value}
-    chrome.storage.sync.set(data).then(() => {
-        console.log({['notes_' + storyId]: storyNotesInput.value});
-    }).catch(response => {
-        console.log(response)
-    });
+document.getElementById('saveButton').addEventListener('click', async function () {
+    const data = {[getNotesKey(await getStoryId())]: getStoryNotesInput().value};
+    chrome.storage.sync.set(data);
 });
 
+document.addEventListener('DOMContentLoaded', function () {
+    try {
+        const storyNotesInput = getStoryNotesInput();
 
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('set notes')
-    try{
-        const storyNotes = document.getElementById('storyNotes');
-    }
-    catch{
-        return
-    }
-    setNotes()
-    function autoExpandTextarea() {
-        // Reset the height to ensure the scrollHeight includes only the content
-        this.style.height = 'auto';
-        // Set the height to the scrollHeight to expand the textarea
-        this.style.height = (this.scrollHeight) + 'px';
+        function autoExpandTextarea() {
+            // Reset the height to ensure the scrollHeight includes only the content
+            this.style.height = 'auto';
+            // Set the height to the scrollHeight to expand the textarea
+            this.style.height = (this.scrollHeight) + 'px';
+        }
+
+        storyNotesInput.addEventListener('input', autoExpandTextarea);
+
+    } catch {
+        return;
     }
 
-    storyNotes.addEventListener('input', autoExpandTextarea);
-    console.log(storyNotes)
+    fetchAndSetNotes();
 });
-
 
 tailwind.config = {
     darkMode: 'class',
-}
+};
