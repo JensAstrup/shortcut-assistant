@@ -62,17 +62,15 @@ async function callOpenAI(description, tabId) {
     chrome.tabs.sendMessage(tabId, {"message": "setOpenAiResponse", "data": message});
 }
 
-var port = chrome.runtime.connect({name: "connection"});
-
-chrome.runtime.onConnect.addListener(function(port) {
-    console.assert(port.name === "connection");
-    port.onMessage.addListener(function(message) {
-        if (message.message === "OpenAIResponseCompleted") {
-            // Handle the message here in the popup script
-            let analyzeButton = document.getElementById('analyzeButton');
-            analyzeButton.textContent = 'Analyze Story';
-        }
-    });
+chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
+    if (request.action === 'callOpenAI') {
+        console.log('Analyzing')
+        await callOpenAI(request.data.prompt, sender.tab.id).then(response => {
+            chrome.runtime.sendMessage({ message: "OpenAIResponseCompleted" });
+            sendResponse({data: response});
+        });
+        return true; // Indicates an asynchronous response
+    }
 });
 
 chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {

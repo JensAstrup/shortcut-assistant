@@ -1,6 +1,5 @@
 async function analyzeStoryDetails() {
     let analyzeButton = document.getElementById('analyzeButton');
-
     analyzeButton.textContent = 'Analyzing...';
 
     chrome.tabs.query({active: true, currentWindow: true}, function (activeTabs) {
