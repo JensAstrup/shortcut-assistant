@@ -13,7 +13,7 @@ const sleep = (ms) => {
 
 async function getOpenAiToken() {
     try {
-        const result = await chrome.storage.sync.get("openAIToken");
+        const result = await chrome.storage.session.get("openAIToken");
         const value = result["openAIToken"];
         if (value !== undefined) {
             return value;
@@ -82,7 +82,13 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
             chrome.runtime.sendMessage({ message: "OpenAIResponseCompleted" });
             sendResponse({data: response});
         });
-        return true; // Indicates an asynchronous response
+        return true; // Keep the message channel open for the async response
+    }
+    if (request.message === 'getOpenAiToken') {
+        getOpenAiToken().then(token => {
+            sendResponse({token: token});
+        });
+        return true; // Keep the message channel open for the async response
     }
 });
 chrome.tabs.onUpdated.addListener(function

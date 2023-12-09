@@ -1,7 +1,13 @@
-document.getElementById('saveKeyButton').addEventListener('click', async function() {
+const saveButton = document.getElementById('saveKeyButton');
+const analyzeButton = document.getElementById('analyzeButton');
+saveButton.addEventListener('click', async function() {
+    saveButton.disabled = true
     var openAIToken = document.getElementById('openAIToken').value;
-    chrome.storage.sync.set({'openAIToken': openAIToken })
+    chrome.storage.session.set({'openAIToken': openAIToken })
+    saveButton.disabled = false
+    analyzeButton.disabled = false
 });
+
 document.addEventListener('DOMContentLoaded', function() {
     const tabActions = document.getElementById('tabActions');
     const tabSettings = document.getElementById('tabSettings');
@@ -23,7 +29,19 @@ document.addEventListener('DOMContentLoaded', function() {
         tabSettings.classList.add('-mb-px');
         tabActions.classList.remove('-mb-px');
     });
+    chrome.runtime.sendMessage({message: 'getOpenAiToken'}, response => {
+        if (chrome.runtime.lastError) {
+            console.error('Error sending message:', chrome.runtime.lastError);
+            return;
+        }
+        const openAiToken = response.token;
+        if(openAiToken === undefined){
+            analyzeButton.disabled = true
+        }
+    });
 });
+
+
 
 tailwind.config = {
     darkMode: 'class',
