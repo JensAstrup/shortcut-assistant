@@ -7,10 +7,6 @@ async function analyzeStoryDetails() {
 
     chrome.tabs.query({active: true, currentWindow: true}, function (activeTabs) {
         chrome.tabs.sendMessage(activeTabs[0].id, {message: 'analyzeStoryDescription'});
-
-        // You may also want to reset the button text after analyzing is complete.
-        // Note: This assumes `chrome.tabs.sendMessage` is asynchronous.
-        //analyzeButton.textContent = 'Analyze';
     });
 }
 document.getElementById('analyzeButton').addEventListener('click', analyzeStoryDetails);
