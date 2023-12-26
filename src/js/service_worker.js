@@ -13,7 +13,7 @@ const sleep = (ms) => {
 
 async function getOpenAiToken() {
     try {
-        const result = await chrome.storage.session.get("openAIToken");
+        const result = await chrome.storage.local.get("openAIToken");
         const value = result["openAIToken"];
         if (value !== undefined) {
             return value;
@@ -62,16 +62,6 @@ async function callOpenAI(description, tabId) {
     chrome.tabs.sendMessage(tabId, {"message": "setOpenAiResponse", "data": message});
 }
 
-chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
-    if (request.action === 'callOpenAI') {
-        console.log('Analyzing')
-        await callOpenAI(request.data.prompt, sender.tab.id).then(response => {
-            chrome.runtime.sendMessage({ message: "OpenAIResponseCompleted" });
-            sendResponse({data: response});
-        });
-        return true; // Indicates an asynchronous response
-    }
-});
 
 chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
     if (request.action === 'callOpenAI') {

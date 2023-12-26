@@ -3,7 +3,7 @@ const analyzeButton = document.getElementById('analyzeButton');
 saveButton.addEventListener('click', async function() {
     saveButton.disabled = true
     var openAIToken = document.getElementById('openAIToken').value;
-    chrome.storage.session.set({'openAIToken': openAIToken })
+    chrome.storage.local.set({'openAIToken': openAIToken })
     saveButton.disabled = false
     analyzeButton.disabled = false
 });

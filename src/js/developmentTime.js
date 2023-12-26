@@ -11,29 +11,32 @@ function findFirstMatchingElement() {
             return {element, child};
         }
     }
-
     // Return null if no matching element is found
     return null;
 }
 
-function parseDate(dateStr) {
-    // Extract the time part from the date string
-    const timePart = dateStr.match(/(\d+):(\d+) (am|pm)/i);
-    if (!timePart) return new Date(dateStr); // Fallback if the regex doesn't match
+/**
+ * Parses a given date string in the format Shortcut uses (ex. Dec 9 2023, 4:28 pm)
+ * and returns the corresponding Date object.
+ *
+ * @param {string} dateString - The date string to parse. Should be in the format "Month Day Year HH:MM AM/PM".
+ * @return {Date} - The parsed Date object.
+ */
+function parseDate(dateString) {
+    const timePart = dateString.match(/(\d+):(\d+) (am|pm)/i);
+    if (!timePart) return new Date(dateString);
 
     let [, hours, minutes, ampm] = timePart;
     hours = parseInt(hours, 10);
     minutes = parseInt(minutes, 10);
 
-    // Convert hours to 24-hour format if needed
     if (ampm.toLowerCase() === 'pm' && hours < 12) {
         hours += 12;
     } else if (ampm.toLowerCase() === 'am' && hours === 12) {
         hours = 0;
     }
 
-    // Replace the time part in the original date string with the 24-hour format time
-    const adjustedDateStr = dateStr.replace(/(\d+):(\d+) (am|pm)/i, `${hours}:${minutes}`);
+    const adjustedDateStr = dateString.replace(/(\d+):(\d+) (am|pm)/i, `${hours}:${minutes}`);
 
     return new Date(adjustedDateStr);
 }
@@ -61,7 +64,7 @@ function hoursBetweenExcludingWeekends(startDateStr) {
     return hours;
 }
 
-function isInDevelopment() {
+function isInState(state) {
     let storyState = ''
     try {
         const storyStateDiv = document.querySelector('.story-state')
@@ -69,36 +72,41 @@ function isInDevelopment() {
     } catch (e) {
 
     }
-    return storyState === 'In Development';
+    return storyState === state;
 }
 
 async function checkDevelopmentTime() {
+    // Sleep to allow all DOM elements to truly load
     await sleep(3000)
-    const inDevelopment = isInDevelopment()
-    if (!inDevelopment) {
+    const inDevelopment = isInState('In Development')
+    const inReview = isInState('Ready for Review')
+    if (!inDevelopment && !inReview) {
         return
     }
     const latestUpdateElements = findFirstMatchingElement()
     const parentDiv = latestUpdateElements.element.parentElement
     const dateElement = parentDiv.querySelector('.date')
     const hoursElapsed = hoursBetweenExcludingWeekends(dateElement.innerHTML)
+    const alertHours = inDevelopment ? (2 * 24) : inReview ? (3 * 24) : 0;
 
-    if (hoursElapsed >= 36) {
-        let emoji = '⚠️'
-        if (hoursElapsed > 48) {
-            emoji = '🚨'
-        }
-        const storyTitle = document.querySelector('.story-name')
-        if (storyTitle.textContent.includes(emoji)) {
-            return
-        }
-        storyTitle.innerHTML = `${emoji} ${storyTitle.innerHTML}`
+    if (hoursElapsed > (alertHours + 24)) {
+        addEmojiToTitle('🚨')
+    }
+    else if (hoursElapsed >= alertHours) {
+        addEmojiToTitle('⚠️')
+    }
+}
+
+function addEmojiToTitle(emoji) {
+    const storyTitle = document.querySelector('.story-name');
+    if (!storyTitle.textContent.includes(emoji)) {
+        storyTitle.innerHTML = `${emoji} ${storyTitle.innerHTML}`;
     }
 }
 
 
 document.addEventListener('DOMContentLoaded', function() {
-    checkDevelopmentTime()
+    checkDevelopmentTime().catch((error) => {console.error(error)})
 }, false);
 
 chrome.runtime.onMessage.addListener(
