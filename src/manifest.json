@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Shortcut Assistant - BETA",
   "description": "THIS EXTENSION IS FOR BETA TESTING\n\nModifies Shortcut story display to provide additional functionality",
-  "version": "0.4",
+  "version": "0.5",
   "permissions": ["activeTab", "scripting", "tabs", "storage"],
   "background": {
     "service_worker": "js/service_worker.js",
