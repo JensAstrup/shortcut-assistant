@@ -111,7 +111,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 chrome.runtime.onMessage.addListener(
     async function (request, sender, sendResponse) {
-        // listen for messages sent from background.js
         if (request.message === 'checkDevelopmentTime') {
             if (request.url.includes('story')) {
                 await checkDevelopmentTime();

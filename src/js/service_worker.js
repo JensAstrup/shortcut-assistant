@@ -10,6 +10,43 @@ const sleep = (ms) => {
     });
 }
 
+function getActiveTabUrl() {
+    return new Promise((resolve, reject) => {
+        chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+            if (chrome.runtime.lastError) {
+                reject(chrome.runtime.lastError);
+            } else if (tabs.length === 0) {
+                reject(new Error("No active tab found"));
+            } else {
+                let activeTabUrl = tabs[0].url;
+                resolve(activeTabUrl);
+            }
+        });
+    });
+}
+
+async function getStoryId() {
+    const url = await getActiveTabUrl();
+    const match = url.match(/\/story\/(\d+)/);
+
+    return match ? match[1] : null;
+}
+
+async function getNotes() {
+    return new Promise(async (resolve, reject) => {
+        const key = getNotesKey(await getStoryId());
+        console.log('fetching and setting')
+        chrome.storage.sync.get(key).then((result) => {
+            const value = result[key];
+            console.log('Fetched from storage')
+            if (value !== undefined) {
+                resolve(value)
+            }
+        });
+    })
+}
+
+
 
 async function getOpenAiToken() {
     try {
@@ -76,7 +113,13 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
         getOpenAiToken().then(token => {
             sendResponse({token: token});
         });
-        return true; // Keep the message channel open for the async response
+        return true;
+    }
+    if (request.message === 'getStoryNotes') {
+        getNotes().then(value => {
+            sendResponse({notes: value});
+        });
+        return true;
     }
 });
 chrome.tabs.onUpdated.addListener(function
@@ -89,6 +132,10 @@ chrome.tabs.onUpdated.addListener(function
             chrome.tabs.sendMessage(tabId, {
                 message: 'checkDevelopmentTime',
                 url: changeInfo.url
+            });
+            chrome.tabs.sendMessage(tabId, {
+                message: 'setNotes',
+                data: getNotes()
             });
         }
     }

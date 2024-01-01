@@ -64,6 +64,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
     fetchAndSetNotes();
 });
+console.log('fuc')
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    console.log('privateNotes receivin message')
+    if (message.message === "checkNotes") {
+        fetchAndSetNotes();
+    }
+});
+
 
 tailwind.config = {
     darkMode: 'class',

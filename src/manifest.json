@@ -19,7 +19,7 @@
   },  "content_scripts": [
     {
       "matches": ["https://app.shortcut.com/*"],
-      "js": ["js/analyzeContentScript.js", "js/developmentTime.js"]
+      "js": ["js/analyze/contentScript.js", "js/notes/contentScript.js", "js/developmentTime.js"]
     }
   ],
   "host_permissions": ["https://api.openai.com/*"],
