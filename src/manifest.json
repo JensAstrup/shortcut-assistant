@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Shortcut Assistant - BETA",
   "description": "THIS EXTENSION IS FOR BETA TESTING\n\nModifies Shortcut story display to provide additional functionality",
-  "version": "0.6",
+  "version": "1.0",
   "permissions": ["activeTab", "scripting", "tabs", "storage"],
   "background": {
     "service_worker": "js/service_worker.js",
@@ -23,5 +23,5 @@
     }
   ],
   "host_permissions": ["https://api.openai.com/*"],
-  "update_url": "https://myhost.com/mytestextension/updates.xml"
+  "update_url": "https://wellthy-web-sandbox1.s3.us-east-2.amazonaws.com/shortcut-files/update.xml"
 }

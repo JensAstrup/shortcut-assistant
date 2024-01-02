@@ -2,7 +2,7 @@ async function setNoteContentExistsNotice(){
     const newButton = document.createElement('button');
     newButton.className = 'action edit-description view-notes micro flat-white';
     newButton.dataset.tabindex = '';
-    newButton.dataset.tooltip = 'Tip: shift-click the description to edit';
+    newButton.dataset.tooltip = 'This story has private notes set';
     newButton.tabIndex = 2;
 
     // Create and append the span element
@@ -11,7 +11,7 @@ async function setNoteContentExistsNotice(){
     newButton.appendChild(span);
 
     // Add the text to the button
-    newButton.append(' View Notes');
+    newButton.append(' Has Notes');
 
     // Append the new button to the same container
     let container = document.querySelector('.description-container');
@@ -33,13 +33,10 @@ async function setNoteContentExistsNotice(){
 
 chrome.runtime.onMessage.addListener(
     async function (request, sender, sendResponse) {
-        console.log('Receiving message')
-        console.log(request.message)
         if (request.message === 'setNotes'){
             if(request.data === undefined){
                 return
             }
-            console.log('received valid message')
             await setNoteContentExistsNotice()
         }
     }
