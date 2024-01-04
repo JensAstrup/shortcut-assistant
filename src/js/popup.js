@@ -2,8 +2,12 @@ const saveButton = document.getElementById('saveKeyButton');
 const analyzeButton = document.getElementById('analyzeButton');
 saveButton.addEventListener('click', async function() {
     saveButton.disabled = true
-    var openAIToken = document.getElementById('openAIToken').value;
+    const openAIToken = document.getElementById('openAIToken').value;
+    const enableStalledWorkWarnings = document.getElementById('stalledWorkToggle').checked;
+    const enableTodoistOptions = document.getElementById('todoistOptions').checked;
     chrome.storage.local.set({'openAIToken': openAIToken })
+    chrome.storage.sync.set({'enableStalledWorkWarnings': enableStalledWorkWarnings })
+    chrome.storage.sync.set({'enableTodoistOptions': enableTodoistOptions })
     saveButton.disabled = false
     analyzeButton.disabled = false
 });

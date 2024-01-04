@@ -25,6 +25,10 @@ function getActiveTabUrl() {
     });
 }
 
+function getNotesKey(storyId) {
+    return "notes_" + storyId;
+}
+
 async function getStoryId() {
     const url = await getActiveTabUrl();
     const match = url.match(/\/story\/(\d+)/);
@@ -59,6 +63,22 @@ async function getOpenAiToken() {
         }
     } catch (error) {
         console.error('Error getting OpenAI token:', error);
+        throw error;
+    }
+}
+
+
+async function getSyncedSetting(setting, defaultValue) {
+    try {
+        const result = await chrome.storage.sync.get(setting);
+        const value = result[setting];
+        if (value !== undefined) {
+            return value;
+        } else {
+            return defaultValue;
+        }
+    } catch (error) {
+        console.error('Error getting setting value:', error);
         throw error;
     }
 }
@@ -122,20 +142,31 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
         return true;
     }
 });
-chrome.tabs.onUpdated.addListener(function
+
+chrome.tabs.onUpdated.addListener(async function
         (tabId, changeInfo, tab) {
         if (changeInfo.url && changeInfo.url.includes('app.shortcut.com')) {
             chrome.tabs.sendMessage(tabId, {
                 message: 'update',
                 url: changeInfo.url
             });
-            chrome.tabs.sendMessage(tabId, {
-                message: 'checkDevelopmentTime',
-                url: changeInfo.url
-            });
+            const enableStalledWorkWarnings = await getSyncedSetting('enableStalledWorkWarnings', true)
+            if (enableStalledWorkWarnings) {
+                chrome.tabs.sendMessage(tabId, {
+                    message: 'checkDevelopmentTime',
+                    url: changeInfo.url
+                });
+            }
+            const enableTodoistOptions = await getSyncedSetting('enableTodoistOptions', true)
+            if (enableTodoistOptions) {
+                chrome.tabs.sendMessage(tabId, {
+                    message: 'initTodos',
+                    url: changeInfo.url
+                });
+            }
             chrome.tabs.sendMessage(tabId, {
                 message: 'setNotes',
-                data: getNotes()
+                data: await getNotes()
             });
         }
     }

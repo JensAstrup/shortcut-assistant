@@ -34,7 +34,7 @@ async function setNoteContentExistsNotice(){
 chrome.runtime.onMessage.addListener(
     async function (request, sender, sendResponse) {
         if (request.message === 'setNotes'){
-            if(request.data === undefined){
+            if(request.data === undefined || request.data === ''){
                 return
             }
             await setNoteContentExistsNotice()
