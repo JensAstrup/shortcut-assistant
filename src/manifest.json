@@ -22,6 +22,5 @@
       "js": ["build/contentScripts/bundle.js"]
     }
   ],
-  "host_permissions": ["https://api.openai.com/*"],
-  "update_url": "https://wellthy-web-sandbox1.s3.us-east-2.amazonaws.com/shortcut-files/update.xml"
+  "host_permissions": ["https://api.openai.com/*"]
 }
