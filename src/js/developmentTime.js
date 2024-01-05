@@ -1,3 +1,6 @@
+import {sleep} from "./utils";
+
+
 function findFirstMatchingElement() {
     // Get all elements with the class 'value'
     const elementsWithValueClass = document.querySelectorAll('.value');

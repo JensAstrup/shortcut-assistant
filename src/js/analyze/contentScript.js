@@ -1,9 +1,4 @@
-
-const sleep = (ms) => {
-    return new Promise((resolve) => {
-        setTimeout(resolve, ms);
-    });
-}
+import {sleep} from "../utils";
 
 function extractStoryDescription() {
     const descriptionDiv = document.querySelector('[data-key="description"]');
