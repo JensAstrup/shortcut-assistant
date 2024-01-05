@@ -2,10 +2,10 @@
   "manifest_version": 3,
   "name": "Shortcut Assistant - BETA",
   "description": "THIS EXTENSION IS FOR BETA TESTING\n\nModifies Shortcut story display to provide additional functionality",
-  "version": "1.1",
+  "version": "1.2",
   "permissions": ["activeTab", "scripting", "tabs", "storage"],
   "background": {
-    "service_worker": "js/service_worker.js",
+    "service_worker": "build/service_worker/bundle.js",
     "type": "module"
   },
   "icons": {
@@ -19,8 +19,7 @@
   },  "content_scripts": [
     {
       "matches": ["https://app.shortcut.com/*"],
-      "js": ["js/analyze/contentScript.js", "js/notes/contentScript.js", "js/developmentTime.js",
-            "js/todoist/contentScript.js"]
+      "js": ["build/contentScripts/bundle.js"]
     }
   ],
   "host_permissions": ["https://api.openai.com/*"],
