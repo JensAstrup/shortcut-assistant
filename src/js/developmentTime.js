@@ -78,7 +78,7 @@ function isInState(state) {
     return storyState === state;
 }
 
-async function checkDevelopmentTime() {
+export async function checkDevelopmentTime() {
     // Sleep to allow all DOM elements to truly load
     await sleep(3000)
     const inDevelopment = isInState('In Development')
@@ -106,11 +106,6 @@ function addEmojiToTitle(emoji) {
         storyTitle.innerHTML = `${emoji} ${storyTitle.innerHTML}`;
     }
 }
-
-
-document.addEventListener('DOMContentLoaded', function() {
-    checkDevelopmentTime().catch((error) => {console.error(error)})
-}, false);
 
 chrome.runtime.onMessage.addListener(
     async function (request, sender, sendResponse) {

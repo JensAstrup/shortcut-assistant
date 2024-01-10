@@ -47,10 +47,14 @@ async function setTaskButton(title, tooltip, taskTitle){
     }
 }
 
+export async function initTodos(){
+    setTaskButton('Work on', 'Set task to work on story');
+    setTaskButton('Review', 'Set task to review story');
+    setTaskButton('Follow up', 'Set task to follow up on story', 'Follow up on');
+}
+
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.message === "initTodos" && request.url.includes('story')) {
-        setTaskButton('Work on', 'Set task to work on story');
-        setTaskButton('Review', 'Set task to review story');
-        setTaskButton('Follow up', 'Set task to follow up on story', 'Follow up on');
+        initTodos()
     }
 });

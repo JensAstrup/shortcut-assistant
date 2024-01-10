@@ -19,7 +19,8 @@
   },  "content_scripts": [
     {
       "matches": ["https://app.shortcut.com/*"],
-      "js": ["build/contentScripts/bundle.js"]
+      "js": ["build/contentScripts/bundle.js"],
+      "run_at": "document_end"
     }
   ],
   "host_permissions": ["https://api.openai.com/*"]
