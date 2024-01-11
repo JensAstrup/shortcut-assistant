@@ -22,7 +22,6 @@ async function setTaskButton(title, tooltip, taskTitle){
         window.open(`https://todoist.com/add?content=${taskTitle}`, '_blank');
     });
 
-    // Create and append the span element
     const span = document.createElement('span');
     span.className = 'fa fa-plus';
     newButton.appendChild(span);
@@ -48,9 +47,11 @@ async function setTaskButton(title, tooltip, taskTitle){
 }
 
 export async function initTodos(){
-    setTaskButton('Work on', 'Set task to work on story');
-    setTaskButton('Review', 'Set task to review story');
-    setTaskButton('Follow up', 'Set task to follow up on story', 'Follow up on');
+    if (window.location.href.includes('story')) {
+        setTaskButton('Work on', 'Set task to work on story');
+        setTaskButton('Review', 'Set task to review story');
+        setTaskButton('Follow up', 'Set task to follow up on story', 'Follow up on');
+    }
 }
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {

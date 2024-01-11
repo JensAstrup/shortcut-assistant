@@ -1,3 +1,5 @@
+import {sleep} from "./utils";
+
 const saveButton = document.getElementById('saveKeyButton');
 const analyzeButton = document.getElementById('analyzeButton');
 saveButton.addEventListener('click', async function() {
@@ -5,11 +7,14 @@ saveButton.addEventListener('click', async function() {
     const openAIToken = document.getElementById('openAIToken').value;
     const enableStalledWorkWarnings = document.getElementById('stalledWorkToggle').checked;
     const enableTodoistOptions = document.getElementById('todoistOptions').checked;
-    chrome.storage.local.set({'openAIToken': openAIToken })
-    chrome.storage.sync.set({'enableStalledWorkWarnings': enableStalledWorkWarnings })
-    chrome.storage.sync.set({'enableTodoistOptions': enableTodoistOptions })
+    await chrome.storage.local.set({'openAIToken': openAIToken })
+    await chrome.storage.sync.set({'enableStalledWorkWarnings': enableStalledWorkWarnings })
+    await chrome.storage.sync.set({'enableTodoistOptions': enableTodoistOptions })
     saveButton.disabled = false
     analyzeButton.disabled = false
+    saveButton.textContent = 'Saved!'
+    await sleep(3000)
+    saveButton.textContent = 'Save'
 });
 
 document.addEventListener('DOMContentLoaded', function() {
