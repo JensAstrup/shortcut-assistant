@@ -162,8 +162,9 @@ chrome.tabs.onUpdated.addListener(async function
                 });
             }
             chrome.tabs.sendMessage(tabId, {
-                message: 'setNotes',
-                data: await getNotes()
+                message: 'initNotes',
+                data: await getNotes(),
+                url: changeInfo.url
             });
         }
     }

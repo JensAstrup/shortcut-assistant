@@ -5,17 +5,17 @@ import './developmentTime.js'
 import {initTodos} from "./todoist/contentScript";
 import {sleep} from "./utils";
 import {checkDevelopmentTime} from "./developmentTime";
-import {setNoteContentExistsNotice} from "./notes/contentScript";
+import {initNotes} from "./notes/contentScript";
 
 async function activate() {
-    await sleep(5000)
+    await sleep(3000)
     initTodos().catch((error) => {
         console.error(error)
     })
     checkDevelopmentTime().catch((error) => {
         console.error(error)
     })
-    setNoteContentExistsNotice().catch((error) => {
+    initNotes().catch((error) => {
         console.error(error)
     })
 }
