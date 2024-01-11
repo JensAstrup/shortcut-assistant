@@ -6,7 +6,6 @@ module.exports = {
     entry: {
         'analyze/analyze': './js/analyze/analyze.js',
         'notes/privateNotes': './js/notes/privateNotes.js',
-        'developmentTime/bundle': './js/developmentTime.js',
         'popup/bundle': './js/popup.js',
         'service_worker/bundle': './js/service_worker.js',
         'contentScripts/bundle': './js/contentScripts.js'

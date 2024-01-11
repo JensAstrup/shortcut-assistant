@@ -1,4 +1,4 @@
-async function setNoteContentExistsNotice(){
+export async function setNoteContentExistsNotice(){
     const newButton = document.createElement('button');
     newButton.className = 'action edit-description view-notes micro flat-white';
     newButton.dataset.tabindex = '';
