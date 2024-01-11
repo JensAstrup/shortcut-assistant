@@ -1,3 +1,5 @@
+import {sleep} from "../utils";
+
 function getStoryNotesInput() {
     return document.getElementById('storyNotes');
 }
@@ -40,9 +42,13 @@ async function fetchAndSetNotes() {
     });
 }
 
-document.getElementById('saveButton').addEventListener('click', async function () {
+const notesSaveButton = document.getElementById('saveButton');
+notesSaveButton.addEventListener('click', async function () {
     const data = {[getNotesKey(await getStoryId())]: getStoryNotesInput().value};
-    chrome.storage.sync.set(data);
+    await chrome.storage.sync.set(data);
+    notesSaveButton.textContent = 'Saved!'
+    await sleep(2000)
+    notesSaveButton.textContent = 'Save'
 });
 
 document.addEventListener('DOMContentLoaded', function () {
