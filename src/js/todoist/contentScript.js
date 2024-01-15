@@ -1,3 +1,6 @@
+import {getDescriptionButtonContainer} from '../utils';
+
+
 function extractStoryTitle() {
     const titleDiv = document.querySelector('.story-name');
     return titleDiv.textContent
@@ -27,19 +30,7 @@ async function setTaskButton(title, tooltip, taskTitle){
     newButton.appendChild(span);
     newButton.append(' ' + title + '   ');
 
-    // Append the new button to the same container
-    let descriptionButton = document.querySelector(`[data-on-click="App.Controller.Story.editDescription"]`);
-    let container = descriptionButton?.parentElement
-    let attempts = 0
-    while(container === null){
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        descriptionButton = document.querySelector(`[data-on-click="App.Controller.Story.editDescription"]`);
-        container = descriptionButton?.parentElement
-        attempts++;
-        if (attempts > 10) {
-            break;
-        }
-    }
+    const container = await getDescriptionButtonContainer()
     const existingButton = document.querySelector(`[data-key="${title}]"`);
     if (!existingButton) {
         container.appendChild(newButton);
