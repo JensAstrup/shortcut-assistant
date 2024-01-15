@@ -24,7 +24,6 @@ async function setNoteContentExistsNotice(){
 }
 
 function removeNotes(){
-    console.log('removing notes')
     const element = document.querySelector('.view-notes')
     if(element !== null){
         element.remove()
