@@ -28,3 +28,7 @@ export async function getDescriptionButtonContainer() {
     }
     return container;
 }
+
+export function logError(error){
+    console.error(error)
+}

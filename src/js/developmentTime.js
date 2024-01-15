@@ -1,4 +1,4 @@
-import {storyPageIsReady} from "./utils";
+import {logError, storyPageIsReady} from "./utils";
 
 
 function findFirstMatchingElement() {
@@ -111,7 +111,7 @@ chrome.runtime.onMessage.addListener(
     async function (request, sender, sendResponse) {
         if (request.message === 'initDevelopmentTime') {
             if (request.url.includes('story')) {
-                await checkDevelopmentTime();
+                checkDevelopmentTime().catch(logError);
             }
         }
     });

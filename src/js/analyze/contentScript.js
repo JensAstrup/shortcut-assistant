@@ -1,4 +1,4 @@
-import {sleep} from "../utils";
+import {logError, sleep} from "../utils";
 
 function extractStoryDescription() {
     const descriptionDiv = document.querySelector('[data-key="description"]');
@@ -29,9 +29,7 @@ async function analyzeStoryDescription(activeTabUrl) {
     if (activeTabUrl.includes('story')) {
         const description = extractStoryDescription()
         const response = await chrome.runtime.sendMessage({action: 'callOpenAI', data: {prompt: description}})
-        populateCommentBox(response.data).catch((error) => {
-            console.error(error)
-        });
+        populateCommentBox(response.data).catch(logError);
     }
 }
 
