@@ -109,7 +109,7 @@ function addEmojiToTitle(emoji) {
 
 chrome.runtime.onMessage.addListener(
     async function (request, sender, sendResponse) {
-        if (request.message === 'checkDevelopmentTime') {
+        if (request.message === 'initDevelopmentTime') {
             if (request.url.includes('story')) {
                 await checkDevelopmentTime();
             }
