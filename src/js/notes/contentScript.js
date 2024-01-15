@@ -1,3 +1,6 @@
+import {getDescriptionButtonContainer, logError} from '../utils';
+
+
 async function setNoteContentExistsNotice(){
     const newButton = document.createElement('button');
     newButton.className = 'action edit-description view-notes micro flat-white';
@@ -11,18 +14,7 @@ async function setNoteContentExistsNotice(){
 
     newButton.append(' Has Notes');
 
-    let descriptionButton = document.querySelector(`[data-on-click="App.Controller.Story.editDescription"]`);
-    let container = descriptionButton?.parentElement
-    let attempts = 0
-    while(container === null){
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        descriptionButton = document.querySelector(`[data-on-click="App.Controller.Story.editDescription"]`);
-        container = descriptionButton?.parentElement
-        attempts++;
-        if (attempts > 10) {
-            break;
-        }
-    }
+    let container = await getDescriptionButtonContainer();
 
     // Check if the button already exists in the container
     const existingButton = container.querySelector('.action.edit-description.view-notes.micro.flat-white');
@@ -31,19 +23,36 @@ async function setNoteContentExistsNotice(){
     }
 }
 
+function removeNotes(){
+    const element = document.querySelector('.view-notes')
+    if(element !== null){
+        element.remove()
+    }
+}
+
+async function setNoteContentIfDataExists(data){
+    if(data === undefined){
+        const response = await chrome.runtime.sendMessage({action: 'getSavedNotes'}).catch(logError)
+        data = response.data
+    }
+    if(data === '') {
+        removeNotes()
+    }
+    else{
+        setNoteContentExistsNotice().catch(logError)
+    }
+}
+
 export async function initNotes(){
     if (window.location.href.includes('story')) {
-        await setNoteContentExistsNotice()
+        setNoteContentIfDataExists().catch(logError)
     }
 }
 
 chrome.runtime.onMessage.addListener(
     async function (request, sender, sendResponse) {
         if (request.message === 'initNotes' && request.url.includes('story') ){
-            if(request.data === undefined || request.data === ''){
-                return
-            }
-            await setNoteContentExistsNotice()
+            setNoteContentIfDataExists(request.data).catch(logError)
         }
     }
 )
