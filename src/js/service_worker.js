@@ -110,14 +110,12 @@ async function callOpenAI(description, tabId) {
     let messagesData = await fetchCompletion(description);
     let message = messagesData.choices[0].message.content;
     chrome.tabs.sendMessage(tabId, {"message": "setOpenAiResponse", "data": message});
+    return message
 }
 
-
-chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === 'callOpenAI') {
-        console.log('Analyzing')
-        await callOpenAI(request.data.prompt, sender.tab.id).then(response => {
-            chrome.runtime.sendMessage({message: "OpenAIResponseCompleted"});
+        callOpenAI(request.data.prompt, sender.tab.id).then(response => {
             sendResponse({data: response});
         });
         return true; // Keep the message channel open for the async response
@@ -146,7 +144,7 @@ chrome.tabs.onUpdated.addListener(async function
             const enableStalledWorkWarnings = await getSyncedSetting('enableStalledWorkWarnings', true)
             if (enableStalledWorkWarnings) {
                 chrome.tabs.sendMessage(tabId, {
-                    message: 'checkDevelopmentTime',
+                    message: 'initDevelopmentTime',
                     url: changeInfo.url
                 });
             }
