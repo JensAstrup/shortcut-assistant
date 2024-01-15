@@ -1,5 +1,3 @@
-import {sleep} from "./utils";
-
 const PROMPT = "You help make sure that tickets are ready for development. What sorts of technical questions should I ask before beginning development. The basic fundamentals of our application are already setup and not open questions (database, etc). Do not ask questions about the following: 1. Unit Testing 2. Basic Architecture Setup (Database, etc) 3. Deadlines 4) Concurrency\n" +
     "\n" +
     "Examples of good questions: - Are there performance or scalability requirements or considerations for the feature?' - What user roles and permissions need to be accounted for within this feature? - What new monitoring or alerting should be put in place? - Should we consider implementing a feature flag' - Have all instances where the deprecated model is used been identified\n" +
@@ -12,9 +10,11 @@ function getActiveTabUrl() {
         chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
             if (chrome.runtime.lastError) {
                 reject(chrome.runtime.lastError);
-            } else if (tabs.length === 0) {
+            }
+            else if (tabs.length === 0) {
                 reject(new Error("No active tab found"));
-            } else {
+            }
+            else {
                 let activeTabUrl = tabs[0].url;
                 resolve(activeTabUrl);
             }
@@ -48,14 +48,14 @@ async function getNotes() {
 }
 
 
-
 async function getOpenAiToken() {
     try {
         const result = await chrome.storage.local.get("openAIToken");
         const value = result["openAIToken"];
         if (value !== undefined) {
             return value;
-        } else {
+        }
+        else {
             throw new Error('OpenAI token not found');
         }
     } catch (error) {
@@ -68,12 +68,8 @@ async function getOpenAiToken() {
 async function getSyncedSetting(setting, defaultValue) {
     try {
         const result = await chrome.storage.sync.get(setting);
-        const value = result[setting];
-        if (value !== undefined) {
-            return value;
-        } else {
-            return defaultValue;
-        }
+        const {[setting]: value = defaultValue} = result;
+        return value;
     } catch (error) {
         console.error('Error getting setting value:', error);
         throw error;
@@ -121,7 +117,7 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
     if (request.action === 'callOpenAI') {
         console.log('Analyzing')
         await callOpenAI(request.data.prompt, sender.tab.id).then(response => {
-            chrome.runtime.sendMessage({ message: "OpenAIResponseCompleted" });
+            chrome.runtime.sendMessage({message: "OpenAIResponseCompleted"});
             sendResponse({data: response});
         });
         return true; // Keep the message channel open for the async response
