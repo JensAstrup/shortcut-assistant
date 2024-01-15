@@ -1,3 +1,6 @@
+import {getDescriptionButtonContainer} from '../utils';
+
+
 async function setNoteContentExistsNotice(){
     const newButton = document.createElement('button');
     newButton.className = 'action edit-description view-notes micro flat-white';
@@ -11,18 +14,7 @@ async function setNoteContentExistsNotice(){
 
     newButton.append(' Has Notes');
 
-    let descriptionButton = document.querySelector(`[data-on-click="App.Controller.Story.editDescription"]`);
-    let container = descriptionButton?.parentElement
-    let attempts = 0
-    while(container === null){
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        descriptionButton = document.querySelector(`[data-on-click="App.Controller.Story.editDescription"]`);
-        container = descriptionButton?.parentElement
-        attempts++;
-        if (attempts > 10) {
-            break;
-        }
-    }
+    let container = await getDescriptionButtonContainer();
 
     // Check if the button already exists in the container
     const existingButton = container.querySelector('.action.edit-description.view-notes.micro.flat-white');
