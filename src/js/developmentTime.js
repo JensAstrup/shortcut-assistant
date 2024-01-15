@@ -1,4 +1,4 @@
-import {sleep} from "./utils";
+import {storyPageIsReady} from "./utils";
 
 
 function findFirstMatchingElement() {
@@ -80,7 +80,7 @@ function isInState(state) {
 
 export async function checkDevelopmentTime() {
     // Sleep to allow all DOM elements to truly load
-    await sleep(3000)
+    await storyPageIsReady()
     const inDevelopment = isInState('In Development')
     const inReview = isInState('Ready for Review')
     if (!inDevelopment && !inReview) {
