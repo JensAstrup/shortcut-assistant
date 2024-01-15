@@ -79,7 +79,6 @@ function isInState(state) {
 }
 
 export async function checkDevelopmentTime() {
-    // Sleep to allow all DOM elements to truly load
     await storyPageIsReady()
     const inDevelopment = isInState('In Development')
     const inReview = isInState('Ready for Review')
@@ -98,6 +97,13 @@ export async function checkDevelopmentTime() {
     else if (hoursElapsed >= alertHours) {
         addEmojiToTitle('⚠️')
     }
+    if(inDevelopment){
+        const stateDiv = document.querySelector('.story-state')
+        const stateSpan = stateDiv.querySelector('.value')
+        const daysElapsed = hoursElapsed / 24;
+        stateSpan.textContent = `${stateSpan.textContent} (${daysElapsed.toFixed(2)} days)`
+    }
+
 }
 
 function addEmojiToTitle(emoji) {
