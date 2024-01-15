@@ -1,4 +1,4 @@
-import {getDescriptionButtonContainer} from '../utils';
+import {getDescriptionButtonContainer, logError} from '../utils';
 
 
 async function setNoteContentExistsNotice(){
@@ -23,19 +23,37 @@ async function setNoteContentExistsNotice(){
     }
 }
 
+function removeNotes(){
+    console.log('removing notes')
+    const element = document.querySelector('.view-notes')
+    if(element !== null){
+        element.remove()
+    }
+}
+
+async function setNoteContentIfDataExists(data){
+    if(data === undefined){
+        const response = await chrome.runtime.sendMessage({action: 'getSavedNotes'}).catch(logError)
+        data = response.data
+    }
+    if(data === '') {
+        removeNotes()
+    }
+    else{
+        setNoteContentExistsNotice().catch(logError)
+    }
+}
+
 export async function initNotes(){
     if (window.location.href.includes('story')) {
-        await setNoteContentExistsNotice()
+        setNoteContentIfDataExists().catch(logError)
     }
 }
 
 chrome.runtime.onMessage.addListener(
     async function (request, sender, sendResponse) {
         if (request.message === 'initNotes' && request.url.includes('story') ){
-            if(request.data === undefined || request.data === ''){
-                return
-            }
-            await setNoteContentExistsNotice()
+            setNoteContentIfDataExists(request.data).catch(logError)
         }
     }
 )

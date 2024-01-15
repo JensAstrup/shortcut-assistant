@@ -5,6 +5,7 @@ const PROMPT = "You help make sure that tickets are ready for development. What 
     "\n" +
     "Give the top 5 questions in a concise manner, just state the questions without any intro. "
 
+
 function getActiveTabUrl() {
     return new Promise((resolve, reject) => {
         chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
@@ -22,9 +23,11 @@ function getActiveTabUrl() {
     });
 }
 
+
 function getNotesKey(storyId) {
     return "notes_" + storyId;
 }
+
 
 async function getStoryId() {
     const url = await getActiveTabUrl();
@@ -33,18 +36,12 @@ async function getStoryId() {
     return match ? match[1] : null;
 }
 
+
 async function getNotes() {
-    return new Promise(async (resolve, reject) => {
-        const key = getNotesKey(await getStoryId());
-        console.log('fetching and setting')
-        chrome.storage.sync.get(key).then((result) => {
-            const value = result[key];
-            console.log('Fetched from storage')
-            if (value !== undefined) {
-                resolve(value)
-            }
-        });
-    })
+    const storyId = await getStoryId();
+    const key = getNotesKey(storyId);
+    const result = await chrome.storage.sync.get(key);
+    return result[key];
 }
 
 
@@ -76,6 +73,7 @@ async function getSyncedSetting(setting, defaultValue) {
     }
 }
 
+
 async function fetchCompletion(description) {
     const openAIToken = await getOpenAiToken();
     const headers = new Headers();
@@ -106,12 +104,14 @@ async function fetchCompletion(description) {
     return response.json();
 }
 
+
 async function callOpenAI(description, tabId) {
     let messagesData = await fetchCompletion(description);
     let message = messagesData.choices[0].message.content;
     chrome.tabs.sendMessage(tabId, {"message": "setOpenAiResponse", "data": message});
     return message
 }
+
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === 'callOpenAI') {
@@ -126,13 +126,14 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         });
         return true;
     }
-    if (request.message === 'getStoryNotes') {
+    if (request.action === 'getSavedNotes') {
         getNotes().then(value => {
-            sendResponse({notes: value});
+            sendResponse({data: value});
         });
         return true;
     }
 });
+
 
 chrome.tabs.onUpdated.addListener(async function
         (tabId, changeInfo, tab) {
