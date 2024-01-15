@@ -23,9 +23,23 @@ async function setNoteContentExistsNotice(){
     }
 }
 
-async function setNoteContentIfDataExists(){
-    const response = await chrome.runtime.sendMessage({action: 'getSavedNotes'})
-    if(response.data !== undefined && response.data !== ''){
+function removeNotes(){
+    console.log('removing notes')
+    const element = document.querySelector('.view-notes')
+    if(element !== null){
+        element.remove()
+    }
+}
+
+async function setNoteContentIfDataExists(data){
+    if(data === undefined){
+        const response = await chrome.runtime.sendMessage({action: 'getSavedNotes'}).catch(logError)
+        data = response.data
+    }
+    if(data === '') {
+        removeNotes()
+    }
+    else{
         setNoteContentExistsNotice().catch(logError)
     }
 }
@@ -39,10 +53,7 @@ export async function initNotes(){
 chrome.runtime.onMessage.addListener(
     async function (request, sender, sendResponse) {
         if (request.message === 'initNotes' && request.url.includes('story') ){
-            if(request.data === undefined || request.data === ''){
-                return
-            }
-            setNoteContentExistsNotice().catch(logError)
+            setNoteContentIfDataExists(request.data).catch(logError)
         }
     }
 )
