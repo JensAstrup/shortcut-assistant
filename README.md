@@ -43,8 +43,8 @@ These instructions will get you a copy of the project up and running on your loc
 
 ## Development Workflow
 
+- Run `npm run dev`.
 - Make changes to the source files.
-- Rebuild the project using `npx webpack`.
 - Reload the extension from `chrome://extensions/` by clicking the 'Reload' button under your extension.
 
 ## Packaging the Extension for Distribution
