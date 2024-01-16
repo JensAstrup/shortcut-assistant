@@ -56,6 +56,7 @@ These instructions will get you a copy of the project up and running on your loc
     - Click on 'Pack extension'.
     - For 'Extension root directory', select the `src` directory.
     - Click 'Pack extension'. This will generate a `.crx` file and, optionally, a private key file.
+    - To generate the ZIP required by the Chrome Store, run `zip -r dist.zip src`.
 
 2. **Distribute Extension**
 
