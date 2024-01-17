@@ -29,7 +29,7 @@ export function getNotesKey(storyId) {
 }
 
 
-async function getStoryId() {
+export async function getStoryId() {
     const url = await getActiveTabUrl();
     const match = url.match(/\/story\/(\d+)/);
 

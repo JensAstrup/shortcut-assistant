@@ -1,6 +1,6 @@
-import {getActiveTabUrl, getNotesKey} from '../js/service_worker';
+import {getActiveTabUrl} from '../../js/service_worker';
 
-// Mock the Chrome API
+
 global.chrome = {
     runtime: {
         lastError: null
@@ -37,12 +37,3 @@ describe('getActiveTabUrl', () => {
         await expect(getActiveTabUrl()).rejects.toThrow('No active tab found');
     });
 });
-
-describe('getNotesKey', () => {
-    test('get notes returns correct key', () => {
-        const storyId = 123;
-        const expectedKey = "notes_123";
-        const actualKey = getNotesKey(storyId);
-        expect(actualKey).toBe(expectedKey);
-    })
-})
