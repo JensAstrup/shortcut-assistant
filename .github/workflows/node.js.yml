@@ -16,6 +16,5 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 16.x
-      - run: cd src/
-      - run: npm ci
-      - run: npm test
+      - run: cd src && npm ci
+      - run: cd src && npm test
