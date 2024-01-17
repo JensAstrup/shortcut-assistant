@@ -6,7 +6,7 @@ const PROMPT = "You help make sure that tickets are ready for development. What 
     "Give the top 5 questions in a concise manner, just state the questions without any intro. "
 
 
-function getActiveTabUrl() {
+export function getActiveTabUrl() {
     return new Promise((resolve, reject) => {
         chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
             if (chrome.runtime.lastError) {
@@ -24,7 +24,7 @@ function getActiveTabUrl() {
 }
 
 
-function getNotesKey(storyId) {
+export function getNotesKey(storyId) {
     return "notes_" + storyId;
 }
 
@@ -112,55 +112,57 @@ async function callOpenAI(description, tabId) {
     return message
 }
 
-
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if (request.action === 'callOpenAI') {
-        callOpenAI(request.data.prompt, sender.tab.id).then(response => {
-            sendResponse({data: response});
-        });
-        return true; // Keep the message channel open for the async response
-    }
-    if (request.message === 'getOpenAiToken') {
-        getOpenAiToken().then(token => {
-            sendResponse({token: token});
-        });
-        return true;
-    }
-    if (request.action === 'getSavedNotes') {
-        getNotes().then(value => {
-            sendResponse({data: value});
-        });
-        return true;
-    }
-});
-
-
-chrome.tabs.onUpdated.addListener(async function
-        (tabId, changeInfo, tab) {
-        if (changeInfo.url && changeInfo.url.includes('app.shortcut.com')) {
-            chrome.tabs.sendMessage(tabId, {
-                message: 'update',
-                url: changeInfo.url
+// In service_worker.js
+if (typeof self !== 'undefined' && self instanceof ServiceWorkerGlobalScope) {
+    chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+        if (request.action === 'callOpenAI') {
+            callOpenAI(request.data.prompt, sender.tab.id).then(response => {
+                sendResponse({data: response});
             });
-            const enableStalledWorkWarnings = await getSyncedSetting('enableStalledWorkWarnings', true)
-            if (enableStalledWorkWarnings) {
-                chrome.tabs.sendMessage(tabId, {
-                    message: 'initDevelopmentTime',
-                    url: changeInfo.url
-                });
-            }
-            const enableTodoistOptions = await getSyncedSetting('enableTodoistOptions', true)
-            if (enableTodoistOptions) {
-                chrome.tabs.sendMessage(tabId, {
-                    message: 'initTodos',
-                    url: changeInfo.url
-                });
-            }
-            chrome.tabs.sendMessage(tabId, {
-                message: 'initNotes',
-                data: await getNotes(),
-                url: changeInfo.url
-            });
+            return true; // Keep the message channel open for the async response
         }
-    }
-);
+        if (request.message === 'getOpenAiToken') {
+            getOpenAiToken().then(token => {
+                sendResponse({token: token});
+            });
+            return true;
+        }
+        if (request.action === 'getSavedNotes') {
+            getNotes().then(value => {
+                sendResponse({data: value});
+            });
+            return true;
+        }
+    });
+
+
+    chrome.tabs.onUpdated.addListener(async function
+            (tabId, changeInfo, tab) {
+            if (changeInfo.url && changeInfo.url.includes('app.shortcut.com')) {
+                chrome.tabs.sendMessage(tabId, {
+                    message: 'update',
+                    url: changeInfo.url
+                });
+                const enableStalledWorkWarnings = await getSyncedSetting('enableStalledWorkWarnings', true)
+                if (enableStalledWorkWarnings) {
+                    chrome.tabs.sendMessage(tabId, {
+                        message: 'initDevelopmentTime',
+                        url: changeInfo.url
+                    });
+                }
+                const enableTodoistOptions = await getSyncedSetting('enableTodoistOptions', true)
+                if (enableTodoistOptions) {
+                    chrome.tabs.sendMessage(tabId, {
+                        message: 'initTodos',
+                        url: changeInfo.url
+                    });
+                }
+                chrome.tabs.sendMessage(tabId, {
+                    message: 'initNotes',
+                    data: await getNotes(),
+                    url: changeInfo.url
+                });
+            }
+        }
+    );
+}
