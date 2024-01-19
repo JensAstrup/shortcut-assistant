@@ -10,6 +10,7 @@ export async function storyPageIsReady(){
         await sleep(1000);
         storyTitle = document.querySelector('.story-name');
     }
+    await sleep(500);
     return true;
 }
 
