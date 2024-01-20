@@ -11,7 +11,7 @@
   "scripts": {
     "dev": "webpack --config webpack.config.dev.js",
     "test": "jest --coverage",
-    "buildEnv": "node buildEnv.js"
+    "build-manifest": "node buildManifest.js"
   },
   "dependencies": {
     "dotenv": "^16.3.2"
