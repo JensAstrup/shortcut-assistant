@@ -73,6 +73,60 @@ async function getSyncedSetting(setting, defaultValue) {
     }
 }
 
+function fetchUserEmail() {
+    return new Promise(async (resolve, reject) => {
+        const token = await chrome.storage.sync.get('token');
+        fetch('https://www.googleapis.com/oauth2/v1/userinfo?alt=json', {
+            headers: {
+                'Authorization': `Bearer ${token.token}`
+            }
+        }).then(response => {
+            if (response.ok) {
+                return response.json();
+            }
+            else {
+                throw new Error('Network response was not ok.');
+            }
+        }).then(data => {
+            resolve(data.email);
+        }).catch(error => {
+            reject(error);
+        });
+    });
+}
+
+function getCompletionFromProxy(description) {
+    return new Promise(async (resolve, reject) => {
+        const userEmail = await fetchUserEmail();
+        if (userEmail === undefined) {
+            reject(new Error('User email not found'));
+        }
+        const url = 'https://faas-nyc1-2ef2e6cc.doserverless.co/api/v1/web/fn-7932f4c9-dd5e-44e6-a067-5cbf1cf629d4/openAIProxy/proxy'
+        fetch(url, {
+            method: 'POST',
+            body: JSON.stringify({
+                "description": description
+            }),
+            headers: {
+                'X-OAuth-Authorization': `${userEmail}`,
+                'Content-Type': 'application/json',
+                "Authorization": "Basic NjYyZmMxYzQtOGE3OC00NGQyLWIyNWItYzQxMmMwMTcxMjUyOlJSQktQR0JIZTh5N1c0YW1KTzZsUlB5cDNLeFFDUlpyUnFlM1ZsMHdyRWxDNGpOc0l0c1JiSTA0U2daWUJzWDg="
+            }
+        }).then(response => {
+            if (response.ok) {
+                return response.json();
+            }
+            else {
+                throw new Error('Network response was not ok.');
+            }
+        }).then(data => {
+            resolve(data.content);
+        }).catch(error => {
+            reject(error);
+        });
+    });
+}
+
 
 async function fetchCompletion(description) {
     const openAIToken = await getOpenAiToken();
@@ -106,8 +160,17 @@ async function fetchCompletion(description) {
 
 
 async function callOpenAI(description, tabId) {
-    let messagesData = await fetchCompletion(description);
-    let message = messagesData.choices[0].message.content;
+    let messagesData = undefined
+    let message = undefined
+
+    try {
+        const _ = await getOpenAiToken();
+        messagesData = await fetchCompletion(description);
+        message = messagesData.choices[0].message.content;
+    } catch {
+        messagesData = await getCompletionFromProxy(description);
+        message = messagesData;
+    }
     chrome.tabs.sendMessage(tabId, {"message": "setOpenAiResponse", "data": message});
     return message
 }
@@ -150,7 +213,7 @@ if (typeof self !== 'undefined' && self instanceof ServiceWorkerGlobalScope) {
                         url: changeInfo.url
                     });
                 }
-                const enableTodoistOptions = await getSyncedSetting('enableTodoistOptions', true)
+                const enableTodoistOptions = await getSyncedSetting('enableTodoistOptions', false)
                 if (enableTodoistOptions) {
                     chrome.tabs.sendMessage(tabId, {
                         message: 'initTodos',
