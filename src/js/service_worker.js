@@ -198,6 +198,19 @@ if (typeof self !== 'undefined' && self instanceof ServiceWorkerGlobalScope) {
         }
     });
 
+    chrome.runtime.onInstalled.addListener(function(details) {
+        if (details.reason === "install") {
+            chrome.windows.create({
+                url: '../installed.html',
+                type: 'popup',
+                width: 310,
+                height: 500
+            });
+        }
+        chrome.storage.sync.set({'enableStalledWorkWarnings': true});
+        chrome.storage.sync.set({'enableTodoistOptions': false});
+    });
+
 
     chrome.tabs.onUpdated.addListener(async function
             (tabId, changeInfo, tab) {
