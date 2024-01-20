@@ -2,6 +2,8 @@ import {sleep} from "./utils";
 
 const saveButton = document.getElementById('saveKeyButton');
 const analyzeButton = document.getElementById('analyzeButton');
+const authButton = document.getElementById('authButton');
+
 saveButton.addEventListener('click', async function() {
     saveButton.disabled = true
     const openAIToken = document.getElementById('openAIToken').value;
@@ -16,6 +18,13 @@ saveButton.addEventListener('click', async function() {
     await sleep(3000)
     saveButton.textContent = 'Save'
 });
+
+authButton.addEventListener('click', async function() {
+    chrome.identity.getAuthToken({interactive: true}, function(token) {
+        chrome.storage.sync.set({ token })
+    });
+});
+
 
 document.addEventListener('DOMContentLoaded', function() {
     const tabActions = document.getElementById('tabActions');
