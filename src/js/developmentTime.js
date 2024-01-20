@@ -85,7 +85,15 @@ function isInState(state) {
  * @returns {number} - The time spent in the state in hours, excluding weekends.
  */
 export function getTimeInState(state){
-    const latestUpdateElements = findFirstMatchingElementForState(state)
+    let latestUpdateElements = findFirstMatchingElementForState(state)
+    let stateDiv = document.querySelector('.story-state')
+    let stateSpan = stateDiv.querySelector('.value')
+    while(latestUpdateElements === null){
+        latestUpdateElements = findFirstMatchingElementForState(state)
+        if(stateSpan !== null && stateSpan.textContent !== state){
+            return null
+        }
+    }
     const parentDiv = latestUpdateElements.element.parentElement
     const dateElement = parentDiv.querySelector('.date')
     return hoursBetweenExcludingWeekends(dateElement.innerHTML)
