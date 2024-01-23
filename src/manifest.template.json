@@ -38,6 +38,7 @@
   },
   "permissions": [
     "activeTab",
+    "gcm",
     "identity",
     "scripting",
     "tabs",

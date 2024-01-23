@@ -97,10 +97,6 @@ function fetchUserEmail() {
 
 function getCompletionFromProxy(description) {
     return new Promise(async (resolve, reject) => {
-        const userEmail = await fetchUserEmail();
-        if (userEmail === undefined) {
-            reject(new Error('User email not found'));
-        }
         const url = 'https://faas-nyc1-2ef2e6cc.doserverless.co/api/v1/web/fn-7932f4c9-dd5e-44e6-a067-5cbf1cf629d4/openAIProxy/proxy'
         fetch(url, {
             method: 'POST',
@@ -108,7 +104,7 @@ function getCompletionFromProxy(description) {
                 "description": description
             }),
             headers: {
-                'X-OAuth-Authorization': `${userEmail}`,
+                'X-Authorization': await chrome.instanceID.getID(),
                 'Content-Type': 'application/json',
                 "Authorization": "Basic NjYyZmMxYzQtOGE3OC00NGQyLWIyNWItYzQxMmMwMTcxMjUyOlJSQktQR0JIZTh5N1c0YW1KTzZsUlB5cDNLeFFDUlpyUnFlM1ZsMHdyRWxDNGpOc0l0c1JiSTA0U2daWUJzWDg="
             }
@@ -197,35 +193,34 @@ if (typeof self !== 'undefined' && self instanceof ServiceWorkerGlobalScope) {
             return true;
         }
     });
+}
 
-
-    chrome.tabs.onUpdated.addListener(async function
-            (tabId, changeInfo, tab) {
-            if (changeInfo.url && changeInfo.url.includes('app.shortcut.com')) {
+chrome.tabs.onUpdated.addListener(async function
+        (tabId, changeInfo, tab) {
+        if (changeInfo.url && changeInfo.url.includes('app.shortcut.com')) {
+            chrome.tabs.sendMessage(tabId, {
+                message: 'update',
+                url: changeInfo.url
+            });
+            const enableStalledWorkWarnings = await getSyncedSetting('enableStalledWorkWarnings', true)
+            if (enableStalledWorkWarnings) {
                 chrome.tabs.sendMessage(tabId, {
-                    message: 'update',
-                    url: changeInfo.url
-                });
-                const enableStalledWorkWarnings = await getSyncedSetting('enableStalledWorkWarnings', true)
-                if (enableStalledWorkWarnings) {
-                    chrome.tabs.sendMessage(tabId, {
-                        message: 'initDevelopmentTime',
-                        url: changeInfo.url
-                    });
-                }
-                const enableTodoistOptions = await getSyncedSetting('enableTodoistOptions', false)
-                if (enableTodoistOptions) {
-                    chrome.tabs.sendMessage(tabId, {
-                        message: 'initTodos',
-                        url: changeInfo.url
-                    });
-                }
-                chrome.tabs.sendMessage(tabId, {
-                    message: 'initNotes',
-                    data: await getNotes(),
+                    message: 'initDevelopmentTime',
                     url: changeInfo.url
                 });
             }
+            const enableTodoistOptions = await getSyncedSetting('enableTodoistOptions', false)
+            if (enableTodoistOptions) {
+                chrome.tabs.sendMessage(tabId, {
+                    message: 'initTodos',
+                    url: changeInfo.url
+                });
+            }
+            chrome.tabs.sendMessage(tabId, {
+                message: 'initNotes',
+                data: await getNotes(),
+                url: changeInfo.url
+            });
         }
-    );
-}
+    }
+);
