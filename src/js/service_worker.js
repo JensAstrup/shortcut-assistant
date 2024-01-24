@@ -1,3 +1,6 @@
+import * as Sentry from '@sentry/browser';
+Sentry.init({ dsn: 'https://966b241d3d57856bd13a0945fa9fa162@o49777.ingest.sentry.io/4506624214368256' });
+
 const PROMPT = "You help make sure that tickets are ready for development. What sorts of technical questions should I ask before beginning development. The basic fundamentals of our application are already setup and not open questions (database, etc). Do not ask questions about the following: 1. Unit Testing 2. Basic Architecture Setup (Database, etc) 3. Deadlines 4) Concurrency\n" +
     "\n" +
     "Examples of good questions: - Are there performance or scalability requirements or considerations for the feature?' - What user roles and permissions need to be accounted for within this feature? - What new monitoring or alerting should be put in place? - Should we consider implementing a feature flag' - Have all instances where the deprecated model is used been identified\n" +
@@ -53,7 +56,7 @@ async function getOpenAiToken() {
             return value;
         }
         else {
-            throw new Error('OpenAI token not found');
+            return null;
         }
     } catch (error) {
         console.error('Error getting OpenAI token:', error);
@@ -73,38 +76,17 @@ async function getSyncedSetting(setting, defaultValue) {
     }
 }
 
-function fetchUserEmail() {
-    return new Promise(async (resolve, reject) => {
-        const token = await chrome.storage.sync.get('token');
-        fetch('https://www.googleapis.com/oauth2/v1/userinfo?alt=json', {
-            headers: {
-                'Authorization': `Bearer ${token.token}`
-            }
-        }).then(response => {
-            if (response.ok) {
-                return response.json();
-            }
-            else {
-                throw new Error('Network response was not ok.');
-            }
-        }).then(data => {
-            resolve(data.email);
-        }).catch(error => {
-            reject(error);
-        });
-    });
-}
 
 function getCompletionFromProxy(description) {
     return new Promise(async (resolve, reject) => {
-        const url = 'https://faas-nyc1-2ef2e6cc.doserverless.co/api/v1/web/fn-7932f4c9-dd5e-44e6-a067-5cbf1cf629d4/openAIProxy/proxy'
+        const url = 'https://faas-nyc1-2ef2e6cc.doserverless.co/api/v1/namespaces/fn-7932f4c9-dd5e-44e6-a067-5cbf1cf629d4/actions/openAIProxy/proxy?blocking=true&result=true'
         fetch(url, {
             method: 'POST',
             body: JSON.stringify({
-                "description": description
+                "description": description,
+                'instanceId': await chrome.instanceID.getID(),
             }),
             headers: {
-                'X-Authorization': await chrome.instanceID.getID(),
                 'Content-Type': 'application/json',
                 "Authorization": "Basic NjYyZmMxYzQtOGE3OC00NGQyLWIyNWItYzQxMmMwMTcxMjUyOlJSQktQR0JIZTh5N1c0YW1KTzZsUlB5cDNLeFFDUlpyUnFlM1ZsMHdyRWxDNGpOc0l0c1JiSTA0U2daWUJzWDg="
             }
@@ -116,7 +98,7 @@ function getCompletionFromProxy(description) {
                 throw new Error('Network response was not ok.');
             }
         }).then(data => {
-            resolve(data.content);
+            resolve(data.body.content);
         }).catch(error => {
             reject(error);
         });

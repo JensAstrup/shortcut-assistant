@@ -5,3 +5,4 @@ src/build/
 /src/manifest.json
 /.env
 /src/coverage/
+/src/.env
