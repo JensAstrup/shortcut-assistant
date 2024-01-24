@@ -1,3 +1,6 @@
+import * as Sentry from '@sentry/browser';
+Sentry.init({ dsn: 'https://966b241d3d57856bd13a0945fa9fa162@o49777.ingest.sentry.io/4506624214368256' });
+
 const PROMPT = "You help make sure that tickets are ready for development. What sorts of technical questions should I ask before beginning development. The basic fundamentals of our application are already setup and not open questions (database, etc). Do not ask questions about the following: 1. Unit Testing 2. Basic Architecture Setup (Database, etc) 3. Deadlines 4) Concurrency\n" +
     "\n" +
     "Examples of good questions: - Are there performance or scalability requirements or considerations for the feature?' - What user roles and permissions need to be accounted for within this feature? - What new monitoring or alerting should be put in place? - Should we consider implementing a feature flag' - Have all instances where the deprecated model is used been identified\n" +
@@ -53,7 +56,7 @@ async function getOpenAiToken() {
             return value;
         }
         else {
-            throw new Error('OpenAI token not found');
+            return null;
         }
     } catch (error) {
         console.error('Error getting OpenAI token:', error);
@@ -73,44 +76,18 @@ async function getSyncedSetting(setting, defaultValue) {
     }
 }
 
-function fetchUserEmail() {
-    return new Promise(async (resolve, reject) => {
-        const token = await chrome.storage.sync.get('token');
-        fetch('https://www.googleapis.com/oauth2/v1/userinfo?alt=json', {
-            headers: {
-                'Authorization': `Bearer ${token.token}`
-            }
-        }).then(response => {
-            if (response.ok) {
-                return response.json();
-            }
-            else {
-                throw new Error('Network response was not ok.');
-            }
-        }).then(data => {
-            resolve(data.email);
-        }).catch(error => {
-            reject(error);
-        });
-    });
-}
 
 function getCompletionFromProxy(description) {
     return new Promise(async (resolve, reject) => {
-        const userEmail = await fetchUserEmail();
-        if (userEmail === undefined) {
-            reject(new Error('User email not found'));
-        }
-        const url = 'https://faas-nyc1-2ef2e6cc.doserverless.co/api/v1/web/fn-7932f4c9-dd5e-44e6-a067-5cbf1cf629d4/openAIProxy/proxy'
+        const url = 'https://faas-nyc1-2ef2e6cc.doserverless.co/api/v1/web/fn-7932f4c9-dd5e-44e6-a067-5cbf1cf629d4/OpenAI_proxy/proxy'
         fetch(url, {
             method: 'POST',
             body: JSON.stringify({
-                "description": description
+                "description": description,
+                'instanceId': await chrome.instanceID.getID(),
             }),
             headers: {
-                'X-OAuth-Authorization': `${userEmail}`,
                 'Content-Type': 'application/json',
-                "Authorization": "Basic NjYyZmMxYzQtOGE3OC00NGQyLWIyNWItYzQxMmMwMTcxMjUyOlJSQktQR0JIZTh5N1c0YW1KTzZsUlB5cDNLeFFDUlpyUnFlM1ZsMHdyRWxDNGpOc0l0c1JiSTA0U2daWUJzWDg="
             }
         }).then(response => {
             if (response.ok) {
@@ -162,14 +139,15 @@ async function fetchCompletion(description) {
 async function callOpenAI(description, tabId) {
     let messagesData = undefined
     let message = undefined
+    const token = await getOpenAiToken();
 
-    try {
-        const _ = await getOpenAiToken();
-        messagesData = await fetchCompletion(description);
-        message = messagesData.choices[0].message.content;
-    } catch {
+    if(token === null){
         messagesData = await getCompletionFromProxy(description);
         message = messagesData;
+    }
+    else {
+        messagesData = await fetchCompletion(description);
+        message = messagesData.choices[0].message.content;
     }
     chrome.tabs.sendMessage(tabId, {"message": "setOpenAiResponse", "data": message});
     return message
@@ -197,48 +175,48 @@ if (typeof self !== 'undefined' && self instanceof ServiceWorkerGlobalScope) {
             return true;
         }
     });
+}
 
-    chrome.runtime.onInstalled.addListener(function(details) {
-        if (details.reason === "install") {
-            chrome.windows.create({
-                url: '../installed.html',
-                type: 'popup',
-                width: 310,
-                height: 500
+chrome.runtime.onInstalled.addListener(function(details) {
+    if (details.reason === "install") {
+        chrome.windows.create({
+            url: '../installed.html',
+            type: 'popup',
+            width: 310,
+            height: 500
+        });
+    }
+    chrome.storage.sync.set({'enableStalledWorkWarnings': true});
+    chrome.storage.sync.set({'enableTodoistOptions': false});
+});
+
+
+chrome.tabs.onUpdated.addListener(async function
+        (tabId, changeInfo, tab) {
+        if (changeInfo.url && changeInfo.url.includes('app.shortcut.com')) {
+            chrome.tabs.sendMessage(tabId, {
+                message: 'update',
+                url: changeInfo.url
             });
-        }
-        chrome.storage.sync.set({'enableStalledWorkWarnings': true});
-        chrome.storage.sync.set({'enableTodoistOptions': false});
-    });
-
-
-    chrome.tabs.onUpdated.addListener(async function
-            (tabId, changeInfo, tab) {
-            if (changeInfo.url && changeInfo.url.includes('app.shortcut.com')) {
+            const enableStalledWorkWarnings = await getSyncedSetting('enableStalledWorkWarnings', true)
+            if (enableStalledWorkWarnings) {
                 chrome.tabs.sendMessage(tabId, {
-                    message: 'update',
-                    url: changeInfo.url
-                });
-                const enableStalledWorkWarnings = await getSyncedSetting('enableStalledWorkWarnings', true)
-                if (enableStalledWorkWarnings) {
-                    chrome.tabs.sendMessage(tabId, {
-                        message: 'initDevelopmentTime',
-                        url: changeInfo.url
-                    });
-                }
-                const enableTodoistOptions = await getSyncedSetting('enableTodoistOptions', false)
-                if (enableTodoistOptions) {
-                    chrome.tabs.sendMessage(tabId, {
-                        message: 'initTodos',
-                        url: changeInfo.url
-                    });
-                }
-                chrome.tabs.sendMessage(tabId, {
-                    message: 'initNotes',
-                    data: await getNotes(),
+                    message: 'initDevelopmentTime',
                     url: changeInfo.url
                 });
             }
+            const enableTodoistOptions = await getSyncedSetting('enableTodoistOptions', false)
+            if (enableTodoistOptions) {
+                chrome.tabs.sendMessage(tabId, {
+                    message: 'initTodos',
+                    url: changeInfo.url
+                });
+            }
+            chrome.tabs.sendMessage(tabId, {
+                message: 'initNotes',
+                data: await getNotes(),
+                url: changeInfo.url
+            });
         }
-    );
-}
+    }
+);

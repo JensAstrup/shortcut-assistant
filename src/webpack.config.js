@@ -1,8 +1,15 @@
+const {
+    sentryWebpackPlugin
+} = require("@sentry/webpack-plugin");
+
 const path = require('path');
 
 module.exports = {
-    mode: 'development', // or 'production'
-    devtool: 'cheap-module-source-map',
+    // or 'production'
+    mode: 'development',
+
+    devtool: "source-map",
+
     entry: {
         'analyze/analyze': './js/analyze/analyze.js',
         'notes/privateNotes': './js/notes/privateNotes.js',
@@ -10,10 +17,12 @@ module.exports = {
         'service_worker/bundle': './js/service_worker.js',
         'contentScripts/bundle': './js/contentScripts.js'
     },
+
     output: {
         path: path.resolve(__dirname, 'build'),
         filename: '[name].js'
     },
+
     module: {
         rules: [
             {
@@ -25,4 +34,10 @@ module.exports = {
             },
         ],
     },
+
+    plugins: [sentryWebpackPlugin({
+        authToken: process.env.SENTRY_AUTH_TOKEN,
+        org: "jens-astrup",
+        project: "shortcut-assistant"
+    })]
 };
