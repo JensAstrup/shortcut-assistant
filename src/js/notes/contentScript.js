@@ -1,5 +1,7 @@
+import * as Sentry from '@sentry/browser';
 import {getDescriptionButtonContainer, logError} from '../utils';
 
+Sentry.init({ dsn: 'https://966b241d3d57856bd13a0945fa9fa162@o49777.ingest.sentry.io/4506624214368256' });
 
 async function setNoteContentExistsNotice(){
     const newButton = document.createElement('button');
@@ -32,10 +34,10 @@ function removeNotes(){
 
 async function setNoteContentIfDataExists(data){
     if(data === undefined){
-        const response = await chrome.runtime.sendMessage({action: 'getSavedNotes'}).catch(logError)
+        const response = await chrome.runtime.sendMessage({action: 'getSavedNotes'})
         data = response.data
     }
-    if(data === '') {
+    if(!data) {
         removeNotes()
     }
     else{
