@@ -30,15 +30,9 @@
   "key": "__CHROME_KEY__",
   "manifest_version": 3,
   "name": "Shortcut Assistant - BETA",
-  "oauth2": {
-    "client_id": "__CLIENT_ID__",
-    "scopes": [
-      "https://www.googleapis.com/auth/userinfo.email"
-    ]
-  },
   "permissions": [
     "activeTab",
-    "gcm",
+    "identity",
     "scripting",
     "tabs",
     "storage"

@@ -3,6 +3,5 @@ dist/src.pem
 /src/node_modules/
 src/build/
 /src/manifest.json
-/.env
 /src/coverage/
 /src/.env
