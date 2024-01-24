@@ -1,4 +1,4 @@
-import {getStoryId} from '../../js/service_worker';
+import {getStoryId} from '../../js/serviceWorker/utils';
 
 beforeAll(() => {
     global.chrome = {

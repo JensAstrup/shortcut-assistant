@@ -5,3 +5,4 @@ src/build/
 /src/manifest.json
 /src/coverage/
 /src/.env
+/src/.env.sentry-build-plugin

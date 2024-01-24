@@ -1,5 +1,12 @@
+import { getSyncedSetting } from "./utils.js";
+
 import * as Sentry from '@sentry/browser';
-Sentry.init({ dsn: 'https://966b241d3d57856bd13a0945fa9fa162@o49777.ingest.sentry.io/4506624214368256' });
+import {getNotes} from './notes';
+
+
+const manifestData = chrome.runtime.getManifest();
+Sentry.init({dsn: 'https://966b241d3d57856bd13a0945fa9fa162@o49777.ingest.sentry.io/4506624214368256',
+             release: manifestData.version});
 
 const PROMPT = "You help make sure that tickets are ready for development. What sorts of technical questions should I ask before beginning development. The basic fundamentals of our application are already setup and not open questions (database, etc). Do not ask questions about the following: 1. Unit Testing 2. Basic Architecture Setup (Database, etc) 3. Deadlines 4) Concurrency\n" +
     "\n" +
@@ -7,45 +14,6 @@ const PROMPT = "You help make sure that tickets are ready for development. What 
     "Examples of bad questions: - What are the technical and business requirements for the feature?(too broad) - How will the system access and query the Customers database?(implementation already known) - What are the specific user story requirements and how do they align with the broader application requirements? (too broad)\n" +
     "\n" +
     "Give the top 5 questions in a concise manner, just state the questions without any intro. "
-
-
-export function getActiveTabUrl() {
-    return new Promise((resolve, reject) => {
-        chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
-            if (chrome.runtime.lastError) {
-                reject(chrome.runtime.lastError);
-            }
-            else if (tabs.length === 0) {
-                reject(new Error("No active tab found"));
-            }
-            else {
-                let activeTabUrl = tabs[0].url;
-                resolve(activeTabUrl);
-            }
-        });
-    });
-}
-
-
-export function getNotesKey(storyId) {
-    return "notes_" + storyId;
-}
-
-
-export async function getStoryId() {
-    const url = await getActiveTabUrl();
-    const match = url.match(/\/story\/(\d+)/);
-
-    return match ? match[1] : null;
-}
-
-
-async function getNotes() {
-    const storyId = await getStoryId();
-    const key = getNotesKey(storyId);
-    const result = await chrome.storage.sync.get(key);
-    return result[key];
-}
 
 
 async function getOpenAiToken() {
@@ -65,18 +33,6 @@ async function getOpenAiToken() {
 }
 
 
-async function getSyncedSetting(setting, defaultValue) {
-    try {
-        const result = await chrome.storage.sync.get(setting);
-        const {[setting]: value = defaultValue} = result;
-        return value;
-    } catch (error) {
-        console.error('Error getting setting value:', error);
-        throw error;
-    }
-}
-
-
 function getCompletionFromProxy(description) {
     return new Promise(async (resolve, reject) => {
         const url = 'https://faas-nyc1-2ef2e6cc.doserverless.co/api/v1/web/fn-7932f4c9-dd5e-44e6-a067-5cbf1cf629d4/OpenAI_proxy/proxy'
@@ -84,10 +40,10 @@ function getCompletionFromProxy(description) {
             method: 'POST',
             body: JSON.stringify({
                 "description": description,
-                'instanceId': await chrome.instanceID.getID(),
+                'instanceId': await chrome.instanceID.getID()
             }),
             headers: {
-                'Content-Type': 'application/json',
+                'Content-Type': 'application/json'
             }
         }).then(response => {
             if (response.ok) {
@@ -141,7 +97,7 @@ async function callOpenAI(description, tabId) {
     let message = undefined
     const token = await getOpenAiToken();
 
-    if(token === null){
+    if (token === null) {
         messagesData = await getCompletionFromProxy(description);
         message = messagesData;
     }
@@ -153,7 +109,7 @@ async function callOpenAI(description, tabId) {
     return message
 }
 
-// In service_worker.js
+
 if (typeof self !== 'undefined' && self instanceof ServiceWorkerGlobalScope) {
     chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         if (request.action === 'callOpenAI') {

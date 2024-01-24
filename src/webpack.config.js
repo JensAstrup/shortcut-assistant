@@ -5,8 +5,7 @@ const {
 const path = require('path');
 
 module.exports = {
-    // or 'production'
-    mode: 'development',
+    mode: 'production',
 
     devtool: "source-map",
 
@@ -14,7 +13,7 @@ module.exports = {
         'analyze/analyze': './js/analyze/analyze.js',
         'notes/privateNotes': './js/notes/privateNotes.js',
         'popup/bundle': './js/popup.js',
-        'service_worker/bundle': './js/service_worker.js',
+        'service_worker/bundle': './js/serviceWorker/service_worker.js',
         'contentScripts/bundle': './js/contentScripts.js'
     },
 

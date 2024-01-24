@@ -1,4 +1,4 @@
-import {getNotesKey} from '../../js/service_worker';
+import {getNotesKey} from '../../js/serviceWorker/notes';
 
 describe('getNotesKey', () => {
     test('get notes returns correct key', () => {
