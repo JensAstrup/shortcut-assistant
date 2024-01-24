@@ -2,7 +2,6 @@ import {sleep} from "./utils";
 
 const saveButton = document.getElementById('saveKeyButton');
 const analyzeButton = document.getElementById('analyzeButton');
-const authButton = document.getElementById('authButton');
 
 saveButton.addEventListener('click', async function() {
     saveButton.disabled = true
@@ -19,31 +18,12 @@ saveButton.addEventListener('click', async function() {
     saveButton.textContent = 'Save'
 });
 
-function checkAuth(){
-    chrome.storage.sync.get(['token']).then(function(result) {
-        console.log('Value currently is ' + result.token);
-        if(result.token !== undefined){
-            authButton.textContent = 'Authenticated!'
-        }
-    })
-}
-
-authButton.addEventListener('click', async function() {
-    checkAuth()
-
-    chrome.identity.getAuthToken({interactive: true}, function(token) {
-        chrome.storage.sync.set({ token })
-    });
-});
-
 
 document.addEventListener('DOMContentLoaded', function() {
     const tabActions = document.getElementById('tabActions');
     const tabSettings = document.getElementById('tabSettings');
     const actionsSection = document.getElementById('actionsSection');
     const settingsSection = document.getElementById('settingsSection');
-
-    checkAuth()
 
     tabActions.addEventListener('click', function(e) {
         e.preventDefault();
@@ -59,16 +39,6 @@ document.addEventListener('DOMContentLoaded', function() {
         actionsSection.classList.add('hidden');
         tabSettings.classList.add('-mb-px');
         tabActions.classList.remove('-mb-px');
-    });
-    chrome.runtime.sendMessage({message: 'getOpenAiToken'}, response => {
-        if (chrome.runtime.lastError) {
-            console.error('Error sending message:', chrome.runtime.lastError);
-            return;
-        }
-        const openAiToken = response.token;
-        if(openAiToken === undefined){
-            analyzeButton.disabled = true
-        }
     });
 });
 

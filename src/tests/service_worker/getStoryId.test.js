@@ -1,17 +1,20 @@
 import {getStoryId} from '../../js/service_worker';
 
-
-global.chrome = {
-    tabs: {
-        query: jest.fn((queryInfo, callback) => {
-            callback([{ url: 'http://example.com/story/12345' }]);
-        }),
-    },
-    runtime: {
-        lastError: null,
-    },
-};
-
+beforeAll(() => {
+    global.chrome = {
+        tabs: {
+            query: jest.fn((queryInfo, callback) => {
+                callback([{ url: 'http://example.com/story/12345' }]);
+            }),
+        },
+        runtime: {
+            lastError: null,
+            onInstalled: {
+                addListener: jest.fn(),
+            },
+        },
+    };
+});
 
 describe('service_worker tests', () => {
     describe('getStoryId', () => {
