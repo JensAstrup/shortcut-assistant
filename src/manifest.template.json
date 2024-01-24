@@ -33,7 +33,7 @@
   "name": "Shortcut Assistant - BETA",
   "permissions": [
     "activeTab",
-    "identity",
+    "gcm",
     "scripting",
     "tabs",
     "storage"
