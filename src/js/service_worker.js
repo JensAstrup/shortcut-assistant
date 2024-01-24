@@ -79,7 +79,7 @@ async function getSyncedSetting(setting, defaultValue) {
 
 function getCompletionFromProxy(description) {
     return new Promise(async (resolve, reject) => {
-        const url = 'https://faas-nyc1-2ef2e6cc.doserverless.co/api/v1/namespaces/fn-7932f4c9-dd5e-44e6-a067-5cbf1cf629d4/actions/openAIProxy/proxy?blocking=true&result=true'
+        const url = 'https://faas-nyc1-2ef2e6cc.doserverless.co/api/v1/web/fn-7932f4c9-dd5e-44e6-a067-5cbf1cf629d4/openAIProxy/proxy'
         fetch(url, {
             method: 'POST',
             body: JSON.stringify({
@@ -88,7 +88,6 @@ function getCompletionFromProxy(description) {
             }),
             headers: {
                 'Content-Type': 'application/json',
-                "Authorization": "Basic NjYyZmMxYzQtOGE3OC00NGQyLWIyNWItYzQxMmMwMTcxMjUyOlJSQktQR0JIZTh5N1c0YW1KTzZsUlB5cDNLeFFDUlpyUnFlM1ZsMHdyRWxDNGpOc0l0c1JiSTA0U2daWUJzWDg="
             }
         }).then(response => {
             if (response.ok) {
@@ -98,7 +97,7 @@ function getCompletionFromProxy(description) {
                 throw new Error('Network response was not ok.');
             }
         }).then(data => {
-            resolve(data.body.content);
+            resolve(data.content);
         }).catch(error => {
             reject(error);
         });
@@ -140,14 +139,15 @@ async function fetchCompletion(description) {
 async function callOpenAI(description, tabId) {
     let messagesData = undefined
     let message = undefined
+    const token = await getOpenAiToken();
 
-    try {
-        const _ = await getOpenAiToken();
-        messagesData = await fetchCompletion(description);
-        message = messagesData.choices[0].message.content;
-    } catch {
+    if(token === null){
         messagesData = await getCompletionFromProxy(description);
         message = messagesData;
+    }
+    else {
+        messagesData = await fetchCompletion(description);
+        message = messagesData.choices[0].message.content;
     }
     chrome.tabs.sendMessage(tabId, {"message": "setOpenAiResponse", "data": message});
     return message
