@@ -79,7 +79,7 @@ async function getSyncedSetting(setting, defaultValue) {
 
 function getCompletionFromProxy(description) {
     return new Promise(async (resolve, reject) => {
-        const url = 'https://faas-nyc1-2ef2e6cc.doserverless.co/api/v1/web/fn-7932f4c9-dd5e-44e6-a067-5cbf1cf629d4/openAIProxy/proxy'
+        const url = 'https://faas-nyc1-2ef2e6cc.doserverless.co/api/v1/web/fn-7932f4c9-dd5e-44e6-a067-5cbf1cf629d4/OpenAI_proxy/proxy'
         fetch(url, {
             method: 'POST',
             body: JSON.stringify({

@@ -20,7 +20,8 @@
   ],
   "description": "THIS EXTENSION IS FOR BETA TESTING\n\nModifies Shortcut story display to provide additional functionality",
   "host_permissions": [
-    "https://api.openai.com/*"
+    "https://api.openai.com/*",
+    "https://faas-nyc1-2ef2e6cc.doserverless.co/*"
   ],
   "icons": {
     "16": "assets/assistant.png",
