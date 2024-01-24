@@ -1,7 +1,9 @@
 import * as Sentry from '@sentry/browser';
 import {getDescriptionButtonContainer, logError} from '../utils';
 
-Sentry.init({ dsn: 'https://966b241d3d57856bd13a0945fa9fa162@o49777.ingest.sentry.io/4506624214368256' });
+const manifestData = chrome.runtime.getManifest();
+Sentry.init({dsn: 'https://966b241d3d57856bd13a0945fa9fa162@o49777.ingest.sentry.io/4506624214368256',
+    release: manifestData.version});
 
 async function setNoteContentExistsNotice(){
     const newButton = document.createElement('button');
