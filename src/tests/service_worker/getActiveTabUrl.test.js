@@ -1,4 +1,4 @@
-import {getActiveTabUrl} from '../../js/service_worker';
+import {getActiveTabUrl} from '../../js/serviceWorker/utils.js';
 
 
 global.chrome = {
