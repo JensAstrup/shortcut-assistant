@@ -67,7 +67,7 @@ function hoursBetweenExcludingWeekends(startDateStr) {
     return hours;
 }
 
-function isInState(state) {
+export function isInState(state) {
     let storyState = ''
     try {
         const storyStateDiv = document.querySelector('.story-state')

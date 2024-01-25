@@ -2,6 +2,7 @@ import { getSyncedSetting } from "./utils.js";
 
 import * as Sentry from '@sentry/browser';
 import {getNotes} from './notes';
+import {isReadyForMessageListening} from '../utils';
 
 
 const manifestData = chrome.runtime.getManifest();
