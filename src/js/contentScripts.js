@@ -5,19 +5,23 @@ import './developmentTime.js'
 import {initTodos} from "./todoist/contentScript";
 import {sleep} from "./utils";
 import {checkDevelopmentTime} from "./developmentTime";
-import {initNotes} from "./notes/contentScript";
+import {getSyncedSetting} from './serviceWorker/utils';
 
 async function activate() {
     await sleep(3000)
-    initTodos().catch((error) => {
-        console.error(error)
-    })
-    checkDevelopmentTime().catch((error) => {
-        console.error(error)
-    })
-    initNotes().catch((error) => {
-        console.error(error)
-    })
+
+    const enableStalledWorkWarnings = await getSyncedSetting('enableStalledWorkWarnings', true)
+    if (enableStalledWorkWarnings) {
+        checkDevelopmentTime().catch((error) => {
+            console.error(error)
+        })
+    }
+    const enableTodoistOptions = await getSyncedSetting('enableTodoistOptions', false)
+    if (enableTodoistOptions) {
+        initTodos().catch((error) => {
+            console.error(error)
+        })
+    }
 }
 
 activate()
