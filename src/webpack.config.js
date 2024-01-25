@@ -40,3 +40,4 @@ module.exports = {
         project: "shortcut-assistant"
     })]
 };
+process.env.SENTRY_RELEASE = process.env.VERSION;
