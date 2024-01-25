@@ -1,8 +1,6 @@
 .idea/*
-dist/src.pem
+*.pem
 /src/node_modules/
-src/build/
-/src/manifest.json
+/src/build/
 /src/coverage/
-/src/.env
-/src/.env.sentry-build-plugin
+*.env*
