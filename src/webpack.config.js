@@ -1,5 +1,4 @@
 const {sentryWebpackPlugin} = require("@sentry/webpack-plugin");
-
 const path = require('path');
 const Dotenv = require('dotenv-webpack');
 require('dotenv').config();
