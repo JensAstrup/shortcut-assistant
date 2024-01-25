@@ -1,0 +1,41 @@
+{
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": "assets/assistant.png"
+  },
+  "background": {
+    "service_worker": "build/service_worker/bundle.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://app.shortcut.com/*"
+      ],
+      "js": [
+        "build/contentScripts/bundle.js"
+      ],
+      "run_at": "document_end"
+    }
+  ],
+  "description": "THIS EXTENSION IS FOR BETA TESTING\n\nModifies Shortcut story display to provide additional functionality",
+  "host_permissions": [
+    "https://api.openai.com/*",
+    "https://faas-nyc1-2ef2e6cc.doserverless.co/*"
+  ],
+  "icons": {
+    "16": "assets/assistant.png",
+    "48": "assets/assistant.png",
+    "128": "assets/assistant.png"
+  },
+  "manifest_version": 3,
+  "name": "Shortcut Assistant - BETA",
+  "permissions": [
+    "activeTab",
+    "gcm",
+    "scripting",
+    "tabs",
+    "storage"
+  ],
+  "version": "2.1.0"
+}
