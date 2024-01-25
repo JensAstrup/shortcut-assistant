@@ -24,13 +24,14 @@ These instructions will get you a copy of the project up and running on your loc
    npm install
    ```
 
-3. **Build the Project**
+3. **Set up Environment Variables**
 
    ```bash
-   npx webpack
-   ```
-
-   This will generate a `build` directory with the bundled extension.
+    cp .env.example .env
+    ```
+    - `VERSION` - The version of the extension.
+    - `SENTRY_AUTH_TOKEN` - The Sentry auth token for the project.
+    - `SENTRY_RELEASE` - This should be the same as the `VERSION` variable.
 
 ### Running the Extension Locally
 
@@ -40,28 +41,25 @@ These instructions will get you a copy of the project up and running on your loc
 
 3. Click on 'Load unpacked' and select the `src` folder within your project directory.
 
-4. Your extension should now be visible in the extensions list and active in the Chrome browser.
+4. The extension should now be visible in the extensions list and active in the Chrome browser.
 
 ## Development Workflow
 
 - Run `npm run dev`.
 - Make changes to the source files.
-- Reload the extension from `chrome://extensions/` by clicking the 'Reload' button under your extension.
+- Reload the extension from `chrome://extensions/` by clicking the 'Reload' button under the extension.
 
 ## Packaging the Extension for Distribution
 
-1. **Package Extension**
-
-    - Navigate to `chrome://extensions/`.
-    - Enable 'Developer mode'.
-    - Click on 'Pack extension'.
-    - For 'Extension root directory', select the `src` directory.
-    - Click 'Pack extension'. This will generate a `.crx` file and, optionally, a private key file.
-    - To generate the ZIP required by the Chrome Store, run `zip -r dist.zip src`.
-
-2. **Distribute Extension**
-
-    - You can distribute the `.crx` file directly to users
+1. **Build the Project**
+   ```bash
+   npm run build
+   npx webpack
+   ```
+2. In the root project directory, zip the `src` folder.
+   ```
+   zip -r dist/dist.zip src
+   ```
 
 ## Versioning
 
