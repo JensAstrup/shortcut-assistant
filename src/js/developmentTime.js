@@ -1,7 +1,7 @@
 import {storyPageIsReady} from "./utils";
 
 
-function findFirstMatchingElementForState(state) {
+export function findFirstMatchingElementForState(state) {
     // Get all elements with the class 'value'
     const elementsWithValueClass = document.querySelectorAll('.value');
 
@@ -25,7 +25,7 @@ function findFirstMatchingElementForState(state) {
  * @param {string} dateString - The date string to parse. Should be in the format "Month Day Year HH:MM AM/PM".
  * @return {Date} - The parsed Date object.
  */
-function parseDate(dateString) {
+export function parseDate(dateString) {
     const timePart = dateString.match(/(\d+):(\d+) (am|pm)/i);
     if (!timePart) return new Date(dateString);
 
@@ -45,13 +45,20 @@ function parseDate(dateString) {
 }
 
 
-function hoursBetweenExcludingWeekends(startDateStr) {
+export function hoursBetweenExcludingWeekends(startDateStr, endDateStr) {
     const startDate = parseDate(startDateStr);
-    const now = new Date();
+    let endDate;
+    if (endDateStr === undefined){
+        endDate = new Date();
+    }
+    else{
+        endDate = parseDate(endDateStr);
+
+    }
 
     let hours = 0;
     let currentDate = new Date(startDate);
-    while (currentDate < now) {
+    while (currentDate < endDate) {
         // If the day is not Saturday (6) or Sunday (0), add hours
         if (currentDate.getDay() !== 0 && currentDate.getDay() !== 6) {
             hours += 24; // Add 24 hours for each weekday
@@ -62,12 +69,12 @@ function hoursBetweenExcludingWeekends(startDateStr) {
 
     // Subtract the fractional day hours for the start and end days
     hours -= startDate.getHours() + startDate.getMinutes() / 60;
-    hours -= 24 - (now.getHours() + now.getMinutes() / 60);
+    hours -= 24 - (endDate.getHours() + endDate.getMinutes() / 60);
 
     return hours;
 }
 
-function isInState(state) {
+export function isInState(state) {
     let storyState = ''
     try {
         const storyStateDiv = document.querySelector('.story-state')
@@ -78,13 +85,7 @@ function isInState(state) {
     return storyState === state;
 }
 
-/**
- * Calculates the time spent in a given state.
- *
- * @param {string} state - The state for which to calculate the time spent.
- * @returns {number} - The time spent in the state in hours, excluding weekends.
- */
-export function getTimeInState(state){
+export function getDateInState(state) {
     let latestUpdateElements = findFirstMatchingElementForState(state)
     let stateDiv = document.querySelector('.story-state')
     let stateSpan = stateDiv.querySelector('.value')
@@ -96,7 +97,18 @@ export function getTimeInState(state){
     }
     const parentDiv = latestUpdateElements.element.parentElement
     const dateElement = parentDiv.querySelector('.date')
-    return hoursBetweenExcludingWeekends(dateElement.innerHTML)
+    return dateElement.innerHTML
+}
+
+/**
+ * Calculates the time spent in a given state.
+ *
+ * @param {string} state - The state for which to calculate the time spent.
+ * @returns {number} - The time spent in the state in hours, excluding weekends.
+ */
+export function getTimeInState(state){
+    const dateElement = getDateInState(state)
+    return hoursBetweenExcludingWeekends(dateElement)
 }
 
 export async function checkDevelopmentTime() {

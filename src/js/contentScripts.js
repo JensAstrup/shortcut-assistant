@@ -1,4 +1,5 @@
 import './analyze/contentScript.js';
+import './cycleTime/contentScript.js';
 import './notes/contentScript.js';
 import './todoist/contentScript.js';
 import './developmentTime.js'
@@ -6,9 +7,12 @@ import {initTodos} from "./todoist/contentScript";
 import {sleep} from "./utils";
 import {checkDevelopmentTime} from "./developmentTime";
 import {getSyncedSetting} from './serviceWorker/utils';
+import {setCycleTime} from './cycleTime/contentScript';
 
 async function activate() {
     await sleep(3000)
+
+    await setCycleTime()
 
     const enableStalledWorkWarnings = await getSyncedSetting('enableStalledWorkWarnings', true)
     if (enableStalledWorkWarnings) {
