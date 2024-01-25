@@ -1,9 +1,8 @@
-const Dotenv = require('dotenv-webpack');
-const {
-    sentryWebpackPlugin
-} = require("@sentry/webpack-plugin");
+const {sentryWebpackPlugin} = require("@sentry/webpack-plugin");
 
 const path = require('path');
+const Dotenv = require('dotenv-webpack');
+require('dotenv').config();
 
 module.exports = {
     mode: 'production',
@@ -37,9 +36,8 @@ module.exports = {
 
     plugins: [new Dotenv(),
         sentryWebpackPlugin({
-        authToken: process.env.SENTRY_AUTH_TOKEN,
-        org: "jens-astrup",
-        project: "shortcut-assistant",
-        release: process.env.VERSION,
-    })]
+            authToken: process.env.SENTRY_AUTH_TOKEN,
+            org: "jens-astrup",
+            project: "shortcut-assistant",
+        })]
 };
