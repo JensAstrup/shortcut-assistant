@@ -13,7 +13,7 @@
   "scripts": {
     "dev": "webpack --config webpack.config.dev.js",
     "test": "jest --coverage",
-    "build": "node buildFiles.js"
+    "build": "node buildManifest.js"
   },
   "dependencies": {
     "@sentry/browser": "^7.95.0",
