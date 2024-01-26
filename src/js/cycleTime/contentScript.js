@@ -7,8 +7,17 @@ import {
 import {storyPageIsReady} from '../utils';
 
 
+function clearCycleTime() {
+    const cycleTimeDiv = document.querySelector('.story-date-cycle-time')
+    if (cycleTimeDiv) {
+        cycleTimeDiv.remove();
+    }
+}
+
+
 export async function setCycleTime(){
     await storyPageIsReady()
+    clearCycleTime();
     const isCompleted = isInState('Completed')
     if(!isCompleted){
         return;
@@ -30,7 +39,6 @@ export async function setCycleTime(){
         <span class='value'>${cycleTimeDisplay}</span>`;
     const storyCreatedDivParent = createdDiv.parentElement
     storyCreatedDivParent.insertBefore(cycleTimeDiv, createdDiv);
-
 }
 
 chrome.runtime.onMessage.addListener(

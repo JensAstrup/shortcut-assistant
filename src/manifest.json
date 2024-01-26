@@ -18,7 +18,7 @@
       "run_at": "document_end"
     }
   ],
-  "description": "THIS EXTENSION IS FOR BETA TESTING\n\nModifies Shortcut story display to provide additional functionality",
+  "description": "Modifies Shortcut story display to provide additional functionality.",
   "host_permissions": [
     "https://api.openai.com/*",
     "https://faas-nyc1-2ef2e6cc.doserverless.co/*"
@@ -29,7 +29,7 @@
     "128": "assets/assistant.png"
   },
   "manifest_version": 3,
-  "name": "Shortcut Assistant - BETA",
+  "name": "Shortcut Assistant",
   "permissions": [
     "activeTab",
     "gcm",
@@ -37,5 +37,5 @@
     "tabs",
     "storage"
   ],
-  "version": "2.1.0"
+  "version": "2.1.1"
 }
