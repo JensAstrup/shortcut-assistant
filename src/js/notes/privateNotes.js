@@ -1,4 +1,5 @@
 import {sleep} from "../utils";
+import {sendEvent} from '../analytics/event';
 
 function getStoryNotesInput() {
     return document.getElementById('storyNotes');
@@ -49,6 +50,7 @@ notesSaveButton.addEventListener('click', async function () {
     notesSaveButton.textContent = 'Saved!'
     await sleep(2000)
     notesSaveButton.textContent = 'Save'
+    sendEvent('save_notes');
 });
 
 document.addEventListener('DOMContentLoaded', function () {

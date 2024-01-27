@@ -2,13 +2,13 @@ import {sendEvent} from '../analytics/event';
 
 
 async function analyzeStoryDetails() {
-    sendEvent('analyzeStoryDetails');
     let analyzeButton = document.getElementById('analyzeButton');
     analyzeButton.textContent = 'Analyzing...';
 
     chrome.tabs.query({active: true, currentWindow: true}, function (activeTabs) {
         chrome.tabs.sendMessage(activeTabs[0].id, {message: 'analyzeStoryDescription'});
     });
+    sendEvent('analyze_story_details');
 }
 document.getElementById('analyzeButton').addEventListener('click', analyzeStoryDetails);
 
