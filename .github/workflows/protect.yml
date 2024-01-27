@@ -16,8 +16,7 @@ jobs:
         uses: peter-evans/close-pull@v3
         with:
           pull-request-number: ${{ github.event.pull_request.number }}
-          comment: Auto-closing pull request
-          delete-branch: true
+          delete-branch: false
           token: ${{ secrets.GITHUB_TOKEN }}
 
 
