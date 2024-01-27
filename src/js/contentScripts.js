@@ -4,6 +4,7 @@ import {getSyncedSetting} from './serviceWorker/utils';
 import {setCycleTime} from './cycleTime/contentScript';
 import {checkDevelopmentTime} from './developmentTime/contentScript'
 import {analyzeStoryDescription} from './analyze/contentScript'
+import {setNoteContentIfDataExists} from './notes/contentScript'
 
 
 async function activate() {
