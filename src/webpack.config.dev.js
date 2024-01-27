@@ -1,4 +1,5 @@
 const baseConfig = require('./webpack.config.js');
+const Dotenv = require('dotenv-webpack');
 
 module.exports = {
     ...baseConfig,
@@ -6,5 +7,6 @@ module.exports = {
     devtool: 'inline-source-map',
     watch: true,
     plugins: [
+        new Dotenv(),
     ],
 };

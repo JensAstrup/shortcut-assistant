@@ -1,4 +1,8 @@
+import {sendEvent} from '../analytics/event';
+
+
 async function analyzeStoryDetails() {
+    sendEvent('analyzeStoryDetails');
     let analyzeButton = document.getElementById('analyzeButton');
     analyzeButton.textContent = 'Analyzing...';
 
