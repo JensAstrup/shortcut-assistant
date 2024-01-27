@@ -34,7 +34,7 @@ function removeNotes(){
     }
 }
 
-async function setNoteContentIfDataExists(data){
+export async function setNoteContentIfDataExists(data){
     if(data === undefined){
         const response = await chrome.runtime.sendMessage({action: 'getSavedNotes'})
         data = response.data
@@ -52,11 +52,3 @@ export async function initNotes(){
         setNoteContentIfDataExists().catch(logError)
     }
 }
-
-chrome.runtime.onMessage.addListener(
-    async function (request, sender, sendResponse) {
-        if (request.message === 'initNotes' && request.url.includes('story') ){
-            setNoteContentIfDataExists(request.data).catch(logError)
-        }
-    }
-)
