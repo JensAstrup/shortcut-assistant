@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 import {storyPageIsReady} from '../utils'
 
 
@@ -47,32 +49,27 @@ export function parseDate(dateString) {
 
 
 export function hoursBetweenExcludingWeekends(startDateStr, endDateStr) {
-    const startDate = parseDate(startDateStr)
-    let endDate
-    if (endDateStr === undefined) {
-        endDate = new Date()
-    }
-    else {
-        endDate = parseDate(endDateStr)
+    const startDate = moment(startDateStr);
+    let endDate = endDateStr ? moment(endDateStr) : moment();
 
-    }
-
-    let hours = 0
-    let currentDate = new Date(startDate)
+    let hours = 0;
+    let currentDate = moment(startDate);
     while (currentDate < endDate) {
-        // If the day is not Saturday (6) or Sunday (0), add hours
-        if (currentDate.getDay() !== 0 && currentDate.getDay() !== 6) {
-            hours += 24 // Add 24 hours for each weekday
+        if (currentDate.day() !== 0 && currentDate.day() !== 6) { // 0 is Sunday, 6 is Saturday
+            hours += 24;
         }
-        // Move to the next day
-        currentDate.setDate(currentDate.getDate() + 1)
+        currentDate.add(1, 'days');
     }
 
-    // Subtract the fractional day hours for the start and end days
-    hours -= startDate.getHours() + startDate.getMinutes() / 60
-    hours -= 24 - (endDate.getHours() + endDate.getMinutes() / 60)
+    if (startDate.day() !== 0 && startDate.day() !== 6) {
+        hours -= startDate.hours() + startDate.minutes() / 60;
+    }
 
-    return hours
+    if (endDate.day() !== 0 && endDate.day() !== 6) {
+        hours += endDate.hours() + endDate.minutes() / 60;
+    }
+
+    return hours;
 }
 
 export function isInState(state) {
@@ -109,6 +106,10 @@ export function getDateInState(state) {
  */
 export function getTimeInState(state) {
     const dateElement = getDateInState(state)
+    if (dateElement === null || dateElement === undefined){
+        console.warn(`Could not find date element for state ${state}`)
+        return 0
+    }
     return hoursBetweenExcludingWeekends(dateElement)
 }
 
