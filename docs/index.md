@@ -6,7 +6,7 @@ layout: default
 
 🔍 Analyze Stories with OpenAI: Say goodbye to uncertainty. Our extension leverages the power of OpenAI to provide you with a list of implementation questions, helping you refine and improve your stories.
 
-⏰ Stay on Top of Deadlines: Never miss a beat. We'll automatically add a warning emoji after 2 days and a rotating light emoji after 3 days to spotlight stalled stories, so you can keep your projects on track.
+⏰ Stay on Top of Deadlines: Never miss a beat. See the time in development and review for each story you open, plus a final cycle time calculation for completed stories. 
 
 📝 Private Notes for Your Convenience: Need to jot down private notes that aren't meant for comments? Our extension lets you save individual, private notes for each story, keeping your thoughts organized and secure.
 
