@@ -97,7 +97,7 @@ async function callOpenAI(description, tabId) {
     let message = undefined
     const token = await getOpenAiToken();
 
-    if (token === null) {
+    if (!token) {
         messagesData = await getCompletionFromProxy(description);
         message = messagesData;
     }
