@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   comment-and-fail-on-non-v-branch:
-    if: startsWith(github.event.pull_request.head.ref, 'V') == false && startsWith(github.event.pull_request.head.ref, 'v') == false
+    if: github.event.pull_request.base.ref == 'main' && startsWith(github.event.pull_request.head.ref, 'V') == false && startsWith(github.event.pull_request.head.ref, 'v') == false
     runs-on: ubuntu-latest
     steps:
 
