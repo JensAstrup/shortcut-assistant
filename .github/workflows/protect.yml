@@ -12,10 +12,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-      - name: Close Pull Request
-        uses: superbrothers/close-pull-request@v3
+      - name: Leave comment
+        uses: peter-evans/create-or-update-comment@v1
         with:
-          comment: "🚨 Only version branches are allowed to be merged into the main branch."
+          issue-number: ${{ github.event.pull_request.number }}
+          body: "🚨 Only version branches are allowed to be merged into the main branch."
 
       - name: Fail checks
         run: |
