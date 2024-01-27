@@ -13,7 +13,7 @@ jobs:
     steps:
 
       - name: Leave comment
-        uses: peter-evans/create-or-update-comment@v1
+        uses: peter-evans/create-or-update-comment@v3
         with:
           issue-number: ${{ github.event.pull_request.number }}
           body: "🚨 Only version branches are allowed to be merged into the main branch."
