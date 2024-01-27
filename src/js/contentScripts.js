@@ -1,7 +1,3 @@
-import './analyze/contentScript.js';
-import './cycleTime/contentScript.js';
-import './notes/contentScript.js';
-import './todoist/contentScript.js';
 import {initTodos} from "./todoist/contentScript";
 import {sleep} from "./utils";
 import {getSyncedSetting} from './serviceWorker/utils';

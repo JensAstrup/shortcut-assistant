@@ -13,7 +13,7 @@
         "https://app.shortcut.com/*"
       ],
       "js": [
-        "build/contentScripts/bundle.js"
+        "build/contentScripts/main.js"
       ],
       "run_at": "document_end"
     }

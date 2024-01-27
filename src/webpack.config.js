@@ -13,7 +13,14 @@ module.exports = {
         'notes/privateNotes': './js/notes/privateNotes.js',
         'popup/bundle': './js/popup.js',
         'service_worker/bundle': './js/serviceWorker/service_worker.js',
-        'contentScripts/bundle': './js/contentScripts.js'
+        'contentScripts/main': [
+            './js/analyze/contentScript.js',
+            './js/notes/contentScript.js',
+            './js/cycleTime/contentScript.js',
+            './js/todoist/contentScript.js',
+            './js/developmentTime/contentScript.js',
+            './js/contentScripts.js',
+        ]
     },
 
     output: {
