@@ -18,8 +18,7 @@ jobs:
           pull-request-number: ${{ github.event.pull_request.number }}
           comment: Auto-closing pull request
           delete-branch: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
 
       - name: Fail checks
