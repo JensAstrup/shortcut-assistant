@@ -17,6 +17,9 @@ jobs:
         with:
           issue-number: ${{ github.event.pull_request.number }}
           body: "🚨 Only version branches are allowed to be merged into the main branch."
+          delete-branch: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Fail checks
         run: |
