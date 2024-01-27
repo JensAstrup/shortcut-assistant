@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/browser';
 
-import { getSyncedSetting } from "./utils.js";
+import {getSyncedSetting} from "./utils.js";
 import {getNotes} from './notes';
 import {sendEvent} from '../analytics/event';
 
