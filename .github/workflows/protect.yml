@@ -6,6 +6,9 @@ on:
       - main
     types: [opened, edited]
 
+permissions:
+  pull-requests: write
+
 jobs:
   comment-and-fail-on-non-v-branch:
     if: startsWith(github.event.pull_request.head.ref, 'V') == false && startsWith(github.event.pull_request.head.ref, 'v') == false
@@ -24,7 +27,7 @@ jobs:
         with:
           pull-request-number: ${{ github.event.pull_request.number }}
           delete-branch: false
-          token: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 
       - name: Fail checks
