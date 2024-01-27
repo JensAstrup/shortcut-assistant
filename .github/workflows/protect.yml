@@ -4,7 +4,7 @@ on:
   pull_request:
     branches:
       - main
-    types: [opened]
+    types: [opened, edited]
 
 jobs:
   comment-and-fail-on-non-v-branch:
