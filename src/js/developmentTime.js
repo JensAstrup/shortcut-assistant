@@ -1,23 +1,21 @@
-import moment from 'moment';
-
-import {storyPageIsReady} from '../utils'
+import {storyPageIsReady} from "./utils";
 
 
 export function findFirstMatchingElementForState(state) {
     // Get all elements with the class 'value'
-    const elementsWithValueClass = document.querySelectorAll('.value')
+    const elementsWithValueClass = document.querySelectorAll('.value');
 
     for (const element of elementsWithValueClass) {
         // Check if any child element contains the text 'In Development'
-        const child = Array.from(element.children).find(child => child.innerHTML === state)
+        const child = Array.from(element.children).find(child => child.innerHTML === state);
 
         // If such a child is found, return the element and the child
         if (child) {
-            return {element, child}
+            return {element, child};
         }
     }
     // Return null if no matching element is found
-    return null
+    return null;
 }
 
 /**
@@ -28,46 +26,50 @@ export function findFirstMatchingElementForState(state) {
  * @return {Date} - The parsed Date object.
  */
 export function parseDate(dateString) {
-    const timePart = dateString.match(/(\d+):(\d+) (am|pm)/i)
-    if (!timePart) return new Date(dateString)
+    const timePart = dateString.match(/(\d+):(\d+) (am|pm)/i);
+    if (!timePart) return new Date(dateString);
 
-    let [, hours, minutes, ampm] = timePart
-    hours = parseInt(hours, 10)
-    minutes = parseInt(minutes, 10)
+    let [, hours, minutes, ampm] = timePart;
+    hours = parseInt(hours, 10);
+    minutes = parseInt(minutes, 10);
 
     if (ampm.toLowerCase() === 'pm' && hours < 12) {
-        hours += 12
-    }
-    else if (ampm.toLowerCase() === 'am' && hours === 12) {
-        hours = 0
+        hours += 12;
+    } else if (ampm.toLowerCase() === 'am' && hours === 12) {
+        hours = 0;
     }
 
-    const adjustedDateStr = dateString.replace(/(\d+):(\d+) (am|pm)/i, `${hours}:${minutes}`)
+    const adjustedDateStr = dateString.replace(/(\d+):(\d+) (am|pm)/i, `${hours}:${minutes}`);
 
-    return new Date(adjustedDateStr)
+    return new Date(adjustedDateStr);
 }
 
 
 export function hoursBetweenExcludingWeekends(startDateStr, endDateStr) {
-    const startDate = moment(startDateStr);
-    let endDate = endDateStr ? moment(endDateStr) : moment();
+    const startDate = parseDate(startDateStr);
+    let endDate;
+    if (endDateStr === undefined){
+        endDate = new Date();
+    }
+    else{
+        endDate = parseDate(endDateStr);
+
+    }
 
     let hours = 0;
-    let currentDate = moment(startDate);
+    let currentDate = new Date(startDate);
     while (currentDate < endDate) {
-        if (currentDate.day() !== 0 && currentDate.day() !== 6) { // 0 is Sunday, 6 is Saturday
-            hours += 24;
+        // If the day is not Saturday (6) or Sunday (0), add hours
+        if (currentDate.getDay() !== 0 && currentDate.getDay() !== 6) {
+            hours += 24; // Add 24 hours for each weekday
         }
-        currentDate.add(1, 'days');
+        // Move to the next day
+        currentDate.setDate(currentDate.getDate() + 1);
     }
 
-    if (startDate.day() !== 0 && startDate.day() !== 6) {
-        hours -= startDate.hours() + startDate.minutes() / 60;
-    }
-
-    if (endDate.day() !== 0 && endDate.day() !== 6) {
-        hours += endDate.hours() + endDate.minutes() / 60;
-    }
+    // Subtract the fractional day hours for the start and end days
+    hours -= startDate.getHours() + startDate.getMinutes() / 60;
+    hours -= 24 - (endDate.getHours() + endDate.getMinutes() / 60);
 
     return hours;
 }
@@ -80,16 +82,16 @@ export function isInState(state) {
     } catch (e) {
 
     }
-    return storyState === state
+    return storyState === state;
 }
 
 export function getDateInState(state) {
     let latestUpdateElements = findFirstMatchingElementForState(state)
     let stateDiv = document.querySelector('.story-state')
     let stateSpan = stateDiv.querySelector('.value')
-    while (latestUpdateElements === null) {
+    while(latestUpdateElements === null){
         latestUpdateElements = findFirstMatchingElementForState(state)
-        if (stateSpan !== null && stateSpan.textContent !== state) {
+        if(stateSpan !== null && stateSpan.textContent !== state){
             return null
         }
     }
@@ -104,12 +106,8 @@ export function getDateInState(state) {
  * @param {string} state - The state for which to calculate the time spent.
  * @returns {number} - The time spent in the state in hours, excluding weekends.
  */
-export function getTimeInState(state) {
+export function getTimeInState(state){
     const dateElement = getDateInState(state)
-    if (dateElement === null || dateElement === undefined){
-        console.warn(`Could not find date element for state ${state}`)
-        return 0
-    }
     return hoursBetweenExcludingWeekends(dateElement)
 }
 
@@ -121,30 +119,41 @@ export async function checkDevelopmentTime() {
         return
     }
     let hoursElapsed = getTimeInState('In Development')
-
-    if (inDevelopment) {
+    const alertHours = inDevelopment ? (2 * 24) : inReview ? (3 * 24) : 0;
+    if (hoursElapsed > (alertHours + 24)) {
+        addEmojiToTitle('🚨')
+    }
+    else if (hoursElapsed >= alertHours) {
+        addEmojiToTitle('⚠️')
+    }
+    if(inDevelopment){
         const stateDiv = document.querySelector('.story-state')
         const stateSpan = stateDiv.querySelector('.value')
-        const daysElapsed = hoursElapsed / 24
+        const daysElapsed = hoursElapsed / 24;
         stateSpan.textContent = `${stateSpan.textContent} (${daysElapsed.toFixed(2)} days)`
     }
-    if (inReview) {
+    if(inReview){
         hoursElapsed = getTimeInState('Ready for Review')
         const stateDiv = document.querySelector('.story-state')
         const stateSpan = stateDiv.querySelector('.value')
-        const daysElapsed = hoursElapsed / 24
+        const daysElapsed = hoursElapsed / 24;
         stateSpan.textContent = `${stateSpan.textContent} (${daysElapsed.toFixed(2)} days)`
     }
 
 }
 
-document.addEventListener('DOMContentLoaded', function () {
-    chrome.runtime.onMessage.addListener(
-        async function (request, sender, sendResponse) {
-            if (request.message === 'initDevelopmentTime') {
-                if (request.url.includes('story')) {
-                    await checkDevelopmentTime()
-                }
+function addEmojiToTitle(emoji) {
+    const storyTitle = document.querySelector('.story-name');
+    if (!storyTitle.textContent.includes(emoji)) {
+        storyTitle.innerHTML = `${emoji} ${storyTitle.innerHTML}`;
+    }
+}
+
+chrome.runtime.onMessage.addListener(
+    async function (request, sender, sendResponse) {
+        if (request.message === 'initDevelopmentTime') {
+            if (request.url.includes('story')) {
+                await checkDevelopmentTime();
             }
-        })
-})
+        }
+    });

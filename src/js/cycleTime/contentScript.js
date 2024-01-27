@@ -1,5 +1,10 @@
+import {
+    findFirstMatchingElementForState, getDateInState,
+    getTimeInState,
+    hoursBetweenExcludingWeekends,
+    isInState
+} from '../developmentTime';
 import {storyPageIsReady} from '../utils';
-import {getDateInState, hoursBetweenExcludingWeekends, isInState} from '../developmentTime/contentScript'
 
 
 function clearCycleTime() {
