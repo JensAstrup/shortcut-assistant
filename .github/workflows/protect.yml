@@ -11,10 +11,14 @@ jobs:
     if: startsWith(github.event.pull_request.head.ref, 'V') == false && startsWith(github.event.pull_request.head.ref, 'v') == false
     runs-on: ubuntu-latest
     steps:
+
       - name: Close Pull
-        run: gh pr close --comment "🚨 Only version branches are allowed to be merged into the main branch." --delete-branch "1"
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: peter-evans/close-pull@v3
+        with:
+          pull-request-number: ${{ github.event.pull_request.number }}
+          comment: Auto-closing pull request
+          delete-branch: true
+
 
       - name: Fail checks
         run: |
