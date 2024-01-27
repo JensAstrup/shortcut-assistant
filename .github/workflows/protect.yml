@@ -11,12 +11,13 @@ jobs:
     if: startsWith(github.event.pull_request.head.ref, 'V') == false && startsWith(github.event.pull_request.head.ref, 'v') == false
     runs-on: ubuntu-latest
     steps:
-      - name: Fail checks
-        run: |
-          echo "Failing the check because the branch name does not start with 'V' or 'v'."
-          exit 1
 
       - name: Close Pull Request
         uses: superbrothers/close-pull-request@v3
         with:
           comment: "🚨 Only version branches are allowed to be merged into the main branch."
+
+      - name: Fail checks
+        run: |
+          echo "Failing the check because the branch name does not start with 'V' or 'v'."
+          exit 1
