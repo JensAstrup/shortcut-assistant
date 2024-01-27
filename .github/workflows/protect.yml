@@ -11,15 +11,10 @@ jobs:
     if: startsWith(github.event.pull_request.head.ref, 'V') == false && startsWith(github.event.pull_request.head.ref, 'v') == false
     runs-on: ubuntu-latest
     steps:
-
-      - name: Leave comment
-        uses: peter-evans/create-or-update-comment@v3
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          body: "🚨 Only version branches are allowed to be merged into the main branch."
-          delete-branch: false
+      - name: Close Pull
+        run: gh pr close --comment "🚨 Only version branches are allowed to be merged into the main branch." --delete-branch "1"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Fail checks
         run: |
