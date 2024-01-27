@@ -17,9 +17,7 @@
   },
   "dependencies": {
     "@sentry/browser": "^7.95.0",
-    "@sentry/webpack-plugin": "^2.10.3",
-    "jest-environment-jsdom": "^29.7.0",
-    "moment": "^2.30.1"
+    "@sentry/webpack-plugin": "^2.10.3"
   },
   "jest": {
     "setupFiles": [
