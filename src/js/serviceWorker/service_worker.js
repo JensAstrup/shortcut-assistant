@@ -51,11 +51,13 @@ function getCompletionFromProxy(description) {
                 return response.json();
             }
             else {
-                throw new Error('Network response was not ok.');
+                console.error('Error retrieving OpenAI response from proxy:', response.content);
+                reject('Error retrieving OpenAI response from proxy');
             }
         }).then(data => {
             resolve(data.content);
         }).catch(error => {
+            console.error('Error retrieving OpenAI response from proxy:', error);
             reject(error);
         });
     });
@@ -94,16 +96,26 @@ async function fetchCompletion(description) {
 
 
 async function callOpenAI(description, tabId) {
-    let messagesData = undefined
-    let message = undefined
+    let messagesData;
+    let message;
     const token = await getOpenAiToken();
 
     if (token === null) {
-        messagesData = await getCompletionFromProxy(description);
+        try{
+            messagesData = await getCompletionFromProxy(description);
+        }
+        catch (error) {
+            throw error
+        }
         message = messagesData;
     }
     else {
-        messagesData = await fetchCompletion(description);
+        try {
+            messagesData = await fetchCompletion(description);
+        }
+        catch (error) {
+            throw error
+        }
         message = messagesData.choices[0].message.content;
     }
     chrome.tabs.sendMessage(tabId, {"message": "setOpenAiResponse", "data": message});
@@ -116,6 +128,8 @@ if (typeof self !== 'undefined' && self instanceof ServiceWorkerGlobalScope) {
         if (request.action === 'callOpenAI') {
             callOpenAI(request.data.prompt, sender.tab.id).then(response => {
                 sendResponse({data: response});
+            }).catch(error => {
+                sendResponse({error: error});
             });
             return true; // Keep the message channel open for the async response
         }
