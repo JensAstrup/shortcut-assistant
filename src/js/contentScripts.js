@@ -27,7 +27,6 @@ async function activate() {
 
 chrome.runtime.onMessage.addListener(
     async function (request, sender, sendResponse) {
-        print(request)
         const activeTabUrl = window.location.href
         if (request.message === 'initDevelopmentTime') {
             if (request.url.includes('story')) {
