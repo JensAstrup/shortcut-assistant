@@ -1,43 +1,66 @@
+/**
+ * @jest-environment jsdom
+ */
+
+import {analyzeStoryDetails} from '../../../js/analyze/analyze'
+import {sendEvent} from '../../../js/analytics/event'
+
+jest.mock('../../../js/analytics/event', () => {
+    return {
+        sendEvent: jest.fn()
+    };
+});
+
 describe('analyzeStoryDetails', () => {
+    let originalDocumentGetElementById;
     let originalChrome;
-    let analyzeButton;
 
     beforeEach(() => {
-        // Mock the chrome.tabs.query and chrome.tabs.sendMessage
+        originalDocumentGetElementById = document.getElementById;
+        document.getElementById = jest.fn();
+
         originalChrome = global.chrome;
         global.chrome = {
             tabs: {
-                query: jest.fn((queryInfo, callback) => {
-                    callback([{id: 123}]);
-                }),
+                query: jest.fn(),
                 sendMessage: jest.fn()
             }
         };
-
-        // Mock the document.getElementById and its return value
-        analyzeButton = { textContent: '' };
-        document.getElementById = jest.fn().mockReturnValue(analyzeButton);
     });
 
     afterEach(() => {
-        // Restore the original chrome object
+        document.getElementById = originalDocumentGetElementById;
         global.chrome = originalChrome;
+        jest.clearAllMocks();
     });
 
-    test('should change analyze button text to "Analyzing..."', async () => {
+    it('should update analyzeButton text to "Analyzing..."', async () => {
+        const mockButton = { textContent: '' };
+        document.getElementById.mockReturnValue(mockButton);
+
         await analyzeStoryDetails();
-        expect(analyzeButton.textContent).toBe('Analyzing...');
+
+        expect(mockButton.textContent).toBe('Analyzing...');
     });
 
-    test('should call chrome.tabs.query with correct parameters', async () => {
+    it('should send a message to the active tab', async () => {
+        document.getElementById.mockReturnValue({});
+        const mockTabs = [{ id: 123 }];
+        global.chrome.tabs.query.mockImplementation((queryInfo, callback) => {
+            callback(mockTabs);
+        });
+
         await analyzeStoryDetails();
-        expect(chrome.tabs.query).toHaveBeenCalledWith({active: true, currentWindow: true}, expect.any(Function));
+
+        expect(global.chrome.tabs.query).toHaveBeenCalled();
+        expect(global.chrome.tabs.sendMessage).toHaveBeenCalledWith(mockTabs[0].id, { message: 'analyzeStoryDescription' });
     });
 
-    test('should send a message to the active tab', async () => {
+    it('should call sendEvent with "analyze_story_details"', async () => {
+        document.getElementById.mockReturnValue({});
+
         await analyzeStoryDetails();
-        expect(chrome.tabs.sendMessage).toHaveBeenCalledWith(123, {message: 'analyzeStoryDescription'});
-    });
 
-    // Additional tests for sendEvent function if it's part of your codebase
+        expect(sendEvent).toHaveBeenCalledWith('analyze_story_details');
+    });
 });
