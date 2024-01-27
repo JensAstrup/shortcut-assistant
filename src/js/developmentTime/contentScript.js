@@ -1,4 +1,4 @@
-import {storyPageIsReady} from "./utils";
+import {storyPageIsReady} from '../utils'
 
 
 export function findFirstMatchingElementForState(state) {
@@ -119,13 +119,7 @@ export async function checkDevelopmentTime() {
         return
     }
     let hoursElapsed = getTimeInState('In Development')
-    const alertHours = inDevelopment ? (2 * 24) : inReview ? (3 * 24) : 0;
-    if (hoursElapsed > (alertHours + 24)) {
-        addEmojiToTitle('🚨')
-    }
-    else if (hoursElapsed >= alertHours) {
-        addEmojiToTitle('⚠️')
-    }
+
     if(inDevelopment){
         const stateDiv = document.querySelector('.story-state')
         const stateSpan = stateDiv.querySelector('.value')
@@ -140,13 +134,6 @@ export async function checkDevelopmentTime() {
         stateSpan.textContent = `${stateSpan.textContent} (${daysElapsed.toFixed(2)} days)`
     }
 
-}
-
-function addEmojiToTitle(emoji) {
-    const storyTitle = document.querySelector('.story-name');
-    if (!storyTitle.textContent.includes(emoji)) {
-        storyTitle.innerHTML = `${emoji} ${storyTitle.innerHTML}`;
-    }
 }
 
 chrome.runtime.onMessage.addListener(
