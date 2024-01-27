@@ -36,11 +36,3 @@ export async function setCycleTime(){
     storyCreatedDivParent.insertBefore(cycleTimeDiv, createdDiv);
 }
 
-chrome.runtime.onMessage.addListener(
-    async function (request, sender, sendResponse) {
-        if (request.message === 'initDevelopmentTime') {
-            if (request.url.includes('story')) {
-                await setCycleTime();
-            }
-        }
-    });

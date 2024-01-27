@@ -1,8 +1,9 @@
 import {initTodos} from "./todoist/contentScript";
-import {sleep} from "./utils";
+import {logError, sleep} from './utils'
 import {getSyncedSetting} from './serviceWorker/utils';
 import {setCycleTime} from './cycleTime/contentScript';
 import {checkDevelopmentTime} from './developmentTime/contentScript'
+import {analyzeStoryDescription} from './analyze/contentScript'
 
 
 async function activate() {
@@ -23,5 +24,26 @@ async function activate() {
         })
     }
 }
+
+chrome.runtime.onMessage.addListener(
+    async function (request, sender, sendResponse) {
+        print(request)
+        const activeTabUrl = window.location.href
+        if (request.message === 'initDevelopmentTime') {
+            if (request.url.includes('story')) {
+                await checkDevelopmentTime()
+                await setCycleTime();
+            }
+        }
+        if (request.message === 'analyzeStoryDescription') {
+            await analyzeStoryDescription(activeTabUrl);
+        }
+        if (request.message === 'initNotes' && request.url.includes('story') ){
+            setNoteContentIfDataExists(request.data).catch(logError)
+        }
+        if (request.message === "initTodos" && request.url.includes('story')) {
+            initTodos().catch(logError)
+        }
+    })
 
 activate()

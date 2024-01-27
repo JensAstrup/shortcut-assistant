@@ -138,13 +138,4 @@ export async function checkDevelopmentTime() {
 
 }
 
-document.addEventListener('DOMContentLoaded', function () {
-    chrome.runtime.onMessage.addListener(
-        async function (request, sender, sendResponse) {
-            if (request.message === 'initDevelopmentTime') {
-                if (request.url.includes('story')) {
-                    await checkDevelopmentTime()
-                }
-            }
-        })
-})
+
