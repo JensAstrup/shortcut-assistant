@@ -1,5 +1,13 @@
 import {sleep} from "./utils";
 import {getSyncedSetting} from './serviceWorker/utils';
+import {getOrCreateClientId} from './analytics/clientId';
+import {getOrCreateSessionId} from './analytics/sessionId';
+import {
+    DEFAULT_ENGAGEMENT_TIME_IN_MSEC,
+    GA_ENDPOINT,
+    GOOGLE_ANALYTICS_API_SECRET,
+    MEASUREMENT_ID
+} from './analytics/config';
 
 const saveButton = document.getElementById('saveKeyButton');
 const analyzeButton = document.getElementById('analyzeButton');
@@ -47,6 +55,27 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     setSectionDisplay(tabActions, actionsSection, tabSettings, settingsSection);
     setSectionDisplay(tabSettings, settingsSection, tabActions, actionsSection);
+});
+
+window.addEventListener("load", async () => {
+    fetch(`${GA_ENDPOINT}?measurement_id=${MEASUREMENT_ID}&api_secret=${GOOGLE_ANALYTICS_API_SECRET}`,
+        {
+            method: "POST",
+            body: JSON.stringify({
+                client_id: await getOrCreateClientId(),
+                events: [
+                    {
+                        name: "popup_view",
+                        params: {
+                            session_id: await getOrCreateSessionId(),
+                            engagement_time_msec: DEFAULT_ENGAGEMENT_TIME_IN_MSEC,
+                            page_title: document.title,
+                            page_location: document.location.href
+                        },
+                    },
+                ],
+            }),
+        });
 });
 
 tailwind.config = {
