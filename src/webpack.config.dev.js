@@ -1,5 +1,6 @@
 const baseConfig = require('./webpack.config.js');
 const Dotenv = require('dotenv-webpack');
+const webpack = require('webpack');
 
 module.exports = {
     ...baseConfig,
@@ -8,5 +9,8 @@ module.exports = {
     watch: true,
     plugins: [
         new Dotenv(),
+        new webpack.DefinePlugin({
+            'process.env.NODE_ENV': JSON.stringify('development')
+        })
     ],
 };
