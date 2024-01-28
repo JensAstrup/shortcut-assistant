@@ -6,7 +6,8 @@ import {getNotes} from './notes';
 
 const manifestData = chrome.runtime.getManifest();
 Sentry.init({dsn: 'https://966b241d3d57856bd13a0945fa9fa162@o49777.ingest.sentry.io/4506624214368256',
-             release: manifestData.version});
+             release: manifestData.version,
+             environment: process.env.NODE_ENV});
 
 const PROMPT = "You help make sure that tickets are ready for development. What sorts of technical questions should I ask before beginning development. The basic fundamentals of our application are already setup and not open questions (database, etc). Do not ask questions about the following: 1. Unit Testing 2. Basic Architecture Setup (Database, etc) 3. Deadlines 4) Concurrency\n" +
     "\n" +
