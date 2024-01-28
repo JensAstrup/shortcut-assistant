@@ -13,7 +13,8 @@
   "scripts": {
     "dev": "webpack --config webpack.config.dev.js",
     "test": "jest --coverage",
-    "build": "node buildManifest.js"
+    "build": "node buildManifest.js",
+    "dist": "npx webpack && zip -r ../dist/dist.zip ."
   },
   "dependencies": {
     "@sentry/browser": "^7.95.0",
