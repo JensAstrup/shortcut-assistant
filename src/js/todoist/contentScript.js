@@ -58,9 +58,3 @@ export async function initTodos(){
         setTaskButton('Follow up', 'Set task to follow up on story', 'Follow up on').catch(logError);
     }
 }
-
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if (request.message === "initTodos" && request.url.includes('story')) {
-        initTodos().catch(logError)
-    }
-});

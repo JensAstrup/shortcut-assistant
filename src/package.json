@@ -13,11 +13,14 @@
   "scripts": {
     "dev": "webpack --config webpack.config.dev.js",
     "test": "jest --coverage",
-    "build": "node buildManifest.js"
+    "build": "node buildManifest.js",
+    "dist": "npx webpack && zip -r ../dist/dist.zip ."
   },
   "dependencies": {
     "@sentry/browser": "^7.95.0",
-    "@sentry/webpack-plugin": "^2.10.3"
+    "@sentry/webpack-plugin": "^2.10.3",
+    "jest-environment-jsdom": "^29.7.0",
+    "moment": "^2.30.1"
   },
   "jest": {
     "setupFiles": [

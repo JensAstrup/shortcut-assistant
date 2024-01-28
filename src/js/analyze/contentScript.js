@@ -25,18 +25,10 @@ async function populateCommentBox(response) {
     }
 }
 
-async function analyzeStoryDescription(activeTabUrl) {
+export async function analyzeStoryDescription(activeTabUrl) {
     if (activeTabUrl.includes('story')) {
         const description = extractStoryDescription()
         const response = await chrome.runtime.sendMessage({action: 'callOpenAI', data: {prompt: description}})
         populateCommentBox(response.data).catch(logError);
     }
 }
-
-chrome.runtime.onMessage.addListener(
-    async function (request, sender, sendResponse) {
-    const activeTabUrl = window.location.href
-    if (request.message === 'analyzeStoryDescription') {
-        await analyzeStoryDescription(activeTabUrl);
-    }
-});

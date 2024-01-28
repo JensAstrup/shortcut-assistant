@@ -1,10 +1,5 @@
-import {
-    findFirstMatchingElementForState, getDateInState,
-    getTimeInState,
-    hoursBetweenExcludingWeekends,
-    isInState
-} from '../developmentTime';
 import {storyPageIsReady} from '../utils';
+import {getDateInState, hoursBetweenExcludingWeekends, isInState} from '../developmentTime/contentScript'
 
 
 function clearCycleTime() {
@@ -41,11 +36,3 @@ export async function setCycleTime(){
     storyCreatedDivParent.insertBefore(cycleTimeDiv, createdDiv);
 }
 
-chrome.runtime.onMessage.addListener(
-    async function (request, sender, sendResponse) {
-        if (request.message === 'initDevelopmentTime') {
-            if (request.url.includes('story')) {
-                await setCycleTime();
-            }
-        }
-    });
