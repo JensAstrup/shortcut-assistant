@@ -7,6 +7,13 @@ import {analyzeStoryDescription} from './analyze/contentScript'
 import {setNoteContentIfDataExists} from './notes/contentScript'
 import * as Sentry from '@sentry/browser'
 
+const manifestData = chrome.runtime.getManifest()
+Sentry.init({
+    dsn: 'https://966b241d3d57856bd13a0945fa9fa162@o49777.ingest.sentry.io/4506624214368256',
+    release: manifestData.version,
+    environment: process.env.NODE_ENV,
+})
+
 
 async function activate() {
     await sleep(3000)
@@ -48,10 +55,3 @@ chrome.runtime.onMessage.addListener(
     })
 
 activate()
-
-const manifestData = chrome.runtime.getManifest()
-Sentry.init({
-    dsn: 'https://966b241d3d57856bd13a0945fa9fa162@o49777.ingest.sentry.io/4506624214368256',
-    release: manifestData.version,
-    environment: process.env.NODE_ENV,
-})
