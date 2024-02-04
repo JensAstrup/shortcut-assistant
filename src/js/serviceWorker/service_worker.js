@@ -1,7 +1,8 @@
 import { getSyncedSetting } from "./utils.js";
-
-import * as Sentry from '@sentry/browser';
 import {getNotes} from './notes';
+
+import OpenAI from "openai";
+import * as Sentry from '@sentry/browser';
 
 
 const manifestData = chrome.runtime.getManifest();
@@ -64,47 +65,30 @@ function getCompletionFromProxy(description) {
 
 async function fetchCompletion(description) {
     const openAIToken = await getOpenAiToken();
-    const headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-    headers.append('Authorization', 'Bearer ' + openAIToken);
+    const openai = new OpenAI({apiKey: openAIToken});
 
-    const requestBody = {
-        "model": "gpt-3.5-turbo",
-        "messages": [
-            {
-                "role": "system",
-                "content": PROMPT
-            },
-            {
-                "role": "user",
-                "content": description
-            }
-        ]
-    };
+    const completion = await openai.chat.completions.create({
+    messages: [{ role: "system", content: PROMPT },
+               {role: "user", content: description}],
+    model: "gpt-3.5-turbo",
+  });
 
-    const options = {
-        method: 'POST',
-        headers,
-        body: JSON.stringify(requestBody)
-    };
-
-    const response = await fetch('https://api.openai.com/v1/chat/completions', options)
-    return response.json();
+    return completion.choices[0]
 }
 
 
 async function callOpenAI(description, tabId) {
-    let messagesData = undefined
-    let message = undefined
     const token = await getOpenAiToken();
+    let messagesData
+    let message
 
     if (!token) {
         messagesData = await getCompletionFromProxy(description);
         message = messagesData;
     }
     else {
-        messagesData = await fetchCompletion(description);
-        message = messagesData.choices[0].message.content;
+        const completion = await fetchCompletion(description);
+        message = completion.message.content;
     }
     chrome.tabs.sendMessage(tabId, {"message": "setOpenAiResponse", "data": message});
     return message
