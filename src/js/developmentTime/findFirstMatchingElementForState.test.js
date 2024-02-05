@@ -2,7 +2,8 @@
  * @jest-environment jsdom
  */
 
-import { findFirstMatchingElementForState } from './contentScript';
+
+import {findFirstMatchingElementForState} from "./findFirstMatchingElementForState";
 
 global.chrome = {
     runtime: {
