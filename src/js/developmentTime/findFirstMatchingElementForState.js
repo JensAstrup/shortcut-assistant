@@ -11,6 +11,5 @@ export function findFirstMatchingElementForState(state) {
             return {element, child}
         }
     }
-    // Return null if no matching element is found
     return null
 }
