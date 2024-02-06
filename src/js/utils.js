@@ -10,7 +10,7 @@ export async function storyPageIsReady(){
     while(storyTitle === null){
         await sleep(loop * 1000);
         storyTitle = document.querySelector('.story-name');
-        loop += .5
+        loop += 1.5
     }
     await sleep(500);
     return true;
