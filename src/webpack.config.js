@@ -20,6 +20,12 @@ module.exports = {
             './js/todoist/contentScript.js',
             './js/developmentTime/contentScript.js',
             './js/contentScripts.js',
+        ],
+        analytics: [
+            './js/analytics/clientId.js',
+            './js/analytics/config.js',
+            './js/analytics/event.js',
+            './js/analytics/sessionId.js',
         ]
     },
 

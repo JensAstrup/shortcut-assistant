@@ -145,6 +145,7 @@ chrome.tabs.onUpdated.addListener(async function
                     message: 'initDevelopmentTime',
                     url: changeInfo.url
                 });
+                sendEvent('init_development_time')
             }
             const enableTodoistOptions = await getSyncedSetting('enableTodoistOptions', false)
             if (enableTodoistOptions) {
@@ -152,6 +153,7 @@ chrome.tabs.onUpdated.addListener(async function
                     message: 'initTodos',
                     url: changeInfo.url
                 });
+                sendEvent('init_todos')
             }
             chrome.tabs.sendMessage(tabId, {
                 message: 'initNotes',
