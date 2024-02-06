@@ -8,11 +8,5 @@ module.exports = {
     mode: 'development',
     devtool: 'inline-source-map',
     watch: true,
-    plugins: [new Dotenv(),
-        sentryWebpackPlugin({
-            authToken: process.env.SENTRY_AUTH_TOKEN,
-            org: "jens-astrup",
-            project: "shortcut-assistant",
-            environment: 'development',
-        })]
+    plugins: [new Dotenv()]
 };
