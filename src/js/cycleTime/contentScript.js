@@ -1,8 +1,9 @@
 import {storyPageIsReady} from '../utils';
-import {getDateInState, hoursBetweenExcludingWeekends, isInState} from '../developmentTime/contentScript'
+import {hoursBetweenExcludingWeekends, isInState} from '../developmentTime/contentScript'
+import {getDateInState} from "../developmentTime/getDateInState";
 
 
-function clearCycleTime() {
+export function clearCycleTime() {
     const cycleTimeDiv = document.querySelector('.story-date-cycle-time')
     if (cycleTimeDiv) {
         cycleTimeDiv.remove();
