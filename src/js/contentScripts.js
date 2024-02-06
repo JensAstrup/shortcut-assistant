@@ -39,8 +39,8 @@ chrome.runtime.onMessage.addListener(
         const activeTabUrl = window.location.href
         if (request.message === 'initDevelopmentTime') {
             if (request.url.includes('story')) {
-                await checkDevelopmentTime()
-                await setCycleTime()
+                checkDevelopmentTime()
+                setCycleTime()
             }
         }
         if (request.message === 'analyzeStoryDescription') {

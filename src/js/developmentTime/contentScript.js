@@ -5,7 +5,7 @@ import {getDateInState} from "./getDateInState";
 
 
 export function hoursBetweenExcludingWeekends(startDateStr, endDateStr) {
-    const startDate = moment(startDateStr);
+    const startDate = moment(startDateStr, 'MMM D YYYY, h:mm: a');
     let endDate = endDateStr ? moment(endDateStr) : moment();
 
     let hours = 0;

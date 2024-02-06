@@ -34,7 +34,8 @@
     "activeTab",
     "gcm",
     "scripting",
-    "storage"
+    "storage",
+    "tabs"
   ],
   "version": "2.1.2.2"
 }
