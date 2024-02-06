@@ -3,6 +3,7 @@ import {getNotes} from './notes';
 
 import OpenAI from "openai";
 import * as Sentry from '@sentry/browser';
+import {sendEvent} from "../analytics/event";
 
 
 const manifestData = chrome.runtime.getManifest();
