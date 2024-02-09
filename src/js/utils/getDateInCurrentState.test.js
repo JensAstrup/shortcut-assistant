@@ -2,14 +2,14 @@
  * @jest-environment jsdom
  */
 
-import {getDateInState} from "./getDateInState";
+import {getDateInCurrentState} from "./dateInCurrentState";
 
-jest.mock('./findFirstMatchingElementForState', () => ({
+jest.mock('../developmentTime/findFirstMatchingElementForState', () => ({
   findFirstMatchingElementForState: jest.fn(),
 }));
 
 // Import the mocked function
-import { findFirstMatchingElementForState } from './findFirstMatchingElementForState';
+import { findFirstMatchingElementForState } from '../developmentTime/findFirstMatchingElementForState';
 
 describe('getDateInState', () => {
   // Setup common DOM structure for the tests
@@ -29,7 +29,7 @@ describe('getDateInState', () => {
   test('returns null when no elements match the state', () => {
     findFirstMatchingElementForState.mockReturnValueOnce(null);
 
-    const result = getDateInState('NonExistentState');
+    const result = getDateInCurrentState('NonExistentState');
     expect(result).toBeNull();
   });
 
@@ -37,7 +37,7 @@ describe('getDateInState', () => {
     // Assuming the stateDiv and stateSpan exist but with different state
     findFirstMatchingElementForState.mockReturnValueOnce({ element: document.querySelector('.latest-update .element') });
 
-    const result = getDateInState('MismatchState');
+    const result = getDateInCurrentState('MismatchState');
     expect(result).toBeNull();
   });
 
@@ -45,7 +45,7 @@ describe('getDateInState', () => {
     const latestUpdateElement = document.querySelector('.latest-update .element');
     findFirstMatchingElementForState.mockReturnValueOnce({ element: latestUpdateElement });
 
-    const result = getDateInState('ExpectedState');
+    const result = getDateInCurrentState('ExpectedState');
     expect(result).toBe('2022-01-01');
   });
 

@@ -1,7 +1,7 @@
 import moment from 'moment';
 
 import {storyPageIsReady} from '../utils'
-import {getDateInState} from "./getDateInState";
+import {getDateInCurrentState} from "../utils/dateInCurrentState";
 
 
 export function hoursBetweenExcludingWeekends(startDateStr, endDateStr) {
@@ -47,7 +47,7 @@ export function isInState(state) {
  * @returns {number} - The time spent in the state in hours, excluding weekends.
  */
 export function getTimeInState(state) {
-    const dateElement = getDateInState(state)
+    const dateElement = getDateInCurrentState(state)
     if (dateElement === null || dateElement === undefined){
         console.warn(`Could not find date element for state ${state}`)
         return 0
