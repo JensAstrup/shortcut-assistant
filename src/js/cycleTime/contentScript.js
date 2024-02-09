@@ -19,7 +19,7 @@ export async function setCycleTime(){
         return;
     }
     const createdDiv = document.querySelector('.story-date-created')
-    const createdDateString = getDateInState('In Development')
+    const inDevelopmentDateString = getDateInState('In Development')
     const completedDiv = document.querySelector('.story-date-completed')
     const completedDateString = completedDiv.querySelector('.value').innerHTML
 
@@ -28,7 +28,7 @@ export async function setCycleTime(){
     cycleTimeDiv.style.paddingTop = "0"
     cycleTimeDiv.style.marginTop = "0"
     cycleTimeDiv.className = "attribute story-date-cycle-time";
-    const cycleTimeHours = hoursBetweenExcludingWeekends(createdDateString, completedDateString)
+    const cycleTimeHours = hoursBetweenExcludingWeekends(inDevelopmentDateString, completedDateString)
     const cycleTimeDisplay = cycleTimeHours > 24 ? `${(cycleTimeHours / 24).toFixed(2)} days` : `${cycleTimeHours.toFixed(2)} hours`
     cycleTimeDiv.innerHTML = `
         <span class='name'>Cycle Time</span>
