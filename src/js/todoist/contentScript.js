@@ -27,18 +27,25 @@ function createTooltipText(taskTitle, title) {
     }
 }
 
+function buttonExists(title){
+    return document.querySelector(`[data-key="${title}]"`)
+}
+
 async function addButtonIfNotExists(title, newButton) {
     const container = await getDescriptionButtonContainer()
-    const existingButton = document.querySelector(`[data-key="${title}]"`);
+    const existingButton = buttonExists(title)
     if (!existingButton) {
         container.appendChild(newButton);
     }
 }
 
 async function setTaskButton(title, tooltip, taskTitle){
-    const newButton = createButton(tooltip, title);
-
-    taskTitle = createTooltipText(taskTitle, title);
+    const newButton = createButton(tooltip, title)
+    const buttonExists = buttonExists(title)
+    if (buttonExists) {
+        return
+    }
+    taskTitle = createTooltipText(taskTitle, title)
     newButton.addEventListener('click', function(){
         window.open(`https://todoist.com/add?content=${taskTitle}`, '_blank');
     });
