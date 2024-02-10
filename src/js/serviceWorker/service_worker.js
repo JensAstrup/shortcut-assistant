@@ -53,7 +53,7 @@ function getCompletionFromProxy(description) {
                 return response.json();
             }
             else {
-                throw new Error('Network response was not ok.');
+                throw new OpenAIError(`Proxy response was not ok. Status: ${response.status} ${response.statusText}`);
             }
         }).then(data => {
             resolve(data.content);
@@ -64,17 +64,25 @@ function getCompletionFromProxy(description) {
 }
 
 
-async function fetchCompletion(description) {
-    const openAIToken = await getOpenAiToken();
-    const openai = new OpenAI({apiKey: openAIToken});
+async function fetchCompletion(description){
+    const openAIToken = await getOpenAiToken()
+    const openai = new OpenAI({apiKey: openAIToken})
 
     const completion = await openai.chat.completions.create({
-    messages: [{ role: "system", content: PROMPT },
-               {role: "user", content: description}],
-    model: "gpt-3.5-turbo",
-  });
+        messages: [{role: 'system', content: PROMPT},
+            {role: 'user', content: description}],
+        model: 'gpt-3.5-turbo'
+    })
 
-    return completion.choices[0]
+    if (!completion.choices || !completion.choices[0]) {
+        throw new OpenAIError('No completion choices returned')
+    }
+
+    try {
+        return completion.choices[0]
+    } catch (e) {
+        throw new OpenAIError(e.message)
+    }
 }
 
 
