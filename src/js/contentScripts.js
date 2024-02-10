@@ -18,7 +18,9 @@ Sentry.init({
 async function activate() {
     await sleep(3000)
 
-    await setCycleTime()
+    setCycleTime().catch((error) => {
+        console.error(error)
+    })
 
     const enableStalledWorkWarnings = await getSyncedSetting('enableStalledWorkWarnings', true)
     if (enableStalledWorkWarnings) {
@@ -32,6 +34,9 @@ async function activate() {
             console.error(error)
         })
     }
+    setNoteContentIfDataExists().catch((error) => {
+        console.error(error)
+    })
 }
 
 chrome.runtime.onMessage.addListener(
