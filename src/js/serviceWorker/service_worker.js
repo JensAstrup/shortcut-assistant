@@ -68,9 +68,9 @@ async function fetchCompletion(description){
     const openAIToken = await getOpenAiToken()
     const openai = new OpenAI({apiKey: openAIToken})
 
+    let messages = [{role: 'system', content: PROMPT}, {role: 'user', content: description}]
     const completion = await openai.chat.completions.create({
-        messages: [{role: 'system', content: PROMPT},
-            {role: 'user', content: description}],
+        messages: messages,
         model: 'gpt-3.5-turbo'
     })
 
