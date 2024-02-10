@@ -34,7 +34,8 @@
     "activeTab",
     "gcm",
     "scripting",
-    "storage"
+    "storage",
+    "tabs"
   ],
   "version": "__VERSION__"
 }
