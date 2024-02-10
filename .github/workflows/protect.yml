@@ -22,14 +22,6 @@ jobs:
             ":rotating_light: Only version branches are allowed to be merged into main. Please open a PR against the latest version branch. :rotating_light:"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Close Pull
-        uses: peter-evans/close-pull@v3
-        with:
-          pull-request-number: ${{ github.event.pull_request.number }}
-          delete-branch: false
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-
       - name: Fail checks
         run: |
           echo "Failing the check because the branch name does not start with 'V' or 'v'."
