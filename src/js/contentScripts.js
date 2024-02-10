@@ -37,11 +37,9 @@ async function activate() {
 chrome.runtime.onMessage.addListener(
     async function (request, sender, sendResponse) {
         const activeTabUrl = window.location.href
-        if (request.message === 'initDevelopmentTime') {
-            if (request.url.includes('story')) {
-                await checkDevelopmentTime()
-                await setCycleTime()
-            }
+        if (request.message === 'initDevelopmentTime' && request.url.includes('story')) {
+            checkDevelopmentTime().catch(logError)
+            setCycleTime().catch(logError)
         }
         if (request.message === 'analyzeStoryDescription') {
             await analyzeStoryDescription(activeTabUrl)
