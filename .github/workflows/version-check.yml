@@ -19,7 +19,6 @@ jobs:
 
       - name: Check Version Increment
         run: |
-          apt install jq
           git fetch origin main:main
           # Extract version from the feature branch's manifest.json
           VERSION_FEATURE=$(jq .version manifest.json)
