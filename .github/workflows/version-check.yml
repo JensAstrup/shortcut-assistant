@@ -21,7 +21,7 @@ jobs:
         run: |
           git fetch origin main:main
           # Extract version from the feature branch's manifest.json
-          VERSION_FEATURE=$(jq .version manifest.json)
+          VERSION_FEATURE=$(jq .version src/manifest.json)
           # Extract version from the main branch's manifest.json
           VERSION_MAIN=$(git show main:src/manifest.json | jq .version)
           if [ "$VERSION_FEATURE" = "$VERSION_MAIN" ]; then
