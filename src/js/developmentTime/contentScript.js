@@ -2,6 +2,7 @@ import moment from 'moment';
 
 import {storyPageIsReady} from '../utils'
 import {getDateInCurrentState} from "../utils/dateInCurrentState";
+import {getDateInState} from "./getDateInState";
 
 
 export function hoursBetweenExcludingWeekends(startDateStr, endDateStr) {
@@ -44,6 +45,7 @@ export function isInState(state) {
  * Calculates the time spent in a given state.
  *
  * @param {string} state - The state for which to calculate the time spent.
+ * @param {boolean} now - Whether to consider the current datetime as the end date
  * @returns {number} - The time spent in the state in hours, excluding weekends.
  */
 export function getTimeInState(state, now = false) {
@@ -60,6 +62,16 @@ export function getTimeInState(state, now = false) {
     return hoursBetweenExcludingWeekends(dateElement)
 }
 
+function setTimeSpan(hoursElapsed){
+    const stateDiv = document.querySelector('.story-state')
+    const stateSpan = stateDiv.querySelector('.value')
+    let daysElapsed = hoursElapsed / 24
+    if(hoursElapsed < 48){
+        daysElapsed -= 1
+    }
+    stateSpan.textContent = `${stateSpan.textContent} (${daysElapsed.toFixed(2)} days)`
+}
+
 export async function checkDevelopmentTime() {
     await storyPageIsReady()
     const inDevelopment = isInState('In Development')
@@ -70,26 +82,11 @@ export async function checkDevelopmentTime() {
 
     if (inDevelopment) {
         let hoursElapsed = getTimeInState('In Development', false)
-        const stateDiv = document.querySelector('.story-state')
-        const stateSpan = stateDiv.querySelector('.value')
-        let daysElapsed
-        if(hoursElapsed < 48){
-            daysElapsed = 0
-        }
-        else{
-            daysElapsed = hoursElapsed / 24
-        }
-        stateSpan.textContent = `${stateSpan.textContent} (${daysElapsed.toFixed(2)} days)`
+        setTimeSpan(hoursElapsed)
     }
     if (inReview) {
         let hoursElapsed = getTimeInState('Ready for Review', true)
-        const stateDiv = document.querySelector('.story-state')
-        const stateSpan = stateDiv.querySelector('.value')
-        let daysElapsed = hoursElapsed / 24
-        if(hoursElapsed < 48){
-            daysElapsed -= 1
-        }
-        stateSpan.textContent = `${stateSpan.textContent} (${daysElapsed.toFixed(2)} days)`
+        setTimeSpan(hoursElapsed)
     }
 
 }
