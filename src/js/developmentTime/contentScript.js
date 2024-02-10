@@ -46,7 +46,12 @@ export function isInState(state) {
  * @param {string} state - The state for which to calculate the time spent.
  * @returns {number} - The time spent in the state in hours, excluding weekends.
  */
-export function getTimeInState(state) {
+export function getTimeInState(state, now = false) {
+    if (now){
+        const now = moment()
+        const nowFormatted = now.format('MMM D YYYY, h:mm A')
+        return hoursBetweenExcludingWeekends(getDateInState(state), nowFormatted)
+    }
     const dateElement = getDateInCurrentState(state)
     if (dateElement === null || dateElement === undefined){
         console.warn(`Could not find date element for state ${state}`)
@@ -62,19 +67,28 @@ export async function checkDevelopmentTime() {
     if (!inDevelopment && !inReview) {
         return
     }
-    let hoursElapsed = getTimeInState('In Development')
 
     if (inDevelopment) {
+        let hoursElapsed = getTimeInState('In Development', false)
         const stateDiv = document.querySelector('.story-state')
         const stateSpan = stateDiv.querySelector('.value')
-        const daysElapsed = hoursElapsed / 24
+        let daysElapsed
+        if(hoursElapsed < 48){
+            daysElapsed = 0
+        }
+        else{
+            daysElapsed = hoursElapsed / 24
+        }
         stateSpan.textContent = `${stateSpan.textContent} (${daysElapsed.toFixed(2)} days)`
     }
     if (inReview) {
-        hoursElapsed = getTimeInState('Ready for Review')
+        let hoursElapsed = getTimeInState('Ready for Review', true)
         const stateDiv = document.querySelector('.story-state')
         const stateSpan = stateDiv.querySelector('.value')
-        const daysElapsed = hoursElapsed / 24
+        let daysElapsed = hoursElapsed / 24
+        if(hoursElapsed < 48){
+            daysElapsed -= 1
+        }
         stateSpan.textContent = `${stateSpan.textContent} (${daysElapsed.toFixed(2)} days)`
     }
 
