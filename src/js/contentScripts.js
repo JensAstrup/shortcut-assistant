@@ -18,7 +18,9 @@ Sentry.init({
 async function activate() {
     await sleep(3000)
 
-    await setCycleTime()
+    setCycleTime().catch((error) => {
+        console.error(error)
+    })
 
     const enableStalledWorkWarnings = await getSyncedSetting('enableStalledWorkWarnings', true)
     if (enableStalledWorkWarnings) {
@@ -32,16 +34,17 @@ async function activate() {
             console.error(error)
         })
     }
+    setNoteContentIfDataExists().catch((error) => {
+        console.error(error)
+    })
 }
 
 chrome.runtime.onMessage.addListener(
     async function (request, sender, sendResponse) {
         const activeTabUrl = window.location.href
-        if (request.message === 'initDevelopmentTime') {
-            if (request.url.includes('story')) {
-                checkDevelopmentTime()
-                setCycleTime()
-            }
+        if (request.message === 'initDevelopmentTime' && request.url.includes('story')) {
+            checkDevelopmentTime().catch(logError)
+            setCycleTime().catch(logError)
         }
         if (request.message === 'analyzeStoryDescription') {
             await analyzeStoryDescription(activeTabUrl)
