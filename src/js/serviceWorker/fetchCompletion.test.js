@@ -1,8 +1,7 @@
 import { fetchCompletion } from './fetch_completion';
-import OpenAI from 'openai'; // assuming you have installed `openai` library
+import OpenAI from 'openai'
 
 jest.mock('openai', () => {
-  // Mock the default export to be a function
   return jest.fn().mockImplementation(() => ({
     chat: {
       completions: {
@@ -34,9 +33,7 @@ describe('fetchCompletion', () => {
     jest.clearAllMocks();
   });
 
-  // Inside your describe block
 it('should return completion choice if successful', async () => {
-  // Setup the mock to return a specific value
   OpenAI.mockImplementation(() => ({
     chat: {
       completions: {
@@ -47,19 +44,17 @@ it('should return completion choice if successful', async () => {
     }
   }));
 
-  // Assuming getOpenAiToken is used within fetchCompletion and needs a resolved value
   require('./service_worker').getOpenAiToken.mockResolvedValue(openAiTokenStub);
 
   const result = await fetchCompletion(descriptionStub);
-  expect(result.text).toEqual('mocked response'); // Adjust according to the expected format
+  expect(result.text).toEqual('mocked response');
 });
 
 it('should throw error if there are no completion choices', async () => {
-  // Adjust the mock for this test case
   OpenAI.mockImplementation(() => ({
     chat: {
       completions: {
-        create: jest.fn().mockResolvedValue({ choices: [] }) // Simulate no choices
+        create: jest.fn().mockResolvedValue({ choices: [] })
       }
     }
   }));
