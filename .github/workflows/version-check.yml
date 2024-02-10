@@ -1,0 +1,33 @@
+name: Chrome Extension Version Check
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  version-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # Fetch all history so we can compare to main
+
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+
+      - name: Check Version Increment
+        run: |
+          apt install jq
+          git fetch origin main:main
+          # Extract version from the feature branch's manifest.json
+          VERSION_FEATURE=$(jq .version manifest.json)
+          # Extract version from the main branch's manifest.json
+          VERSION_MAIN=$(git show main:src/manifest.json | jq .version)
+          if [ "$VERSION_FEATURE" = "$VERSION_MAIN" ]; then
+            echo "Version in manifest.json must be incremented."
+            exit 1
+          else
+            echo "Version check passed."
+          fi
