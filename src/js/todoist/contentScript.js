@@ -21,7 +21,8 @@ function createTooltipText(taskTitle, title){
     const storyLink = window.location.href
     if (taskTitle === undefined) {
         return `${title} [${storyTitle}](${storyLink})`
-    } else {
+    }
+    else {
         return `${taskTitle} [${storyTitle}](${storyLink})`
     }
 }
