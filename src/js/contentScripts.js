@@ -6,6 +6,7 @@ import {checkDevelopmentTime} from './developmentTime/contentScript'
 import {analyzeStoryDescription} from './analyze/contentScript'
 import {setNoteContentIfDataExists} from './notes/contentScript'
 import * as Sentry from '@sentry/browser'
+import './omnibox/omnibox'
 
 const manifestData = chrome.runtime.getManifest()
 Sentry.init({

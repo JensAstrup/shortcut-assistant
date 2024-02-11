@@ -4,6 +4,16 @@ import * as Sentry from '@sentry/browser'
 import {sendEvent} from '../analytics/event'
 import {fetchCompletion} from './fetch_completion'
 
+chrome.action.onClicked.addListener((text) => {
+    let url = `https://app.shortcut.com/search#${encodeURIComponent(text)}`
+    chrome.tabs.update({url});
+});
+
+chrome.omnibox.onInputChanged.addListener(function (text, suggest) {
+  suggest([
+    { content: `Search shortcut for ${text}`, description: `Search shortcut for ${text}`, deletable: true },
+  ]);
+});
 
 const manifestData = chrome.runtime.getManifest();
 Sentry.init({dsn: 'https://966b241d3d57856bd13a0945fa9fa162@o49777.ingest.sentry.io/4506624214368256',
