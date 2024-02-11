@@ -4,8 +4,8 @@ chrome.omnibox.onInputChanged.addListener(function (text, suggest){
     ])
 })
 
-chrome.omnibox.onInputEntered.addListener((text, disposition) => {
-    let url = `https://app.shortcut.com/search#${encodeURIComponent(text)}`
+export function redirectFromOmnibox(text, disposition) {
+     let url = `https://app.shortcut.com/search#${encodeURIComponent(text)}`
 
     switch (disposition) {
         case 'currentTab':
@@ -21,5 +21,9 @@ chrome.omnibox.onInputEntered.addListener((text, disposition) => {
             chrome.tabs.update({url})
             break
     }
+}
+
+chrome.omnibox.onInputEntered.addListener((text, disposition) => {
+    redirectFromOmnibox(text, disposition)
 })
 
