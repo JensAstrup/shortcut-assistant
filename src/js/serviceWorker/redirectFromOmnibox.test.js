@@ -1,5 +1,4 @@
 import { redirectFromOmnibox } from './omnibox';
-import { jest } from 'jest';
 
 // Global mock for chrome.tabs
 global.chrome = {
