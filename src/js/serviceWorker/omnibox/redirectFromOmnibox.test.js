@@ -1,3 +1,7 @@
+/**
+ * @jest-environment jsdom
+ */
+
 import { redirectFromOmnibox } from './omnibox';
 
 // Global mock for chrome.tabs
@@ -5,15 +9,6 @@ global.chrome = {
   tabs: {
     update: jest.fn(),
     create: jest.fn()
-  },
-  omnibox: {
-    onInputChanged: {
-      addListener: jest.fn()
-    },
-    onInputEntered: {
-      addListener: jest.fn()
-    }
-
   }
 };
 
