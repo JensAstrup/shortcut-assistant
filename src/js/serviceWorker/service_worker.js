@@ -37,7 +37,7 @@ export async function getOpenAiToken() {
 
 function getCompletionFromProxy(description) {
     return new Promise(async (resolve, reject) => {
-        const url = 'https://faas-nyc1-2ef2e6cc.doserverless.co/api/v1/web/fn-7932f4c9-dd5e-44e6-a067-5cbf1cf629d4/OpenAI_proxy/proxy'
+        const url = `${process.env.PROXY_URL}`
         fetch(url, {
             method: 'POST',
             body: JSON.stringify({
