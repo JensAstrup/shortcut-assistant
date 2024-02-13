@@ -4,6 +4,7 @@ import * as Sentry from '@sentry/browser'
 import {sendEvent} from '../analytics/event'
 import {fetchCompletion} from './fetch_completion'
 
+
 const manifestData = chrome.runtime.getManifest();
 Sentry.init({dsn: 'https://966b241d3d57856bd13a0945fa9fa162@o49777.ingest.sentry.io/4506624214368256',
              release: manifestData.version,
