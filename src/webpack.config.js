@@ -12,7 +12,13 @@ module.exports = {
         'analyze/analyze': './js/analyze/analyze.js',
         'notes/privateNotes': './js/notes/privateNotes.js',
         'popup/bundle': './js/popup.js',
-        'service_worker/bundle': './js/serviceWorker/service_worker.js',
+        'service_worker/bundle': [
+            './js/serviceWorker/service_worker.js',
+            './js/serviceWorker/utils.js',
+            './js/serviceWorker/fetch_completion.js',
+            './js/serviceWorker/omnibox/listeners.js',
+            './js/serviceWorker/omnibox/omnibox.js',
+        ],
         'contentScripts/bundle': [
             './js/analyze/contentScript.js',
             './js/notes/contentScript.js',

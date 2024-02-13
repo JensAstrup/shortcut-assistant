@@ -30,6 +30,7 @@
   },
   "manifest_version": 3,
   "name": "Shortcut Assistant",
+  "omnibox": { "keyword" : "shortcut" },
   "permissions": [
     "activeTab",
     "gcm",
