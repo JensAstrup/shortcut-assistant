@@ -1,5 +1,5 @@
-export function redirectFromOmnibox(text, disposition) {
-     let url = `https://app.shortcut.com/search#${encodeURIComponent(text)}`
+export function redirectFromOmnibox(text, disposition){
+    let url = `https://app.shortcut.com/search#${encodeURIComponent(text)}`
 
     switch (disposition) {
         case 'currentTab':
