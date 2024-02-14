@@ -41,3 +41,7 @@ export function setSectionDisplay(tabToShow, sectionToShow, tabToHide, sectionTo
         tabToHide.classList.remove('-mb-px')
     })
 }
+
+tailwind.config = {
+    darkMode: 'class'
+}
