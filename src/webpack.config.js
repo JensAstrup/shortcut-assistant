@@ -11,7 +11,11 @@ module.exports = {
     entry: {
         'analyze/analyze': './js/analyze/analyze.js',
         'notes/privateNotes': './js/notes/privateNotes.js',
-        'popup/bundle': './js/popup.js',
+        'popup/bundle': [
+            './js/popup/popup.js',
+            './js/popup/popupLoaded.js',
+            './js/popup/listeners.js',
+        ],
         'service_worker/bundle': './js/serviceWorker/service_worker.js',
         'contentScripts/bundle': [
             './js/analyze/contentScript.js',
@@ -21,7 +25,7 @@ module.exports = {
             './js/developmentTime/contentScript.js',
             './js/contentScripts.js',
         ],
-        analytics: [
+        'analytics': [
             './js/analytics/clientId.js',
             './js/analytics/config.js',
             './js/analytics/event.js',

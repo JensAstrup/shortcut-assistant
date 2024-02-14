@@ -3,6 +3,7 @@ import {getNotes} from './notes'
 import * as Sentry from '@sentry/browser'
 import {sendEvent} from '../analytics/event'
 import {fetchCompletion} from './fetch_completion'
+import {OpenAIError} from '../errors'
 
 
 const manifestData = chrome.runtime.getManifest();
