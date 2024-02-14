@@ -1,5 +1,4 @@
-
-export function getActiveTabUrl() {
+export function getActiveTab(){
     return new Promise((resolve, reject) => {
         chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
             if (chrome.runtime.lastError) {
@@ -9,13 +8,18 @@ export function getActiveTabUrl() {
                 reject(new Error("No active tab found"));
             }
             else {
-                let activeTabUrl = tabs[0].url;
-                resolve(activeTabUrl);
+                resolve(tabs[0]);
             }
         });
     });
 }
 
+export function getActiveTabUrl(){
+    return new Promise((resolve, reject) => {
+            getActiveTab().then(tab => resolve(tab.url)).catch((error) => reject(error))
+        }
+    )
+}
 
 export async function getStoryId() {
     const url = await getActiveTabUrl();

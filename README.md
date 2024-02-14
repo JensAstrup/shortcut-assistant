@@ -32,6 +32,9 @@ These instructions will get you a copy of the project up and running on your loc
     - `VERSION` - The version of the extension.
     - `SENTRY_AUTH_TOKEN` - The Sentry auth token for the project.
     - `SENTRY_RELEASE` - This should be the same as the `VERSION` variable.
+    - `GOOGLE_ANALYTICS_API_SECRET` - A Google Analytics API secret. 
+    - `GOOGLE_MEASUREMENT_ID` - The Google Measurement ID for the project.
+    - `PROXY_URL` - The URL of the proxy server for OpenAI's API
 
 ### Running the Extension Locally
 
