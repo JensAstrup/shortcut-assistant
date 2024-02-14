@@ -1,12 +1,11 @@
-import { getNotesKey } from './notes';
+import {getNotesKey} from './notes';
 
 describe('getNotesKey', () => {
-  it('should return the correct notes key for given storyId', () => {
-    const storyId = '1234';
-    const expectedNotesKey = 'notes_1234';
+    test('get notes returns correct key', () => {
+        const storyId = 123;
+        const expectedKey = "notes_123";
 
-    const actualNotesKey = getNotesKey(storyId);
-
-    expect(actualNotesKey).toEqual(expectedNotesKey);
-  }); 
-});
+        const actualKey = getNotesKey(storyId);
+        expect(actualKey).toBe(expectedKey);
+    })
+})
