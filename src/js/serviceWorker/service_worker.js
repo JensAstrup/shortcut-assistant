@@ -4,6 +4,7 @@ import * as Sentry from '@sentry/browser'
 import {sendEvent} from '../analytics/event'
 import {fetchCompletion} from './fetch_completion'
 import {OpenAIError} from '../errors'
+import {onInstallAndUpdate} from './onInstallAndUpdate'
 
 
 const manifestData = chrome.runtime.getManifest();
@@ -105,19 +106,7 @@ if (typeof self !== 'undefined' && self instanceof ServiceWorkerGlobalScope) {
     });
 }
 
-chrome.runtime.onInstalled.addListener(function(details) {
-    if (details.reason === "install") {
-        chrome.windows.create({
-            url: '../installed.html',
-            type: 'popup',
-            width: 310,
-            height: 500
-        });
-    }
-    chrome.storage.sync.set({'enableStalledWorkWarnings': true});
-    chrome.storage.sync.set({'enableTodoistOptions': false});
-});
-
+chrome.runtime.onInstalled.addListener(onInstallAndUpdate)
 
 chrome.tabs.onUpdated.addListener(async function
         (tabId, changeInfo, tab) {
