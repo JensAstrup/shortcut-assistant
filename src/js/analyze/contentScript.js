@@ -27,12 +27,6 @@ async function getCommentBox(){
 
 async function populateCommentBox(response) {
     const inputFieldParent = await getCommentBox();
-    inputFieldParent.value = response;
-    resizeTextareaToFitContent(inputFieldParent)
-}
-
-async function updateCommentBox(response) {
-    const inputFieldParent = await getCommentBox();
     inputFieldParent.value = inputFieldParent.value + response;
     resizeTextareaToFitContent(inputFieldParent)
 }
@@ -47,6 +41,6 @@ export async function analyzeStoryDescription(activeTabUrl) {
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.message === 'updateOpenAiResponse') {
-        updateCommentBox(request.data).catch(logError);
+        populateCommentBox(request.data).catch(logError);
     }
 });
