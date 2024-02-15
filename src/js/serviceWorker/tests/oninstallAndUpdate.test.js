@@ -1,4 +1,4 @@
-import { onInstall, onUpdate } from './onInstallAndUpdate';
+import { onInstall, onUpdate } from '../onInstallAndUpdate';
 
 global.chrome = {
   windows: {

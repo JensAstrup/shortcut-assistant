@@ -1,8 +1,8 @@
-import { fetchCompletion } from './fetch_completion';
-import {getOpenAiToken} from './service_worker'
+import { fetchCompletion } from '../fetch_completion';
+import {getOpenAiToken} from '../service_worker'
 import OpenAI from 'openai'
 
-jest.mock('./service_worker', () => ({
+jest.mock('../service_worker', () => ({
     getOpenAiToken: jest.fn(),
     PROMPT: 'prompt'
 }));
@@ -38,7 +38,7 @@ jest.mock('openai', () => {
   });
 });
 
-jest.mock('./service_worker', () => ({ getOpenAiToken: jest.fn() }));
+jest.mock('../service_worker', () => ({ getOpenAiToken: jest.fn() }));
 
 const PROMPT = 'Your system message';
 getOpenAiToken.mockResolvedValue('token');

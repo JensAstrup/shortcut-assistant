@@ -1,4 +1,4 @@
-import { getActiveTab } from './utils';
+import { getActiveTab } from '../utils';
 
 global.chrome = {
   tabs: {

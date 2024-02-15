@@ -1,4 +1,4 @@
-import {getActiveTabUrl} from './utils.js';
+import {getActiveTabUrl} from '../utils.js';
 
 
 global.chrome = {
