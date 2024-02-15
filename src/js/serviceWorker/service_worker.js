@@ -40,7 +40,7 @@ export async function getOpenAiToken() {
 async function getCompletionFromProxy(description){
     try {
         const url = process.env.PROXY_URL
-        const instanceId = await chrome.instanceID.getID() // Ensure this is valid in your execution context.
+        const instanceId = await chrome.instanceID.getID()
         const response = await fetch(url, {
             method: 'POST',
             body: JSON.stringify({
