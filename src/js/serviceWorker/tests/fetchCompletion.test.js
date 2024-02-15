@@ -51,7 +51,6 @@ beforeEach(() => {
     }
   };
 
-  // Assuming OpenAI is imported as `OpenAI` in your test file
   OpenAI.mockImplementation(() => {
     return {
       chat: {
