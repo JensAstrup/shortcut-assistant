@@ -1,4 +1,4 @@
-import {logError, sleep} from "../utils";
+import {logError, sleep} from "../utils/utils";
 
 function extractStoryDescription() {
     const descriptionDiv = document.querySelector('[data-key="description"]');

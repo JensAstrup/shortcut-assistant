@@ -1,4 +1,4 @@
-import {storyPageIsReady} from '../utils';
+import {storyPageIsReady} from '../utils/utils';
 import {hoursBetweenExcludingWeekends, isInState} from '../developmentTime/contentScript'
 import {getDateInState} from "../developmentTime/getDateInState";
 

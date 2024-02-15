@@ -1,4 +1,4 @@
-import {getDescriptionButtonContainer, logError} from '../utils'
+import {getDescriptionButtonContainer, logError} from '../utils/utils'
 
 
 function extractStoryTitle(){
