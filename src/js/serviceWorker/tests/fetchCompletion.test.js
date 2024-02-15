@@ -40,7 +40,6 @@ jest.mock('openai', () => {
 
 jest.mock('../service_worker', () => ({ getOpenAiToken: jest.fn() }));
 
-const PROMPT = 'Your system message';
 getOpenAiToken.mockResolvedValue('token');
 
 describe('fetchCompletion function', () => {
