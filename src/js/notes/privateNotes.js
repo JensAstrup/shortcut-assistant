@@ -1,4 +1,4 @@
-import {sleep} from "../utils";
+import {sleep} from "../utils/utils";
 
 function getStoryNotesInput() {
     return document.getElementById('storyNotes');

@@ -1,6 +1,6 @@
 {
   "action": {
-    "default_popup": "popup.html",
+    "default_popup": "./html/popup.html",
     "default_icon": "assets/assistant.png"
   },
   "background": {
@@ -30,6 +30,7 @@
   },
   "manifest_version": 3,
   "name": "Shortcut Assistant",
+  "omnibox": { "keyword" : "sc" },
   "permissions": [
     "activeTab",
     "gcm",
@@ -37,5 +38,5 @@
     "storage",
     "tabs"
   ],
-  "version": "2.1.4.0"
+  "version": "2.2.0.0"
 }

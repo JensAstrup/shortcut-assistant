@@ -2,12 +2,12 @@
  * @jest-environment jsdom
  */
 import { clearCycleTime, setCycleTime } from './contentScript'; // Adjust the import path as necessary
-import { storyPageIsReady } from '../utils';
+import { storyPageIsReady } from '../utils/utils';
 import { hoursBetweenExcludingWeekends, isInState } from '../developmentTime/contentScript';
 import { getDateInState } from "../developmentTime/getDateInState";
 
 // Mocking the external modules
-jest.mock('../utils', () => ({
+jest.mock('../utils/utils', () => ({
   storyPageIsReady: jest.fn(),
 }));
 jest.mock('../developmentTime/contentScript', () => ({

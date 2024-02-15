@@ -1,13 +1,14 @@
 import moment from 'moment';
 
-import {storyPageIsReady} from '../utils'
+import {storyPageIsReady} from '../utils/utils'
 import {getDateInCurrentState} from "../utils/dateInCurrentState";
 import {getDateInState} from "./getDateInState";
 
 
 export function hoursBetweenExcludingWeekends(startDateStr, endDateStr) {
-    const startDate = moment(startDateStr, 'MMM D YYYY, h:mm: a');
-    let endDate = endDateStr ? moment(endDateStr) : moment();
+    const shortcutDateFormat = 'MMM D YYYY, h:mm: a'
+    const startDate = moment(startDateStr, shortcutDateFormat);
+    let endDate = endDateStr ? moment(endDateStr, shortcutDateFormat) : moment();
 
     let hours = 0;
     let currentDate = moment(startDate);

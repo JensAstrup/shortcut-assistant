@@ -3,6 +3,8 @@ import {getNotes} from './notes'
 import * as Sentry from '@sentry/browser'
 import {sendEvent} from '../analytics/event'
 import {fetchCompletion} from './fetch_completion'
+import {OpenAIError} from '../errors'
+import {onInstallAndUpdate} from './onInstallAndUpdate'
 
 
 const manifestData = chrome.runtime.getManifest();
@@ -35,48 +37,50 @@ export async function getOpenAiToken() {
 }
 
 
-function getCompletionFromProxy(description) {
-    return new Promise(async (resolve, reject) => {
-        const url = 'https://faas-nyc1-2ef2e6cc.doserverless.co/api/v1/web/fn-7932f4c9-dd5e-44e6-a067-5cbf1cf629d4/OpenAI_proxy/proxy'
-        fetch(url, {
+async function getCompletionFromProxy(description){
+    try {
+        const url = process.env.PROXY_URL
+        const instanceId = await chrome.instanceID.getID()
+        const response = await fetch(url, {
             method: 'POST',
             body: JSON.stringify({
-                "description": description,
-                'instanceId': await chrome.instanceID.getID()
+                description: description,
+                instanceId: instanceId
             }),
             headers: {
                 'Content-Type': 'application/json'
             }
-        }).then(response => {
-            if (response.ok) {
-                return response.json();
-            }
-            else {
-                throw new OpenAIError(`Proxy response was not ok. Status: ${response.status} ${response.statusText}`);
-            }
-        }).then(data => {
-            resolve(data.content);
-        }).catch(error => {
-            reject(error);
-        });
-    });
+        })
+
+        if (!response.ok) {
+            throw new Error(`Proxy response was not ok. Status: ${response.status} ${response.statusText}`)
+        }
+
+        const data = await response.json()
+        return data.content
+    } catch (error) {
+        throw OpenAIError('Error getting completion from proxy:', error);
+    }
 }
 
 
-export async function callOpenAI(description, tabId) {
-    const token = await getOpenAiToken();
+export async function callOpenAI(description, tabId){
+    const token = await getOpenAiToken()
     let messagesData
     let message
 
     if (!token) {
-        messagesData = await getCompletionFromProxy(description);
-        message = messagesData;
+        messagesData = await getCompletionFromProxy(description)
+        message = messagesData
     }
     else {
-        const completion = await fetchCompletion(description);
-        message = completion.message.content;
+        try {
+            await fetchCompletion(description, tabId)
+        } catch (e) {
+            throw OpenAIError('Error getting completion from OpenAI:', e);
+        }
     }
-    chrome.tabs.sendMessage(tabId, {"message": "setOpenAiResponse", "data": message});
+    chrome.tabs.sendMessage(tabId, {'message': 'setOpenAiResponse', 'data': message})
     return message
 }
 
@@ -85,7 +89,9 @@ if (typeof self !== 'undefined' && self instanceof ServiceWorkerGlobalScope) {
     chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         if (request.action === 'callOpenAI') {
             callOpenAI(request.data.prompt, sender.tab.id).then(response => {
-                sendResponse({data: response});
+                if (response) {
+                    sendResponse({data: response});
+                }
             });
             return true; // Keep the message channel open for the async response
         }
@@ -104,19 +110,7 @@ if (typeof self !== 'undefined' && self instanceof ServiceWorkerGlobalScope) {
     });
 }
 
-chrome.runtime.onInstalled.addListener(function(details) {
-    if (details.reason === "install") {
-        chrome.windows.create({
-            url: '../installed.html',
-            type: 'popup',
-            width: 310,
-            height: 500
-        });
-    }
-    chrome.storage.sync.set({'enableStalledWorkWarnings': true});
-    chrome.storage.sync.set({'enableTodoistOptions': false});
-});
-
+chrome.runtime.onInstalled.addListener(onInstallAndUpdate)
 
 chrome.tabs.onUpdated.addListener(async function
         (tabId, changeInfo, tab) {
