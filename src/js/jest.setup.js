@@ -14,3 +14,6 @@ global.chrome = {
         },
     },
 };
+global.tailwind = {
+    config: {},
+}
