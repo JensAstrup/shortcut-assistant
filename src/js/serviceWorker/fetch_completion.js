@@ -1,7 +1,5 @@
 import OpenAI from 'openai'
 import {getOpenAiToken, PROMPT} from './service_worker'
-import {OpenAIError} from '../errors'
-import {getActiveTab} from './utils'
 
 
 export async function fetchCompletion(description, tabId){
