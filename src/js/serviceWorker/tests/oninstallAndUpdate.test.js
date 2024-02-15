@@ -21,7 +21,7 @@ describe('onInstall function', () => {
 
     expect(chrome.windows.create).toHaveBeenCalledTimes(1);
     expect(chrome.windows.create).toHaveBeenCalledWith({
-      url: '../installed.html',
+      url: '../html/installed.html',
       type: 'popup',
       width: 310,
       height: 500
@@ -42,7 +42,7 @@ describe('onUpdate function', () => {
 
         expect(chrome.windows.create).toHaveBeenCalledTimes(1);
         expect(chrome.windows.create).toHaveBeenCalledWith({
-        url: '../updated.html',
+        url: '../html/updated.html',
         type: 'popup',
         width: 310,
         height: 500
