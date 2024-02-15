@@ -4,7 +4,6 @@
 
 import {redirectFromOmnibox} from './omnibox'
 
-// Global mock for chrome.tabs
 global.chrome = {
     tabs: {
         update: jest.fn(),
