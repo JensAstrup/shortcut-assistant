@@ -37,10 +37,10 @@ export async function getOpenAiToken() {
 }
 
 
-async function getCompletionFromProxy(description) {
+async function getCompletionFromProxy(description){
     try {
-        const url = process.env.PROXY_URL;
-        const instanceId = await chrome.instanceID.getID(); // Ensure this is valid in your execution context.
+        const url = process.env.PROXY_URL
+        const instanceId = await chrome.instanceID.getID() // Ensure this is valid in your execution context.
         const response = await fetch(url, {
             method: 'POST',
             body: JSON.stringify({
@@ -50,35 +50,34 @@ async function getCompletionFromProxy(description) {
             headers: {
                 'Content-Type': 'application/json'
             }
-        });
+        })
 
         if (!response.ok) {
-            throw new Error(`Proxy response was not ok. Status: ${response.status} ${response.statusText}`);
+            throw new Error(`Proxy response was not ok. Status: ${response.status} ${response.statusText}`)
         }
 
-        const data = await response.json();
-        return data.content;
+        const data = await response.json()
+        return data.content
     } catch (error) {
-        throw error;
+        throw OpenAIError('Error getting completion from proxy:', error);
     }
 }
 
 
-
-export async function callOpenAI(description, tabId) {
-    const token = await getOpenAiToken();
+export async function callOpenAI(description, tabId){
+    const token = await getOpenAiToken()
     let messagesData
     let message
 
     if (!token) {
-        messagesData = await getCompletionFromProxy(description);
-        message = messagesData;
+        messagesData = await getCompletionFromProxy(description)
+        message = messagesData
     }
     else {
-        const completion = await fetchCompletion(description, tabId);
-        message = completion.message.content;
+        const completion = await fetchCompletion(description, tabId)
+        message = completion.message.content
     }
-    chrome.tabs.sendMessage(tabId, {"message": "setOpenAiResponse", "data": message});
+    chrome.tabs.sendMessage(tabId, {'message': 'setOpenAiResponse', 'data': message})
     return message
 }
 
