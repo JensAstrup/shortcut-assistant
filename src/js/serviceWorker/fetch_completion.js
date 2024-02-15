@@ -9,7 +9,7 @@ export async function fetchCompletion(description, tabId){
     let messages = [{role: 'system', content: PROMPT}, {role: 'user', content: description}]
     const stream = await openai.chat.completions.create({
         messages: messages,
-        model: 'gpt-3.5-turbo',
+        model: 'gpt-4-turbo-preview',
         stream: true
     })
     for await (const chunk of stream) {

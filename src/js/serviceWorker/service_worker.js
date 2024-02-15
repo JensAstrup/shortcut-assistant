@@ -75,7 +75,12 @@ export async function callOpenAI(description, tabId){
     }
     else {
         const completion = await fetchCompletion(description, tabId)
-        message = completion.message.content
+        if(completion){
+            message = completion.message.content
+        }
+        else {
+            return ''
+        }
     }
     chrome.tabs.sendMessage(tabId, {'message': 'setOpenAiResponse', 'data': message})
     return message
