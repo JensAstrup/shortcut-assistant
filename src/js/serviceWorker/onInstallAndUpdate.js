@@ -1,6 +1,6 @@
 export function onInstall(){
     chrome.windows.create({
-        url: '../installed.html',
+        url: '../html/installed.html',
         type: 'popup',
         width: 310,
         height: 500
@@ -11,7 +11,7 @@ export function onInstall(){
 
 export function onUpdate(){
     chrome.windows.create({
-        url: '../updated.html',
+        url: '../html/updated.html',
         type: 'popup',
         width: 310,
         height: 500
