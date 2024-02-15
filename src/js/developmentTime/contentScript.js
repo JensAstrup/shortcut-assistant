@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-import {storyPageIsReady} from '../utils'
+import {storyPageIsReady} from '../utils/utils'
 import {getDateInCurrentState} from "../utils/dateInCurrentState";
 import {getDateInState} from "./getDateInState";
 

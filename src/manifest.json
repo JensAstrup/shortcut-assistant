@@ -1,6 +1,6 @@
 {
   "action": {
-    "default_popup": "popup.html",
+    "default_popup": "./html/popup.html",
     "default_icon": "assets/assistant.png"
   },
   "background": {

@@ -1,5 +1,5 @@
 import {initTodos} from './todoist/contentScript'
-import {logError, sleep} from './utils'
+import {logError, sleep} from './utils/utils'
 import {getSyncedSetting} from './serviceWorker/utils'
 import {setCycleTime} from './cycleTime/contentScript'
 import {checkDevelopmentTime} from './developmentTime/contentScript'

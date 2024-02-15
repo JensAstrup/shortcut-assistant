@@ -1,4 +1,4 @@
-import {sleep} from '../utils'
+import {sleep} from '../utils/utils'
 
 const saveButton = document.getElementById('saveKeyButton')
 const analyzeButton = document.getElementById('analyzeButton')
