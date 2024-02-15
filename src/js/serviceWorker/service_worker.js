@@ -74,12 +74,10 @@ export async function callOpenAI(description, tabId){
         message = messagesData
     }
     else {
-        const completion = await fetchCompletion(description, tabId)
-        if(completion){
-            message = completion.message.content
-        }
-        else {
-            return ''
+        try {
+            await fetchCompletion(description, tabId)
+        } catch (e) {
+            throw OpenAIError('Error getting completion from OpenAI:', e);
         }
     }
     chrome.tabs.sendMessage(tabId, {'message': 'setOpenAiResponse', 'data': message})
@@ -91,7 +89,9 @@ if (typeof self !== 'undefined' && self instanceof ServiceWorkerGlobalScope) {
     chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         if (request.action === 'callOpenAI') {
             callOpenAI(request.data.prompt, sender.tab.id).then(response => {
-                sendResponse({data: response});
+                if (response) {
+                    sendResponse({data: response});
+                }
             });
             return true; // Keep the message channel open for the async response
         }
