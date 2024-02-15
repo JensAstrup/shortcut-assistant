@@ -1,24 +1,22 @@
 import OpenAI from 'openai'
 import {getOpenAiToken, PROMPT} from './service_worker'
 import {OpenAIError} from '../errors'
+import {getActiveTab} from './utils'
 
-export async function fetchCompletion(description){
+
+export async function fetchCompletion(description, tabId){
     const openAIToken = await getOpenAiToken()
     const openai = new OpenAI({apiKey: openAIToken})
 
     let messages = [{role: 'system', content: PROMPT}, {role: 'user', content: description}]
-    const completion = await openai.chat.completions.create({
+    const stream = await openai.chat.completions.create({
         messages: messages,
-        model: 'gpt-3.5-turbo'
+        model: 'gpt-3.5-turbo',
+        stream: true
     })
-
-    if (!completion.choices || !completion.choices[0]) {
-        throw new OpenAIError('No completion choices returned')
+    for await (const chunk of stream) {
+        const data = chunk.choices[0]?.delta?.content || ""
+        chrome.tabs.sendMessage(tabId, {"message": "updateOpenAiResponse", "data": data});
     }
-
-    try {
-        return completion.choices[0]
-    } catch (e) {
-        throw new OpenAIError('Error parsing completion choices')
-    }
+    chrome.runtime.sendMessage({message: 'OpenAIResponseCompleted'})
 }
