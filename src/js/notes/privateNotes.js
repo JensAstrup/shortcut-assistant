@@ -76,7 +76,3 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     }
 });
 
-
-tailwind.config = {
-    darkMode: 'class',
-};
