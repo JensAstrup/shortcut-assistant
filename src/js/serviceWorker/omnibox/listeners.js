@@ -1,11 +1,13 @@
-import {redirectFromOmnibox} from './omnibox'
+import {redirectFromOmnibox, setOmniboxSuggestion} from './omnibox'
+import * as Sentry from '@sentry/browser'
 
-chrome.omnibox.onInputChanged.addListener(function (text, suggest){
-    suggest([
-        {content: text, description: `Search shortcut for ${text}`}
-    ])
+chrome.omnibox.onInputChanged.addListener(async function (text, suggest){
+    await setOmniboxSuggestion(text)
 })
 
 chrome.omnibox.onInputEntered.addListener((text, disposition) => {
-    redirectFromOmnibox(text, disposition)
+    redirectFromOmnibox(text, disposition).catch((error) => {
+        console.error(error)
+        Sentry.captureException(error)
+    })
 })

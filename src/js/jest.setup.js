@@ -12,6 +12,11 @@ global.chrome = {
         onInstalled: {
             addListener: jest.fn(),
         },
+        getManifest: jest.fn().mockImplementation(() => {
+            return {
+                version: '1.0.0',
+            };
+        })
     },
 };
 global.tailwind = {

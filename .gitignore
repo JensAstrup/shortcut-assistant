@@ -5,3 +5,4 @@
 /src/coverage/
 *.env*
 !.env.example
+/dist/dist.zip

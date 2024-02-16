@@ -5,6 +5,7 @@ import {sendEvent} from '../analytics/event'
 import {fetchCompletion} from './fetch_completion'
 import {OpenAIError} from '../errors'
 import {onInstallAndUpdate} from './onInstallAndUpdate'
+import {SlugManager} from './slugManager'
 
 
 const manifestData = chrome.runtime.getManifest();
@@ -112,34 +113,43 @@ if (typeof self !== 'undefined' && self instanceof ServiceWorkerGlobalScope) {
 
 chrome.runtime.onInstalled.addListener(onInstallAndUpdate)
 
-chrome.tabs.onUpdated.addListener(async function
-        (tabId, changeInfo, tab) {
+chrome.tabs.onUpdated.addListener(async function (tabId, changeInfo, tab){
         if (changeInfo.url && changeInfo.url.includes('app.shortcut.com')) {
+            SlugManager.refreshCompanySlug(tabId, changeInfo).catch(e => {
+                console.error('Error refreshing company slug:', e)
+                Sentry.captureException(e)
+            })
             chrome.tabs.sendMessage(tabId, {
                 message: 'update',
                 url: changeInfo.url
-            });
+            })
             const enableStalledWorkWarnings = await getSyncedSetting('enableStalledWorkWarnings', true)
             if (enableStalledWorkWarnings) {
                 chrome.tabs.sendMessage(tabId, {
                     message: 'initDevelopmentTime',
                     url: changeInfo.url
-                });
-                sendEvent('init_development_time')
+                })
+                sendEvent('init_development_time').catch(e => {
+                    console.error('Error sending event:', e)
+                    Sentry.captureException(e)
+                })
             }
             const enableTodoistOptions = await getSyncedSetting('enableTodoistOptions', false)
             if (enableTodoistOptions) {
                 chrome.tabs.sendMessage(tabId, {
                     message: 'initTodos',
                     url: changeInfo.url
-                });
-                sendEvent('init_todos')
+                })
+                sendEvent('init_todos').catch(e => {
+                    console.error('Error sending event:', e)
+                    Sentry.captureException(e)
+                })
             }
             chrome.tabs.sendMessage(tabId, {
                 message: 'initNotes',
                 data: await getNotes(),
                 url: changeInfo.url
-            });
+            })
         }
     }
-);
+)
