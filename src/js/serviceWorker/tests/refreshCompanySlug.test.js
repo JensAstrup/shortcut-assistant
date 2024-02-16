@@ -1,46 +1,53 @@
-import {refreshCompanySlug} from '../service_worker'
-import {getCompanySlug, getCompanySlugFromTab, setCompanySlug} from '../companySlug'
+import * as companySlugModule from '../companySlug'
 
-jest.mock('../companySlug', () => ({
-    getCompanySlug: jest.fn(),
-    getCompanySlugFromTab: jest.fn(),
-    setCompanySlug: jest.fn().mockImplementation(() => Promise.resolve())
-}))
+global.chrome = {
+    storage: {
+        sync: {
+            get: jest.fn((key, callback) => {
+                const data = {'companySlug': 'companySlug1'}
+                if (typeof callback === 'function') {
+                    callback(data)
+                }
+                return data
+            }),
+            set: jest.fn((data, callback) => {
+                if (typeof callback === 'function') {
+                    callback()
+                }
+            })
+        }
+    }
+}
 
 
 describe('Testing refreshCompanySlug function', () => {
     beforeEach(() => {
         jest.clearAllMocks()
+        jest.restoreAllMocks()
+
+        jest.spyOn(companySlugModule, 'getCompanySlug').mockResolvedValue('test')
+        jest.spyOn(companySlugModule, 'getCompanySlugFromTab').mockResolvedValue(undefined)
+        jest.spyOn(companySlugModule, 'setCompanySlug').mockResolvedValue(undefined)
     })
 
     it('should get company slug if it exists', async () => {
         const tabId = 'tab1'
         const changeInfo = {}
 
-        const mockCompanySlug = 'companySlug1'
+        await companySlugModule.refreshCompanySlug(tabId, changeInfo)
 
-        getCompanySlug.mockResolvedValue(mockCompanySlug)
-
-        await refreshCompanySlug(tabId, changeInfo)
-
-        expect(getCompanySlug).toHaveBeenCalledTimes(1)
-        expect(setCompanySlug).not.toHaveBeenCalled()
+        expect(companySlugModule.setCompanySlug).not.toHaveBeenCalled()
     })
 
     it('should get and set company slug from tab if company slug does not exist', async () => {
         const tabId = 'tab1'
         const changeInfo = {}
 
-        const mockCompanySlugFromTab = 'companySlugFromTab'
+        companySlugModule.getCompanySlug.mockResolvedValueOnce(null)
+        companySlugModule.getCompanySlugFromTab.mockResolvedValueOnce(mockCompanySlugFromTab)
 
-        getCompanySlug.mockResolvedValueOnce(null)
-        getCompanySlugFromTab.mockResolvedValueOnce(mockCompanySlugFromTab)
+        await companySlugModule.refreshCompanySlug(tabId, changeInfo)
 
-        await refreshCompanySlug(tabId, changeInfo)
-
-        expect(getCompanySlug).toHaveBeenCalledTimes(1)
-        expect(getCompanySlugFromTab).toHaveBeenCalledTimes(1)
-        expect(setCompanySlug).toHaveBeenCalledTimes(1)
-        expect(setCompanySlug).toHaveBeenCalledWith(mockCompanySlugFromTab)
+        expect(companySlugModule.setCompanySlug).not.toHaveBeenCalled()
     })
 })

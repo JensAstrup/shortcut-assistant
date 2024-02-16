@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/browser'
+
 export async function getCompanySlugFromTab(tabId, changeInfo){
     const url = changeInfo.url
     if (url.indexOf('/search/') !== -1) {
@@ -18,5 +20,16 @@ export async function getCompanySlug(){
     }
     else {
         return null
+    }
+}
+
+export async function refreshCompanySlug(tabId, changeInfo){
+    let companySlug = await getCompanySlug()
+    if (!companySlug) {
+        companySlug = await getCompanySlugFromTab(tabId, changeInfo)
+        setCompanySlug(companySlug).catch(e => {
+            console.error('Error setting company slug:', e)
+            Sentry.captureException(e)
+        })
     }
 }

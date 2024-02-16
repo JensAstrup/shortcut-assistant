@@ -5,7 +5,7 @@ import {sendEvent} from '../analytics/event'
 import {fetchCompletion} from './fetch_completion'
 import {OpenAIError} from '../errors'
 import {onInstallAndUpdate} from './onInstallAndUpdate'
-import {getCompanySlug, getCompanySlugFromTab, setCompanySlug} from './companySlug'
+import {refreshCompanySlug} from './companySlug'
 
 
 const manifestData = chrome.runtime.getManifest();
@@ -109,17 +109,6 @@ if (typeof self !== 'undefined' && self instanceof ServiceWorkerGlobalScope) {
             return true;
         }
     });
-}
-
-export async function refreshCompanySlug(tabId, changeInfo){
-    let companySlug = await getCompanySlug()
-    if (!companySlug) {
-        companySlug = await getCompanySlugFromTab(tabId, changeInfo)
-        setCompanySlug(companySlug).catch(e => {
-            console.error('Error setting company slug:', e)
-            Sentry.captureException(e)
-        })
-    }
 }
 
 chrome.runtime.onInstalled.addListener(onInstallAndUpdate)
