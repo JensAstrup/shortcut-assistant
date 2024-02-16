@@ -41,7 +41,3 @@ export function setSectionDisplay(tabToShow, sectionToShow, tabToHide, sectionTo
         tabToHide.classList.remove('tab-active')
     })
 }
-
-// tailwind.config = {
-//     darkMode: 'class'
-// }
