@@ -1,5 +1,16 @@
 import {getCompanySlug} from '../companySlug'
 
+/**
+ * Redirects the user from the omnibox based on the provided text and disposition.
+ * If the text is a number, it redirects to the corresponding Shortcut story.
+ * If the text is not a number, it performs a search in Shortcut.
+ *
+ * @param {string} text - The text entered in the omnibox.
+ * @param {string} disposition - The desired disposition of the redirection.
+ *    Possible values are 'currentTab', 'newForegroundTab', and 'newBackgroundTab'.
+ *
+ * @return {void}
+ */
 export async function redirectFromOmnibox(text, disposition){
     let url
     if(!isNaN(text)) {
