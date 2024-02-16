@@ -1,5 +1,8 @@
 export async function getCompanySlugFromTab(tabId, changeInfo) {
     const url = changeInfo.url
+    if(url.indexOf('/search/') !== -1) {
+        return null
+    }
     return url.split('/')[3]
 }
 
