@@ -1,5 +1,5 @@
-import {redirectFromOmnibox, setOmniboxSuggestion} from './omnibox'
-import {getCompanySlug} from '../companySlug'
+import {redirectFromOmnibox, setOmniboxSuggestion} from '../../omnibox/omnibox'
+import {getCompanySlug} from '../../companySlug'
 
 global.chrome = {
     tabs: {
@@ -78,7 +78,7 @@ describe('redirectFromOmnibox', () => {
     })
 })
 
-jest.mock('../companySlug', () => ({getCompanySlug: jest.fn()}))
+jest.mock('../../companySlug', () => ({getCompanySlug: jest.fn()}))
 describe('setOmniboxSuggestion', () => {
     it('should set the default suggestion to open the story when a number is provided', async () => {
         const text = '123'
