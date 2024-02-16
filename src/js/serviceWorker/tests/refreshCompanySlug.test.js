@@ -44,7 +44,6 @@ describe('Testing refreshCompanySlug function', () => {
         const changeInfo = {}
 
         companySlugModule.getCompanySlug.mockResolvedValueOnce(null)
-        companySlugModule.getCompanySlugFromTab.mockResolvedValueOnce(mockCompanySlugFromTab)
 
         await companySlugModule.refreshCompanySlug(tabId, changeInfo)
 
