@@ -1,5 +1,5 @@
 import {redirectFromOmnibox, setOmniboxSuggestion} from '../../omnibox/omnibox'
-import {getCompanySlug} from '../../companySlug'
+import {SlugManager} from '../../slugManager'
 
 global.chrome = {
     tabs: {
@@ -17,14 +17,13 @@ describe('redirectFromOmnibox', () => {
     beforeEach(() => {
         global.chrome.tabs.update.mockClear()
         global.chrome.tabs.create.mockClear()
-        getCompanySlug.mockClear()
     })
 
     it('should update the current tab with the given URL if one is provided', () => {
         const disposition = 'currentTab'
         const text = '123'
         const expectedUrl = 'https://app.shortcut.com/test/story/123'
-        getCompanySlug.mockResolvedValue('test')
+        SlugManager.getCompanySlug.mockResolvedValue('test')
         redirectFromOmnibox(text, disposition).then(() => {
             expect(chrome.tabs.update).toHaveBeenCalledWith({url: expectedUrl})
         })
@@ -78,25 +77,27 @@ describe('redirectFromOmnibox', () => {
     })
 })
 
-jest.mock('../../companySlug', () => ({getCompanySlug: jest.fn()}))
 describe('setOmniboxSuggestion', () => {
+    jest.spyOn(SlugManager, 'getCompanySlug').mockResolvedValue('test');
+
     it('should set the default suggestion to open the story when a number is provided', async () => {
         const text = '123'
         const companySlug = 'test'
         const expectedSuggestion = {description: `Open story sc-${text}`}
 
-        getCompanySlug.mockResolvedValue(companySlug)
+        SlugManager.getCompanySlug.mockResolvedValue(companySlug)
 
         await setOmniboxSuggestion(text)
         expect(chrome.omnibox.setDefaultSuggestion).toHaveBeenCalledWith(expectedSuggestion)
     })
+    jest.spyOn(SlugManager, 'getCompanySlug').mockResolvedValue('');
 
     it('should set the default suggestion to search for the text when a string is provided', async () => {
         const text = 'test'
         const companySlug = ''
         const expectedSuggestion = {description: `Search shortcut for ${text}`}
 
-        getCompanySlug.mockResolvedValue(companySlug)
+        SlugManager.getCompanySlug.mockResolvedValue(companySlug)
 
         await setOmniboxSuggestion(text)
         expect(chrome.omnibox.setDefaultSuggestion).toHaveBeenCalledWith(expectedSuggestion)

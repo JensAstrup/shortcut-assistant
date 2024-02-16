@@ -5,7 +5,7 @@ import {sendEvent} from '../analytics/event'
 import {fetchCompletion} from './fetch_completion'
 import {OpenAIError} from '../errors'
 import {onInstallAndUpdate} from './onInstallAndUpdate'
-import {refreshCompanySlug} from './companySlug'
+import {SlugManager} from './slugManager'
 
 
 const manifestData = chrome.runtime.getManifest();
@@ -115,7 +115,7 @@ chrome.runtime.onInstalled.addListener(onInstallAndUpdate)
 
 chrome.tabs.onUpdated.addListener(async function (tabId, changeInfo, tab){
         if (changeInfo.url && changeInfo.url.includes('app.shortcut.com')) {
-            refreshCompanySlug(tabId, changeInfo).catch(e => {
+            SlugManager.refreshCompanySlug(tabId, changeInfo).catch(e => {
                 console.error('Error refreshing company slug:', e)
                 Sentry.captureException(e)
             })

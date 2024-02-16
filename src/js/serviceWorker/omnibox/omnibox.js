@@ -1,4 +1,4 @@
-import {getCompanySlug} from '../companySlug'
+import {SlugManager} from '../slugManager'
 
 /**
  * Redirects the user from the omnibox based on the provided text and disposition.
@@ -14,7 +14,7 @@ import {getCompanySlug} from '../companySlug'
 export async function redirectFromOmnibox(text, disposition){
     let url
     if(!isNaN(text)) {
-        const companySlug = await getCompanySlug();
+        const companySlug = await SlugManager.getCompanySlug()
         if (companySlug) {
             url = `https://app.shortcut.com/${companySlug}/story/${text}`
         }
@@ -44,7 +44,7 @@ export async function redirectFromOmnibox(text, disposition){
 
 export async function setOmniboxSuggestion(text){
     if (!isNaN(text)) {
-        const companySlug = await getCompanySlug()
+        const companySlug = await SlugManager.getCompanySlug()
         if (companySlug) {
             chrome.omnibox.setDefaultSuggestion({description: `Open story sc-${text}`})
             return
