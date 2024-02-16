@@ -35,17 +35,16 @@ describe('SlugManager', () => {
   describe('setCompanySlug', () => {
     it('should set the company slug in chrome storage', async () => {
       const companySlug = 'companySlug';
-      const setSpy = jest.spyOn(chrome.storage.sync, 'set');
 
       await SlugManager.setCompanySlug(companySlug);
 
-      expect(setSpy).toBeCalledWith({ companySlug });
+      expect(global.chrome.storage.sync.set).toBeCalledWith({ companySlug });
     });
   });
 
   describe('getCompanySlug', () => {
     it('should get the company slug from chrome storage', async () => {
-      const getSpy = jest.spyOn(chrome.storage.sync, 'get').mockImplementation((key, callback) => {
+      global.chrome.storage.sync.get.mockImplementation((key, callback) => {
         const data = {'companySlug': 'companySlug'}
         if (typeof callback === 'function') {
             callback({ companySlug: 'companySlug' });
@@ -55,7 +54,7 @@ describe('SlugManager', () => {
 
       const result = await SlugManager.getCompanySlug();
 
-      expect(getSpy).toBeCalledWith('companySlug');
+      expect(global.chrome.storage.sync.get).toBeCalledWith('companySlug');
       expect(result).toEqual('companySlug');
     });
   });
