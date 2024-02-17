@@ -47,7 +47,7 @@ export async function popupLoaded(){
         console.error(e)
         Sentry.captureException(e)
     })
-    const versionSpan = document.getElementById('version')
+    const versionSpan = document.getElementById('versionInfo')
     const version = await chrome.runtime.getManifest().version
     versionSpan.textContent = `Version: ${version}`
 }
