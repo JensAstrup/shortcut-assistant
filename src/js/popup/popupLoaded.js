@@ -16,7 +16,6 @@ export async function handleNewVersionBade(){
     const infoTab = document.getElementById('infoTab')
     const tabBadge = infoTab.querySelector('.badge')
     const badgeBackgroundText = await chrome.action.getBadgeText({})
-    console.log(badgeBackgroundText)
     if (badgeBackgroundText === '') {
         tabBadge.style.display = 'none'
     }
