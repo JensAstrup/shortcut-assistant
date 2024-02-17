@@ -70,11 +70,11 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 
 ## Authors
 
-- **jens Astrup** - [JensAstrup](https://github.com/JensAstrup)
+- **Jens Astrup** - [JensAstrup](https://github.com/JensAstrup)
 
 ## License
 
-This project is licensed under the MIT License
+This project is licensed under [CC BY-NC 4.0 Deed | Attribution-NonCommercial 4.0 International Creative Commons](https://creativecommons.org/licenses/by-nc/4.0/deed.en)
 
 ## Acknowledgments
 
