@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/browser'
+
 import {
     DEFAULT_ENGAGEMENT_TIME_IN_MSEC,
     GA_ENDPOINT,
@@ -10,11 +12,24 @@ import {getSyncedSetting} from '../serviceWorker/utils'
 import {setSectionDisplay} from './popup'
 
 
+export async function handleNewVersionBade(){
+    const infoTab = document.getElementById('infoTab')
+    const tabBadge = infoTab.querySelector('.badge')
+    const badgeBackgroundText = await chrome.action.getBadgeText({})
+    console.log(badgeBackgroundText)
+    if (badgeBackgroundText === '') {
+        tabBadge.style.display = 'none'
+    }
+}
+
+
 export async function popupLoaded(){
-    const tabActions = document.getElementById('tabActions')
-    const tabSettings = document.getElementById('tabSettings')
+    const actionsTab = document.getElementById('actionsTab')
+    const settingsTab = document.getElementById('settingsTab')
+    const infoTab = document.getElementById('infoTab')
     const actionsSection = document.getElementById('actionsSection')
     const settingsSection = document.getElementById('settingsSection')
+    const infoSection = document.getElementById('infoSection')
 
     const enableStalledWorkWarnings = await getSyncedSetting('enableStalledWorkWarnings', true)
     const enableTodoistOptions = await getSyncedSetting('enableTodoistOptions', false)
@@ -25,8 +40,14 @@ export async function popupLoaded(){
     stalledWorkCheckbox.checked = enableStalledWorkWarnings
     todoistCheckbox.checked = enableTodoistOptions
 
-    setSectionDisplay(tabActions, actionsSection, tabSettings, settingsSection)
-    setSectionDisplay(tabSettings, settingsSection, tabActions, actionsSection)
+    setSectionDisplay(actionsTab, actionsSection, [settingsTab, infoTab], [settingsSection, infoSection])
+    setSectionDisplay(settingsTab, settingsSection, [actionsTab, infoTab], [actionsSection, infoSection])
+    setSectionDisplay(infoTab, infoSection, [actionsTab, settingsTab], [actionsSection, settingsSection])
+
+    handleNewVersionBade().catch((e) => {
+        console.error(e)
+        Sentry.captureException(e)
+    })
 }
 
 export async function trackPopupViewEvent(){

@@ -9,14 +9,9 @@ export function onInstall(){
     chrome.storage.sync.set({'enableTodoistOptions': false})
 }
 
-export function onUpdate(){
-    chrome.windows.create({
-        url: '../html/updated.html',
-        type: 'popup',
-        width: 310,
-        height: 500
-
-    })
+export async function onUpdate(){
+    await chrome.action.setBadgeText({text: ' '})
+    await chrome.action.setBadgeBackgroundColor({color: '#a30000'})
 }
 
 export function onInstallAndUpdate(details){
