@@ -2,8 +2,7 @@ import {sendEvent} from '../analytics/event'
 import {sleep} from '../utils/utils'
 
 export class AiFunctions{
-    constructor(apiKey){
-        this.apiKey = apiKey
+    constructor(){
     }
 
     static async analyzeStoryDetails(){
@@ -23,7 +22,7 @@ export class AiFunctions{
     }
 
     static async processOpenAIResponse(message){
-        if (message.message === 'OpenAIResponseCompleted' || message.message === 'OpenAIResponseFailed') {
+        if (message.type === 'OpenAIResponseCompleted' || message.type === 'OpenAIResponseFailed') {
             let analyzeButton = document.getElementById('analyzeButton')
             let analyzeText = document.getElementById('analyzeText')
             analyzeText.textContent = 'Analyze Story'
@@ -31,7 +30,7 @@ export class AiFunctions{
             loadingSpan.remove()
             analyzeButton.classList.remove('cursor-progress')
         }
-        if (message.message === 'OpenAIResponseFailed') {
+        if (message.type === 'OpenAIResponseFailed') {
             let errorState = document.getElementById('errorState')
             errorState.style.cssText = ''
             await sleep(6000)

@@ -5,7 +5,8 @@ global.chrome = {
         }),
         onUpdated: {
             addListener: jest.fn()
-        }
+        },
+        sendMessage: jest.fn()
     },
     runtime: {
         lastError: null,
@@ -16,7 +17,18 @@ global.chrome = {
             return {
                 version: '1.0.0'
             }
-        })
+        }),
+        sendMessage: jest.fn()
+    },
+    windows: {
+        create: jest.fn()
+    },
+    storage: {
+        sync: {
+            set: jest.fn().mockImplementation((value) => {
+                return new Promise((resolve) => resolve())
+            })
+        }
     },
     action: {
         setBadgeText: jest.fn().mockImplementation((details) => {

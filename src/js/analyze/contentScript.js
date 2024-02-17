@@ -51,12 +51,12 @@ export async function analyzeStoryDescription(activeTabUrl){
 }
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if (request.message === 'updateOpenAiResponse') {
+    if (request.type === 'updateOpenAiResponse') {
         if (request.data !== undefined) {
             populateCommentBox(request.data).catch(logError)
         }
     }
-    if (request.message === 'OpenAIResponseFailed') {
+    if (request.type === 'OpenAIResponseFailed') {
         clearCommentBox().catch(logError)
     }
 })
