@@ -12,7 +12,7 @@ import {getSyncedSetting} from '../serviceWorker/utils'
 import {setSectionDisplay} from './popup'
 
 
-export async function handleNewVersionBade(){
+export async function handleNewVersionBadge(){
     const infoTab = document.getElementById('infoTab')
     const tabBadge = infoTab.querySelector('.badge')
     const badgeBackgroundText = await chrome.action.getBadgeText({})
@@ -43,7 +43,7 @@ export async function popupLoaded(){
     setSectionDisplay(settingsTab, settingsSection, [actionsTab, infoTab], [actionsSection, infoSection])
     setSectionDisplay(infoTab, infoSection, [actionsTab, settingsTab], [actionsSection, settingsSection])
 
-    handleNewVersionBade().catch((e) => {
+    handleNewVersionBadge().catch((e) => {
         console.error(e)
         Sentry.captureException(e)
     })
