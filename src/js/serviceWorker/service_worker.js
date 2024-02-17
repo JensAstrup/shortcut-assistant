@@ -58,7 +58,6 @@ async function getCompletionFromProxy(description){
         }
 
         const data = await response.json()
-        throw new OpenAIError('test')
         return data.content
     } catch (error) {
         throw new OpenAIError('Error getting completion from proxy:', error);
@@ -77,8 +76,6 @@ export async function callOpenAI(description, tabId){
         chrome.tabs.sendMessage(tabId, {'message': 'setOpenAiResponse', 'data': message})
         chrome.runtime.sendMessage({message: 'OpenAIResponseCompleted'})
         return message
-
-
     }
     else {
         try {

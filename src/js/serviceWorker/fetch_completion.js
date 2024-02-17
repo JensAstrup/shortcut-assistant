@@ -5,7 +5,7 @@ import {getOpenAiToken, PROMPT} from './service_worker'
 export async function fetchCompletion(description, tabId){
     const openAIToken = await getOpenAiToken()
     const openai = new OpenAI({apiKey: openAIToken})
-    throw new OpenAIError('test')
+
     let messages = [{role: 'system', content: PROMPT}, {role: 'user', content: description}]
     const stream = await openai.chat.completions.create({
         messages: messages,
