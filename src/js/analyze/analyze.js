@@ -28,9 +28,9 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     }
     if (message.message === "OpenAIResponseFailed") {
         let errorState = document.getElementById('errorState');
-        // Remove all inline styling from element
         errorState.style.cssText = '';
         await sleep(6000);
         errorState.style.display = 'none';
+        sendEvent('analyze_story_details_failed')
     }
 });
