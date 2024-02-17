@@ -60,7 +60,7 @@ async function getCompletionFromProxy(description){
         const data = await response.json()
         return data.content
     } catch (error) {
-        throw OpenAIError('Error getting completion from proxy:', error);
+        throw new OpenAIError('Error getting completion from proxy:', error);
     }
 }
 
@@ -73,12 +73,15 @@ export async function callOpenAI(description, tabId){
     if (!token) {
         messagesData = await getCompletionFromProxy(description)
         message = messagesData
+        chrome.tabs.sendMessage(tabId, {'message': 'setOpenAiResponse', 'data': message})
+        chrome.runtime.sendMessage({message: 'OpenAIResponseCompleted'})
+        return message
     }
     else {
         try {
             await fetchCompletion(description, tabId)
         } catch (e) {
-            throw OpenAIError('Error getting completion from OpenAI:', e);
+            throw new OpenAIError('Error getting completion from OpenAI:', e);
         }
     }
     chrome.tabs.sendMessage(tabId, {'message': 'setOpenAiResponse', 'data': message})
@@ -93,7 +96,11 @@ if (typeof self !== 'undefined' && self instanceof ServiceWorkerGlobalScope) {
                 if (response) {
                     sendResponse({data: response});
                 }
-            });
+            }).catch(e => {
+                console.error('Error calling OpenAI:', e);
+                sendResponse({error: e});
+                chrome.runtime.sendMessage({message: 'OpenAIResponseFailed'})
+            })
             return true; // Keep the message channel open for the async response
         }
         if (request.message === 'getOpenAiToken') {
