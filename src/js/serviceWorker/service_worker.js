@@ -73,7 +73,7 @@ export async function callOpenAI(description, tabId){
     if (!token) {
         messagesData = await getCompletionFromProxy(description)
         message = messagesData
-        chrome.tabs.sendMessage(tabId, {'message': 'setOpenAiResponse', 'data': message})
+        chrome.tabs.sendMessage(tabId, {'message': 'updateOpenAiResponse', 'data': message})
         chrome.runtime.sendMessage({message: 'OpenAIResponseCompleted'})
         return message
     }
@@ -84,8 +84,6 @@ export async function callOpenAI(description, tabId){
             throw new OpenAIError('Error getting completion from OpenAI:', e);
         }
     }
-    chrome.tabs.sendMessage(tabId, {'message': 'setOpenAiResponse', 'data': message})
-    return message
 }
 
 
