@@ -1,9 +1,8 @@
 import {sendEvent} from '../analytics/event'
 import {sleep} from '../utils/utils'
 
-export class OpenAI{
-    constructor(apiKey){
-        this.apiKey = apiKey
+export class AiFunctions{
+    constructor(){
     }
 
     static async analyzeStoryDetails(){
@@ -12,6 +11,7 @@ export class OpenAI{
         analyzeText.textContent = ''
         let loadingSpan = document.createElement('span')
         loadingSpan.classList.add('loading', 'loading-spinner', 'loading-spinner-sm')
+        analyzeButton.classList.add('cursor-progress')
         loadingSpan.id = 'loadingSpan'
         analyzeButton.appendChild(loadingSpan)
 
@@ -22,13 +22,15 @@ export class OpenAI{
     }
 
     static async processOpenAIResponse(message){
-        if (message.message === 'OpenAIResponseCompleted' || message.message === 'OpenAIResponseFailed') {
+        if (message.type === 'OpenAIResponseCompleted' || message.type === 'OpenAIResponseFailed') {
+            let analyzeButton = document.getElementById('analyzeButton')
             let analyzeText = document.getElementById('analyzeText')
             analyzeText.textContent = 'Analyze Story'
             let loadingSpan = document.getElementById('loadingSpan')
             loadingSpan.remove()
+            analyzeButton.classList.remove('cursor-progress')
         }
-        if (message.message === 'OpenAIResponseFailed') {
+        if (message.type === 'OpenAIResponseFailed') {
             let errorState = document.getElementById('errorState')
             errorState.style.cssText = ''
             await sleep(6000)

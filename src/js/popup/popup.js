@@ -32,12 +32,12 @@ export async function saveButtonClicked(){
     saveButton.textContent = 'Save'
 }
 
-export function setSectionDisplay(tabToShow, sectionToShow, tabToHide, sectionToHide){
+export function setSectionDisplay(tabToShow, sectionToShow, tabsToHide, sectionsToHide){
     tabToShow.addEventListener('click', function (e){
         e.preventDefault()
         sectionToShow.classList.remove('hidden')
-        sectionToHide.classList.add('hidden')
+        sectionsToHide.forEach(section => section.classList.add('hidden'))
         tabToShow.classList.add('tab-active')
-        tabToHide.classList.remove('tab-active')
+        tabsToHide.forEach(tab => tab.classList.remove('tab-active'))
     })
 }

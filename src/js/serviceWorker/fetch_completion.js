@@ -14,7 +14,7 @@ export async function fetchCompletion(description, tabId){
     })
     for await (const chunk of stream) {
         const data = chunk.choices[0]?.delta?.content || ""
-        chrome.tabs.sendMessage(tabId, {"message": "updateOpenAiResponse", "data": data});
+        chrome.tabs.sendMessage(tabId, {type: "updateOpenAiResponse", "data": data});
     }
-    chrome.runtime.sendMessage({message: 'OpenAIResponseCompleted'})
+    chrome.runtime.sendMessage({type: 'OpenAIResponseCompleted'})
 }

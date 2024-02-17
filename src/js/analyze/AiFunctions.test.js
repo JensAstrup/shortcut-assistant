@@ -3,7 +3,7 @@
  */
 import * as eventModule from '../analytics/event'
 import * as utilsModule from '../utils/utils'
-import {OpenAI} from './openAI'
+import {AiFunctions} from './aiFunctions'
 
 jest.mock('../analytics/event', () => ({
     sendEvent: jest.fn()
@@ -13,13 +13,12 @@ jest.mock('../utils/utils', () => ({
     sleep: jest.fn().mockResolvedValue(undefined)
 }))
 
-const mockSendMessage = jest.fn()
 global.chrome = {
     tabs: {
         query: jest.fn().mockImplementation((queryInfo, callback) => {
             callback([{id: 1}])
         }),
-        sendMessage: mockSendMessage
+        sendMessage: jest.fn()
     }
 }
 
@@ -41,19 +40,19 @@ describe('OpenAI class', () => {
 
     describe('analyzeStoryDetails', () => {
         it('should append loading spinner and send message to active tab', async () => {
-            await OpenAI.analyzeStoryDetails()
+            await AiFunctions.analyzeStoryDetails()
 
             const loadingSpan = document.getElementById('loadingSpan')
             expect(loadingSpan).not.toBeNull()
             expect(chrome.tabs.query).toHaveBeenCalled()
-            expect(mockSendMessage).toHaveBeenCalledWith(1, {message: 'analyzeStoryDescription'})
+            expect(chrome.tabs.sendMessage).toHaveBeenCalledWith(1, {message: 'analyzeStoryDescription'})
             expect(eventModule.sendEvent).toHaveBeenCalledWith('analyze_story_details')
         })
     })
 
     describe('processOpenAIResponse', () => {
         it('should handle OpenAIResponseCompleted message', async () => {
-            await OpenAI.processOpenAIResponse({message: 'OpenAIResponseCompleted'})
+            await AiFunctions.processOpenAIResponse({type: 'OpenAIResponseCompleted'})
 
             const analyzeText = document.getElementById('analyzeText')
             expect(analyzeText.textContent).toBe('Analyze Story')
@@ -62,7 +61,7 @@ describe('OpenAI class', () => {
 
         it('should handle OpenAIResponseFailed message and hide errorState after 6 seconds', async () => {
             jest.useFakeTimers()
-            await OpenAI.processOpenAIResponse({message: 'OpenAIResponseFailed'})
+            await AiFunctions.processOpenAIResponse({type: 'OpenAIResponseFailed'})
 
             const errorState = document.getElementById('errorState')
             expect(utilsModule.sleep).toHaveBeenCalledWith(6000)
