@@ -3,7 +3,7 @@
  */
 import * as eventModule from '../analytics/event'
 import * as utilsModule from '../utils/utils'
-import {OpenAI} from './openAI'
+import {AiFunctions} from './aiFunctions'
 
 jest.mock('../analytics/event', () => ({
     sendEvent: jest.fn()
@@ -41,7 +41,7 @@ describe('OpenAI class', () => {
 
     describe('analyzeStoryDetails', () => {
         it('should append loading spinner and send message to active tab', async () => {
-            await OpenAI.analyzeStoryDetails()
+            await AiFunctions.analyzeStoryDetails()
 
             const loadingSpan = document.getElementById('loadingSpan')
             expect(loadingSpan).not.toBeNull()
@@ -53,7 +53,7 @@ describe('OpenAI class', () => {
 
     describe('processOpenAIResponse', () => {
         it('should handle OpenAIResponseCompleted message', async () => {
-            await OpenAI.processOpenAIResponse({message: 'OpenAIResponseCompleted'})
+            await AiFunctions.processOpenAIResponse({message: 'OpenAIResponseCompleted'})
 
             const analyzeText = document.getElementById('analyzeText')
             expect(analyzeText.textContent).toBe('Analyze Story')
@@ -62,7 +62,7 @@ describe('OpenAI class', () => {
 
         it('should handle OpenAIResponseFailed message and hide errorState after 6 seconds', async () => {
             jest.useFakeTimers()
-            await OpenAI.processOpenAIResponse({message: 'OpenAIResponseFailed'})
+            await AiFunctions.processOpenAIResponse({message: 'OpenAIResponseFailed'})
 
             const errorState = document.getElementById('errorState')
             expect(utilsModule.sleep).toHaveBeenCalledWith(6000)
