@@ -18,5 +18,4 @@ saveButton.addEventListener('click', async function (){
 const changelogButton = document.getElementById('changelog')
 changelogButton.addEventListener('click', async function (){
     await chrome.action.setBadgeText({text: ''})
-    // await chrome.action.setBadgeBackgroundColor({color: ''})
 })
