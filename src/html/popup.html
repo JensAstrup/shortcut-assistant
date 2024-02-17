@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shortcut Assistant</title>
-    <link href="../styles/tailwind.min.css" rel="stylesheet">
-    <script src="../js/tailwind.5"></script>
+    <link href="../styles/output.css" rel="stylesheet">
     <style>
         body {
             width: 300px;
@@ -14,54 +13,68 @@
     </style>
 </head>
 <body class="bg-gray-800 text-white p-4">
-<ul class="flex border-b">
-    <li id="tabActions" class="-mb-px mr-1">
-        <a class="text-white py-2 px-4 inline-block hover:bg-blue-700" href="#">Actions</a>
-    </li>
-    <li id="tabSettings" class="mr-1">
-        <a class="text-white py-2 px-4 inline-block hover:bg-blue-700" href="#">Settings</a>
-    </li>
-</ul>
+<div id="errorState" role="alert" class="alert alert-error flex items-center mb-4" style="display: none">
+  <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+  <span>Error communicating w/ OpenAI. Please try again later.</span>
+</div>
+<div class="tabs tabs-boxed tabs-sm" role="tablist">
+    <a id="actionsTab" role="tab" class="tab tab-active">Actions</a>
+    <a id="settingsTab" role="tab" class="tab">Settings</a>
+    <a id="infoTab" role="tab" class="tab indicator">
+        Info
+        <span class="indicator-item badge badge-secondary"></span>
+    </a>
+</div>
 
 <div id="actionsSection" class="pt-4">
-    <button id="analyzeButton" class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded w-full mb-4">
-        Analyze Story
+    <button id="analyzeButton" class="btn btn-primary btn-sm text-white font-bold  w-full mb-4">
+        <span id="analyzeText">Analyze Story</span>
     </button>
     <textarea id="storyNotes" class="bg-gray-700 text-white font-bold py-2 px-4 rounded w-full" placeholder="Add story notes..."></textarea>
     <div class="text-right">
-        <button style="margin-bottom: 10px; margin-top: 5px" id="saveButton" class="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+        <button style="margin-bottom: 10px; margin-top: 5px" id="saveButton" class="mt-4 btn btn-outline btn-xs text-white font-bold">
             Save
         </button>
     </div>
 
 </div>
 
-<div id="settingsSection" class="hidden pt-4 "  style="margin-bottom: 10px">
-    <div class="flex items-center"  style="margin-bottom: 10px" >
-        <input type="checkbox" id="stalledWorkToggle" class="mr-2" checked>
+<div id="settingsSection" class="hidden pt-4 mb-4"  style="margin-bottom: 10px">
+    <div class="flex items-center form-control"  style="margin-bottom: 10px" >
         <label for="stalledWorkToggle" class="text-white font-bold">
-            Stalled Work Warnings
+        <input type="checkbox" id="stalledWorkToggle" class="checkbox checkbox-xs" checked>
+            <span class="label-text">&nbsp;Stalled Work Warnings</span>
         </label>
     </div>
-    <div class="flex items-center"  style="margin-bottom: 10px" >
-        <input type="checkbox" id="todoistOptions" class="mr-2" checked>
+    <div class="flex items-center form-control"  style="margin-bottom: 10px" >
         <label for="todoistOptions" class="text-white font-bold">
-            Todoist Options
+        <input type="checkbox" id="todoistOptions" class="checkbox checkbox-xs" checked>
+            <span class="label-text">&nbsp;Todoist Shortcuts</span>
         </label>
     </div>
-    <div class="mb-4">
-        <input id="openAIToken" type="password" class="bg-gray-700 text-white font-bold py-2 px-4 rounded w-full" placeholder="API Key">
+    <div class="flex items-center">
+        <input id="openAIToken" type="password" class="input input-sm input-bordered flex mr-4 mb-2" placeholder="OpenAI API Key">
         <div class="text-right">
-            <button style="margin-bottom: 10px; margin-top: 5px" id="authButton" class="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                Auth
-            </button>
-            <button style="margin-bottom: 10px; margin-top: 5px" id="saveKeyButton" class="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            <button style="margin-bottom: 10px; margin-top: 5px" id="saveKeyButton" class="btn btn-outline btn-xs">
                 Save
             </button>
         </div>
     </div>
-
 </div>
+
+<div id="infoSection" class="hidden pt-4" style="margin-bottom: 10px">
+    <div class="text-center mb-4">
+        <h3 class="text-lg font-bold text-white mb-2">Extension Information</h3>
+        <p id="versionInfo" class="text-gray-400"></p>
+        <a id="changelog" class="text-gray-400 hover:text-white cursor-pointer" href="updated.html" target="_top">What's New</a>
+
+    </div>
+    <div class="flex justify-center items-center gap-2">
+        <a href="https://github.com/JensAstrup/shortcut-assistant" target="_blank" class="btn btn-outline btn-sm mb-2">GitHub Homepage</a>
+        <a href="https://github.com/JensAstrup/shortcut-assistant/blob/main/docs/privacy.md" target="_blank" class="btn btn-outline btn-sm mb-2">Privacy Policy</a>
+    </div>
+</div>
+
 
 </body>
     <script src="../build/popup/bundle.js"></script>

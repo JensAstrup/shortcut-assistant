@@ -5,3 +5,5 @@
 /src/coverage/
 *.env*
 !.env.example
+/dist/*
+src/styles/output.css

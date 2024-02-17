@@ -5,6 +5,7 @@ import {sendEvent} from '../analytics/event'
 import {fetchCompletion} from './fetch_completion'
 import {OpenAIError} from '../errors'
 import {onInstallAndUpdate} from './onInstallAndUpdate'
+import {SlugManager} from './slugManager'
 
 
 const manifestData = chrome.runtime.getManifest();
@@ -59,7 +60,7 @@ async function getCompletionFromProxy(description){
         const data = await response.json()
         return data.content
     } catch (error) {
-        throw OpenAIError('Error getting completion from proxy:', error);
+        throw new OpenAIError('Error getting completion from proxy:', error);
     }
 }
 
@@ -72,16 +73,17 @@ export async function callOpenAI(description, tabId){
     if (!token) {
         messagesData = await getCompletionFromProxy(description)
         message = messagesData
+        chrome.tabs.sendMessage(tabId, {type: 'updateOpenAiResponse', 'data': message})
+        chrome.runtime.sendMessage({type: 'OpenAIResponseCompleted'})
+        return message
     }
     else {
         try {
             await fetchCompletion(description, tabId)
         } catch (e) {
-            throw OpenAIError('Error getting completion from OpenAI:', e);
+            throw new OpenAIError('Error getting completion from OpenAI:', e);
         }
     }
-    chrome.tabs.sendMessage(tabId, {'message': 'setOpenAiResponse', 'data': message})
-    return message
 }
 
 
@@ -92,7 +94,11 @@ if (typeof self !== 'undefined' && self instanceof ServiceWorkerGlobalScope) {
                 if (response) {
                     sendResponse({data: response});
                 }
-            });
+            }).catch(e => {
+                console.error('Error calling OpenAI:', e);
+                sendResponse({error: e});
+                chrome.runtime.sendMessage({message: 'OpenAIResponseFailed'})
+            })
             return true; // Keep the message channel open for the async response
         }
         if (request.message === 'getOpenAiToken') {
@@ -112,34 +118,43 @@ if (typeof self !== 'undefined' && self instanceof ServiceWorkerGlobalScope) {
 
 chrome.runtime.onInstalled.addListener(onInstallAndUpdate)
 
-chrome.tabs.onUpdated.addListener(async function
-        (tabId, changeInfo, tab) {
+chrome.tabs.onUpdated.addListener(async function (tabId, changeInfo, tab){
         if (changeInfo.url && changeInfo.url.includes('app.shortcut.com')) {
+            SlugManager.refreshCompanySlug(tabId, changeInfo).catch(e => {
+                console.error('Error refreshing company slug:', e)
+                Sentry.captureException(e)
+            })
             chrome.tabs.sendMessage(tabId, {
                 message: 'update',
                 url: changeInfo.url
-            });
+            })
             const enableStalledWorkWarnings = await getSyncedSetting('enableStalledWorkWarnings', true)
             if (enableStalledWorkWarnings) {
                 chrome.tabs.sendMessage(tabId, {
                     message: 'initDevelopmentTime',
                     url: changeInfo.url
-                });
-                sendEvent('init_development_time')
+                })
+                sendEvent('init_development_time').catch(e => {
+                    console.error('Error sending event:', e)
+                    Sentry.captureException(e)
+                })
             }
             const enableTodoistOptions = await getSyncedSetting('enableTodoistOptions', false)
             if (enableTodoistOptions) {
                 chrome.tabs.sendMessage(tabId, {
                     message: 'initTodos',
                     url: changeInfo.url
-                });
-                sendEvent('init_todos')
+                })
+                sendEvent('init_todos').catch(e => {
+                    console.error('Error sending event:', e)
+                    Sentry.captureException(e)
+                })
             }
             chrome.tabs.sendMessage(tabId, {
                 message: 'initNotes',
                 data: await getNotes(),
                 url: changeInfo.url
-            });
+            })
         }
     }
-);
+)
