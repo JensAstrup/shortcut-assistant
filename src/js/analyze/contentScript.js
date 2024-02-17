@@ -43,11 +43,10 @@ async function clearCommentBox(){
 export async function analyzeStoryDescription(activeTabUrl){
     if (activeTabUrl.includes('story')) {
         const description = extractStoryDescription()
-        const response = await chrome.runtime.sendMessage({
+        await chrome.runtime.sendMessage({
             action: 'callOpenAI',
             data: {prompt: description}
         })
-        populateCommentBox(response.data).catch(logError)
     }
 }
 
