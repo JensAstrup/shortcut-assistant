@@ -1,7 +1,7 @@
 /**
  * @jest-environment jsdom
  */
-import {Story} from './Story'
+import {Story} from './story'
 
 
 describe('Story Class', () => {
