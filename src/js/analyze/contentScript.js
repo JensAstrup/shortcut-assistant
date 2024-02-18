@@ -2,7 +2,7 @@ import {logError, sleep} from '../utils/utils'
 
 
 export class CommentBox{
-    static resizeTextareaToFitContent(textarea){
+    static resizeToFitContent(textarea){
         textarea.style.height = 'auto'
         textarea.style.height = textarea.scrollHeight + 'px'
     }
@@ -18,8 +18,8 @@ export class CommentBox{
         return inputFieldParent
     }
 
-    static async populate(response){
-        if (response === undefined) {
+    static async populate(text){
+        if (text === undefined) {
             return
         }
 
@@ -28,14 +28,14 @@ export class CommentBox{
         if (!commentBox.value.includes(content)) {
             commentBox.value = content
         }
-        commentBox.value = commentBox.value + response
-        this.resizeTextareaToFitContent(commentBox)
+        commentBox.value = commentBox.value + text
+        this.resizeToFitContent(commentBox)
     }
 
     static async clear(){
         const commentBox = await this.getCommentBox()
         commentBox.value = ''
-        this.resizeTextareaToFitContent(commentBox)
+        this.resizeToFitContent(commentBox)
     }
 }
 

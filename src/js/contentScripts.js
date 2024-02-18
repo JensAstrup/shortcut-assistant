@@ -1,10 +1,11 @@
+import * as Sentry from '@sentry/browser'
+
 import {initTodos} from './todoist/contentScript'
 import {logError, sleep} from './utils/utils'
 import {getSyncedSetting} from './serviceWorker/utils'
 import {setCycleTime} from './cycleTime/contentScript'
 import {checkDevelopmentTime} from './developmentTime/contentScript'
 import {setNoteContentIfDataExists} from './notes/contentScript'
-import * as Sentry from '@sentry/browser'
 import {analyzeStoryDescription} from './analyze/analyzeStoryDescription'
 
 
