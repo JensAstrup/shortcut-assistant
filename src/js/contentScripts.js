@@ -1,10 +1,10 @@
 import * as Sentry from '@sentry/browser'
 
+import {DevelopmentTime} from './developmentTime/developmentTime'
 import {initTodos} from './todoist/contentScript'
 import {logError, sleep} from './utils/utils'
 import {getSyncedSetting} from './serviceWorker/utils'
 import {setCycleTime} from './cycleTime/contentScript'
-import {checkDevelopmentTime} from './developmentTime/contentScript'
 import {setNoteContentIfDataExists} from './notes/contentScript'
 import {analyzeStoryDescription} from './analyze/analyzeStoryDescription'
 
@@ -26,7 +26,7 @@ async function activate(){
 
     const enableStalledWorkWarnings = await getSyncedSetting('enableStalledWorkWarnings', true)
     if (enableStalledWorkWarnings) {
-        checkDevelopmentTime().catch((error) => {
+        DevelopmentTime.set().catch((error) => {
             console.error(error)
         })
     }
@@ -45,7 +45,7 @@ chrome.runtime.onMessage.addListener(
     async function (request, sender, sendResponse){
         const activeTabUrl = window.location.href
         if (request.message === 'initDevelopmentTime' && request.url.includes('story')) {
-            checkDevelopmentTime().catch(logError)
+            DevelopmentTime.set().catch(logError)
             setCycleTime().catch(logError)
         }
         if (request.message === 'analyzeStoryDescription') {

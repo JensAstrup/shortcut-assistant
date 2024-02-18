@@ -28,7 +28,7 @@ module.exports = {
             './js/notes/contentScript.js',
             './js/cycleTime/contentScript.js',
             './js/todoist/contentScript.js',
-            './js/developmentTime/contentScript.js',
+            './js/developmentTime/developmentTime.js',
             './js/contentScripts.js',
         ],
         'analytics': [

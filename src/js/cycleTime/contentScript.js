@@ -1,6 +1,6 @@
+import {hoursBetweenExcludingWeekends} from '../utils/hoursBetweenExcludingWeekends'
+import {Story} from '../utils/story'
 import {storyPageIsReady} from '../utils/utils';
-import {hoursBetweenExcludingWeekends, isInState} from '../developmentTime/contentScript'
-import {getDateInState} from "../developmentTime/getDateInState";
 
 
 export function clearCycleTime() {
@@ -14,12 +14,12 @@ export function clearCycleTime() {
 export async function setCycleTime(){
     await storyPageIsReady()
     clearCycleTime();
-    const isCompleted = isInState('Completed')
+    const isCompleted = Story.isInState('Completed')
     if(!isCompleted){
         return;
     }
     const createdDiv = document.querySelector('.story-date-created')
-    const inDevelopmentDateString = getDateInState('In Development')
+    const inDevelopmentDateString = Story.getDateInState('In Development')
     const completedDiv = document.querySelector('.story-date-completed')
     const completedDateString = completedDiv.querySelector('.value').innerHTML
 
