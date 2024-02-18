@@ -3,19 +3,20 @@ import {logError, sleep} from './utils/utils'
 import {getSyncedSetting} from './serviceWorker/utils'
 import {setCycleTime} from './cycleTime/contentScript'
 import {checkDevelopmentTime} from './developmentTime/contentScript'
-import {analyzeStoryDescription} from './analyze/contentScript'
 import {setNoteContentIfDataExists} from './notes/contentScript'
 import * as Sentry from '@sentry/browser'
+import {analyzeStoryDescription} from './analyze/analyzeStoryDescription'
+
 
 const manifestData = chrome.runtime.getManifest()
 Sentry.init({
     dsn: 'https://966b241d3d57856bd13a0945fa9fa162@o49777.ingest.sentry.io/4506624214368256',
     release: manifestData.version,
-    environment: process.env.NODE_ENV,
+    environment: process.env.NODE_ENV
 })
 
 
-async function activate() {
+async function activate(){
     await sleep(3000)
 
     setCycleTime().catch((error) => {
@@ -40,7 +41,7 @@ async function activate() {
 }
 
 chrome.runtime.onMessage.addListener(
-    async function (request, sender, sendResponse) {
+    async function (request, sender, sendResponse){
         const activeTabUrl = window.location.href
         if (request.message === 'initDevelopmentTime' && request.url.includes('story')) {
             checkDevelopmentTime().catch(logError)
