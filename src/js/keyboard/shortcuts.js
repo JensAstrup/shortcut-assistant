@@ -6,18 +6,17 @@ export class Shortcuts extends KeyboardHandler {
   predefinedShortcuts = [
     {key: 's', shiftKey: true, func: this.changeStatus},
     {key: 'i', shiftKey: true, func: this.changeIteration},
+    {key: '.', metaKey: true, func: this.copyGitBranch}
   ]
 
   constructor() {
     super()
     this.predefinedShortcuts.forEach(shortcut => {
-      const shortcutKey = this.constructShortcutKey(shortcut)
-      this.registerShortcut(shortcutKey, shortcut.func.bind(this))
+      this.registerShortcut(shortcut)
     })
   }
 
   async changeStatus() {
-    console.log('Status changed')
     const dropdown = document.getElementById('story-dialog-state-dropdown')
     if (dropdown) {
       dropdown.click()
@@ -28,6 +27,7 @@ export class Shortcuts extends KeyboardHandler {
       input.focus()
     }
   }
+
   async changeIteration() {
     const iterationSelect = document.querySelector('[data-perma-id="iteration-select"]')
     const childButton = iterationSelect.querySelector('[role="button"]')
@@ -43,5 +43,13 @@ export class Shortcuts extends KeyboardHandler {
       input.value = ''
       input.focus()
     }
+  }
+
+  async copyGitBranch() {
+    const gitHelpers = document.getElementById('open-git-helpers-dropdown')
+    gitHelpers.click()
+    const branchName = document.querySelector('.git-branch').value
+    await navigator.clipboard.writeText(branchName)
+    gitHelpers.click()
   }
 }

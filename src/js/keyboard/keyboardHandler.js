@@ -7,34 +7,29 @@ export class KeyboardHandler {
     document.addEventListener('keydown', this.handleKeyDown.bind(this))
   }
 
-  registerShortcut(shortcutKey, callback) {
-    if (!this.shortcuts.has(shortcutKey)) {
-      this.shortcuts.set(shortcutKey, [])
-    }
-    this.shortcuts.get(shortcutKey).push(callback)
+  serializeShortcut({key, metaKey, shiftKey, altKey, ctrlKey}) {
+    return `${key.toLowerCase()}-${metaKey ? '1' : '0'}-${shiftKey ? '1' : '0'}-${altKey ? '1' : '0'}-${ctrlKey ? '1' : '0'}`
+  }
+
+  registerShortcut(shortcut) {
+    const serializedKey = this.serializeShortcut(shortcut)
+    this.shortcuts.set(serializedKey, shortcut.func)
   }
 
   handleKeyDown(event) {
-    const shortcutKey = this.constructShortcutKeyFromEvent(event)
-    if (this.shortcuts.has(shortcutKey)) {
-      this.shortcuts.get(shortcutKey).forEach(callback => {
-        callback()
-      })
+    const serializedEventKey = this.serializeShortcut({
+      key: event.key,
+      metaKey: event.metaKey,
+      shiftKey: event.shiftKey,
+      altKey: event.altKey,
+      ctrlKey: event.ctrlKey
+    })
+
+    if (this.shortcuts.has(serializedEventKey)) {
+      event.preventDefault()
+      const func = this.shortcuts.get(serializedEventKey)
+      func()
     }
-  }
-
-  constructShortcutKey(shortcut) {
-    return `${shortcut.shiftKey ? 'Shift+' : ''}${shortcut.key}`
-  }
-
-  constructShortcutKeyFromEvent(event) {
-    let parts = []
-    if (event.shiftKey) parts.push('Shift')
-    if (event.ctrlKey) parts.push('Ctrl')
-    if (event.altKey) parts.push('Alt')
-    if (event.metaKey) parts.push('Meta')
-    parts.push(event.key.toLowerCase()) // Ensure lowercase for consistency
-    return parts.join('+')
   }
 
 }
