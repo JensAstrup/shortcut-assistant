@@ -33,8 +33,6 @@
   "omnibox": { "keyword" : "sc" },
   "permissions": [
     "activeTab",
-    "gcm",
-    "scripting",
     "storage",
     "tabs"
   ],
