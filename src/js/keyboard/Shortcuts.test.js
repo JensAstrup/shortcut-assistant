@@ -1,7 +1,7 @@
 /**
  * @jest-environment jsdom
  */
-import {Shortcuts} from './Shortcuts'
+import {Shortcuts} from './shortcuts'
 
 
 jest.mock('../utils/utils', () => ({
