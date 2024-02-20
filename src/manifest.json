@@ -33,10 +33,8 @@
   "omnibox": { "keyword" : "sc" },
   "permissions": [
     "activeTab",
-    "gcm",
-    "scripting",
     "storage",
     "tabs"
   ],
-  "version": "2.2.1.1"
+  "version": "2.2.1.2"
 }
