@@ -97,10 +97,12 @@ export class KeyboardShortcuts {
     if (iterationSelect && childButton) {
       iterationSelect.click()
       const iterationPopup = document.querySelector('.iteration-selector')
-      const input = iterationPopup.querySelector('.autocomplete-input')
-      await sleep(100)
-      input.value = ''
-      input.focus()
+      if (iterationPopup) {
+        const input = iterationPopup.querySelector('.autocomplete-input')
+        await sleep(100)
+        input.value = ''
+        input.focus()
+      }
     }
   }
 

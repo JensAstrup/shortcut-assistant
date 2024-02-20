@@ -123,6 +123,32 @@ describe('Shortcuts', () => {
     expect(mockInput.focus).not.toHaveBeenCalled()
   })
 
+  test('changeIteration function with no popup', async () => {
+    const mockChildButton = {click: jest.fn()}
+    const mockedIterationSelect = {
+      querySelector: jest.fn().mockReturnValue(mockChildButton),
+      click: jest.fn()
+    }
+    const mockInput = {focus: jest.fn(), value: ''}
+    const mockedIterationPopup = null
+
+    document.querySelector.mockImplementation((selector) => {
+      if (selector === '[data-perma-id="iteration-select"]') {
+        return mockedIterationSelect
+      }
+      else if (selector === '.iteration-selector') {
+        return mockedIterationPopup
+      }
+    })
+
+    await instance.changeIteration()
+
+    expect(mockedIterationSelect.querySelector).toHaveBeenCalledWith('[role="button"]')
+    expect(mockChildButton.click).toHaveBeenCalled()
+    expect(mockedIterationSelect.click).toHaveBeenCalled()
+    expect(mockInput.focus).not.toHaveBeenCalled()
+  })
+
   test('copyGitBranch function', async () => {
     const mockedGitHelpers = {click: jest.fn()}
     const mockedBranch = {value: ''}
