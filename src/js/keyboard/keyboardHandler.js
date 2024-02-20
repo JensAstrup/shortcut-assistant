@@ -13,7 +13,7 @@ export class KeyboardHandler {
 
   registerShortcut(shortcut) {
     const serializedKey = this.serializeShortcut(shortcut)
-    this.shortcuts.set(serializedKey, shortcut.func)
+    this.shortcuts.set(serializedKey, shortcut.func.bind(this))
   }
 
   handleKeyDown(event) {
