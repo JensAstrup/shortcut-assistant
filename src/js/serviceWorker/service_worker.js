@@ -1,3 +1,4 @@
+import {getOrCreateClientId} from '../analytics/clientId'
 import {getSyncedSetting} from './utils.js'
 import {getNotes} from './notes'
 import * as Sentry from '@sentry/browser'
@@ -41,7 +42,7 @@ export async function getOpenAiToken() {
 async function getCompletionFromProxy(description){
     try {
         const url = process.env.PROXY_URL
-        const instanceId = await chrome.instanceID.getID()
+        const instanceId = await getOrCreateClientId()
         const response = await fetch(url, {
             method: 'POST',
             body: JSON.stringify({
