@@ -1,7 +1,7 @@
 /**
  * @jest-environment jsdom
  */
-import {Shortcuts} from './shortcuts'
+import {KeyboardShortcuts} from './keyboardShortcuts'
 
 
 jest.mock('../utils/utils', () => ({
@@ -12,10 +12,8 @@ describe('Shortcuts', () => {
   let instance
 
   beforeEach(() => {
-    instance = new Shortcuts()
     document.getElementById = jest.fn()
     document.querySelector = jest.fn()
-    jest.clearAllMocks()
   })
 
   afterEach(() => {
@@ -31,7 +29,7 @@ describe('Shortcuts', () => {
       }
     }
 
-    instance = new Shortcuts()
+    instance = new KeyboardShortcuts()
 
     document.getElementById.mockReturnValueOnce(mockedDropdown)
     document.querySelector.mockReturnValueOnce(mockedPopup)
@@ -46,7 +44,7 @@ describe('Shortcuts', () => {
   })
 
   test('changeStatus function with no dropdown', async () => {
-    instance = new Shortcuts()
+    instance = new KeyboardShortcuts()
 
     document.getElementById.mockReturnValueOnce(null)
 
@@ -59,7 +57,7 @@ describe('Shortcuts', () => {
     const mockedPopup = {querySelector: jest.fn()}
     const mockedInput = null
 
-    instance = new Shortcuts()
+    instance = new KeyboardShortcuts()
 
     document.getElementById.mockReturnValueOnce(mockedDropdown)
     document.querySelector.mockReturnValueOnce(mockedPopup)
@@ -179,8 +177,8 @@ describe('Shortcuts', () => {
   })
 
   test('copyBranchAndMoveToInDevelopment function', async () => {
-    const mockChangeStatus = jest.spyOn(Shortcuts.prototype, 'changeStatus')
-    const mockCopyGitBranch = jest.spyOn(Shortcuts.prototype, 'copyGitBranch')
+    const mockChangeStatus = jest.spyOn(KeyboardShortcuts.prototype, 'changeStatus')
+    const mockCopyGitBranch = jest.spyOn(KeyboardShortcuts.prototype, 'copyGitBranch')
 
     const statusDiv = {click: jest.fn()}
     instance._getStatusDivWithText = jest.fn().mockReturnValue(statusDiv)
@@ -197,8 +195,8 @@ describe('Shortcuts', () => {
   })
 
   test('copyBranchAndMoveToInDevelopment function with no statusDiv', async () => {
-    const mockChangeStatus = jest.spyOn(Shortcuts.prototype, 'changeStatus')
-    const mockCopyGitBranch = jest.spyOn(Shortcuts.prototype, 'copyGitBranch')
+    const mockChangeStatus = jest.spyOn(KeyboardShortcuts.prototype, 'changeStatus')
+    const mockCopyGitBranch = jest.spyOn(KeyboardShortcuts.prototype, 'copyGitBranch')
 
     instance._getStatusDivWithText = jest.fn().mockReturnValue(null)
 

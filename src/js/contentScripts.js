@@ -7,7 +7,7 @@ import {getSyncedSetting} from './serviceWorker/utils'
 import {setCycleTime} from './cycleTime/contentScript'
 import {setNoteContentIfDataExists} from './notes/contentScript'
 import {analyzeStoryDescription} from './analyze/analyzeStoryDescription'
-import {Shortcuts} from './keyboard/shortcuts'
+import {KeyboardShortcuts} from './keyboard/keyboardShortcuts'
 
 const manifestData = chrome.runtime.getManifest()
 Sentry.init({
@@ -40,7 +40,7 @@ async function activate(){
     console.error(error)
   })
 
-  new Shortcuts().activate()
+  new KeyboardShortcuts().activate()
 
 }
 

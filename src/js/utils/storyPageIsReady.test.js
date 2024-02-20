@@ -8,10 +8,6 @@ document.querySelector = jest.fn((selector) => {
     return (selector === '.story-name') ? {} : null;
 });
 
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 describe('storyPageIsReady', () => {
     it('should resolve to true when a story title can be found on the page', async () => {
         await expect(storyPageIsReady()).resolves.toBe(true);
