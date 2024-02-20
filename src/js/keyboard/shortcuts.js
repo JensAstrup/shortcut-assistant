@@ -1,4 +1,4 @@
-import {sleep} from 'openai/core'
+import {sleep} from '../utils/utils'
 import {KeyboardHandler} from './keyboardHandler'
 
 
@@ -7,7 +7,7 @@ export class Shortcuts extends KeyboardHandler {
     {key: 's', shiftKey: true, func: this.changeStatus},
     {key: 'i', shiftKey: true, func: this.changeIteration},
     {key: '.', metaKey: true, func: this.copyGitBranch},
-    {key: '.', metaKey: true, shiftKey: true, func: this.copyBranchAndMoveToInProgress}
+    {key: '.', metaKey: true, shiftKey: true, func: this.copyBranchAndMoveToInDevelopment}
   ]
 
   constructor() {
@@ -34,11 +34,12 @@ export class Shortcuts extends KeyboardHandler {
   async changeIteration() {
     const iterationSelect = document.querySelector('[data-perma-id="iteration-select"]')
     const childButton = iterationSelect.querySelector('[role="button"]')
+
     if (childButton) {
       childButton.click()
     }
 
-    if (iterationSelect) {
+    if (iterationSelect && childButton) {
       iterationSelect.click()
       const iterationPopup = document.querySelector('.iteration-selector')
       const input = iterationPopup.querySelector('.autocomplete-input')
@@ -57,30 +58,28 @@ export class Shortcuts extends KeyboardHandler {
   }
 
   _getStatusDivWithText(text) {
-  const parentDiv = document.querySelector('.list.apply-on-click');
-
-  if (parentDiv) {
-    const childDivs = parentDiv.querySelectorAll('div[data-i]');
-
-    for (const div of childDivs) {
-      if (div.innerText.trim() === text) {
-        console.log('Found a div with inner text ' + text);
-        return div
+    const parentDiv = document.querySelector('.list.apply-on-click')
+    if (parentDiv) {
+      const childDivs = parentDiv.querySelectorAll('div[data-i]')
+      for (const div of childDivs) {
+        if (div.innerText.trim() === text) {
+          return div
+        }
       }
     }
-  } else {
-    console.error('The parent div with class "list apply-on-click" was not found.');
+    else {
+      console.error('The parent div with class "list apply-on-click" was not found.')
+    }
+    return null
   }
-  return null
-}
 
-  async copyBranchAndMoveToInProgress() {
+  async copyBranchAndMoveToInDevelopment() {
     await this.copyGitBranch()
     this.changeStatus().then(() => {
-        const statusDiv = this._getStatusDivWithText('In Development')
-        if (statusDiv) {
-          statusDiv.click()
-        }
+      const statusDiv = this._getStatusDivWithText('In Development')
+      if (statusDiv) {
+        statusDiv.click()
+      }
     })
   }
 }
