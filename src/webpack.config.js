@@ -26,7 +26,7 @@ module.exports = {
         'contentScripts/bundle': [
             './js/analyze/contentScript.js',
             './js/notes/contentScript.js',
-            './js/cycleTime/contentScript.js',
+            './js/cycleTime/cycleTime.js',
             './js/todoist/contentScript.js',
             './js/developmentTime/developmentTime.js',
             './js/contentScripts.js',
