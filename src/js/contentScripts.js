@@ -9,6 +9,7 @@ import {setNoteContentIfDataExists} from './notes/contentScript'
 import {analyzeStoryDescription} from './analyze/analyzeStoryDescription'
 import {KeyboardShortcuts} from './keyboard/keyboardShortcuts'
 
+
 const manifestData = chrome.runtime.getManifest()
 Sentry.init({
   dsn: 'https://966b241d3d57856bd13a0945fa9fa162@o49777.ingest.sentry.io/4506624214368256',
@@ -17,7 +18,7 @@ Sentry.init({
 })
 
 
-async function activate(){
+async function activate() {
   await sleep(3000)
 
   CycleTime.set().catch((error) => {
@@ -45,7 +46,7 @@ async function activate(){
 }
 
 chrome.runtime.onMessage.addListener(
-  async function (request, sender, sendResponse){
+  async function (request, sender, sendResponse) {
     const activeTabUrl = window.location.href
     if (request.message === 'initDevelopmentTime' && request.url.includes('story')) {
       DevelopmentTime.set().catch(logError)
