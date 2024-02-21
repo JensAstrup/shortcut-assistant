@@ -4,10 +4,11 @@ import {DevelopmentTime} from './developmentTime/developmentTime'
 import {initTodos} from './todoist/contentScript'
 import {logError, sleep} from './utils/utils'
 import {getSyncedSetting} from './serviceWorker/utils'
-import {setCycleTime} from './cycleTime/contentScript'
+import {CycleTime} from './cycleTime/cycleTime'
 import {setNoteContentIfDataExists} from './notes/contentScript'
 import {analyzeStoryDescription} from './analyze/analyzeStoryDescription'
 import {KeyboardShortcuts} from './keyboard/keyboardShortcuts'
+
 
 const manifestData = chrome.runtime.getManifest()
 Sentry.init({
@@ -17,10 +18,10 @@ Sentry.init({
 })
 
 
-async function activate(){
+async function activate() {
   await sleep(3000)
 
-  setCycleTime().catch((error) => {
+  CycleTime.set().catch((error) => {
     console.error(error)
   })
 
@@ -45,11 +46,11 @@ async function activate(){
 }
 
 chrome.runtime.onMessage.addListener(
-  async function (request, sender, sendResponse){
+  async function (request, sender, sendResponse) {
     const activeTabUrl = window.location.href
     if (request.message === 'initDevelopmentTime' && request.url.includes('story')) {
       DevelopmentTime.set().catch(logError)
-      setCycleTime().catch(logError)
+      CycleTime.set().catch(logError)
     }
     if (request.message === 'analyzeStoryDescription') {
       await analyzeStoryDescription(activeTabUrl)
