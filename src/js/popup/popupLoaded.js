@@ -8,6 +8,7 @@ import {
 } from '../analytics/config'
 import {getOrCreateClientId} from '../analytics/clientId'
 import {getOrCreateSessionId} from '../analytics/sessionId'
+import {NotesPopup} from '../notes/privateNotes'
 import {getSyncedSetting} from '../serviceWorker/utils'
 import {setSectionDisplay} from './popup'
 
@@ -52,6 +53,8 @@ export async function popupLoaded(){
     const versionSpan = document.getElementById('versionInfo')
     const version = await chrome.runtime.getManifest().version
     versionSpan.textContent = `Version: ${version}`
+    new NotesPopup()
+
 }
 
 export async function trackPopupViewEvent(){

@@ -1,78 +1,69 @@
-import {sleep} from "../utils/utils";
+import {getStoryId} from '../utils/getStoryId'
+import {sleep} from '../utils/utils'
 
-function getStoryNotesInput() {
-    return document.getElementById('storyNotes');
-}
 
-function getNotesKey(storyId) {
-    return "notes_" + storyId;
-}
+export class NotesPopup {
+  constructor() {
+    const notesSaveButton = document.getElementById('saveButton')
+    notesSaveButton.addEventListener('click', this.save.bind(this))
 
-function getActiveTabUrl() {
-    return new Promise((resolve, reject) => {
-        chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
-            if (chrome.runtime.lastError) {
-                reject(chrome.runtime.lastError);
-            } else if (tabs.length === 0) {
-                reject(new Error("No active tab found"));
-            } else {
-                let activeTabUrl = tabs[0].url;
-                resolve(activeTabUrl);
-            }
-        });
-    });
-}
+    document.addEventListener('DOMContentLoaded', this.onPageLoad.bind(this))
+    this.set().catch(console.error)
+  }
 
-async function getStoryId() {
-    const url = await getActiveTabUrl();
-    const match = url.match(/\/story\/(\d+)/);
+  async onPageLoad() {
+    try {
+      const storyNotesInput = this.getInput()
 
-    return match ? match[1] : null;
-}
+      function autoExpandTextarea() {
+        // Reset the height to ensure the scrollHeight includes only the content
+        this.style.height = 'auto'
+        // Set the height to the scrollHeight to expand the textarea
+        this.style.height = (this.scrollHeight) + 'px'
+      }
 
-async function fetchAndSetNotes() {
-    const key = getNotesKey(await getStoryId());
-    const storyNotesInput = getStoryNotesInput();
+      storyNotesInput.addEventListener('input', autoExpandTextarea)
 
-    chrome.storage.sync.get(key).then((result) => {
-        const value = result[key];
-        if (value !== undefined) {
-            storyNotesInput.value = value;
-        }
-    });
-}
+    } catch {
+      return
+    }
 
-const notesSaveButton = document.getElementById('saveButton');
-notesSaveButton.addEventListener('click', async function () {
-    const data = {[getNotesKey(await getStoryId())]: getStoryNotesInput().value};
-    await chrome.storage.sync.set(data);
+    await this.set()
+  }
+
+  async save() {
+    const notesSaveButton = document.getElementById('saveButton')
+    const data = {[this.getKey(await getStoryId())]: this.getInput().value}
+    await chrome.storage.sync.set(data)
     notesSaveButton.textContent = 'Saved!'
     await sleep(2000)
     notesSaveButton.textContent = 'Save'
-});
+  }
 
-document.addEventListener('DOMContentLoaded', function () {
-    try {
-        const storyNotesInput = getStoryNotesInput();
+  getInput() {
+    return document.getElementById('storyNotes')
+  }
 
-        function autoExpandTextarea() {
-            // Reset the height to ensure the scrollHeight includes only the content
-            this.style.height = 'auto';
-            // Set the height to the scrollHeight to expand the textarea
-            this.style.height = (this.scrollHeight) + 'px';
-        }
+  getKey(storyId) {
+    return 'notes_' + storyId
+  }
 
-        storyNotesInput.addEventListener('input', autoExpandTextarea);
-
-    } catch {
-        return;
+  async set() {
+    const key = this.getKey(await getStoryId())
+    const storyNotesInput = this.getInput()
+    const result = await chrome.storage.sync.get(key)
+    const value = result[key]
+    if (value !== undefined) {
+      storyNotesInput.value = value
     }
+  }
+}
 
-    fetchAndSetNotes();
-});
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    if (message.message === "checkNotes") {
-        fetchAndSetNotes();
-    }
-});
+
+chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
+  if (message.message === 'checkNotes') {
+    const notes = new NotesPopup()
+    await notes.set()
+  }
+})
 
