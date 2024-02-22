@@ -1,11 +1,11 @@
 import * as Sentry from '@sentry/browser'
 
 import {DevelopmentTime} from './developmentTime/developmentTime'
+import {NotesButton} from './notes/notesButton'
 import {initTodos} from './todoist/contentScript'
 import {logError, sleep} from './utils/utils'
 import {getSyncedSetting} from './serviceWorker/utils'
 import {CycleTime} from './cycleTime/cycleTime'
-import {setNoteContentIfDataExists} from './notes/contentScript'
 import {analyzeStoryDescription} from './analyze/analyzeStoryDescription'
 import {KeyboardShortcuts} from './keyboard/keyboardShortcuts'
 
@@ -37,10 +37,7 @@ async function activate() {
       console.error(error)
     })
   }
-  setNoteContentIfDataExists().catch((error) => {
-    console.error(error)
-  })
-
+  new NotesButton()
   new KeyboardShortcuts().activate()
 
 }
@@ -56,7 +53,7 @@ chrome.runtime.onMessage.addListener(
       await analyzeStoryDescription(activeTabUrl)
     }
     if (request.message === 'initNotes' && request.url.includes('story')) {
-      setNoteContentIfDataExists(request.data).catch(logError)
+      new NotesButton()
     }
     if (request.message === 'initTodos' && request.url.includes('story')) {
       initTodos().catch(logError)

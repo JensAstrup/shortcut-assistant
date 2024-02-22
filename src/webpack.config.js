@@ -10,7 +10,6 @@ module.exports = {
 
   entry: {
     'analyze/analyze': './js/analyze/analyze.js',
-    'notes/privateNotes': './js/notes/privateNotes.js',
     'popup/bundle': [
       './js/popup/popup.js',
       './js/popup/popupLoaded.js',
@@ -25,7 +24,7 @@ module.exports = {
     ],
     'contentScripts/bundle': [
       './js/analyze/contentScript.js',
-      './js/notes/contentScript.js',
+      './js/notes/notesButton.js',
       './js/cycleTime/cycleTime.js',
       './js/todoist/contentScript.js',
       './js/developmentTime/developmentTime.js',
