@@ -8,7 +8,7 @@ import {
 } from '../analytics/config'
 import {getOrCreateClientId} from '../analytics/clientId'
 import {getOrCreateSessionId} from '../analytics/sessionId'
-import {NotesPopup} from '../notes/privateNotes'
+import {NotesPopup} from '../notes/notesPopup'
 import {getSyncedSetting} from '../serviceWorker/utils'
 import {setSectionDisplay} from './popup'
 

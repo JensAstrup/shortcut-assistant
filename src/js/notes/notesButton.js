@@ -1,7 +1,7 @@
 import {getDescriptionButtonContainer, logError} from '../utils/utils'
 
 
-export class Notes {
+export class NotesButton {
   constructor() {
     if (window.location.href.includes('story')) {
       this.setContentIfDataExists().catch(logError)

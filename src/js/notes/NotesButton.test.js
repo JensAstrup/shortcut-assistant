@@ -1,7 +1,7 @@
 /**
  * @jest-environment jsdom
  */
-import {Notes} from './notes'
+import {NotesButton} from './notesButton'
 import * as utils from '../utils/utils'
 
 jest.mock('../utils/utils', () => ({
@@ -22,17 +22,17 @@ describe('Notes class', () => {
 
   describe('constructor', () => {
     it('should call setContentIfDataExists if the URL includes "story"', () => {
-      const mockSetContentIfDataExists = jest.spyOn(Notes.prototype, 'setContentIfDataExists').mockResolvedValue(null)
+      const mockSetContentIfDataExists = jest.spyOn(NotesButton.prototype, 'setContentIfDataExists').mockResolvedValue(null)
       window.location.href = 'https://app.shortcut.com/story/12345'
-      new Notes()
+      new NotesButton()
       expect(mockSetContentIfDataExists).toHaveBeenCalled()
       mockSetContentIfDataExists.mockRestore()
     })
 
     it('should not call setContentIfDataExists if the URL does not include "story"', () => {
-      const mockSetContentIfDataExists = jest.spyOn(Notes.prototype, 'setContentIfDataExists').mockResolvedValue(null)
+      const mockSetContentIfDataExists = jest.spyOn(NotesButton.prototype, 'setContentIfDataExists').mockResolvedValue(null)
       window.location.href = 'https://app.shortcut.com/other'
-      new Notes()
+      new NotesButton()
       expect(mockSetContentIfDataExists).not.toHaveBeenCalled()
       mockSetContentIfDataExists.mockRestore()
     })
@@ -43,7 +43,7 @@ describe('Notes class', () => {
       const container = document.createElement('div')
       utils.getDescriptionButtonContainer.mockResolvedValue(container)
 
-      const notes = new Notes()
+      const notes = new NotesButton()
       await notes.setContentExistsNotice()
 
       expect(container.querySelector('.action.edit-description.view-notes.micro.flat-white')).not.toBeNull()
@@ -57,7 +57,7 @@ describe('Notes class', () => {
       container.appendChild(button)
       utils.getDescriptionButtonContainer.mockResolvedValue(container)
 
-      const notes = new Notes()
+      const notes = new NotesButton()
       await notes.setContentExistsNotice()
 
       expect(container.children.length).toBe(1)
@@ -67,7 +67,7 @@ describe('Notes class', () => {
   describe('remove', () => {
     it('should remove the button if it exists', () => {
       document.body.innerHTML = '<div><button class="view-notes"></button></div>'
-      const notes = new Notes()
+      const notes = new NotesButton()
       notes.remove()
 
       expect(document.querySelector('.view-notes')).toBeNull()
@@ -79,16 +79,16 @@ describe('Notes class', () => {
       chrome.runtime.sendMessage.mockResolvedValue({})
       document.body.innerHTML = '<div><button class="view-notes"></button></div>'
 
-      const notes = new Notes()
+      const notes = new NotesButton()
       await notes.setContentIfDataExists()
 
       expect(document.querySelector('.view-notes')).toBeNull()
     })
 
     it('should call setContentExistsNotice if data exists', async () => {
-      const mockSetContentExistsNotice = jest.spyOn(Notes.prototype, 'setContentExistsNotice').mockImplementation(async () => {
+      const mockSetContentExistsNotice = jest.spyOn(NotesButton.prototype, 'setContentExistsNotice').mockImplementation(async () => {
       })
-      const notes = new Notes()
+      const notes = new NotesButton()
       await notes.setContentIfDataExists('Existing Data')
 
       expect(mockSetContentExistsNotice).toHaveBeenCalled()
