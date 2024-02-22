@@ -13,7 +13,8 @@ module.exports = {
     'popup/bundle': [
       './js/popup/popup.js',
       './js/popup/popupLoaded.js',
-      './js/popup/listeners.js'
+      './js/popup/listeners.js',
+      './js/notes/notesPopup.js'
     ],
     'service_worker/bundle': [
       './js/serviceWorker/service_worker.js',

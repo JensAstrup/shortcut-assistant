@@ -6,8 +6,7 @@ export class NotesPopup {
   constructor() {
     const notesSaveButton = document.getElementById('saveButton')
     notesSaveButton.addEventListener('click', this.save.bind(this))
-
-    this.set().catch(console.error)
+    this.set.bind(this)().catch(console.error)
   }
 
   async resizeInput() {
@@ -24,8 +23,6 @@ export class NotesPopup {
     } catch {
       return
     }
-
-    await this.set()
   }
 
   async save() {
