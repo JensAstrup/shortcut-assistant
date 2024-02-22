@@ -16,9 +16,7 @@ export class NotesPopup {
       const storyNotesInput = this.getInput()
 
       function autoExpandTextarea() {
-        // Reset the height to ensure the scrollHeight includes only the content
         this.style.height = 'auto'
-        // Set the height to the scrollHeight to expand the textarea
         this.style.height = (this.scrollHeight) + 'px'
       }
 
@@ -66,4 +64,3 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     await notes.set()
   }
 })
-
