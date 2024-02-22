@@ -7,11 +7,10 @@ export class NotesPopup {
     const notesSaveButton = document.getElementById('saveButton')
     notesSaveButton.addEventListener('click', this.save.bind(this))
 
-    document.addEventListener('DOMContentLoaded', this.onPageLoad.bind(this))
     this.set().catch(console.error)
   }
 
-  async onPageLoad() {
+  async resizeInput() {
     try {
       const storyNotesInput = this.getInput()
 
@@ -47,6 +46,7 @@ export class NotesPopup {
   }
 
   async set() {
+    this.resizeInput().catch(console.error)
     const key = this.getKey(await getStoryId())
     const storyNotesInput = this.getInput()
     const result = await chrome.storage.sync.get(key)
