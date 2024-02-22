@@ -22,7 +22,6 @@ export class Notes {
     newButton.append(' Has Notes')
 
     let container = await getDescriptionButtonContainer()
-
     // Check if the button already exists in the container
     const existingButton = container.querySelector('.action.edit-description.view-notes.micro.flat-white')
     if (!existingButton) {
