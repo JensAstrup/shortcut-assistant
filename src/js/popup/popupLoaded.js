@@ -8,16 +8,19 @@ import {
 } from '../analytics/config'
 import {getOrCreateClientId} from '../analytics/clientId'
 import {getOrCreateSessionId} from '../analytics/sessionId'
+import {NotesPopup} from '../notes/notesPopup'
 import {getSyncedSetting} from '../serviceWorker/utils'
 import {setSectionDisplay} from './popup'
 
 
 export async function handleNewVersionBadge(){
-    const infoTab = document.getElementById('infoTab')
-    const tabBadge = infoTab.querySelector('.badge')
     const badgeBackgroundText = await chrome.action.getBadgeText({})
     if (badgeBackgroundText === '') {
+        const infoTab = document.getElementById('infoTab')
+        const tabBadge = infoTab.querySelector('.badge')
+        const whatsNewBadge = document.getElementById('whatsNewBadge')
         tabBadge.style.display = 'none'
+        whatsNewBadge.style.display = 'none'
     }
 }
 
@@ -50,6 +53,8 @@ export async function popupLoaded(){
     const versionSpan = document.getElementById('versionInfo')
     const version = await chrome.runtime.getManifest().version
     versionSpan.textContent = `Version: ${version}`
+    new NotesPopup()
+
 }
 
 export async function trackPopupViewEvent(){
