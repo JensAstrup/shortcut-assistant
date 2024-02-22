@@ -13,11 +13,13 @@ import {setSectionDisplay} from './popup'
 
 
 export async function handleNewVersionBadge(){
-    const infoTab = document.getElementById('infoTab')
-    const tabBadge = infoTab.querySelector('.badge')
     const badgeBackgroundText = await chrome.action.getBadgeText({})
     if (badgeBackgroundText === '') {
+        const infoTab = document.getElementById('infoTab')
+        const tabBadge = infoTab.querySelector('.badge')
+        const whatsNewBadge = document.getElementById('whatsNewBadge')
         tabBadge.style.display = 'none'
+        whatsNewBadge.style.display = 'none'
     }
 }
 
