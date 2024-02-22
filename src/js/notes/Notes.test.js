@@ -1,17 +1,9 @@
 /**
  * @jest-environment jsdom
  */
-import {Notes} from './notes' // Adjust the import path as necessary
-import * as utils from '../utils/utils' // Import the module to mock its functions
+import {Notes} from './notes'
+import * as utils from '../utils/utils'
 
-// Mock the chrome.runtime.sendMessage
-global.chrome = {
-  runtime: {
-    sendMessage: jest.fn()
-  }
-}
-
-// Mock utils functions
 jest.mock('../utils/utils', () => ({
   getDescriptionButtonContainer: jest.fn(),
   logError: jest.fn()
@@ -19,9 +11,7 @@ jest.mock('../utils/utils', () => ({
 
 describe('Notes class', () => {
   beforeEach(() => {
-    // Clear all mocks before each test
     jest.clearAllMocks()
-    // Setup default mocks
     utils.getDescriptionButtonContainer.mockResolvedValue(document.createElement('div'))
     chrome.runtime.sendMessage.mockResolvedValue({data: 'Mocked Data'})
     const originalLocation = window.location
@@ -57,7 +47,7 @@ describe('Notes class', () => {
       await notes.setContentExistsNotice()
 
       expect(container.querySelector('.action.edit-description.view-notes.micro.flat-white')).not.toBeNull()
-      expect(container.children.length).toBe(1) // Only one button should be added
+      expect(container.children.length).toBe(1)
     })
 
     it('should not append a new button if it already exists', async () => {
@@ -70,7 +60,7 @@ describe('Notes class', () => {
       const notes = new Notes()
       await notes.setContentExistsNotice()
 
-      expect(container.children.length).toBe(1) // No new button should be added
+      expect(container.children.length).toBe(1)
     })
   })
 
@@ -86,7 +76,7 @@ describe('Notes class', () => {
 
   describe('setContentIfDataExists', () => {
     it('should remove the notes button if no data is provided and none is found', async () => {
-      chrome.runtime.sendMessage.mockResolvedValue({}) // No data found
+      chrome.runtime.sendMessage.mockResolvedValue({})
       document.body.innerHTML = '<div><button class="view-notes"></button></div>'
 
       const notes = new Notes()
@@ -105,6 +95,4 @@ describe('Notes class', () => {
       mockSetContentExistsNotice.mockRestore()
     })
   })
-
-  // Additional tests can be added as needed
 })
