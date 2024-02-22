@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import {Popup} from './Popup' // Adjust the import path based on your project structure
+import {Popup} from './Popup'
 import * as Sentry from '@sentry/browser'
 import {sendEvent} from '../analytics/event'
 import {getSyncedSetting} from '../serviceWorker/utils'
@@ -18,7 +18,7 @@ jest.mock('../utils/utils', () => ({
 }))
 jest.mock('./notesPopup')
 
-// Helper function to create a mock DOM element
+
 const mockElement = (options = {}) => {
   return {
     addEventListener: jest.fn(),
@@ -165,7 +165,6 @@ describe('Popup', () => {
 
 describe('handleNewVersionBadge', () => {
   beforeEach(() => {
-    // Mock document.getElementById and querySelector
     document.getElementById = jest.fn().mockImplementation((id) => {
       if (id === 'infoTab') {
         return {
@@ -205,7 +204,6 @@ describe('handleNewVersionBadge', () => {
     const tabBadge = infoTab.querySelector('.badge')
     const whatsNewBadge = document.getElementById('whatsNewBadge')
 
-    // Assuming default style.display is '', indicating it's not explicitly hidden by the method
     expect(tabBadge.style.display).toBe('')
     expect(whatsNewBadge.style.display).toBe('')
   })
@@ -225,7 +223,6 @@ describe('popupLoaded', () => {
     mockVersionSpan = {
       textContent: ''
     }
-    // Mocking document.getElementById and other DOM methods as needed
     document.getElementById = jest.fn().mockImplementation((id) => {
       if (id === 'versionInfo') {
         return mockVersionSpan
@@ -246,21 +243,17 @@ describe('popupLoaded', () => {
     popup.handleNewVersionBadge = jest.fn().mockResolvedValue(null)
     await popup.popupLoaded()
 
-    // Assertions for DOM manipulations
     expect(document.getElementById).toHaveBeenCalledWith('actionsTab')
     expect(document.getElementById).toHaveBeenCalledWith('settingsTab')
     expect(document.getElementById).toHaveBeenCalledWith('infoTab')
     expect(document.getElementById).toHaveBeenCalledWith('versionInfo')
     expect(mockVersionSpan.textContent).toBe(`Version: 1.0.0`)
 
-    // Assertions for synced settings
     expect(getSyncedSetting).toHaveBeenCalledWith('enableStalledWorkWarnings', true)
     expect(getSyncedSetting).toHaveBeenCalledWith('enableTodoistOptions', false)
 
-    // Check if NotesPopup was instantiated
     expect(NotesPopup).toHaveBeenCalled()
 
-    // Optionally, if you need to test that certain functions were called as a result of popupLoaded
     expect(popup.handleNewVersionBadge).toHaveBeenCalled()
   })
 })
