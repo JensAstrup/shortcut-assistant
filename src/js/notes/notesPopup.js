@@ -60,7 +60,6 @@ export class NotesPopup {
 
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
   if (message.message === 'checkNotes') {
-    const notes = new NotesPopup()
-    await notes.set()
+    new NotesPopup()
   }
 })
