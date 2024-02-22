@@ -1,12 +1,13 @@
 global.chrome = {
-    tabs: {
-        query: jest.fn((queryInfo, callback) => {
-            callback([{url: 'http://example.com/story/12345'}])
+    action: {
+        setBadgeText: jest.fn().mockImplementation((details) => {
+            return new Promise((resolve) => resolve())
         }),
-        onUpdated: {
-            addListener: jest.fn()
-        },
-        sendMessage: jest.fn()
+        setBadgeBackgroundColor: jest.fn().mockImplementation((details) => {
+            return new Promise((resolve) => resolve())
+        }),
+        getBadgeText: jest.fn(),
+        getBadgeBackgroundColor: jest.fn()
     },
     runtime: {
         lastError: null,
@@ -18,27 +19,34 @@ global.chrome = {
                 version: '1.0.0'
             }
         }),
-        sendMessage: jest.fn()
-    },
-    windows: {
-        create: jest.fn()
+        sendMessage: jest.fn(),
+        onMessage: {
+            addListener: jest.fn()
+        }
     },
     storage: {
+        local: {
+            set: jest.fn().mockImplementation((value) => {
+                return new Promise((resolve) => resolve())
+            })
+        },
         sync: {
             set: jest.fn().mockImplementation((value) => {
                 return new Promise((resolve) => resolve())
             })
         }
     },
-    action: {
-        setBadgeText: jest.fn().mockImplementation((details) => {
-            return new Promise((resolve) => resolve())
+    tabs: {
+        query: jest.fn((queryInfo, callback) => {
+            callback([{url: 'http://example.com/story/12345'}])
         }),
-        setBadgeBackgroundColor: jest.fn().mockImplementation((details) => {
-            return new Promise((resolve) => resolve())
-        }),
-        getBadgeText: jest.fn(),
-        getBadgeBackgroundColor: jest.fn()
+        onUpdated: {
+            addListener: jest.fn()
+        },
+        sendMessage: jest.fn()
+    },
+    windows: {
+        create: jest.fn()
     }
 }
 global.tailwind = {

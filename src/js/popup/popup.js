@@ -1,43 +1,117 @@
+import * as Sentry from '@sentry/browser'
+import {sendEvent} from '../analytics/event'
+import {NotesPopup} from './notesPopup'
+import {getSyncedSetting} from '../serviceWorker/utils'
 import {sleep} from '../utils/utils'
 
-const saveButton = document.getElementById('saveKeyButton')
-const analyzeButton = document.getElementById('analyzeButton')
-const stalledWorkCheckbox = document.getElementById('stalledWorkToggle')
-const todoistCheckbox = document.getElementById('todoistOptions')
 
+/**
+ * Handles all interactions with the popup.html file including saving settings
+ * and displaying the correct section. Functionality for saving notes and the OpenAI token are also included.
+ * @class
+ */
+export class Popup {
+  constructor() {
+    this.saveButton = document.getElementById('saveKeyButton')
+    this.analyzeButton = document.getElementById('analyzeButton')
+    this.stalledWorkCheckbox = document.getElementById('stalledWorkToggle')
+    this.todoistCheckbox = document.getElementById('todoistOptions')
+    this.changelogButton = document.getElementById('changelog')
 
-export async function setOpenAIToken(){
+    this.saveButton.addEventListener('click', async () => {
+      await this.saveButtonClicked()
+    })
+    this.changelogButton.addEventListener('click', async () => {
+      await chrome.action.setBadgeText({text: ''})
+    })
+    document.addEventListener('DOMContentLoaded', this.popupLoaded.bind(this))
+
+    window.addEventListener('load', async () => {
+      sendEvent('popup_view').catch((e) => {
+        console.error(e)
+        Sentry.captureException(e)
+      })
+    })
+  }
+
+  async setOpenAIToken() {
     const openAIToken = document.getElementById('openAIToken').value
     await chrome.storage.local.set({'openAIToken': openAIToken})
-}
+  }
 
-async function saveOptions(){
-    const enableStalledWorkWarnings = stalledWorkCheckbox.checked
-    const enableTodoistOptions = todoistCheckbox.checked
+  async saveOptions() {
+    const enableStalledWorkWarnings = this.stalledWorkCheckbox.checked
+    const enableTodoistOptions = this.todoistCheckbox.checked
     await chrome.storage.sync.set({'enableStalledWorkWarnings': enableStalledWorkWarnings})
     await chrome.storage.sync.set({'enableTodoistOptions': enableTodoistOptions})
-}
+  }
 
-export async function saveButtonClicked(){
-    saveButton.disabled = true
+  async saveButtonClicked() {
+    this.saveButton.disabled = true
     const openAIToken = document.getElementById('openAIToken').value
     if (openAIToken !== '') {
-        await setOpenAIToken(openAIToken)
+      await this.setOpenAIToken(openAIToken)
     }
-    await saveOptions()
-    saveButton.disabled = false
-    analyzeButton.disabled = false
-    saveButton.textContent = 'Saved!'
+    await this.saveOptions()
+    this.saveButton.disabled = false
+    this.analyzeButton.disabled = false
+    this.saveButton.textContent = 'Saved!'
     await sleep(3000)
-    saveButton.textContent = 'Save'
-}
+    this.saveButton.textContent = 'Save'
+  }
 
-export function setSectionDisplay(tabToShow, sectionToShow, tabsToHide, sectionsToHide){
-    tabToShow.addEventListener('click', function (e){
-        e.preventDefault()
-        sectionToShow.classList.remove('hidden')
-        sectionsToHide.forEach(section => section.classList.add('hidden'))
-        tabToShow.classList.add('tab-active')
-        tabsToHide.forEach(tab => tab.classList.remove('tab-active'))
+  setSectionDisplay(tabToShow, sectionToShow, tabsToHide, sectionsToHide) {
+    tabToShow.addEventListener('click', function (e) {
+      e.preventDefault()
+      sectionToShow.classList.remove('hidden')
+      sectionsToHide.forEach(section => section.classList.add('hidden'))
+      tabToShow.classList.add('tab-active')
+      tabsToHide.forEach(tab => tab.classList.remove('tab-active'))
     })
+  }
+
+  /**
+   * Hides the new version indicator if the Chrome badge is empty.
+   *
+   * @returns {Promise<void>} A promise that resolves when the version badges are handled.
+   */
+  async handleNewVersionBadge() {
+    const badgeBackgroundText = await chrome.action.getBadgeText({})
+    if (badgeBackgroundText === '') {
+      const infoTab = document.getElementById('infoTab')
+      const tabBadge = infoTab.querySelector('.badge')
+      const whatsNewBadge = document.getElementById('whatsNewBadge')
+      tabBadge.style.display = 'none'
+      whatsNewBadge.style.display = 'none'
+    }
+  }
+
+  async popupLoaded() {
+    const actionsTab = document.getElementById('actionsTab')
+    const settingsTab = document.getElementById('settingsTab')
+    const infoTab = document.getElementById('infoTab')
+    const actionsSection = document.getElementById('actionsSection')
+    const settingsSection = document.getElementById('settingsSection')
+    const infoSection = document.getElementById('infoSection')
+
+    const enableStalledWorkWarnings = await getSyncedSetting('enableStalledWorkWarnings', true)
+    const enableTodoistOptions = await getSyncedSetting('enableTodoistOptions', false)
+
+    this.stalledWorkCheckbox.checked = enableStalledWorkWarnings
+    this.todoistCheckbox.checked = enableTodoistOptions
+
+    this.setSectionDisplay(actionsTab, actionsSection, [settingsTab, infoTab], [settingsSection, infoSection])
+    this.setSectionDisplay(settingsTab, settingsSection, [actionsTab, infoTab], [actionsSection, infoSection])
+    this.setSectionDisplay(infoTab, infoSection, [actionsTab, settingsTab], [actionsSection, settingsSection])
+
+    this.handleNewVersionBadge().catch((e) => {
+      console.error(e)
+      Sentry.captureException(e)
+    })
+    const versionSpan = document.getElementById('versionInfo')
+    const version = await chrome.runtime.getManifest().version
+    versionSpan.textContent = `Version: ${version}`
+    new NotesPopup()
+
+  }
 }
