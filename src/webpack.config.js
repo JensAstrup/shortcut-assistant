@@ -12,7 +12,7 @@ module.exports = {
     'analyze/analyze': './js/analyze/analyze.js',
     'popup/bundle': [
       './js/popup/popup.js',
-      './js/notes/notesPopup.js'
+      './js/popup/notesPopup.js'
     ],
     'service_worker/bundle': [
       './js/serviceWorker/service_worker.js',
