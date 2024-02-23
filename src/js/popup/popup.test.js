@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import {Popup} from './Popup'
+import {Popup} from './popup'
 import * as Sentry from '@sentry/browser'
 import {sendEvent} from '../analytics/event'
 import {getSyncedSetting} from '../serviceWorker/utils'
