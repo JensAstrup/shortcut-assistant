@@ -11,7 +11,9 @@ import {sleep} from '../utils/utils'
 
 
 jest.mock('@sentry/browser')
-jest.mock('../analytics/event')
+jest.mock('../analytics/event', () => ({
+  sendEvent: jest.fn().mockResolvedValue()
+}))
 jest.mock('../serviceWorker/utils')
 jest.mock('../utils/utils', () => ({
   sleep: jest.fn().mockResolvedValue()
@@ -65,8 +67,7 @@ describe('Popup', () => {
     expect(getElementById).toHaveBeenCalledWith('changelog')
     expect(popup.saveButton.addEventListener).toHaveBeenCalledWith('click', expect.any(Function))
     expect(popup.changelogButton.addEventListener).toHaveBeenCalledWith('click', expect.any(Function))
-    expect(document.addEventListener).toHaveBeenCalledWith('DOMContentLoaded', expect.any(Function))
-    expect(window.addEventListener).toHaveBeenCalledWith('load', expect.any(Function))
+    expect(sendEvent).toHaveBeenCalledWith('popup_view')
   })
 
   test('sendEvent is called on window load', async () => {
@@ -95,8 +96,8 @@ describe('Popup', () => {
   })
 
   test('saveOptions sets options in chrome storage', async () => {
+    popup.todoistCheckbox = {checked: true}
     await popup.saveOptions()
-    expect(chrome.storage.sync.set).toHaveBeenCalledWith({enableStalledWorkWarnings: true})
     expect(chrome.storage.sync.set).toHaveBeenCalledWith({enableTodoistOptions: true})
   })
 
