@@ -23,13 +23,14 @@ export class Popup {
     this.changelogButton.addEventListener('click', async () => {
       await chrome.action.setBadgeText({text: ''})
     })
-    document.addEventListener('DOMContentLoaded', this.popupLoaded.bind(this))
 
-    window.addEventListener('load', async () => {
-      sendEvent('popup_view').catch((e) => {
-        console.error(e)
-        Sentry.captureException(e)
-      })
+    sendEvent('popup_view').catch((e) => {
+      console.error(e)
+      Sentry.captureException(e)
+    })
+    this.popupLoaded().catch((e) => {
+      console.error(e)
+      Sentry.captureException(e)
     })
   }
 
