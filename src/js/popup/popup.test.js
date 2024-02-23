@@ -62,7 +62,6 @@ describe('Popup', () => {
     popup = new Popup()
     expect(getElementById).toHaveBeenCalledWith('saveKeyButton')
     expect(getElementById).toHaveBeenCalledWith('analyzeButton')
-    expect(getElementById).toHaveBeenCalledWith('stalledWorkToggle')
     expect(getElementById).toHaveBeenCalledWith('todoistOptions')
     expect(getElementById).toHaveBeenCalledWith('changelog')
     expect(popup.saveButton.addEventListener).toHaveBeenCalledWith('click', expect.any(Function))
@@ -233,7 +232,6 @@ describe('popupLoaded', () => {
     expect(document.getElementById).toHaveBeenCalledWith('versionInfo')
     expect(mockVersionSpan.textContent).toBe(`Version: 1.0.0`)
 
-    expect(getSyncedSetting).toHaveBeenCalledWith('enableStalledWorkWarnings', true)
     expect(getSyncedSetting).toHaveBeenCalledWith('enableTodoistOptions', false)
 
     expect(NotesPopup).toHaveBeenCalled()

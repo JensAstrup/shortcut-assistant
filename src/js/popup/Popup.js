@@ -1,8 +1,8 @@
 import * as Sentry from '@sentry/browser'
 import {sendEvent} from '../analytics/event'
-import {NotesPopup} from './notesPopup'
 import {getSyncedSetting} from '../serviceWorker/utils'
 import {sleep} from '../utils/utils'
+import {NotesPopup} from './notesPopup'
 
 
 /**
@@ -14,7 +14,6 @@ export class Popup {
   constructor() {
     this.saveButton = document.getElementById('saveKeyButton')
     this.analyzeButton = document.getElementById('analyzeButton')
-    this.stalledWorkCheckbox = document.getElementById('stalledWorkToggle')
     this.todoistCheckbox = document.getElementById('todoistOptions')
     this.changelogButton = document.getElementById('changelog')
 
@@ -40,9 +39,7 @@ export class Popup {
   }
 
   async saveOptions() {
-    const enableStalledWorkWarnings = this.stalledWorkCheckbox.checked
     const enableTodoistOptions = this.todoistCheckbox.checked
-    await chrome.storage.sync.set({'enableStalledWorkWarnings': enableStalledWorkWarnings})
     await chrome.storage.sync.set({'enableTodoistOptions': enableTodoistOptions})
   }
 
@@ -94,11 +91,7 @@ export class Popup {
     const settingsSection = document.getElementById('settingsSection')
     const infoSection = document.getElementById('infoSection')
 
-    const enableStalledWorkWarnings = await getSyncedSetting('enableStalledWorkWarnings', true)
-    const enableTodoistOptions = await getSyncedSetting('enableTodoistOptions', false)
-
-    this.stalledWorkCheckbox.checked = enableStalledWorkWarnings
-    this.todoistCheckbox.checked = enableTodoistOptions
+    this.todoistCheckbox.checked = await getSyncedSetting('enableTodoistOptions', false)
 
     this.setSectionDisplay(actionsTab, actionsSection, [settingsTab, infoTab], [settingsSection, infoSection])
     this.setSectionDisplay(settingsTab, settingsSection, [actionsTab, infoTab], [actionsSection, infoSection])
