@@ -24,12 +24,12 @@
     "dist": "npx webpack && zip -r ../dist/dist.zip . -x \"coverage*\" \"*/*.test.js\"\n"
   },
   "dependencies": {
-    "@sentry/browser": "^7.95.0",
-    "@sentry/webpack-plugin": "^2.10.3",
-    "@tailwindcss/typography": "^0.5.10",
-    "jest-environment-jsdom": "^29.7.0",
-    "moment": "^2.30.1",
-    "openai": "^4.28.0"
+    "@sentry/browser": "7.95.0",
+    "@sentry/webpack-plugin": "2.10.3",
+    "@tailwindcss/typography": "0.5.10",
+    "jest-environment-jsdom": "29.7.0",
+    "moment": "2.30.1",
+    "openai": "4.28.0"
   },
   "jest": {
     "setupFiles": [
