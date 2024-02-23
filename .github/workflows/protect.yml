@@ -1,10 +1,10 @@
-name: Comment and Fail on PR from Non-Version Branches
+name: Comment and Fail on PRs from Non-Version Branches
 
 on:
   pull_request:
     branches:
       - main
-    types: [opened, edited]
+    types: [ opened, edited, reopened, synchronize ]
 
 permissions:
   pull-requests: write
