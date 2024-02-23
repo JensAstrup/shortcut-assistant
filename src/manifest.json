@@ -33,7 +33,7 @@
   "omnibox": { "keyword" : "sc" },
   "permissions": [
     "activeTab",
-    "clipboardRead",
+    "clipboardWrite",
     "storage",
     "tabs"
   ],
