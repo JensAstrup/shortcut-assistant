@@ -1,5 +1,6 @@
 # Shortcut Assistant
-[![Tests](https://github.com/JensAstrup/shortcut-assistant/actions/workflows/tests.js.yml/badge.svg?branch=main)](https://github.com/JensAstrup/shortcut-assistant/actions/workflows/tests.js.yml)
+
+[![codecov](https://codecov.io/gh/JensAstrup/shortcut-assistant/graph/badge.svg?token=BNRO19POX5)](https://codecov.io/gh/JensAstrup/shortcut-assistant)
 
 Shortcut Assistant is a Chrome extension that adds various additional features to Shortcut.
 
