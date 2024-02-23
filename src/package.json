@@ -29,7 +29,7 @@
     "@tailwindcss/typography": "^0.5.10",
     "jest-environment-jsdom": "^29.7.0",
     "moment": "^2.30.1",
-    "openai": "^4.26.0"
+    "openai": "^4.28.0"
   },
   "jest": {
     "setupFiles": [
