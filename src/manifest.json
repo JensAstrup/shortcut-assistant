@@ -33,9 +33,9 @@
   "omnibox": { "keyword" : "sc" },
   "permissions": [
     "activeTab",
-    "clipboardRead",
+    "clipboardWrite",
     "storage",
     "tabs"
   ],
-  "version": "2.3.0.0"
+  "version": "2.3.0.1"
 }

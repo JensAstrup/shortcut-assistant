@@ -21,7 +21,7 @@
     "build-css": "postcss styles/index.css -o styles/output.css",
     "test": "jest --coverage",
     "build": "node buildManifest.js",
-    "dist": "npx webpack && zip -r ../dist/dist.zip ."
+    "dist": "npx webpack && zip -r ../dist/dist.zip . -x \"coverage*\" \"*/*.test.js\"\n"
   },
   "dependencies": {
     "@sentry/browser": "^7.95.0",
