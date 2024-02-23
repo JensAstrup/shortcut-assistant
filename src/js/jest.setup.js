@@ -1,11 +1,7 @@
 global.chrome = {
     action: {
-        setBadgeText: jest.fn().mockImplementation((details) => {
-            return new Promise((resolve) => resolve())
-        }),
-        setBadgeBackgroundColor: jest.fn().mockImplementation((details) => {
-            return new Promise((resolve) => resolve())
-        }),
+        setBadgeText: jest.fn().mockResolvedValue({}),
+        setBadgeBackgroundColor: jest.fn().mockResolvedValue({}),
         getBadgeText: jest.fn(),
         getBadgeBackgroundColor: jest.fn()
     },
@@ -26,14 +22,10 @@ global.chrome = {
     },
     storage: {
         local: {
-            set: jest.fn().mockImplementation((value) => {
-                return new Promise((resolve) => resolve())
-            })
+            set: jest.fn().mockResolvedValue({})
         },
         sync: {
-            set: jest.fn().mockImplementation((value) => {
-                return new Promise((resolve) => resolve())
-            })
+            set: jest.fn().mockResolvedValue({})
         }
     },
     tabs: {
