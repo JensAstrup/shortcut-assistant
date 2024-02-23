@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import {Popup} from './popup'
+import {Popup} from './Popup'
 import * as Sentry from '@sentry/browser'
 import {sendEvent} from '../analytics/event'
 import {getSyncedSetting} from '../serviceWorker/utils'
@@ -37,32 +37,15 @@ describe('Popup', () => {
   let getElementById
 
   beforeEach(() => {
+
     getElementById = jest.spyOn(document, 'getElementById').mockImplementation((id) => {
-      switch (id) {
-        case 'saveKeyButton':
-        case 'analyzeButton':
-        case 'stalledWorkToggle':
-        case 'todoistOptions':
-        case 'changelog':
-        case 'openAIToken':
-        case 'actionsTab':
-        case 'settingsTab':
-        case 'infoTab':
-        case 'actionsSection':
-        case 'settingsSection':
-        case 'infoSection':
-        case 'infoTab':
-        case 'versionInfo':
-        case 'whatsNewBadge':
           return mockElement({
             value: id === 'openAIToken' ? 'test-token' : '',
             checked: true,
             textContent: ''
           })
-        default:
-          return null
       }
-    })
+    )
     sleep.mockResolvedValue()
     popup = new Popup()
   })
