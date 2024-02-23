@@ -18,9 +18,8 @@ export class Popup {
     this.todoistCheckbox = document.getElementById('todoistOptions')
     this.changelogButton = document.getElementById('changelog')
 
-    this.saveButton.addEventListener('click', async () => {
-      await this.saveButtonClicked()
-    })
+    this.saveButton.addEventListener('click', this.saveButtonClicked.bind(this))
+
     this.changelogButton.addEventListener('click', async () => {
       await chrome.action.setBadgeText({text: ''})
     })
