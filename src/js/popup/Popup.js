@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/browser'
 import {sendEvent} from '../analytics/event'
-import {getSyncedSetting} from '../serviceWorker/utils'
+import {getSyncedSetting} from '../utils/getSyncedSetting'
 import {sleep} from '../utils/utils'
 import {NotesPopup} from './notesPopup'
 

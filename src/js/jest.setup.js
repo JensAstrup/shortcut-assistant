@@ -22,10 +22,16 @@ global.chrome = {
     },
     storage: {
         local: {
-            set: jest.fn().mockResolvedValue({})
+            set: jest.fn().mockResolvedValue({}),
+            get: jest.fn((key, callback) => {
+                callback({[key]: 'expectedValue'})
+            })
         },
         sync: {
-            set: jest.fn().mockResolvedValue({})
+            set: jest.fn().mockResolvedValue({}),
+            get: jest.fn((key, callback) => {
+                callback({[key]: 'expectedValue'})
+            })
         }
     },
     tabs: {
