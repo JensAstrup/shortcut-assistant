@@ -5,7 +5,7 @@
 import {Popup} from './Popup'
 import * as Sentry from '@sentry/browser'
 import {sendEvent} from '../analytics/event'
-import {getSyncedSetting} from '../serviceWorker/utils'
+import {getSyncedSetting} from '../utils/getSyncedSetting'
 import {NotesPopup} from './notesPopup'
 import {sleep} from '../utils/utils'
 
@@ -14,7 +14,7 @@ jest.mock('@sentry/browser')
 jest.mock('../analytics/event', () => ({
   sendEvent: jest.fn().mockResolvedValue()
 }))
-jest.mock('../serviceWorker/utils')
+jest.mock('../utils/getSyncedSetting')
 jest.mock('../utils/utils', () => ({
   sleep: jest.fn().mockResolvedValue()
 }))

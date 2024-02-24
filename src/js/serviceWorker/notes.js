@@ -1,4 +1,4 @@
-import {getStoryId} from "./utils";
+import {getStoryId} from '../utils/getStoryId'
 
 
 export function getNotesKey(storyId) {

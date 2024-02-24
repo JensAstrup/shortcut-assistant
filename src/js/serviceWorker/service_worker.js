@@ -1,5 +1,5 @@
 import {getOrCreateClientId} from '../analytics/clientId'
-import {getSyncedSetting} from './utils.js'
+import {getSyncedSetting} from '../utils/getSyncedSetting.js'
 import {getNotes} from './notes'
 import * as Sentry from '@sentry/browser'
 import {sendEvent} from '../analytics/event'
