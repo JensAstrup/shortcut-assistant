@@ -105,6 +105,9 @@ export class Popup {
     const version = await chrome.runtime.getManifest().version
     versionSpan.textContent = `Version: ${version}`
     new NotesPopup()
-
+    sendEvent('popup_loaded', {page_title: 'Popup', page_location: '/popup.html'}).catch((e) => {
+      console.error(e)
+      Sentry.captureException(e)
+    })
   }
 }

@@ -81,6 +81,10 @@ export async function callOpenAI(description, tabId){
     else {
         try {
             await fetchCompletion(description, tabId)
+            sendEvent('analyze_story_details', {token_provided: true}).catch(e => {
+                console.error('Error sending event:', e)
+                Sentry.captureException(e)
+            })
         } catch (e) {
             throw new OpenAIError('Error getting completion from OpenAI:', e);
         }
