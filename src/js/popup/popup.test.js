@@ -237,5 +237,9 @@ describe('popupLoaded', () => {
     expect(NotesPopup).toHaveBeenCalled()
 
     expect(popup.handleNewVersionBadge).toHaveBeenCalled()
+    expect(sendEvent).toHaveBeenCalledWith('popup_loaded', {
+      page_title: 'Popup',
+      page_location: '/popup.html'
+    })
   })
 })

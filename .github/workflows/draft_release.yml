@@ -1,0 +1,34 @@
+name: Draft Release on PR
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+
+permissions:
+  contents: write
+
+jobs:
+  create-draft-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Draft Release
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const { owner, repo } = context.repo;
+            const pr = context.payload.pull_request;
+            const releaseTag = pr.title;
+            const releaseNotes = pr.body;
+            const draftRelease = await github.rest.repos.createRelease({
+              owner,
+              repo,
+              tag_name: releaseTag,
+              name: releaseTag,
+              body: releaseNotes,
+              draft: true,
+            });
+            console.log(`Draft release created: ${draftRelease.data.url}`);
