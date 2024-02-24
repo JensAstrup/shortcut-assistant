@@ -1,4 +1,4 @@
-name: Draft Release on PR
+name: Release Version
 
 on:
   pull_request:
@@ -6,6 +6,7 @@ on:
       - main
     types:
       - opened
+      - closed
 
 permissions:
   contents: write
@@ -13,6 +14,7 @@ permissions:
 jobs:
   create-draft-release:
     runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == false
     steps:
       - name: Create Draft Release
         uses: actions/github-script@v6
@@ -32,3 +34,31 @@ jobs:
               draft: true,
             });
             console.log(`Draft release created: ${draftRelease.data.url}`);
+
+  publish-draft-release:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    steps:
+      - name: Publish Release
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const { owner, repo } = context.repo;
+            const prTitle = context.payload.pull_request.title;
+            const releases = await github.rest.repos.listReleases({
+              owner,
+              repo,
+            });
+            const draftRelease = releases.data.find(release => release.name === prTitle && release.draft === true);
+            if (draftRelease) {
+              await github.rest.repos.updateRelease({
+                owner,
+                repo,
+                release_id: draftRelease.id,
+                draft: false,
+              });
+              console.log(`Release published: ${draftRelease.html_url}`);
+            } else {
+              console.log('No matching draft release found to publish.');
+            }
