@@ -7,10 +7,6 @@ on:
     types:
       - opened
 
-permissions:
-  contents: write
-  releases: write
-
 jobs:
   create-draft-release:
     runs-on: ubuntu-latest
