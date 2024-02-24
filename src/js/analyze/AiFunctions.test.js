@@ -1,12 +1,13 @@
 /**
  * @jest-environment jsdom
  */
+import {sendEvent} from '../analytics/event'
 import * as eventModule from '../analytics/event'
 import * as utilsModule from '../utils/utils'
 import {AiFunctions} from './aiFunctions'
 
 jest.mock('../analytics/event', () => ({
-    sendEvent: jest.fn()
+    sendEvent: jest.fn().mockResolvedValue(undefined)
 }))
 
 jest.mock('../utils/utils', () => ({
@@ -46,7 +47,7 @@ describe('OpenAI class', () => {
             expect(loadingSpan).not.toBeNull()
             expect(chrome.tabs.query).toHaveBeenCalled()
             expect(chrome.tabs.sendMessage).toHaveBeenCalledWith(1, {message: 'analyzeStoryDescription'})
-            expect(eventModule.sendEvent).toHaveBeenCalledWith('analyze_story_details')
+            expect(sendEvent).toHaveBeenCalledWith('analyze_story_details')
         })
     })
 
@@ -68,7 +69,7 @@ describe('OpenAI class', () => {
             jest.advanceTimersByTime(6000)
 
             expect(errorState.style.display).toBe('none')
-            expect(eventModule.sendEvent).toHaveBeenCalledWith('analyze_story_details_failed')
+            expect(sendEvent).toHaveBeenCalledWith('analyze_story_details_failed')
         })
     })
 })

@@ -1,5 +1,6 @@
 import {sendEvent} from '../analytics/event'
 import {sleep} from '../utils/utils'
+import * as Sentry from '@sentry/browser'
 
 export class AiFunctions{
     constructor(){
@@ -18,7 +19,10 @@ export class AiFunctions{
         chrome.tabs.query({active: true, currentWindow: true}, function (activeTabs){
             chrome.tabs.sendMessage(activeTabs[0].id, {message: 'analyzeStoryDescription'})
         })
-        sendEvent('analyze_story_details')
+        sendEvent('analyze_story_details').catch((e) => {
+            console.error(e)
+            Sentry.captureException(e)
+        })
     }
 
     static async processOpenAIResponse(message){
@@ -35,7 +39,10 @@ export class AiFunctions{
             errorState.style.cssText = ''
             await sleep(6000)
             errorState.style.display = 'none'
-            sendEvent('analyze_story_details_failed')
+            sendEvent('analyze_story_details_failed').catch((e) => {
+                console.error(e)
+                Sentry.captureException(e)
+            })
         }
     }
 }
