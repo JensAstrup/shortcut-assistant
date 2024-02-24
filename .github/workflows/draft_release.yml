@@ -1,3 +1,5 @@
+name: Draft Release on PR
+
 on:
   pull_request:
     branches:
@@ -5,12 +7,15 @@ on:
     types:
       - opened
 
+permissions:
+  contents: write
+  releases: write
+
 jobs:
   create-draft-release:
     runs-on: ubuntu-latest
     steps:
-      - name: Create Draft Release
-        uses: actions/github-script@v6
+      - uses: actions/github-script@v6
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
