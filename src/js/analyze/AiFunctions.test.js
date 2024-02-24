@@ -2,9 +2,9 @@
  * @jest-environment jsdom
  */
 import {sendEvent} from '../analytics/event'
-import * as eventModule from '../analytics/event'
 import * as utilsModule from '../utils/utils'
 import {AiFunctions} from './aiFunctions'
+import * as Sentry from '@sentry/browser'
 
 jest.mock('../analytics/event', () => ({
     sendEvent: jest.fn().mockResolvedValue(undefined)
@@ -12,6 +12,10 @@ jest.mock('../analytics/event', () => ({
 
 jest.mock('../utils/utils', () => ({
     sleep: jest.fn().mockResolvedValue(undefined)
+}))
+
+jest.mock('@sentry/browser', () => ({
+    captureException: jest.fn()
 }))
 
 global.chrome = {
@@ -48,6 +52,16 @@ describe('OpenAI class', () => {
             expect(chrome.tabs.query).toHaveBeenCalled()
             expect(chrome.tabs.sendMessage).toHaveBeenCalledWith(1, {message: 'analyzeStoryDescription'})
             expect(sendEvent).toHaveBeenCalledWith('analyze_story_details')
+        })
+        it('should catch sendEvent error and capture exception', async () => {
+            const error = new Error('error')
+            sendEvent.mockRejectedValue(error)
+            console.error = jest.fn()
+            await AiFunctions.analyzeStoryDetails()
+
+            expect(sendEvent).toHaveBeenCalledWith('analyze_story_details')
+            expect(console.error).toHaveBeenCalledWith(error)
+            expect(Sentry.captureException).toHaveBeenCalledWith(error)
         })
     })
 
