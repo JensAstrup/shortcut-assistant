@@ -1,3 +1,6 @@
+import * as Sentry from '@sentry/browser'
+
+
 export function sleep(ms) {
     return new Promise((resolve) => {
         setTimeout(resolve, ms);
@@ -34,4 +37,5 @@ export async function getDescriptionButtonContainer() {
 
 export function logError(error){
     console.error(error)
+    Sentry.captureException(error)
 }

@@ -2,7 +2,7 @@ import * as Sentry from '@sentry/browser'
 
 import {DevelopmentTime} from './developmentTime/developmentTime'
 import {NotesButton} from './notes/notesButton'
-import {initTodos} from './todoist/contentScript'
+import {Todoist} from './todoist/Todoist'
 import {logError, sleep} from './utils/utils'
 import {getSyncedSetting} from './utils/getSyncedSetting'
 import {CycleTime} from './cycleTime/cycleTime'
@@ -33,9 +33,7 @@ async function activate() {
   }
   const enableTodoistOptions = await getSyncedSetting('enableTodoistOptions', false)
   if (enableTodoistOptions) {
-    initTodos().catch((error) => {
-      console.error(error)
-    })
+    new Todoist()
   }
   new NotesButton()
   new KeyboardShortcuts().activate()
@@ -56,7 +54,7 @@ chrome.runtime.onMessage.addListener(
       new NotesButton()
     }
     if (request.message === 'initTodos' && request.url.includes('story')) {
-      initTodos().catch(logError)
+      new Todoist()
     }
   })
 
