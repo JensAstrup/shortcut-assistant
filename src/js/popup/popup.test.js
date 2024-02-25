@@ -41,11 +41,11 @@ describe('Popup', () => {
   beforeEach(() => {
 
     getElementById = jest.spyOn(document, 'getElementById').mockImplementation((id) => {
-          return mockElement({
-            value: id === 'openAIToken' ? 'test-token' : '',
-            checked: true,
-            textContent: ''
-          })
+      return mockElement({
+        value: id === 'openAIToken' ? 'test-token' : '',
+        checked: true,
+        textContent: ''
+      })
       }
     )
     sleep.mockResolvedValue()
@@ -200,28 +200,27 @@ describe('popupLoaded', () => {
     sendEvent.mockClear()
     NotesPopup.mockClear()
     getSyncedSetting.mockClear()
-    getSyncedSetting.mockResolvedValueOnce(true) // enableStalledWorkWarnings
-    getSyncedSetting.mockResolvedValueOnce(false) // enableTodoistOptions
 
     mockVersionSpan = {
       textContent: ''
     }
+    const todoistCheckbox = mockElement()
+    todoistCheckbox.removeAttribute = jest.fn()
+    todoistCheckbox.setAttribute = jest.fn()
+    todoistCheckbox.hasAttribute = jest.fn().mockReturnValue(true)
+
     document.getElementById = jest.fn().mockImplementation((id) => {
       if (id === 'versionInfo') {
         return mockVersionSpan
       }
       else {
-        return {
-          addEventListener: jest.fn(),
-          querySelector: jest.fn().mockReturnValue({style: {display: 'block'}}),
-          checked: false
-        }
+        return todoistCheckbox
       }
     })
   })
 
   test('popupLoaded sets up correctly', async () => {
-
+    getSyncedSetting.mockResolvedValueOnce(true) // enableTodoistOptions
     const popup = new Popup()
     popup.handleNewVersionBadge = jest.fn().mockResolvedValue(null)
     await popup.popupLoaded()
@@ -233,6 +232,31 @@ describe('popupLoaded', () => {
     expect(mockVersionSpan.textContent).toBe(`Version: 1.0.0`)
 
     expect(getSyncedSetting).toHaveBeenCalledWith('enableTodoistOptions', false)
+    expect(popup.todoistCheckbox.setAttribute).toHaveBeenCalledWith('checked', 'checked')
+
+    expect(NotesPopup).toHaveBeenCalled()
+
+    expect(popup.handleNewVersionBadge).toHaveBeenCalled()
+    expect(sendEvent).toHaveBeenCalledWith('popup_loaded', {
+      page_title: 'Popup',
+      page_location: '/popup.html'
+    })
+  })
+
+  test('popupLoaded sets up correctly with todoist disabled', async () => {
+    getSyncedSetting.mockResolvedValueOnce(false)
+    const popup = new Popup()
+    popup.handleNewVersionBadge = jest.fn().mockResolvedValue(null)
+    await popup.popupLoaded()
+
+    expect(document.getElementById).toHaveBeenCalledWith('actionsTab')
+    expect(document.getElementById).toHaveBeenCalledWith('settingsTab')
+    expect(document.getElementById).toHaveBeenCalledWith('infoTab')
+    expect(document.getElementById).toHaveBeenCalledWith('versionInfo')
+    expect(mockVersionSpan.textContent).toBe(`Version: 1.0.0`)
+
+    expect(getSyncedSetting).toHaveBeenCalledWith('enableTodoistOptions', false)
+    expect(popup.todoistCheckbox.removeAttribute).toHaveBeenCalledWith('checked')
 
     expect(NotesPopup).toHaveBeenCalled()
 

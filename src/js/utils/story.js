@@ -4,6 +4,11 @@ import {hoursBetweenExcludingWeekends} from './hoursBetweenExcludingWeekends'
 
 
 export class Story{
+    static get title() {
+        const titleDiv = document.querySelector('.story-name')
+        return titleDiv.textContent
+    }
+
     static get description(){
         const descriptionDiv = document.querySelector('[data-key="description"]')
         return descriptionDiv.textContent
