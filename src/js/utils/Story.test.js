@@ -3,6 +3,19 @@ import {hoursBetweenExcludingWeekends} from './hoursBetweenExcludingWeekends'
 import {Story} from './story'
 
 
+const mockNow = {
+  format: jest.fn().mockReturnValueOnce('Feb 1 2022, 2:00 AM')
+}
+jest.mock('moment', () => {
+  return () => (mockNow)
+})
+jest.mock('./hoursBetweenExcludingWeekends', () => ({
+  hoursBetweenExcludingWeekends: jest.fn().mockReturnValue(24)
+}))
+jest.mock('../developmentTime/findFirstMatchingElementForState', () => ({
+  findFirstMatchingElementForState: jest.fn()
+}))
+
 describe('Story.title', () => {
   test('get title', () => {
     document.body.innerHTML = `<div class="story-name">Sample Title</div>`
@@ -16,16 +29,6 @@ describe('Story.description', () => {
     expect(Story.description).toEqual('Sample Description')
   })
 })
-
-const mockNow = {
-  format: jest.fn().mockReturnValueOnce('Feb 1 2022, 2:00 AM')
-}
-jest.mock('moment', () => {
-  return () => (mockNow)
-})
-jest.mock('./hoursBetweenExcludingWeekends', () => ({
-  hoursBetweenExcludingWeekends: jest.fn().mockReturnValue(24)
-}))
 describe('Story.getTimeInState', () => {
   beforeEach(() => {
     document.body.innerHTML = `
@@ -81,10 +84,6 @@ describe('Story.getTimeInState', () => {
     expect(console.warn).toHaveBeenCalledWith('Could not find date element for state ExpectedState')
   })
 })
-
-jest.mock('../developmentTime/findFirstMatchingElementForState', () => ({
-  findFirstMatchingElementForState: jest.fn()
-}))
 
 describe('Story.getDateInCurrentState', () => {
   beforeEach(() => {
