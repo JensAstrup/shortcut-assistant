@@ -6,6 +6,11 @@ import {Story} from './story'
 
 
 describe('Story.description', () => {
+  test('get title', () => {
+    document.body.innerHTML = `<div class="story-name">Sample Title</div>`
+    expect(Story.title).toEqual('Sample Title')
+  })
+
     test('get description', () => {
         document.body.innerHTML = `<div data-key="description">Sample Description</div>`
         expect(Story.description).toEqual('Sample Description')
