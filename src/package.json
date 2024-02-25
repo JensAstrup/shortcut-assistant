@@ -19,7 +19,7 @@
   "scripts": {
     "dev": "webpack --config webpack.config.dev.js",
     "build-css": "postcss styles/index.css -o styles/output.css",
-    "test": "jest --coverage",
+    "test": "jest --coverage --env=jsdom",
     "build": "node buildManifest.js",
     "dist": "npx webpack && zip -r ../dist/dist.zip . -x \"coverage*\" \"*/*.test.js\"\n"
   },
