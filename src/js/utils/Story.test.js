@@ -1,7 +1,6 @@
 import {findFirstMatchingElementForState} from '../developmentTime/findFirstMatchingElementForState'
 import {hoursBetweenExcludingWeekends} from './hoursBetweenExcludingWeekends'
 import {Story} from './story'
-import moment from 'moment'
 
 
 describe('Story.title', () => {
