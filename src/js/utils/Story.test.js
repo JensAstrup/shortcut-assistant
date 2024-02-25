@@ -118,6 +118,28 @@ describe('Story.getDateInCurrentState', () => {
   })
 })
 
+describe('Story.getDateInState', () => {
+
+  test('returns null when no elements match the state', () => {
+    findFirstMatchingElementForState.mockReturnValueOnce(null)
+
+    const result = Story.getDateInState('NonExistentState')
+    expect(result).toBeNull()
+
+  })
+  test('returns the date when state matches and date element exists', () => {
+    const latestUpdateElement = {
+      parentElement: {
+        querySelector: jest.fn().mockReturnValueOnce({innerHTML: '2022-03-01'})
+      }
+    }
+    findFirstMatchingElementForState.mockReturnValueOnce({element: latestUpdateElement})
+
+    const result = Story.getDateInState('ExpectedState')
+    expect(result).toBe('2022-03-01')
+  })
+})
+
 
 describe('isInState function', () => {
   beforeEach(() => {
