@@ -61,6 +61,17 @@ describe('Story.getTimeInState', () => {
     expect(getDateInCurrentState).toHaveBeenCalledWith(state)
     expect(hoursBetweenExcludingWeekends).toHaveBeenCalledWith('Jan 31 2022, 2:00 AM')
   })
+  test('Uses date in state if now is not provided', () => {
+    const state = 'ExpectedState'
+
+    const getDateInCurrentState = jest.spyOn(Story, 'getDateInCurrentState')
+    getDateInCurrentState.mockReturnValueOnce('Jan 31 2022, 2:00 AM')
+    hoursBetweenExcludingWeekends.mockReturnValueOnce(48)
+    const result = Story.getTimeInState(state)
+    expect(result).toBe(48)
+    expect(getDateInCurrentState).toHaveBeenCalledWith(state)
+    expect(hoursBetweenExcludingWeekends).toHaveBeenCalledWith('Jan 31 2022, 2:00 AM')
+  })
   test('Returns 0 if date element is null', () => {
     console.warn = jest.fn()
     const state = 'ExpectedState'
@@ -113,6 +124,36 @@ describe('Story.getDateInCurrentState', () => {
     expect(result).toBe('2022-01-01')
   })
 
+  test('returns date element when state div does not exist', () => {
+    document.querySelector = jest.fn(() => null)
+    document.querySelector.mockImplementation((selector) => {
+      if (selector === '.story-state') {
+        return null
+      }
+      return document.querySelector(selector)
+    })
+    const parentElement = {querySelector: jest.fn().mockReturnValueOnce({innerHTML: '2022-01-01'})}
+    findFirstMatchingElementForState.mockReturnValueOnce({element: {parentElement}})
+    document.querySelector = jest.fn(() => null)
+    const result = Story.getDateInCurrentState('ExpectedState')
+    expect(result).toEqual('2022-01-01')
+  })
+
+  test('returns null when state div and date element do not exist', () => {
+    document.querySelector = jest.fn(() => null)
+    document.querySelector.mockImplementation((selector) => {
+      if (selector === '.story-state') {
+        return null
+      }
+      return document.querySelector(selector)
+    })
+    const parentElement = {querySelector: jest.fn().mockReturnValueOnce(null)}
+    findFirstMatchingElementForState.mockReturnValueOnce({element: {parentElement}})
+    document.querySelector = jest.fn(() => null)
+    const result = Story.getDateInCurrentState('ExpectedState')
+    expect(result).toBeNull()
+  })
+
   afterAll(() => {
     jest.clearAllMocks()
   })
@@ -138,11 +179,18 @@ describe('Story.getDateInState', () => {
     const result = Story.getDateInState('ExpectedState')
     expect(result).toBe('2022-03-01')
   })
+
+  test('returns null when state div and date element do not exist', () => {
+    findFirstMatchingElementForState.mockReturnValueOnce({element: {parentElement: {querySelector: jest.fn().mockReturnValueOnce(null)}}})
+    const result = Story.getDateInState('ExpectedState')
+    expect(result).toBeNull()
+  })
 })
 
 
 describe('isInState function', () => {
   beforeEach(() => {
+    jest.clearAllMocks()
     document.body.innerHTML = `
       <div class="story-state">
         <span class="value">TestState</span>
@@ -152,6 +200,13 @@ describe('isInState function', () => {
 
   test('returns true if the state is same as the story state', () => {
     const state = 'TestState'
+    document.querySelector = jest.fn(() => {
+      return {
+        querySelector: jest.fn(() => {
+          return {textContent: state}
+        })
+      }
+    })
     expect(Story.isInState(state)).toBe(true)
   })
 

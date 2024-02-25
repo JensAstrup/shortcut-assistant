@@ -51,9 +51,10 @@ export class Story{
 
         const parentDiv = latestUpdateElements.element.parentElement;
         const dateElement = parentDiv.querySelector('.date');
-        return dateElement ? dateElement.innerHTML : null; // Safeguard against null dateElement.
+        return dateElement ? dateElement.innerHTML : null
     }
 
+    // TODO: This is likely a duplicate of getDateInCurrentState, remove if so.
     static getDateInState(state) {
         let latestUpdateElements = findFirstMatchingElementForState(state);
         if (!latestUpdateElements) {
