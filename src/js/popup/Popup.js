@@ -95,7 +95,8 @@ export class Popup {
     if (todoistEnabled) {
       this.todoistCheckbox.setAttribute('checked', 'checked')
     }
-    else {
+    else if (typeof this.todoistCheckbox['removeAttribute'] === 'function'
+      && this.todoistCheckbox.hasAttribute('checked')) {
       this.todoistCheckbox.removeAttribute('checked')
     }
 
