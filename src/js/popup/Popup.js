@@ -91,7 +91,13 @@ export class Popup {
     const settingsSection = document.getElementById('settingsSection')
     const infoSection = document.getElementById('infoSection')
 
-    this.todoistCheckbox.checked = await getSyncedSetting('enableTodoistOptions', false)
+    const todoistEnabled = await getSyncedSetting('enableTodoistOptions', false)
+    if (todoistEnabled) {
+      this.todoistCheckbox.setAttribute('checked', 'checked')
+    }
+    else {
+      this.todoistCheckbox.removeAttribute('checked')
+    }
 
     this.setSectionDisplay(actionsTab, actionsSection, [settingsTab, infoTab], [settingsSection, infoSection])
     this.setSectionDisplay(settingsTab, settingsSection, [actionsTab, infoTab], [actionsSection, infoSection])
