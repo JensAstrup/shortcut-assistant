@@ -27,7 +27,7 @@ export class Story{
             const nowFormatted = now.format('MMM D YYYY, h:mm A')
             return hoursBetweenExcludingWeekends(this.getDateInState(state), nowFormatted)
         }
-        const dateElement = this.getDateInCurrentState(state)
+        const dateElement = this.getDateInState(state)
         if (dateElement === null || dateElement === undefined){
             console.warn(`Could not find date element for state ${state}`)
             return 0
@@ -35,26 +35,6 @@ export class Story{
         return hoursBetweenExcludingWeekends(dateElement)
     }
 
-    static getDateInCurrentState(state) {
-        let latestUpdateElements = findFirstMatchingElementForState(state);
-        if (!latestUpdateElements) {
-            return null;
-        }
-
-        let stateDiv = document.querySelector('.story-state');
-        if (stateDiv) {
-            let stateSpan = stateDiv.querySelector('.value');
-            if (stateSpan && stateSpan.textContent !== state) {
-                return null;
-            }
-        }
-
-        const parentDiv = latestUpdateElements.element.parentElement;
-        const dateElement = parentDiv.querySelector('.date');
-        return dateElement ? dateElement.innerHTML : null
-    }
-
-    // TODO: This is likely a duplicate of getDateInCurrentState, remove if so.
     static getDateInState(state) {
         let latestUpdateElements = findFirstMatchingElementForState(state);
         if (!latestUpdateElements) {

@@ -55,105 +55,33 @@ describe('Story.getTimeInState', () => {
   test('Uses date in state if now is false', () => {
     const state = 'ExpectedState'
 
-    const getDateInCurrentState = jest.spyOn(Story, 'getDateInCurrentState')
-    getDateInCurrentState.mockReturnValueOnce('Jan 31 2022, 2:00 AM')
+    const getDateInState = jest.spyOn(Story, 'getDateInState')
+    getDateInState.mockReturnValueOnce('Jan 31 2022, 2:00 AM')
     hoursBetweenExcludingWeekends.mockReturnValueOnce(48)
     const result = Story.getTimeInState(state, false)
     expect(result).toBe(48)
-    expect(getDateInCurrentState).toHaveBeenCalledWith(state)
+    expect(getDateInState).toHaveBeenCalledWith(state)
     expect(hoursBetweenExcludingWeekends).toHaveBeenCalledWith('Jan 31 2022, 2:00 AM')
   })
   test('Uses date in state if now is not provided', () => {
     const state = 'ExpectedState'
 
-    const getDateInCurrentState = jest.spyOn(Story, 'getDateInCurrentState')
-    getDateInCurrentState.mockReturnValueOnce('Jan 31 2022, 2:00 AM')
+    const getDateInState = jest.spyOn(Story, 'getDateInState')
+    getDateInState.mockReturnValueOnce('Jan 31 2022, 2:00 AM')
     hoursBetweenExcludingWeekends.mockReturnValueOnce(48)
     const result = Story.getTimeInState(state)
     expect(result).toBe(48)
-    expect(getDateInCurrentState).toHaveBeenCalledWith(state)
+    expect(getDateInState).toHaveBeenCalledWith(state)
     expect(hoursBetweenExcludingWeekends).toHaveBeenCalledWith('Jan 31 2022, 2:00 AM')
   })
   test('Returns 0 if date element is null', () => {
     console.warn = jest.fn()
     const state = 'ExpectedState'
-    const getDateInCurrentState = jest.spyOn(Story, 'getDateInCurrentState')
-    getDateInCurrentState.mockReturnValueOnce(null)
+    const getDateInState = jest.spyOn(Story, 'getDateInState')
+    getDateInState.mockReturnValueOnce(null)
     const result = Story.getTimeInState(state, false)
     expect(result).toBe(0)
     expect(console.warn).toHaveBeenCalledWith('Could not find date element for state ExpectedState')
-  })
-})
-
-describe('Story.getDateInCurrentState', () => {
-  beforeEach(() => {
-    document.body.innerHTML = `
-      <div class="story-state">
-        <span class="value">ExpectedState</span>
-      </div>
-      <div class="latest-update">
-        <div class="element">
-          <div class="date">2022-01-01</div>
-        </div>
-      </div>
-    `
-    jest.clearAllMocks()
-  })
-
-  test('returns null when no elements match the state', () => {
-    findFirstMatchingElementForState.mockReturnValueOnce(null)
-
-    const result = Story.getDateInCurrentState('NonExistentState')
-    expect(result).toBeNull()
-  })
-
-  test('returns null when state span text does not match provided state', () => {
-    findFirstMatchingElementForState.mockReturnValueOnce({element: document.querySelector('.latest-update .element')})
-
-    const result = Story.getDateInCurrentState('MismatchState')
-    expect(result).toBeNull()
-  })
-
-  test('returns the date when state matches and date element exists', () => {
-    const latestUpdateElement = document.querySelector('.latest-update .element')
-    findFirstMatchingElementForState.mockReturnValueOnce({element: latestUpdateElement})
-
-    const result = Story.getDateInCurrentState('ExpectedState')
-    expect(result).toBe('2022-01-01')
-  })
-
-  test('returns date element when state div does not exist', () => {
-    document.querySelector = jest.fn(() => null)
-    document.querySelector.mockImplementation((selector) => {
-      if (selector === '.story-state') {
-        return null
-      }
-      return document.querySelector(selector)
-    })
-    const parentElement = {querySelector: jest.fn().mockReturnValueOnce({innerHTML: '2022-01-01'})}
-    findFirstMatchingElementForState.mockReturnValueOnce({element: {parentElement}})
-    document.querySelector = jest.fn(() => null)
-    const result = Story.getDateInCurrentState('ExpectedState')
-    expect(result).toEqual('2022-01-01')
-  })
-
-  test('returns null when state div and date element do not exist', () => {
-    document.querySelector = jest.fn(() => null)
-    document.querySelector.mockImplementation((selector) => {
-      if (selector === '.story-state') {
-        return null
-      }
-      return document.querySelector(selector)
-    })
-    const parentElement = {querySelector: jest.fn().mockReturnValueOnce(null)}
-    findFirstMatchingElementForState.mockReturnValueOnce({element: {parentElement}})
-    document.querySelector = jest.fn(() => null)
-    const result = Story.getDateInCurrentState('ExpectedState')
-    expect(result).toBeNull()
-  })
-
-  afterAll(() => {
-    jest.clearAllMocks()
   })
 })
 
