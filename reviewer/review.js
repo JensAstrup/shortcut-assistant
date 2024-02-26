@@ -51,4 +51,6 @@ class PullRequestReviewer {
 
 
 const reviewer = new PullRequestReviewer()
-reviewer.review().then(console.log)
+const output = await reviewer.review()
+const encodedOutput = Buffer.from(output).toString('base64')
+console.log(encodedOutput)
