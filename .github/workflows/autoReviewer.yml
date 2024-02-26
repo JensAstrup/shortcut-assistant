@@ -6,6 +6,6 @@ on:
 
 jobs:
   review:
-    uses: JensAstrup/auto-reviewer/.github/workflows/main-workflow.yml@main
+    uses: JensAstrup/auto-reviewer/.github/workflows/workflow.yml@main
     with:
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
