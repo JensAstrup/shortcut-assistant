@@ -16,7 +16,6 @@ class PullRequestReviewer {
       role: 'user',
       content: await this.retrieveFile()
     }]
-    console.log(messages[0].content)
     return client.beta.threads.create({
       messages: messages
       }
