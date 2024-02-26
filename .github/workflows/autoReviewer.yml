@@ -9,6 +9,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Review Pull Request
-        uses: "JensAstrup/auto-reviewer@v0.1.4b"
+        uses: "JensAstrup/auto-reviewer@v0.1.5b"
         with:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
