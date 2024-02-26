@@ -4,6 +4,7 @@ on:
   pull_request:
     types: [ opened, synchronize ]
 
+
 jobs:
   review:
     uses: JensAstrup/auto-reviewer/.github/workflows/workflow.yml@main
