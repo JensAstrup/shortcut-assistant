@@ -19,7 +19,7 @@ jobs:
           node-version: '18'
 
       - name: Generate git diff
-        run: git diff > diff.txt
+        run: git diff FETCH_HEAD..HEAD > diff.txt
 
       - name: Install dependencies
         run: cd reviewer && npm install
