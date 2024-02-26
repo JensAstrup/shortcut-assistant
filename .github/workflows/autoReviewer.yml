@@ -11,4 +11,4 @@ jobs:
       - name: Review Pull Request
         uses: "JensAstrup/auto-reviewer@main"
         with:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_TOKEN }}
