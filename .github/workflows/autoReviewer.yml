@@ -16,7 +16,10 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '21'
+          node-version: '18'
+
+      - name: Install dependencies
+        run: cd reviewer && npm install
 
       - name: Run script and capture output
         id: run_script
@@ -24,7 +27,7 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_TOKEN }}
         run: |
           output="$(node ./reviewer/review.js)"
-          echo "::set-output name=comment::$output"
+          echo "comment=$output" >> $GITHUB_OUTPUT
 
       - name: Post comment to PR
         uses: actions/github-script@v4
