@@ -5,49 +5,7 @@ on:
     types: [ opened, synchronize ]
 
 jobs:
-  review-pr:
-    runs-on: ubuntu-latest
-    name: Review Pull Request
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '18'
-
-      - name: Generate git diff
-        run: |
-          git fetch origin ${{ github.base_ref }}
-          git diff --name-only FETCH_HEAD..HEAD | grep -vE 'package-lock.json$' > files.txt
-          while IFS= read -r file; do
-            git diff FETCH_HEAD..HEAD -- "$file"
-          done < files.txt > diff.txt
-
-      - name: Install dependencies
-        run: cd reviewer && npm install
-
-      - name: Run script and capture output
-        id: run_script
-        env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_TOKEN }}
-        run: |
-          node ./reviewer/review.js
-
-      - name: Post comment to PR
-        uses: actions/github-script@v4
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const fs = require('fs');
-            const path = './output.txt';
-            const output = fs.readFileSync(path, 'utf8');
-            const issue_number = context.issue.number;
-            github.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: issue_number,
-              body: output,
-            })
+  review:
+    uses: JensAstrup/auto-reviewer/.github/workflows/main-workflow.yml@main
+    with:
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
