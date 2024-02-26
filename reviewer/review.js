@@ -8,7 +8,6 @@ const client = new OpenAI({apiKey: process.env.OPENAI_API_KEY})
 class PullRequestReviewer {
   async retrieveFile() {
     const data = await fs.promises.readFile('./diff.txt', 'utf8')
-    console.log(data)
     return data
   }
 
