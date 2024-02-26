@@ -51,7 +51,7 @@ class PullRequestReviewer {
 
 
 async function saveOutputToFile(output) {
-  await fs.writeFile('./output.txt', output, 'utf8')
+  await fs.promises.writeFile('./output.txt', output, 'utf8')
 }
 
 const reviewer = new PullRequestReviewer()
