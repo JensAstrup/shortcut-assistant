@@ -1,0 +1,41 @@
+name: Auto Reviewer
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  review-pr:
+    runs-on: ubuntu-latest
+    name: Review Pull Request
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '21'
+
+      - name: Run script and capture output
+        id: run_script
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_TOKEN }}
+        run: |
+          output="$(node ./reviewer/review.js)"
+          echo "::set-output name=comment::$output"
+
+      - name: Post comment to PR
+        uses: actions/github-script@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const issue_number = context.issue.number;
+            const comment = ${{ steps.run_script.outputs.comment }};
+            github.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue_number,
+              body: comment,
+            })
