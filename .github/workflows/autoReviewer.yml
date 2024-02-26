@@ -21,8 +21,10 @@ jobs:
       - name: Generate git diff
         run: |
           git fetch origin ${{ github.base_ref }}
-          git diff --name-only FETCH_HEAD..HEAD | grep -vE 'package-lock.json$' | xargs -d '\n' git diff > diff.txt
-          cat diff.txt
+          git diff --name-only FETCH_HEAD..HEAD | grep -vE 'package-lock.json$' > files.txt
+          while IFS= read -r file; do
+            git diff FETCH_HEAD..HEAD -- "$file"
+          done < files.txt > diff.txt
 
       - name: Install dependencies
         run: cd reviewer && npm install
