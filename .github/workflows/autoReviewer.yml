@@ -2,7 +2,7 @@ name: Auto Reviewer
 
 on:
   pull_request:
-    branches: [ main ]
+    types: [ opened, synchronize ]
 
 jobs:
   review-pr:
