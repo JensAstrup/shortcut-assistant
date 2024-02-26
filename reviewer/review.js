@@ -13,11 +13,13 @@ class PullRequestReviewer {
   }
 
   async createThread() {
+    const messages = [{
+      role: 'user',
+      content: await this.retrieveFile()
+    }]
+    console.log(messages)
     return client.beta.threads.create({
-        messages: [{
-          role: 'user',
-          content: await this.retrieveFile()
-        }]
+      messages: messages
       }
     )
   }
