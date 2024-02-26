@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
@@ -21,7 +21,7 @@ jobs:
       - name: Generate git diff
         run: |
           git fetch origin ${{ github.base_ref }}
-          git diff FETCH_HEAD..HEAD > diff.txt
+          git diff --name-only FETCH_HEAD..HEAD | grep -vE 'package-lock.json$' | xargs -d '\n' git diff
 
       - name: Install dependencies
         run: cd reviewer && npm install
