@@ -45,12 +45,15 @@ class PullRequestReviewer {
       threadId
     )
     return messages.data[0].content[0].text.value
-
   }
+
 }
 
 
+async function saveOutputToFile(output) {
+  await fs.writeFile('./output.txt', output, 'utf8')
+}
+
 const reviewer = new PullRequestReviewer()
 const output = await reviewer.review()
-const encodedOutput = Buffer.from(output).toString('base64')
-console.log(encodedOutput)
+saveOutputToFile(output)
