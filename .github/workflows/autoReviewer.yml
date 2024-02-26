@@ -8,6 +8,10 @@ jobs:
   review:
     runs-on: ubuntu-latest
     steps:
+      - name: Git checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: '0'
       - name: Review Pull Request
         uses: "JensAstrup/auto-reviewer@main"
         with:
