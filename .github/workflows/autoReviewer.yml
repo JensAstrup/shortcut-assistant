@@ -16,3 +16,4 @@ jobs:
         uses: "JensAstrup/auto-reviewer@main"
         with:
           OPENAI_API_KEY: ${{ secrets.OPENAI_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
