@@ -10,6 +10,7 @@ export class DevelopmentTime{
         if (hoursElapsed < 48) {
             daysElapsed -= 1
         }
+        daysElapsed = Math.abs(daysElapsed)
         stateSpan.textContent = `${stateSpan.textContent} (${daysElapsed.toFixed(2)} days)`
     }
 
