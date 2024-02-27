@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Review Pull Request
-        uses: "JensAstrup/ai-reviewer@v1.0.1"
+        uses: "JensAstrup/ai-reviewer@air-2-refactor-code"
         with:
           OPENAI_API_KEY: ${{ secrets.OPENAI_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
