@@ -8,6 +8,9 @@ export class DevelopmentTime{
         const stateSpan = stateDiv.querySelector('.value')
         let daysElapsed = hoursElapsed / 24
         if (hoursElapsed < 48) {
+            // Was seeing odd behavior where additional days were being added to the final count.
+            // While unable to determine the exact cause, it was happening only for hours less than 48.
+            // This is a hacky temporary fix to prevent the issue from occurring.
             daysElapsed -= 1
         }
         daysElapsed = Math.abs(daysElapsed)

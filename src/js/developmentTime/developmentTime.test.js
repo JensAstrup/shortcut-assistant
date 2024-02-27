@@ -19,6 +19,7 @@ describe('DevelopmentTime.setTimeSpan', () => {
   const mockStateSpan = {textContent: 'Current state'}
 
   beforeEach(() => {
+    jest.clearAllMocks()
     document.querySelector = jest.fn().mockImplementation(selector => {
       if (selector === '.story-state') return {querySelector: () => mockStateSpan}
       return null
