@@ -1,7 +1,7 @@
 import {Story} from '../utils/story'
 import {storyPageIsReady} from '../utils/utils'
 import * as StoryModule from '../utils/story'
-import {DevelopmentTime} from './DevelopmentTime'
+import {DevelopmentTime} from './developmentTime'
 
 
 jest.mock('../utils/utils', () => ({
