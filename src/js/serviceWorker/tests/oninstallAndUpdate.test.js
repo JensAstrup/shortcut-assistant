@@ -2,40 +2,50 @@ import {captureException} from '@sentry/browser'
 import {InstallAndUpdate, onInstallAndUpdate} from '../onInstallAndUpdate'
 import * as Sentry from '@sentry/browser'
 
+
 describe('onInstall function', () => {
-    beforeEach(() => {
-        jest.clearAllMocks()
-        chrome.action.setBadgeText.mockClear()
-        chrome.action.setBadgeBackgroundColor.mockClear()
+  beforeEach(() => {
+    jest.clearAllMocks()
+    chrome.action.setBadgeText.mockClear()
+    chrome.action.setBadgeBackgroundColor.mockClear()
+  })
+
+  test('it sets initial configuration and opens installed.html', () => {
+    InstallAndUpdate.onInstall()
+
+    expect(chrome.windows.create).toHaveBeenCalledTimes(1)
+    expect(chrome.windows.create).toHaveBeenCalledWith({
+      url: '../html/installed.html',
+      type: 'popup',
+      width: 310,
+      height: 500
     })
 
-    test('it sets initial configuration and opens installed.html', () => {
-      InstallAndUpdate.onInstall()
+    expect(chrome.storage.sync.set).toHaveBeenCalledWith({'enableTodoistOptions': false})
+  })
+  test('it logs to console and Sentry when an error occurs setting values', async () => {
+    const error = new Error('Test error')
+    chrome.storage.sync.set.mockRejectedValue(error)
+    console.error = jest.fn()
+    const captureException = jest.spyOn(Sentry, 'captureException')
 
-        expect(chrome.windows.create).toHaveBeenCalledTimes(1)
-        expect(chrome.windows.create).toHaveBeenCalledWith({
-            url: '../html/installed.html',
-            type: 'popup',
-            width: 310,
-            height: 500
-        })
+    await InstallAndUpdate.onInstall()
 
-        expect(chrome.storage.sync.set).toHaveBeenCalledTimes(2)
-        expect(chrome.storage.sync.set).toHaveBeenCalledWith({'enableStalledWorkWarnings': true})
-        expect(chrome.storage.sync.set).toHaveBeenCalledWith({'enableTodoistOptions': false})
-    })
+    expect(console.error).toHaveBeenCalledWith('Error setting enableTodoistOptions:', error)
+    expect(captureException).toHaveBeenCalledWith(error)
+  })
 })
 
 describe('onUpdate function ', () => {
-    beforeEach(() => {
-        chrome.windows.create.mockClear()
-    })
+  beforeEach(() => {
+    chrome.windows.create.mockClear()
+  })
   test('it sets badge text and color', async () => {
     await InstallAndUpdate.onUpdate()
 
-        expect(chrome.action.setBadgeText).toHaveBeenCalledWith({text: ' '})
-        expect(chrome.action.setBadgeBackgroundColor).toHaveBeenCalledWith({color: '#a30000'})
-    })
+    expect(chrome.action.setBadgeText).toHaveBeenCalledWith({text: ' '})
+    expect(chrome.action.setBadgeBackgroundColor).toHaveBeenCalledWith({color: '#a30000'})
+  })
 })
 
 describe('onInstallAndUpdate function', () => {

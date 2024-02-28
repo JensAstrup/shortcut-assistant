@@ -9,8 +9,10 @@ export class InstallAndUpdate {
             width: 310,
             height: 500
         })
-        chrome.storage.sync.set({'enableStalledWorkWarnings': true})
-        chrome.storage.sync.set({'enableTodoistOptions': false})
+        chrome.storage.sync.set({'enableTodoistOptions': false}).catch(e => {
+            console.error('Error setting enableTodoistOptions:', e)
+            Sentry.captureException(e)
+        })
     }
 
     static async onUpdate() {
