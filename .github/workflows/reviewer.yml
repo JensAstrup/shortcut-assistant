@@ -1,0 +1,15 @@
+name: Auto Reviewer
+
+on:
+  pull_request:
+    types: [ opened, synchronize ]
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Review Pull Request
+        uses: "JensAstrup/ai-reviewer@v1.0.2"
+        with:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
