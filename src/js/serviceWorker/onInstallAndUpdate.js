@@ -24,6 +24,7 @@ export function onInstallAndUpdate(details){
         InstallAndUpdate.onInstall(details)
     }
     else if (details.reason === 'update') {
+        // Only display the update page if the changelog has been updated for the current version
         if (process.env.CHANGELOG_VERSION === process.env.VERSION) {
             InstallAndUpdate.onUpdate(details).catch(e => {
                 console.error('Error updating:', e)
