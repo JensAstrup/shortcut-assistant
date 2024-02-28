@@ -30,9 +30,9 @@ export class CycleTime {
     cycleTimeDiv.style.marginTop = '0'
     cycleTimeDiv.className = 'attribute story-date-cycle-time'
     const cycleTimeHours = hoursBetweenExcludingWeekends(inDevelopmentDateString, completedDateString)
-    if (isNaN(cycleTimeHours)) {
-      return
-    }
+
+    if (isNaN(cycleTimeHours)) return
+
     const cycleTimeDisplay = cycleTimeHours > 24 ? `${(cycleTimeHours / 24).toFixed(2)} days` : `${cycleTimeHours.toFixed(2)} hours`
     cycleTimeDiv.innerHTML = `
             <span class='name'>Cycle Time</span>
