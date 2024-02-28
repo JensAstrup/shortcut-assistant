@@ -1,4 +1,6 @@
+import {captureException} from '@sentry/browser'
 import {InstallAndUpdate, onInstallAndUpdate} from '../onInstallAndUpdate'
+import * as Sentry from '@sentry/browser'
 
 describe('onInstall function', () => {
     beforeEach(() => {
@@ -60,5 +62,17 @@ describe('onInstallAndUpdate function', () => {
     process.env.VERSION = '1.0.0'
     onInstallAndUpdate({reason: 'update'})
     expect(onUpdate).not.toHaveBeenCalled()
+  })
+  test('it logs to console and Sentry when an error occurs', async () => {
+    process.env.CHANGELOG_VERSION = '1.0.0'
+    process.env.VERSION = '1.0.0'
+    const captureException = jest.spyOn(Sentry, 'captureException')
+    const error = new Error('Test error')
+    onUpdate.mockRejectedValue(error)
+    console.error = jest.fn()
+    await onInstallAndUpdate({reason: 'update'})
+
+    expect(console.error).toHaveBeenCalledWith('Error updating:', error)
+    expect(captureException).toHaveBeenCalledWith(error)
   })
 })
