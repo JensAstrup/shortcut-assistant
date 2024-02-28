@@ -4,13 +4,13 @@ import {storyPageIsReady} from '../utils/utils'
 
 
 export class CycleTime {
+
   static clear() {
     const cycleTimeDiv = document.querySelector('.story-date-cycle-time')
     if (cycleTimeDiv) {
       cycleTimeDiv.remove()
     }
   }
-
 
   static async set() {
     await storyPageIsReady()
@@ -30,6 +30,9 @@ export class CycleTime {
     cycleTimeDiv.style.marginTop = '0'
     cycleTimeDiv.className = 'attribute story-date-cycle-time'
     const cycleTimeHours = hoursBetweenExcludingWeekends(inDevelopmentDateString, completedDateString)
+
+    if (isNaN(cycleTimeHours)) return
+
     const cycleTimeDisplay = cycleTimeHours > 24 ? `${(cycleTimeHours / 24).toFixed(2)} days` : `${cycleTimeHours.toFixed(2)} hours`
     cycleTimeDiv.innerHTML = `
             <span class='name'>Cycle Time</span>
@@ -37,7 +40,4 @@ export class CycleTime {
     const storyCreatedDivParent = createdDiv.parentElement
     storyCreatedDivParent.insertBefore(cycleTimeDiv, createdDiv)
   }
-
 }
-
-

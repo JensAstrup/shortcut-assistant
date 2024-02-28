@@ -64,6 +64,21 @@ describe('set function', () => {
     expect(storyCreatedDivParent.insertBefore).not.toHaveBeenCalled()
   })
 
+  it('should not display cycle time when the cycle time is not a number', async () => {
+    Story.isInState.mockReturnValue(true)
+    Story.getDateInState.mockReturnValue('2022-08-23')
+    hoursBetweenExcludingWeekends.mockReturnValue(NaN) // Simulate NaN
+
+    await CycleTime.set()
+
+    expect(storyPageIsReady).toHaveBeenCalledTimes(1)
+    expect(Story.isInState).toHaveBeenCalledWith('Completed')
+    expect(Story.getDateInState).toHaveBeenCalledWith('In Development')
+    expect(hoursBetweenExcludingWeekends).toHaveBeenCalledWith('2022-08-23', '2022-09-23')
+    expect(document.createElement).toHaveBeenCalledWith('div')
+    expect(storyCreatedDivParent.insertBefore).not.toHaveBeenCalled()
+  })
+
   it('should calculate and display cycle time when the story is completed', async () => {
     Story.isInState.mockReturnValue(true)
     Story.getDateInState.mockReturnValue('2022-08-23')
