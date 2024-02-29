@@ -2,14 +2,14 @@ name: Auto Reviewer
 
 on:
   pull_request:
-    types: [ opened, synchronize ]
+    types: [ opened ]
     branches-ignore: [ main ]
   issue_comment:
     types: [ created ]
 
 jobs:
   review:
-    if: github.event_name == 'pull_request' || (github.event_name == 'issue_comment' && (github.event.comment.body == 'review' || github.event.comment.body == 'Review') && github.event.issue.pull_request)
+    if: github.event_name == 'pull_request' || (github.event_name == 'issue_comment' && contains(tolower(github.event.comment.body), 'review') && github.event.issue.pull_request)
     runs-on: ubuntu-latest
     steps:
       - name: Review Pull Request
