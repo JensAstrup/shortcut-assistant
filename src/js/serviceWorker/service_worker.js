@@ -4,7 +4,7 @@ import {getNotes} from './notes'
 import * as Sentry from '@sentry/browser'
 import {sendEvent} from '../analytics/event'
 import {fetchCompletion} from './fetch_completion'
-import {OpenAIError} from '../utils/errors'
+import {OpenAIError} from '../errors'
 import {onInstallAndUpdate} from './onInstallAndUpdate'
 import {SlugManager} from './slugManager'
 
