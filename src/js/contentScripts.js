@@ -18,30 +18,33 @@ Sentry.init({
 })
 
 
-async function activate() {
+export async function activate() {
   await sleep(3000)
 
   CycleTime.set().catch((error) => {
     console.error(error)
   })
 
-  const enableStalledWorkWarnings = await getSyncedSetting('enableStalledWorkWarnings', true)
-  if (enableStalledWorkWarnings) {
-    DevelopmentTime.set().catch((error) => {
-      console.error(error)
-    })
-  }
-  const enableTodoistOptions = await getSyncedSetting('enableTodoistOptions', false)
-  if (enableTodoistOptions) {
-    new Todoist()
+  DevelopmentTime.set().catch((error) => {
+    console.error(error)
+  })
+  let enableTodoistOptions
+  try {
+    enableTodoistOptions = await getSyncedSetting('enableTodoistOptions', false)
+  } catch (e) {
+    console.error(e)
+  } finally {
+    if (enableTodoistOptions) {
+      new Todoist()
+    }
+
   }
   new NotesButton()
   new KeyboardShortcuts().activate()
 
 }
 
-chrome.runtime.onMessage.addListener(
-  async function (request, sender, sendResponse) {
+export async function handleMessage(request, sender, sendResponse) {
     const activeTabUrl = window.location.href
     if (request.message === 'initDevelopmentTime' && request.url.includes('story')) {
       DevelopmentTime.set().catch(logError)
@@ -56,6 +59,6 @@ chrome.runtime.onMessage.addListener(
     if (request.message === 'initTodos' && request.url.includes('story')) {
       new Todoist()
     }
-  })
+}
 
-activate()
+chrome.runtime.onMessage.addListener(handleMessage)
