@@ -78,13 +78,10 @@ describe('handleMessage function', () => {
     expect(Todoist).toHaveBeenCalled()
   })
 
-  // Example of a negative test
   it('does not initialize DevelopmentTime and CycleTime for unrelated URL', async () => {
     const request = {message: 'initDevelopmentTime', url: 'https://example.com/unrelated'}
     await handleMessage(request, {}, jest.fn())
     expect(DevelopmentTime.set).not.toHaveBeenCalled()
     expect(CycleTime.set).not.toHaveBeenCalled()
   })
-
-  // Add more tests as necessary for other conditions, error handling, etc.
 })
