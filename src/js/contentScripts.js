@@ -3,7 +3,7 @@ import * as Sentry from '@sentry/browser'
 import {DevelopmentTime} from './developmentTime/developmentTime'
 import {NotesButton} from './notes/notesButton'
 import {Todoist} from './todoist/Todoist'
-import {logError, sleep} from './utils/utils'
+import {logError, sleep, storyPageIsReady} from './utils/utils'
 import {getSyncedSetting} from './utils/getSyncedSetting'
 import {CycleTime} from './cycleTime/cycleTime'
 import {analyzeStoryDescription} from './analyze/analyzeStoryDescription'
@@ -19,7 +19,7 @@ Sentry.init({
 
 
 export async function activate() {
-  await sleep(3000)
+  await storyPageIsReady()
 
   CycleTime.set().catch((error) => {
     console.error(error)
@@ -28,16 +28,13 @@ export async function activate() {
   DevelopmentTime.set().catch((error) => {
     console.error(error)
   })
-  let enableTodoistOptions
   try {
-    enableTodoistOptions = await getSyncedSetting('enableTodoistOptions', false)
-  } catch (e) {
-    console.error(e)
-  } finally {
+    const enableTodoistOptions = await getSyncedSetting('enableTodoistOptions', false)
     if (enableTodoistOptions) {
       new Todoist()
     }
-
+  } catch (e) {
+    console.error(e)
   }
   new NotesButton()
   new KeyboardShortcuts().activate()

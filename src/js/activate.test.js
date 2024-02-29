@@ -1,5 +1,6 @@
 import {activate} from './contentScripts'
 import {getSyncedSetting} from './utils/getSyncedSetting'
+import {storyPageIsReady} from './utils/utils'
 import * as utils from './utils/utils'
 import {CycleTime} from './cycleTime/cycleTime'
 import {DevelopmentTime} from './developmentTime/developmentTime'
@@ -23,8 +24,7 @@ jest.mock('./todoist/Todoist')
 jest.mock('./notes/notesButton')
 jest.mock('./keyboard/keyboardShortcuts')
 jest.mock('./utils/utils', () => ({
-  ...jest.requireActual('./utils/utils'),
-  sleep: jest.fn().mockResolvedValue()
+  storyPageIsReady: jest.fn().mockResolvedValue()
 }))
 jest.mock('./utils/getSyncedSetting', () => ({
   getSyncedSetting: jest.fn()
@@ -54,7 +54,7 @@ describe('activate function', () => {
 
   it('waits for 3 seconds before proceeding', async () => {
     await activate()
-    expect(utils.sleep).toHaveBeenCalledWith(3000)
+    expect(storyPageIsReady).toHaveBeenCalled()
   })
 
   it('initializes CycleTime', async () => {
