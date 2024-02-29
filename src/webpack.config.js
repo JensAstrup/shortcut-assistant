@@ -21,7 +21,10 @@ module.exports = {
       './js/serviceWorker/omnibox/listeners.js',
       './js/serviceWorker/omnibox/omnibox.js'
     ],
-    'contentScripts/bundle': './js/contentScripts.js',
+    'contentScripts/bundle': [
+      './js/contentScripts.js',
+      './js/index.js'
+    ],
     'analytics': [
       './js/analytics/clientId.js',
       './js/analytics/config.js',
