@@ -1,8 +1,6 @@
 import {activate} from './contentScripts'
 import {getSyncedSetting} from './utils/getSyncedSetting'
 import * as utils from './utils/utils'
-import * as settings from './utils/getSyncedSetting'
-import Sentry from '@sentry/browser'
 import {CycleTime} from './cycleTime/cycleTime'
 import {DevelopmentTime} from './developmentTime/developmentTime'
 import {Todoist} from './todoist/Todoist'
@@ -25,7 +23,7 @@ jest.mock('./todoist/Todoist')
 jest.mock('./notes/notesButton')
 jest.mock('./keyboard/keyboardShortcuts')
 jest.mock('./utils/utils', () => ({
-  ...jest.requireActual('./utils/utils'), // This is if you want to keep some original implementations
+  ...jest.requireActual('./utils/utils'),
   sleep: jest.fn().mockResolvedValue()
 }))
 jest.mock('./utils/getSyncedSetting', () => ({
@@ -47,11 +45,11 @@ describe('activate function', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     originalError = console.error
-    console.error = jest.fn() // Mock console.error
+    console.error = jest.fn()
   })
 
   afterEach(() => {
-    console.error = originalError // Restore original console.error
+    console.error = originalError
   })
 
   it('waits for 3 seconds before proceeding', async () => {
@@ -82,13 +80,13 @@ describe('activate function', () => {
   })
 
   it('conditionally initializes Todoist based on enableTodoistOptions setting', async () => {
-    getSyncedSetting.mockResolvedValueOnce(false) // For Todoist, assuming false disables it
+    getSyncedSetting.mockResolvedValueOnce(false)
     await activate()
     expect(Todoist).not.toHaveBeenCalled()
 
-    settings.getSyncedSetting.mockResolvedValueOnce(true) // Now true enables it
+    getSyncedSetting.mockResolvedValueOnce(true)
     await activate()
-    expect(Todoist).toHaveBeenCalledTimes(1) // Adjust based on call count expected
+    expect(Todoist).toHaveBeenCalledTimes(1)
   })
 
   it('instantiates NotesButton and activates KeyboardShortcuts unconditionally', async () => {
@@ -98,14 +96,9 @@ describe('activate function', () => {
     expect(KeyboardShortcuts.mock.instances[0].activate).toHaveBeenCalled()
   })
 
-  // Assuming you add error handling for getSyncedSetting failure
   it('handles getSyncedSetting failure gracefully', async () => {
     getSyncedSetting.mockRejectedValueOnce(new Error('Failed to fetch setting'))
     await activate()
-    // Expect some form of error handling or default behavior
-    // This is hypothetical and depends on your error handling strategy
     expect(console.error).toHaveBeenCalledWith(expect.any(Error))
   })
-
-  // Add more tests as necessary for error handling, etc.
 })
