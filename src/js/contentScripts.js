@@ -3,7 +3,7 @@ import * as Sentry from '@sentry/browser'
 import {DevelopmentTime} from './developmentTime/developmentTime'
 import {NotesButton} from './notes/notesButton'
 import {Todoist} from './todoist/Todoist'
-import {logError, sleep} from './utils/utils'
+import {logError, storyPageIsReady} from './utils/utils'
 import {getSyncedSetting} from './utils/getSyncedSetting'
 import {CycleTime} from './cycleTime/cycleTime'
 import {analyzeStoryDescription} from './analyze/analyzeStoryDescription'
@@ -18,30 +18,30 @@ Sentry.init({
 })
 
 
-async function activate() {
-  await sleep(3000)
+export async function activate() {
+  await storyPageIsReady()
 
   CycleTime.set().catch((error) => {
     console.error(error)
   })
 
-  const enableStalledWorkWarnings = await getSyncedSetting('enableStalledWorkWarnings', true)
-  if (enableStalledWorkWarnings) {
-    DevelopmentTime.set().catch((error) => {
-      console.error(error)
-    })
-  }
-  const enableTodoistOptions = await getSyncedSetting('enableTodoistOptions', false)
-  if (enableTodoistOptions) {
-    new Todoist()
+  DevelopmentTime.set().catch((error) => {
+    console.error(error)
+  })
+  try {
+    const enableTodoistOptions = await getSyncedSetting('enableTodoistOptions', false)
+    if (enableTodoistOptions) {
+      new Todoist()
+    }
+  } catch (e) {
+    console.error(e)
   }
   new NotesButton()
   new KeyboardShortcuts().activate()
 
 }
 
-chrome.runtime.onMessage.addListener(
-  async function (request, sender, sendResponse) {
+export async function handleMessage(request, sender, sendResponse) {
     const activeTabUrl = window.location.href
     if (request.message === 'initDevelopmentTime' && request.url.includes('story')) {
       DevelopmentTime.set().catch(logError)
@@ -56,6 +56,6 @@ chrome.runtime.onMessage.addListener(
     if (request.message === 'initTodos' && request.url.includes('story')) {
       new Todoist()
     }
-  })
+}
 
-activate()
+chrome.runtime.onMessage.addListener(handleMessage)
