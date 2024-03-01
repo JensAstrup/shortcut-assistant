@@ -164,74 +164,74 @@ describe('Shortcuts', () => {
     expect(global.navigator.clipboard.writeText).toHaveBeenCalled()
   })
 
-  test('_getStatusDivWithText function', () => {
+  test('_getStateDivWithText function', () => {
     const childDivs = [{innerText: 'In Development '}]
     const parentDiv = {querySelectorAll: jest.fn().mockReturnValue(childDivs)}
 
     document.querySelector.mockReturnValueOnce(parentDiv)
 
-    const result = instance._getStatusDivWithText('In Development')
+    const result = instance._getStateDivWithText('In Development')
 
     expect(result).toEqual(childDivs[0])
 
   })
 
 
-  test('_getStatusDivWithText function with no results', () => {
+  test('_getStateDivWithText function with no results', () => {
     const childDivs = [{innerText: 'Other'}]
     const parentDiv = {querySelectorAll: jest.fn().mockReturnValue(childDivs)}
 
     document.querySelector.mockReturnValueOnce(parentDiv)
 
-    const result = instance._getStatusDivWithText('In Development')
+    const result = instance._getStateDivWithText('In Development')
 
     expect(result).toEqual(null)
 
   })
 
-  test('_getStatusDivWithText function with no parent div', () => {
+  test('_getStateDivWithText function with no parent div', () => {
     const parentDiv = null
 
     document.querySelector.mockReturnValueOnce(parentDiv)
 
     jest.spyOn(console, 'error').mockImplementation(() => {
     })
-    instance._getStatusDivWithText('In Development')
+    instance._getStateDivWithText('In Development')
 
     expect(console.error).toHaveBeenCalledWith('The parent div with class "list apply-on-click" was not found.')
 
   })
 
   test('copyBranchAndMoveToInDevelopment function', async () => {
-    const mockChangeStatus = jest.spyOn(KeyboardShortcuts.prototype, 'changeStatus')
+    const mockChangeState = jest.spyOn(KeyboardShortcuts.prototype, 'changeState')
     const mockCopyGitBranch = jest.spyOn(KeyboardShortcuts.prototype, 'copyGitBranch')
 
-    const statusDiv = {click: jest.fn()}
-    instance._getStatusDivWithText = jest.fn().mockReturnValue(statusDiv)
+    const stateDiv = {click: jest.fn()}
+    instance._getStateDivWithText = jest.fn().mockReturnValue(stateDiv)
 
-    mockChangeStatus.mockResolvedValueOnce(undefined)
+    mockChangeState.mockResolvedValueOnce(undefined)
     mockCopyGitBranch.mockResolvedValueOnce(undefined)
 
     await instance.copyBranchAndMoveToInDevelopment()
 
     expect(mockCopyGitBranch).toHaveBeenCalled()
-    expect(instance._getStatusDivWithText).toHaveBeenCalledWith('In Development')
-    expect(statusDiv.click).toHaveBeenCalled()
+    expect(instance._getStateDivWithText).toHaveBeenCalledWith('In Development')
+    expect(stateDiv.click).toHaveBeenCalled()
 
   })
 
-  test('copyBranchAndMoveToInDevelopment function with no statusDiv', async () => {
-    const mockChangeStatus = jest.spyOn(KeyboardShortcuts.prototype, 'changeStatus')
+  test('copyBranchAndMoveToInDevelopment function with no stateDiv', async () => {
+    const mockChangeState = jest.spyOn(KeyboardShortcuts.prototype, 'changeState')
     const mockCopyGitBranch = jest.spyOn(KeyboardShortcuts.prototype, 'copyGitBranch')
 
-    instance._getStatusDivWithText = jest.fn().mockReturnValue(null)
+    instance._getStateDivWithText = jest.fn().mockReturnValue(null)
 
-    mockChangeStatus.mockResolvedValueOnce(undefined)
+    mockChangeState.mockResolvedValueOnce(undefined)
     mockCopyGitBranch.mockResolvedValueOnce(undefined)
 
     await instance.copyBranchAndMoveToInDevelopment()
 
     expect(mockCopyGitBranch).toHaveBeenCalled()
-    expect(instance._getStatusDivWithText).toHaveBeenCalledWith('In Development')
+    expect(instance._getStateDivWithText).toHaveBeenCalledWith('In Development')
   })
 })
