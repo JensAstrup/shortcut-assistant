@@ -3,7 +3,7 @@ import {sleep} from '../utils/utils'
 
 export class KeyboardShortcuts {
   predefinedShortcuts = [
-    {key: 's', shiftKey: true, func: this.changeStatus},
+    {key: 's', shiftKey: true, func: this.changeState},
     {key: 'i', shiftKey: true, func: this.changeIteration},
     {key: '.', metaKey: true, func: this.copyGitBranch},
     {key: '.', metaKey: true, shiftKey: true, func: this.copyBranchAndMoveToInDevelopment}
@@ -72,7 +72,7 @@ export class KeyboardShortcuts {
   }
 
 
-  async changeStatus() {
+  async changeState() {
     const dropdown = document.getElementById('story-dialog-state-dropdown')
     if (dropdown) {
       dropdown.click()
@@ -132,7 +132,7 @@ export class KeyboardShortcuts {
 
   async copyBranchAndMoveToInDevelopment() {
     await this.copyGitBranch()
-    this.changeStatus().then(() => {
+    this.changeState().then(() => {
       const statusDiv = this._getStatusDivWithText('In Development')
       if (statusDiv) {
         statusDiv.click()

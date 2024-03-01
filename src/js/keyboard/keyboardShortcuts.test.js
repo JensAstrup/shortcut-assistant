@@ -21,7 +21,7 @@ describe('Shortcuts', () => {
   })
 
 
-  test('changeStatus function', async () => {
+  test('changeState function', async () => {
     const mockedDropdown = {click: jest.fn()}
     const mockedPopup = {querySelector: jest.fn()}
     const mockedInput = {
@@ -36,23 +36,23 @@ describe('Shortcuts', () => {
 
     mockedPopup.querySelector.mockReturnValue(mockedInput)
 
-    await instance.changeStatus()
+    await instance.changeState()
 
     expect(mockedDropdown.click).toHaveBeenCalled()
     expect(mockedPopup.querySelector).toHaveBeenCalled()
     expect(mockedInput.focus).toHaveBeenCalled()
   })
 
-  test('changeStatus function with no dropdown', async () => {
+  test('changeState function with no dropdown', async () => {
     instance = new KeyboardShortcuts()
 
     document.getElementById.mockReturnValueOnce(null)
 
-    await instance.changeStatus()
+    await instance.changeState()
     expect(document.getElementById).toHaveBeenCalledWith('story-dialog-state-dropdown')
   })
 
-  test('changeStatus function with no input', async () => {
+  test('changeState function with no input', async () => {
     const mockedDropdown = {click: jest.fn()}
     const mockedPopup = {querySelector: jest.fn()}
     const mockedInput = null
@@ -64,7 +64,7 @@ describe('Shortcuts', () => {
 
     mockedPopup.querySelector.mockReturnValue(mockedInput)
 
-    await instance.changeStatus()
+    await instance.changeState()
 
     expect(mockedDropdown.click).toHaveBeenCalled()
     expect(mockedPopup.querySelector).toHaveBeenCalled()
