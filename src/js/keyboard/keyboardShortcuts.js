@@ -114,7 +114,7 @@ export class KeyboardShortcuts {
     gitHelpers.click()
   }
 
-  _getStatusDivWithText(text) {
+  _getStateDivWithText(text) {
     const parentDiv = document.querySelector('.list.apply-on-click')
     if (parentDiv) {
       const childDivs = parentDiv.querySelectorAll('div[data-i]')
@@ -133,9 +133,9 @@ export class KeyboardShortcuts {
   async copyBranchAndMoveToInDevelopment() {
     await this.copyGitBranch()
     this.changeState().then(() => {
-      const statusDiv = this._getStatusDivWithText('In Development')
-      if (statusDiv) {
-        statusDiv.click()
+      const stateDiv = this._getStateDivWithText('In Development')
+      if (stateDiv) {
+        stateDiv.click()
       }
     })
   }
