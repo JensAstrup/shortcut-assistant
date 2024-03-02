@@ -3,7 +3,7 @@ import {sendEvent} from '../analytics/event'
 import callOpenAI from './callOpenAI'
 import {fetchCompletion} from './fetchCompletion'
 import getCompletionFromProxy from './getCompletionFromProxy'
-import {getOpenAiToken} from './getOpenAiToken'
+import getOpenAiToken from './getOpenAiToken'
 
 
 jest.mock('@sentry/browser', () => ({
@@ -23,11 +23,7 @@ jest.mock('./fetchCompletion', () => {
 
 jest.mock('./getCompletionFromProxy', () => jest.fn())
 
-jest.mock('./getOpenAiToken', () => {
-  return {
-    getOpenAiToken: jest.fn()
-  }
-})
+jest.mock('./getOpenAiToken', () => jest.fn())
 
 global.chrome = {
   tabs: {

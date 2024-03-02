@@ -1,4 +1,4 @@
-import {getOpenAiToken} from './getOpenAiToken'
+import getOpenAiToken from './getOpenAiToken'
 
 
 describe('getOpenAiToken', () => {

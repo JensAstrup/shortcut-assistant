@@ -1,13 +1,11 @@
 import Openai from '../__mocks__/openai'
-// import {getOpenAiToken} from './getOpenAiToken'
+// import getOpenAiToken from './getOpenAiToken'
 import OpenAI, {mockOpenAI} from 'openai'
-import {getOpenAiToken} from './getOpenAiToken'
+import getOpenAiToken from './getOpenAiToken'
 import {fetchCompletion} from './fetchCompletion'
 
 
-jest.mock('./getOpenAiToken', () => ({
-    getOpenAiToken: jest.fn().mockResolvedValue('test-token')
-}))
+jest.mock('./getOpenAiToken', () => jest.fn().mockResolvedValue('test-token'))
 
 
 describe('fetchCompletion', () => {

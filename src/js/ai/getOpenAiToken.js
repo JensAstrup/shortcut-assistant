@@ -1,4 +1,4 @@
-export async function getOpenAiToken() {
+async function getOpenAiToken() {
   try {
     const result = await chrome.storage.local.get('openAIToken')
     const value = result['openAIToken']
@@ -13,3 +13,5 @@ export async function getOpenAiToken() {
     throw error
   }
 }
+
+export default getOpenAiToken

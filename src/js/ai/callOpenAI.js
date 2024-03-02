@@ -3,7 +3,7 @@ import {sendEvent} from '../analytics/event'
 import {OpenAIError} from '../utils/errors'
 import {fetchCompletion} from './fetchCompletion'
 import getCompletionFromProxy from './getCompletionFromProxy'
-import {getOpenAiToken} from './getOpenAiToken'
+import getOpenAiToken from './getOpenAiToken'
 
 
 async function callOpenAI(description, tabId) {

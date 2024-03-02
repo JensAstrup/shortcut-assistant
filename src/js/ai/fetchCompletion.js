@@ -1,5 +1,5 @@
 import OpenAI from 'openai'
-import {getOpenAiToken} from './getOpenAiToken'
+import getOpenAiToken from './getOpenAiToken'
 import PROMPT from './prompt'
 
 
