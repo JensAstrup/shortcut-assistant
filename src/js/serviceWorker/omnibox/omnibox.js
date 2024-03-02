@@ -1,5 +1,6 @@
 import {SlugManager} from '../slugManager'
 
+
 /**
  * Redirects the user from the omnibox based on the provided text and disposition.
  * If the text is a number, it redirects to the corresponding Shortcut story.
