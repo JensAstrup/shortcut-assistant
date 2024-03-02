@@ -1,6 +1,3 @@
-/**
- * @jest-environment jsdom
- */
 import {KeyboardShortcuts} from './keyboardShortcuts'
 
 
