@@ -60,8 +60,7 @@ describe('SlugManager', () => {
   });
 
   describe('refreshCompanySlug', () => {
-    it('should refresh the company slug if it exists in chrome storage', async () => {
-      jest.spyOn(SlugManager, 'getCompanySlug').mockResolvedValue('oldCompanySlug');
+    it('should refresh the company slug', async () => {
       jest.spyOn(SlugManager, 'getCompanySlugFromTab').mockResolvedValue('newCompanySlug');
       const setSpy = jest.spyOn(SlugManager, 'setCompanySlug');
 
