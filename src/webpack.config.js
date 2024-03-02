@@ -55,6 +55,9 @@ module.exports = {
       authToken: process.env.SENTRY_AUTH_TOKEN,
       org: 'jens-astrup',
       project: 'shortcut-assistant',
-      environment: process.env.NODE_ENV
+      environment: process.env.NODE_ENV,
+      sourcemaps: {
+        filesToDeleteAfterUpload: ['*.js.map']
+      }
     })]
 }
