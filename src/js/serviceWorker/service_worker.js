@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/browser'
 import {getOpenAiToken} from '../ai/getOpenAiToken'
-import {callOpenAI} from '../ai/callOpenAI'
+import callOpenAI from '../ai/callOpenAI'
 import {sendEvent} from '../analytics/event'
 import {getSyncedSetting} from '../utils/getSyncedSetting.js'
 import {getNotes} from './notes'
