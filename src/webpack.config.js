@@ -17,20 +17,13 @@ module.exports = {
     ],
     'service_worker/bundle': [
       './js/serviceWorker/service_worker.js',
-      './js/serviceWorker/fetchCompletion.js',
       './js/serviceWorker/omnibox/listeners.js',
-      './js/serviceWorker/omnibox/omnibox.js'
     ],
     'contentScripts/bundle': [
       './js/contentScripts.js',
       './js/index.js'
     ],
-    'analytics': [
-      './js/analytics/clientId.js',
-      './js/analytics/config.js',
-      './js/analytics/event.js',
-      './js/analytics/sessionId.js'
-    ]
+    'analytics': './js/analytics/event.js'
   },
 
   output: {

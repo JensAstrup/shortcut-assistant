@@ -1,12 +1,9 @@
-// getOpenAiToken.test.js
-
 import {getOpenAiToken} from './getOpenAiToken'
 
 
 describe('getOpenAiToken', () => {
 
   beforeEach(() => {
-    // Clear all mocks before each test
     jest.clearAllMocks()
   })
 
@@ -41,7 +38,9 @@ describe('getOpenAiToken', () => {
     chrome.storage.local.get.mockImplementation(() => {
       throw new Error(errorMessage)
     })
+    console.error = jest.fn()
 
     await expect(getOpenAiToken()).rejects.toThrow(errorMessage)
+    expect(console.error).toHaveBeenCalledWith('Error getting OpenAI token:', expect.any(Error))
   })
 })
