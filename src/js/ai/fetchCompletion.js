@@ -1,5 +1,6 @@
 import OpenAI from 'openai'
-import {getOpenAiToken, PROMPT} from './service_worker'
+import {getOpenAiToken} from './getOpenAiToken'
+import {PROMPT} from './prompt'
 
 
 export async function fetchCompletion(description, tabId){

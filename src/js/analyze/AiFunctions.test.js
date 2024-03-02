@@ -1,6 +1,3 @@
-/**
- * @jest-environment jsdom
- */
 import {sendEvent} from '../analytics/event'
 import * as utilsModule from '../utils/utils'
 import {AiFunctions} from './aiFunctions'

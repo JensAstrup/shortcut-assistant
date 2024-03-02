@@ -3,9 +3,6 @@ import {sleep} from '../utils/utils'
 import * as Sentry from '@sentry/browser'
 
 export class AiFunctions{
-    constructor(){
-    }
-
     static async analyzeStoryDetails(){
         let analyzeButton = document.getElementById('analyzeButton')
         let analyzeText = document.getElementById('analyzeText')

@@ -17,7 +17,7 @@ module.exports = {
     ],
     'service_worker/bundle': [
       './js/serviceWorker/service_worker.js',
-      './js/serviceWorker/fetch_completion.js',
+      './js/serviceWorker/fetchCompletion.js',
       './js/serviceWorker/omnibox/listeners.js',
       './js/serviceWorker/omnibox/omnibox.js'
     ],
