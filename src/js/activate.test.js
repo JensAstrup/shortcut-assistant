@@ -1,7 +1,6 @@
 import {activate} from './contentScripts'
 import {getSyncedSetting} from './utils/getSyncedSetting'
-import {storyPageIsReady} from './utils/utils'
-import * as utils from './utils/utils'
+import storyPageIsReady from './utils/storyPageIsReady'
 import {CycleTime} from './cycleTime/cycleTime'
 import {DevelopmentTime} from './developmentTime/developmentTime'
 import {Todoist} from './todoist/Todoist'
@@ -23,9 +22,7 @@ jest.mock('./developmentTime/developmentTime', () => ({
 jest.mock('./todoist/Todoist')
 jest.mock('./notes/notesButton')
 jest.mock('./keyboard/keyboardShortcuts')
-jest.mock('./utils/utils', () => ({
-  storyPageIsReady: jest.fn().mockResolvedValue()
-}))
+jest.mock('./utils/storyPageIsReady', () => jest.fn().mockResolvedValue())
 jest.mock('./utils/getSyncedSetting', () => ({
   getSyncedSetting: jest.fn()
 }))

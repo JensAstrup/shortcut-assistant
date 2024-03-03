@@ -1,5 +1,5 @@
 import {sendEvent} from '../analytics/event'
-import * as utilsModule from '../utils/utils'
+import sleep from '../utils/sleep'
 import {AiFunctions} from './aiFunctions'
 import * as Sentry from '@sentry/browser'
 
@@ -8,9 +8,7 @@ jest.mock('../analytics/event', () => ({
   sendEvent: jest.fn().mockResolvedValue(undefined)
 }))
 
-jest.mock('../utils/utils', () => ({
-  sleep: jest.fn().mockResolvedValue(undefined)
-}))
+jest.mock('../utils/sleep', () => jest.fn().mockResolvedValue(undefined))
 
 jest.mock('@sentry/browser', () => ({
   captureException: jest.fn()
@@ -77,7 +75,7 @@ describe('OpenAI class', () => {
       await AiFunctions.processOpenAIResponse({type: 'OpenAIResponseFailed'})
 
       const errorState = document.getElementById('errorState')
-      expect(utilsModule.sleep).toHaveBeenCalledWith(6000)
+      expect(sleep).toHaveBeenCalledWith(6000)
       jest.advanceTimersByTime(6000)
 
       expect(errorState.style.display).toBe('none')

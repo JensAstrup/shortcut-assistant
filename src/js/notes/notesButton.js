@@ -1,4 +1,5 @@
-import {getDescriptionButtonContainer, logError} from '../utils/utils'
+import getEditDescriptionButtonContainer from '../utils/getEditDescriptionButtonContainer'
+import {logError} from '../utils/logError'
 
 
 export class NotesButton {
@@ -21,7 +22,7 @@ export class NotesButton {
 
     newButton.append(' Has Notes')
 
-    let container = await getDescriptionButtonContainer()
+    let container = await getEditDescriptionButtonContainer()
     // Check if the button already exists in the container
     const existingButton = container.querySelector('.action.edit-description.view-notes.micro.flat-white')
     if (!existingButton) {

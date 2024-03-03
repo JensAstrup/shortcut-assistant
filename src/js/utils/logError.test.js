@@ -1,4 +1,4 @@
-import {logError} from './utils'
+import {logError} from './logError'
 import * as Sentry from '@sentry/browser'
 
 

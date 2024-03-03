@@ -1,5 +1,3 @@
-import Openai from '../__mocks__/openai'
-// import getOpenAiToken from './getOpenAiToken'
 import OpenAI, {mockOpenAI} from 'openai'
 import getOpenAiToken from './getOpenAiToken'
 import {fetchCompletion} from './fetchCompletion'

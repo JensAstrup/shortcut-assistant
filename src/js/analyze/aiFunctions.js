@@ -1,5 +1,5 @@
 import {sendEvent} from '../analytics/event'
-import {sleep} from '../utils/utils'
+import sleep from '../utils/sleep'
 import * as Sentry from '@sentry/browser'
 
 export class AiFunctions{
