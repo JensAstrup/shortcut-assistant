@@ -1,5 +1,4 @@
 import {getOrCreateClientId} from '../analytics/clientId'
-import {OpenAIError} from '../utils/errors'
 import getCompletionFromProxy from './getCompletionFromProxy'
 import fetch from 'node-fetch'
 

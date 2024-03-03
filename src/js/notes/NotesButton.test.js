@@ -1,18 +1,16 @@
-/**
- * @jest-environment jsdom
- */
+import getEditDescriptionButtonContainer from '../utils/getEditDescriptionButtonContainer'
 import {NotesButton} from './notesButton'
-import * as utils from '../utils/utils'
 
-jest.mock('../utils/utils', () => ({
-  getDescriptionButtonContainer: jest.fn(),
+
+jest.mock('../utils/sleep', () => ({
   logError: jest.fn()
 }))
+jest.mock('../utils/getEditDescriptionButtonContainer', () => jest.fn())
 
 describe('Notes class', () => {
   beforeEach(() => {
     jest.clearAllMocks()
-    utils.getDescriptionButtonContainer.mockResolvedValue(document.createElement('div'))
+    getEditDescriptionButtonContainer.mockResolvedValue(document.createElement('div'))
     chrome.runtime.sendMessage.mockResolvedValue({data: 'Mocked Data'})
     const originalLocation = window.location
     delete window.location
@@ -41,7 +39,7 @@ describe('Notes class', () => {
   describe('setContentExistsNotice', () => {
     it('should append a new button if it does not exist', async () => {
       const container = document.createElement('div')
-      utils.getDescriptionButtonContainer.mockResolvedValue(container)
+      getEditDescriptionButtonContainer.mockResolvedValue(container)
 
       const notes = new NotesButton()
       await notes.setContentExistsNotice()
@@ -55,7 +53,7 @@ describe('Notes class', () => {
       const button = document.createElement('button')
       button.className = 'action edit-description view-notes micro flat-white'
       container.appendChild(button)
-      utils.getDescriptionButtonContainer.mockResolvedValue(container)
+      getEditDescriptionButtonContainer.mockResolvedValue(container)
 
       const notes = new NotesButton()
       await notes.setContentExistsNotice()

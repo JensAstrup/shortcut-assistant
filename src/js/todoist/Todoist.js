@@ -1,5 +1,6 @@
+import getEditDescriptionButtonContainer from '../utils/getEditDescriptionButtonContainer'
+import {logError} from '../utils/logError'
 import {Story} from '../utils/story'
-import {getDescriptionButtonContainer, logError} from '../utils/utils'
 
 
 export class Todoist {
@@ -37,7 +38,7 @@ export class Todoist {
   }
 
   async addButtonIfNotExists(title, newButton) {
-    const container = await getDescriptionButtonContainer()
+    const container = await getEditDescriptionButtonContainer()
     const existingButton = this.buttonExists(title)
     if (!existingButton) {
       container.appendChild(newButton)

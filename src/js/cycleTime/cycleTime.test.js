@@ -1,14 +1,14 @@
-/**
- * @jest-environment jsdom
- */
+import {hoursBetweenExcludingWeekends} from '../utils/hoursBetweenExcludingWeekends'
+import {Story} from '../utils/story'
+import {storyPageIsReady} from '../utils/storyPageIsReady'
+import {CycleTime} from './cycleTime'
 
 
-// Mocking the external modules
-jest.mock('../utils/utils', () => ({
-  storyPageIsReady: jest.fn()
-}))
 jest.mock('../utils/hoursBetweenExcludingWeekends', () => ({
   hoursBetweenExcludingWeekends: jest.fn()
+}))
+jest.mock('../utils/storyPageIsReady', () => ({
+  storyPageIsReady: jest.fn()
 }))
 jest.mock('../utils/story', () => ({
   Story: {
@@ -17,11 +17,6 @@ jest.mock('../utils/story', () => ({
   }
 }))
 
-
-import {hoursBetweenExcludingWeekends} from '../utils/hoursBetweenExcludingWeekends'
-import {Story} from '../utils/story'
-import {CycleTime} from './cycleTime' // Adjust the import path as necessary
-import {storyPageIsReady} from '../utils/utils'
 
 
 describe('set function', () => {

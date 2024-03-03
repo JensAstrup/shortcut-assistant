@@ -1,4 +1,5 @@
-import {logError, sleep} from '../utils/utils'
+import {logError} from '../utils/logError'
+import {sleep} from '../utils/sleep'
 
 
 export class CommentBox{

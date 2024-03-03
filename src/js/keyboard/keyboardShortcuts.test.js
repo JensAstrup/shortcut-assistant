@@ -1,7 +1,7 @@
 import {KeyboardShortcuts} from './keyboardShortcuts'
 
 
-jest.mock('../utils/utils', () => ({
+jest.mock('../utils/sleep', () => ({
   sleep: jest.fn().mockResolvedValue(undefined)
 }))
 

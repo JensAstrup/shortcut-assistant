@@ -1,5 +1,5 @@
 import {sendEvent} from '../analytics/event'
-import * as utilsModule from '../utils/utils'
+import * as utilsModule from '../utils/sleep'
 import {AiFunctions} from './aiFunctions'
 import * as Sentry from '@sentry/browser'
 
@@ -8,7 +8,7 @@ jest.mock('../analytics/event', () => ({
   sendEvent: jest.fn().mockResolvedValue(undefined)
 }))
 
-jest.mock('../utils/utils', () => ({
+jest.mock('../utils/sleep', () => ({
   sleep: jest.fn().mockResolvedValue(undefined)
 }))
 
