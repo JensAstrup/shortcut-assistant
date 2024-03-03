@@ -1,5 +1,4 @@
 import {handleMessage} from './contentScripts'
-import {logError} from './utils/logError'
 import {DevelopmentTime} from './developmentTime/developmentTime'
 import {CycleTime} from './cycleTime/cycleTime'
 import {analyzeStoryDescription} from './analyze/analyzeStoryDescription'
@@ -34,9 +33,7 @@ jest.mock('./todoist/Todoist', () => {
     })
   }
 })
-jest.mock('./utils/sleep', () => ({
-  logError: jest.fn()
-}))
+jest.mock('./utils/logError', () => jest.fn())
 
 
 describe('handleMessage function', () => {
