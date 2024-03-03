@@ -1,7 +1,7 @@
-import {sleep} from './sleep'
+import sleep from './sleep'
 
 
-export async function storyPageIsReady() {
+async function storyPageIsReady() {
   let storyTitle = document.querySelector('.story-name')
   let loop = 0
   while (storyTitle === null) {
@@ -12,3 +12,5 @@ export async function storyPageIsReady() {
   await sleep(500)
   return true
 }
+
+export default storyPageIsReady

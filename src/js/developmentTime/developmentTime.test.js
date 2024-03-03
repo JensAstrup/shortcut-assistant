@@ -1,12 +1,10 @@
 import {Story} from '../utils/story'
-import {storyPageIsReady} from '../utils/storyPageIsReady'
+import storyPageIsReady from '../utils/storyPageIsReady'
 import * as StoryModule from '../utils/story'
 import {DevelopmentTime} from './developmentTime'
 
 
-jest.mock('../utils/storyPageIsReady', () => ({
-  storyPageIsReady: jest.fn().mockResolvedValue(true)
-}))
+jest.mock('../utils/storyPageIsReady', () => jest.fn().mockResolvedValue(true))
 
 jest.mock('../utils/story', () => ({
   Story: {

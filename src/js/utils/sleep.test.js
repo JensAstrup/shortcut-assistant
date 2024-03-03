@@ -1,4 +1,4 @@
-import {sleep} from './sleep' // Adjust the import path according to your project structure
+import sleep from './sleep' // Adjust the import path according to your project structure
 
 describe('sleep function', () => {
   beforeEach(() => {

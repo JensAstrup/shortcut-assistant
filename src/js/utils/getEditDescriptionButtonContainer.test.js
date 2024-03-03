@@ -1,9 +1,7 @@
 import getEditDescriptionButtonContainer from './getEditDescriptionButtonContainer'
 
 
-jest.mock('./sleep', () => ({
-  sleep: jest.fn().mockResolvedValue(undefined)
-}))
+jest.mock('./sleep', () => jest.fn().mockResolvedValue(undefined))
 
 describe('getEditDescriptionButtonContainer', () => {
   let originalQuerySelector

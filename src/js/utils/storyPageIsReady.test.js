@@ -1,9 +1,7 @@
-import {storyPageIsReady} from './storyPageIsReady'
+import storyPageIsReady from './storyPageIsReady'
 
 
-jest.mock('./sleep', () => ({
-  sleep: jest.fn().mockResolvedValue(undefined)
-}))
+jest.mock('./sleep', () => jest.fn().mockResolvedValue(undefined))
 
 document.querySelector = jest.fn((selector) => {
     return (selector === '.story-name') ? {} : null;

@@ -1,5 +1,5 @@
 import {getStoryId} from '../utils/getStoryId'
-import {sleep} from '../utils/sleep'
+import sleep from '../utils/sleep'
 
 
 export class NotesPopup {
