@@ -4,34 +4,28 @@ import sleep from '../utils/sleep'
 
 export class NotesPopup {
   constructor() {
-    const notesSaveButton = document.getElementById('saveButton')
-    notesSaveButton.addEventListener('click', this.save.bind(this))
+    const saveButton = document.getElementById('saveButton')
+    saveButton.addEventListener('click', this.save.bind(this))
     this.set.bind(this)().catch(console.error)
+    this.saveButton = saveButton
+  }
+
+  _autoExpandTextarea() {
+    this.style.height = 'auto'
+    this.style.height = (this.scrollHeight) + 'px'
   }
 
   async resizeInput() {
-    try {
-      const storyNotesInput = this.getInput()
-
-      function autoExpandTextarea() {
-        this.style.height = 'auto'
-        this.style.height = (this.scrollHeight) + 'px'
-      }
-
-      storyNotesInput.addEventListener('input', autoExpandTextarea)
-
-    } catch {
-      return
-    }
+    const storyNotesInput = this.getInput()
+    storyNotesInput.addEventListener('input', this._autoExpandTextarea)
   }
 
   async save() {
-    const notesSaveButton = document.getElementById('saveButton')
     const data = {[this.getKey(await getStoryId())]: this.getInput().value}
     await chrome.storage.sync.set(data)
-    notesSaveButton.textContent = 'Saved!'
+    this.saveButton.textContent = 'Saved!'
     await sleep(2000)
-    notesSaveButton.textContent = 'Save'
+    this.saveButton.textContent = 'Save'
   }
 
   getInput() {
@@ -52,11 +46,13 @@ export class NotesPopup {
       storyNotesInput.value = value
     }
   }
+
+  static async handleMessage(message, sender, sendResponse) {
+    if (message.message === 'checkNotes') {
+      new NotesPopup()
+    }
+  }
 }
 
 
-chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
-  if (message.message === 'checkNotes') {
-    new NotesPopup()
-  }
-})
+chrome.runtime.onMessage.addListener(NotesPopup.handleMessage)
