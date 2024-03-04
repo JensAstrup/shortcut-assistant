@@ -24,7 +24,7 @@
     "dist": "npx webpack && zip -r ../dist/dist.zip . -x \"coverage*\" \"*/*.test.js\"\n"
   },
   "dependencies": {
-    "@sentry/browser": "7.102.1",
+    "@sentry/browser": "7.105.0",
     "@sentry/webpack-plugin": "2.14.2",
     "@tailwindcss/typography": "0.5.10",
     "jest-environment-jsdom": "29.7.0",
