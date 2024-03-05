@@ -17,7 +17,7 @@ module.exports = {
     ],
     'service_worker/bundle': [
       './js/serviceWorker/service_worker.js',
-      './js/serviceWorker/omnibox/listeners.js',
+      './js/serviceWorker/omnibox/listeners.js'
     ],
     'contentScripts/bundle': [
       './js/contentScripts.js',
@@ -34,6 +34,11 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.tsx?$/,
+        use: 'ts-loader',
+        exclude: /node_modules/
+      },
+      {
         test: /\.js$/,
         exclude: /node_modules/,
         use: {
@@ -41,6 +46,9 @@ module.exports = {
         }
       }
     ]
+  },
+  resolve: {
+    extensions: ['.tsx', '.ts', '.js'] // Add this line
   },
 
   plugins: [new Dotenv(),
