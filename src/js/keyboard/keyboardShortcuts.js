@@ -1,9 +1,9 @@
-import {sleep} from '../utils/utils'
+import sleep from '../utils/sleep'
 
 
 export class KeyboardShortcuts {
   predefinedShortcuts = [
-    {key: 's', shiftKey: true, func: this.changeStatus},
+    {key: 's', shiftKey: true, func: this.changeState},
     {key: 'i', shiftKey: true, func: this.changeIteration},
     {key: '.', metaKey: true, func: this.copyGitBranch},
     {key: '.', metaKey: true, shiftKey: true, func: this.copyBranchAndMoveToInDevelopment}
@@ -72,7 +72,7 @@ export class KeyboardShortcuts {
   }
 
 
-  async changeStatus() {
+  async changeState() {
     const dropdown = document.getElementById('story-dialog-state-dropdown')
     if (dropdown) {
       dropdown.click()
@@ -114,7 +114,7 @@ export class KeyboardShortcuts {
     gitHelpers.click()
   }
 
-  _getStatusDivWithText(text) {
+  _getStateDivWithText(text) {
     const parentDiv = document.querySelector('.list.apply-on-click')
     if (parentDiv) {
       const childDivs = parentDiv.querySelectorAll('div[data-i]')
@@ -132,10 +132,10 @@ export class KeyboardShortcuts {
 
   async copyBranchAndMoveToInDevelopment() {
     await this.copyGitBranch()
-    this.changeStatus().then(() => {
-      const statusDiv = this._getStatusDivWithText('In Development')
-      if (statusDiv) {
-        statusDiv.click()
+    this.changeState().then(() => {
+      const stateDiv = this._getStateDivWithText('In Development')
+      if (stateDiv) {
+        stateDiv.click()
       }
     })
   }

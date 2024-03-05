@@ -1,8 +1,7 @@
-/**
- * @jest-environment jsdom
- */
+import storyPageIsReady from './storyPageIsReady'
 
-import {storyPageIsReady} from "./utils";
+
+jest.mock('./sleep', () => jest.fn().mockResolvedValue(undefined))
 
 document.querySelector = jest.fn((selector) => {
     return (selector === '.story-name') ? {} : null;

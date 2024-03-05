@@ -18,7 +18,7 @@
       "run_at": "document_end"
     }
   ],
-  "description": "Modifies Shortcut story display to provide additional functionality.",
+  "description": "An extension by and for Shortcut power users. Adds AI functionality, keyboard shortcuts, and more.",
   "host_permissions": [
     "https://api.openai.com/*",
     "https://faas-nyc1-2ef2e6cc.doserverless.co/*"
@@ -37,5 +37,5 @@
     "storage",
     "tabs"
   ],
-  "version": "2.3.1.1"
+  "version": "2.3.2.0"
 }

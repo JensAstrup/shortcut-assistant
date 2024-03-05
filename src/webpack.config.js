@@ -17,20 +17,13 @@ module.exports = {
     ],
     'service_worker/bundle': [
       './js/serviceWorker/service_worker.js',
-      './js/serviceWorker/fetch_completion.js',
-      './js/serviceWorker/omnibox/listeners.js',
-      './js/serviceWorker/omnibox/omnibox.js'
+      './js/serviceWorker/omnibox/listeners.js'
     ],
     'contentScripts/bundle': [
       './js/contentScripts.js',
       './js/index.js'
     ],
-    'analytics': [
-      './js/analytics/clientId.js',
-      './js/analytics/config.js',
-      './js/analytics/event.js',
-      './js/analytics/sessionId.js'
-    ]
+    'analytics': './js/analytics/event.js'
   },
 
   output: {
@@ -41,6 +34,11 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.tsx?$/,
+        use: 'ts-loader',
+        exclude: /node_modules/
+      },
+      {
         test: /\.js$/,
         exclude: /node_modules/,
         use: {
@@ -49,12 +47,18 @@ module.exports = {
       }
     ]
   },
+  resolve: {
+    extensions: ['.tsx', '.ts', '.js'] // Add this line
+  },
 
   plugins: [new Dotenv(),
     sentryWebpackPlugin({
       authToken: process.env.SENTRY_AUTH_TOKEN,
       org: 'jens-astrup',
       project: 'shortcut-assistant',
-      environment: process.env.NODE_ENV
+      environment: process.env.NODE_ENV,
+      sourcemaps: {
+        filesToDeleteAfterUpload: ['*.js.map']
+      }
     })]
 }

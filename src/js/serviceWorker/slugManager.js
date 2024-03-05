@@ -22,9 +22,8 @@ export class SlugManager{
     }
 
     static async refreshCompanySlug(tabId, changeInfo){
-        let companySlug = await this.getCompanySlug()
+        const companySlug = await this.getCompanySlugFromTab(tabId, changeInfo)
         if (companySlug) {
-            companySlug = await this.getCompanySlugFromTab(tabId, changeInfo)
             this.setCompanySlug(companySlug).catch(e => {
                 console.error('Error setting company slug:', e)
                 Sentry.captureException(e)
