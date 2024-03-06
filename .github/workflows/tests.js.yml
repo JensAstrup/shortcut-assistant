@@ -19,7 +19,7 @@ jobs:
         with:
           node-version: 16.x
       - run: cd src && npm ci
-      - run: cd src && npm test
+      - run: cd src && npm run test
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4.0.1
         with:
