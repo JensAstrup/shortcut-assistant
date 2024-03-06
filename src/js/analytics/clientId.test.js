@@ -3,7 +3,6 @@
  */
 
 import {getOrCreateClientId} from './clientId';
-import {chrome} from 'jest-chrome'
 
 const get = jest.fn().mockResolvedValue({clientId: 'randomClientId'});
 const set = jest.fn();

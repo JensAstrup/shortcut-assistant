@@ -8,4 +8,3 @@ module.exports = {
     '^.+\\.jsx?$': 'babel-jest'
   }
 }
-Object.assign(global, require('jest-chrome'))
