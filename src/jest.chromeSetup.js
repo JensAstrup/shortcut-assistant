@@ -36,7 +36,12 @@ global.chrome = {
     },
     tabs: {
         query: jest.fn((queryInfo, callback) => {
-            callback([{url: 'http://example.com/story/12345'}])
+            if (typeof callback === 'function') {
+                callback([{url: 'https://jestjs.io'}])
+            }
+            else {
+                return [{url: 'https://jestjs.io'}]
+            }
         }),
         onUpdated: {
             addListener: jest.fn()
