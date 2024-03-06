@@ -25,7 +25,7 @@
   "scripts": {
     "dev": "webpack --config webpack.config.dev.js",
     "build-css": "postcss styles/index.css -o styles/output.css",
-    "test": "jest --config jest.config.js",
+    "test": "TZ='UTC' jest --config jest.config.js",
     "build": "node buildManifest.js",
     "dist": "npx webpack && zip -r ../dist/dist.zip . -x \"coverage*\" \"*/*.test.js\"\n"
   },

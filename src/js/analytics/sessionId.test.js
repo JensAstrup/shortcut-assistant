@@ -34,24 +34,26 @@ describe('getOrCreateSessionId', () => {
 
   it('returns existing session if within expiration limit', async () => {
     const currentTime = new Date('2020-01-01T00:15:00').getTime() // 15 minutes later
-    const timestamp = new Date('2020-01-01').getTime().toString()
     Date.now.mockReturnValue(currentTime)
     const sessionData = {
       session_id: 'existing-session-id',
       timestamp: new Date('2020-01-01').getTime().toString() // Session started at 2020-01-01 00:00:00
-    }
+    };
     global.chrome.storage.session.get.mockResolvedValue({sessionData})
 
     const sessionId = await getOrCreateSessionId()
 
-    expect(sessionId).toBe(currentTime.toString())
+    // Expect the existing session_id to be returned, not the current time
+    expect(sessionId).toBe('existing-session-id')
+    // Verify that the timestamp is updated to keep the session alive
     expect(global.chrome.storage.session.set).toHaveBeenCalledWith({
       sessionData: {
-        session_id: currentTime.toString(),
-        timestamp: currentTime.toString()
+        session_id: 'existing-session-id', // Keep the existing session ID
+        timestamp: currentTime // Update the timestamp to current time
       }
-    })
-  })
+    });
+  });
+
 
   it('creates a new session when existing one is past expiration', async () => {
     const currentTime = new Date('2020-01-01T00:31:00').getTime() // 31 minutes later
