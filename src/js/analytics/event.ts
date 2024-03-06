@@ -25,7 +25,7 @@ export async function sendEvent(eventName: string, params = {}): Promise<void> {
               client_id: await getOrCreateClientId(),
               session_id: await getOrCreateSessionId(),
               engagement_time_msec: DEFAULT_ENGAGEMENT_TIME_IN_MSEC,
-              debug_mode: process.env.ENV === 'development',
+              debug_mode: process.env.NODE_ENV === 'development',
               version,
               ...params
             }
