@@ -7,6 +7,36 @@
     "service_worker": "build/service_worker/bundle.js",
     "type": "module"
   },
+  "commands": {
+    "change-state": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+S",
+        "mac": "MacCtrl+Shift+S"
+      },
+      "description": "Update the state of the current story"
+    },
+    "copy-git-branch": {
+      "suggested_key": {
+        "default": "Ctrl+G",
+        "mac": "MacCtrl+G"
+      },
+      "description": "Copy the current story's git branch"
+    },
+    "copy-git-branch-and-update": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+G",
+        "mac": "MacCtrl+Shift+G"
+      },
+      "description": "Copy the current story's git branch and update the story's state to 'In Progress'"
+    },
+    "update-iteration": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+I",
+        "mac": "MacCtrl+Shift+I"
+      },
+      "description": "Update the iteration of the current story"
+    }
+  },
   "content_scripts": [
     {
       "matches": [
@@ -34,6 +64,7 @@
   "permissions": [
     "activeTab",
     "clipboardWrite",
+    "commands",
     "storage",
     "tabs"
   ],

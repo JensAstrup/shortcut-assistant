@@ -2,6 +2,8 @@ import * as Sentry from '@sentry/browser'
 import getOpenAiToken from '../ai/getOpenAiToken'
 import callOpenAI from '../ai/callOpenAI'
 import {sendEvent} from '../analytics/event'
+import {KeyboardShortcuts} from '../keyboard/keyboardShortcuts'
+import {getActiveTab} from '../utils/getActiveTab'
 import {getSyncedSetting} from '../utils/getSyncedSetting.js'
 import {getNotes} from './notes'
 import {onInstallAndUpdate} from './onInstallAndUpdate'
@@ -42,6 +44,21 @@ if (typeof self !== 'undefined' && self instanceof ServiceWorkerGlobalScope) {
         }
     });
 }
+
+async function handleCommands(command) {
+    const activeTab = await getActiveTab()
+    if (command === 'change-state') {
+        await chrome.tabs.sendMessage(activeTab.id, {message: 'change-state'})
+    }
+    else if (command === 'change-iteration') {
+        await chrome.tabs.sendMessage(activeTab.id, {message: 'change-iteration'})
+    }
+    else if (command === 'copy-git-branch') {
+        await chrome.tabs.sendMessage(activeTab.id, {message: 'copy-git-branch'})
+    }
+}
+
+chrome.commands.onCommand.addListener(handleCommands)
 
 chrome.runtime.onInstalled.addListener(onInstallAndUpdate)
 
