@@ -24,7 +24,12 @@ global.chrome = {
         local: {
             set: jest.fn().mockResolvedValue({}),
             get: jest.fn((key, callback) => {
-                callback({[key]: 'expectedValue'})
+                if (typeof callback === 'function') {
+                    callback({[key]: 'expectedValue'})
+                }
+                else {
+                    return {[key]: 'expectedValue'}
+                }
             })
         },
         sync: {
