@@ -42,10 +42,5 @@
     "setupFiles": [
       "./js/jest.setup.js"
     ]
-  },
-  "overrides": {
-    "jest-chrome": {
-      "jest": "$jest"
-    }
   }
 }
