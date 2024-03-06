@@ -51,7 +51,7 @@ describe('sendEvent', () => {
                 client_id: fakeClientId,
                 session_id: fakeSessionId,
                 engagement_time_msec: DEFAULT_ENGAGEMENT_TIME_IN_MSEC,
-                environment: 'test',
+                debug_mode: false,
                 version,
                 ...additionalParams
               }
