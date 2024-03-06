@@ -30,11 +30,13 @@ describe('getActiveTab', () => {
     });
 
     it('rejects if runtime error occurs', async () => {
+        // @ts-ignore
         chrome.tabs.query.mockRejectedValue(new Error('Runtime error'));
         await expect(getActiveTab()).rejects.toThrow('Runtime error');
     });
 
     it('rejects if no active tab found', async () => {
+        // @ts-ignore
         chrome.tabs.query.mockResolvedValue([]);
         await expect(getActiveTab()).rejects.toThrow('No active tab found');
     });
