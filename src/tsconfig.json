@@ -38,7 +38,6 @@
     // "rootDirs": [],                                   /* Allow multiple folders to be treated as one when resolving modules. */
     "typeRoots": [
       "./node_modules/@types",
-      "./chrome-jest.d.ts"
     ],
     /* Specify multiple folders that act like './node_modules/@types'. */
     "types": [
