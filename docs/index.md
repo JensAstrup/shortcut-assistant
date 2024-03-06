@@ -17,21 +17,32 @@ Take your Shortcut experience to the next level and streamline your project plan
 Get started now and make every story a success!
 
 ## Installation
-1. Open a new tab and navigate to `arc://extensions/`.
-2. Ensure developer mode is enabled (top right corner of the page)
-3. Download the extension from this page.
-4. Drag and drop the extension file onto the extensions page.
+
+1. Visit
+   the [Chrome Web Store](https://chromewebstore.google.com/detail/shortcut-assistant/kmdlofehocppnlkpokdbiaalcelhedef)
+2. Click "Add to Chrome"
 
 You're all set to supercharge your Shortcut experience!
 
-## Setup
-1. Following installation open the extension by clicking on the robot icon
-2. Navigate to the settings tab and enter an OpenAI API Key
-3. Uncheck any features you don't want to use
-4. Press Save
-
 ## Using the Analyze Feature
+
 1. When you have a story in view, open the extension
 2. Click "Analyze Story"
 3. Note that it can take a bit for the analysis to complete
 4. Implementation questions will be pasted into the story comment input once analysis is completed
+
+## Setup
+
+1. Following installation open the extension by clicking on the robot icon
+2. Navigate to the settings tab and enter an OpenAI API Key (this is only required if you don't want
+   to use our proxy server, which is the default option)
+3. Uncheck any features you don't want to use
+4. Press Save
+
+## Development
+
+### Installation
+1. Open a new tab and navigate to `arc://extensions/`.
+2. Ensure developer mode is enabled (top right corner of the page)
+3. Download the extension from this page.
+4. Drag and drop the extension file onto the extensions page.
