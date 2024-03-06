@@ -6,7 +6,7 @@ import {Story} from './story'
 const mockNow = {
   format: jest.fn().mockReturnValueOnce('Feb 1 2022, 2:00 AM')
 }
-jest.mock('moment', () => {
+jest.mock('dayjs', () => {
   return () => (mockNow)
 })
 jest.mock('./hoursBetweenExcludingWeekends', () => ({
@@ -43,7 +43,7 @@ describe('Story.getTimeInState', () => {
       `
 
   })
-  test('Uses moment now if now is true', () => {
+  test('Uses dayjs now if now is true', () => {
     const getDateInState = jest.fn()
     const dateElement = document.querySelector('.latest-update .element .date')
     getDateInState.mockReturnValueOnce(dateElement.innerHTML)

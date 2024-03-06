@@ -6,5 +6,8 @@ module.exports = {
   transform: {
     '^.+\\.tsx?$': 'ts-jest',
     '^.+\\.jsx?$': 'babel-jest'
-  }
+  },
+  testMatch: [
+    '<rootDir>/js/**/*.test.js' // Matches any file ending with .test.js in the js directory
+  ]
 }
