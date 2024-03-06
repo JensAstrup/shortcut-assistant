@@ -3,9 +3,9 @@ import sleep from '../utils/sleep'
 
 export class KeyboardShortcuts {
   predefinedShortcuts = [
-    {key: 's', shiftKey: true, func: this.changeState},
-    {key: 'i', shiftKey: true, func: this.changeIteration},
-    {key: '.', metaKey: true, func: this.copyGitBranch},
+    {key: 's', shiftKey: true, ctrlKey: true, func: this.changeState},
+    {key: 'i', shiftKey: true, ctrlKey: true, func: this.changeIteration},
+    {key: 'g', shiftKey: true, ctrlKey: true, func: this.copyGitBranch},
     {key: '.', metaKey: true, shiftKey: true, func: this.copyBranchAndMoveToInDevelopment}
   ]
 

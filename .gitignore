@@ -2,8 +2,8 @@
 *.pem
 /src/node_modules/
 /src/build/
-/src/coverage/
+**/coverage/
 *.env*
 !.env.example
-*dist/*
+**/dist/*
 src/styles/output.css
