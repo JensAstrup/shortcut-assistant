@@ -37,6 +37,12 @@ global.chrome = {
             get: jest.fn((key, callback) => {
                 callback({[key]: 'expectedValue'})
             })
+        },
+        session: {
+            set: jest.fn().mockResolvedValue({}),
+            get: jest.fn((key, callback) => {
+                callback({[key]: 'expectedValue'})
+            })
         }
     },
     tabs: {
