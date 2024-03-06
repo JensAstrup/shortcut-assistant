@@ -43,20 +43,30 @@ export async function activate() {
 }
 
 export async function handleMessage(request, sender, sendResponse) {
-    const activeTabUrl = window.location.href
-    if (request.message === 'initDevelopmentTime' && request.url.includes('story')) {
-      DevelopmentTime.set().catch(logError)
-      CycleTime.set().catch(logError)
-    }
-    if (request.message === 'analyzeStoryDescription') {
-      await analyzeStoryDescription(activeTabUrl)
-    }
-    if (request.message === 'initNotes' && request.url.includes('story')) {
-      new NotesButton()
-    }
-    if (request.message === 'initTodos' && request.url.includes('story')) {
-      new Todoist()
-    }
+  const activeTabUrl = window.location.href
+  if (request.message === 'initDevelopmentTime' && request.url.includes('story')) {
+    DevelopmentTime.set().catch(logError)
+    CycleTime.set().catch(logError)
+  }
+  if (request.message === 'analyzeStoryDescription') {
+    await analyzeStoryDescription(activeTabUrl)
+  }
+  if (request.message === 'initNotes' && request.url.includes('story')) {
+    new NotesButton()
+  }
+  if (request.message === 'initTodos' && request.url.includes('story')) {
+    new Todoist()
+  }
+  const shortcuts = new KeyboardShortcuts()
+  if (request.message === 'change-state') {
+    await shortcuts.changeState()
+  }
+  if (request.message === 'change-iteration') {
+    await shortcuts.changeIteration()
+  }
+  if (request.message === 'copy-git-branch') {
+    await shortcuts.copyGitBranch()
+  }
 }
 
 chrome.runtime.onMessage.addListener(handleMessage)
