@@ -23,7 +23,7 @@ module.exports = {
       './js/contentScripts.js',
       './js/index.js'
     ],
-    'analytics': './js/analytics/event.js'
+    'analytics': './js/analytics/event.ts'
   },
 
   output: {
