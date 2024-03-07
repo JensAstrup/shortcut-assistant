@@ -1,4 +1,5 @@
 import dayjs from 'dayjs'
+import * as Sentry from '@sentry/browser'
 import {findFirstMatchingElementForState} from '../developmentTime/findFirstMatchingElementForState'
 import {hoursBetweenExcludingWeekends} from './hoursBetweenExcludingWeekends'
 
@@ -61,6 +62,7 @@ export class Story {
       storyState = storyStateDiv?.querySelector('.value')?.textContent || ''
     } catch (e) {
       console.warn(`Could not find state element for state ${state}`)
+      Sentry.captureException(e)
     }
     return storyState === state
   }

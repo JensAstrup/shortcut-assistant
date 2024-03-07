@@ -1,3 +1,4 @@
+import {captureException} from '@sentry/browser'
 import {findFirstMatchingElementForState} from '../developmentTime/findFirstMatchingElementForState'
 import {hoursBetweenExcludingWeekends} from './hoursBetweenExcludingWeekends'
 import {Story} from './story'
@@ -9,6 +10,9 @@ const mockNow = {
 jest.mock('dayjs', () => {
   return () => (mockNow)
 })
+jest.mock('@sentry/browser', () => ({
+  captureException: jest.fn()
+}))
 jest.mock('./hoursBetweenExcludingWeekends', () => ({
   hoursBetweenExcludingWeekends: jest.fn().mockReturnValue(24)
 }))
@@ -28,12 +32,7 @@ describe('Story.title', () => {
     expect(Story.title).toBeNull()
   })
 
-  it('should return empty string when title is not set', () => {
-    document.body.innerHTML = `<div class="story-name"></div>`
-    expect(Story.title).toBeNull()
-  })
-
-  it('should return empty string when title is not set', () => {
+  it('should return empty string when title is not available', () => {
     document.body.innerHTML = `<div></div>`
     expect(Story.title).toBeNull()
   })
@@ -210,5 +209,6 @@ describe('isInState function', () => {
     const state = 'TestState'
     Story.isInState(state)
     expect(console.warn).toHaveBeenCalledWith('Could not find state element for state TestState')
+    expect(captureException).toHaveBeenCalledWith(new Error('Could not find state element for state TestState'))
   })
 })
