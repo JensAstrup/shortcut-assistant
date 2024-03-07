@@ -5,11 +5,7 @@ import dayjs from 'dayjs'
  * Calculates the total number of hours between two dates, excluding weekends.
  *
  * @param {string} startStr - The start date in string format.
- * @param {string} endStr - The end date in string format.
- * @param {string} [format="%B %d %Y, %I:%M %p"] - The format in which the start and end dates are provided.
- *                                                     This parameter is optional and mainly for documentation
- *                                                     since JavaScript date parsing is more flexible but less
- *                                                     format-specific than in Python.
+ * @param {string} [endStr] - The end date in string format.
  * @returns {number} The total hours between the start and end dates, excluding Saturdays and Sundays.
  */
 export function hoursBetweenExcludingWeekends(startStr, endStr) {

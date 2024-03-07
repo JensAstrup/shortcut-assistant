@@ -1,18 +1,26 @@
 import dayjs from 'dayjs'
-import advancedFormat from 'dayjs/plugin/advancedFormat'
+import * as Sentry from '@sentry/browser'
 import {findFirstMatchingElementForState} from '../developmentTime/findFirstMatchingElementForState'
 import {hoursBetweenExcludingWeekends} from './hoursBetweenExcludingWeekends'
 
 
 export class Story {
-  static get title() {
+  static get title(): string | null {
     const titleDiv = document.querySelector('.story-name')
-    return titleDiv.textContent
+    const title = titleDiv?.textContent
+    if (!title) {
+      return null
+    }
+    return title
   }
 
-  static get description() {
+  static get description(): string | null {
     const descriptionDiv = document.querySelector('[data-key="description"]')
-    return descriptionDiv.textContent
+    const description = descriptionDiv?.textContent
+    if (!description) {
+      return null
+    }
+    return description
   }
 
   /**
@@ -22,7 +30,7 @@ export class Story {
    * @param {boolean} now - Whether to consider the current datetime as the end date
    * @returns {number} - The time spent in the state in hours, excluding weekends.
    */
-  static getTimeInState(state, now = false) {
+  static getTimeInState(state: string, now: boolean = false): number {
     if (now) {
       const now = dayjs()
       const nowFormatted = now.format('MMM D YYYY, h:mm A')
@@ -36,7 +44,7 @@ export class Story {
     return hoursBetweenExcludingWeekends(dateElement)
   }
 
-  static getDateInState(state) {
+  static getDateInState(state: string) {
     let latestUpdateElements = findFirstMatchingElementForState(state)
     if (!latestUpdateElements) {
       return null
@@ -47,13 +55,14 @@ export class Story {
     return dateElement ? dateElement.innerHTML : null
   }
 
-  static isInState(state) {
+  static isInState(state: string) {
     let storyState = ''
     try {
       const storyStateDiv = document.querySelector('.story-state')
-      storyState = storyStateDiv.querySelector('.value').textContent
+      storyState = storyStateDiv?.querySelector('.value')?.textContent || ''
     } catch (e) {
-
+      console.warn(`Could not find state element for state ${state}`)
+      Sentry.captureException(e)
     }
     return storyState === state
   }
