@@ -26,10 +26,10 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: '21'
 
       - name: Install dependencies
-        run: npm install
+        run: cd src && npm install
 
       - name: Extract tag name
         id: extract_tag
