@@ -33,7 +33,7 @@ jobs:
 
       - name: Extract tag name
         id: extract_tag
-        run: echo "TAG_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+        run: echo "VERSION=${{ github.event.pull_request.title }}" >> $GITHUB_ENV
 
       - name: Build and zip the extension
         run: |
@@ -41,8 +41,8 @@ jobs:
           zip -r dist/dist.zip . -x "coverage*" "*/*.test.js"
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          VERSION: ${{ env.TAG_NAME }}
-          SENTRY_RELEASE: "shortcut-assistant@${{ env.TAG_NAME }}"
+          VERSION: ${{ env.VERSION }}
+          SENTRY_RELEASE: "shortcut-assistant@${{ env.VERSION }}"
 
       - name: Create or update draft release
         id: draft_release
