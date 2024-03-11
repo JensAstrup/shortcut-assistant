@@ -113,7 +113,7 @@ jobs:
             const assetContentType = 'application/zip'; 
             const data = require('fs').readFileSync(assetPath);
             console.log(`Uploading asset ${assetPath} to release ${releaseId}`);
-            await github.rest.repos.updateRelease({
+            release = await github.rest.repos.updateRelease({
               owner,
               repo,
               release_id: releaseId,
@@ -124,7 +124,7 @@ jobs:
             await github.rest.repos.uploadReleaseAsset({
               owner,
               repo,
-              releaseId,
+              release_id: release.id,
               assetName,
               data,
             });
