@@ -93,26 +93,6 @@ jobs:
             const assetName = 'dist.zip';
             const assetContentType = 'application/zip'; 
             const data = require('fs').readFileSync(assetPath);
-            octokit.rest.repos.uploadReleaseAsset({
-              owner,
-              repo,
-              releaseId,
-              assetName,
-              data,
-            });
-            console.log('Asset uploaded');
-
-  finalize-release:
-    needs: upload-release-asset
-    runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true
-    steps:
-      - name: Publish Release
-        uses: actions/github-script@v6
-        with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          script: |
-            const { owner, repo } = context.repo;
             const releaseId = ${{ needs.prepare-release-assets.outputs.release_id }};
             await github.rest.repos.updateRelease({
               owner,
@@ -121,3 +101,11 @@ jobs:
               draft: false,
             });
             console.log(`Release published: https://github.com/${owner}/${repo}/releases/tag/${releaseId}`);
+            octokit.rest.repos.uploadReleaseAsset({
+              owner,
+              repo,
+              releaseId,
+              assetName,
+              data,
+            });
+            console.log('Asset uploaded');
