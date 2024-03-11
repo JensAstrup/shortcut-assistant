@@ -85,12 +85,24 @@ jobs:
     if: github.event.pull_request.merged == true || github.event.pull_request.merged == false
     steps:
       - name: Upload release asset
-        uses: actions/upload-release-asset@v2
+        uses: actions/github-script@v6
         with:
-          upload_url: ${{ needs.prepare-release-assets.outputs.upload_url }}
-          asset_path: ./dist/dist.zip
-          asset_name: dist.zip
-          asset_content_type: application/zip
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const { owner, repo } = context.repo;
+            const releaseId = ${{ needs.prepare-release-assets.outputs.release_id }};
+            const assetPath = './dist/dist.zip';
+            const assetName = 'dist.zip';
+            const assetContentType = 'application/zip'; 
+            const data = require('fs').readFileSync(assetPath);
+            octokit.rest.repos.uploadReleaseAsset({
+              owner,
+              repo,
+              releaseId,
+              assetName,
+              data,
+            });
+            console.log('Asset uploaded');
 
   finalize-release:
     needs: upload-release-asset
