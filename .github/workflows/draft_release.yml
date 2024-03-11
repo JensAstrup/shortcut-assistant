@@ -86,7 +86,7 @@ jobs:
   upload-release-asset:
     needs: prepare-release-assets
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true || github.event.pull_request.merged == false
+    if: github.event.pull_request.merged == true
     steps:
       - name: Download dist.zip artifact
         uses: actions/download-artifact@v3
