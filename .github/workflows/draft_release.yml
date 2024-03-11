@@ -74,10 +74,8 @@ jobs:
               console.log(`Draft release created`);
             }
             console.log(draftRelease)
-            return {
-              upload_url: draftRelease.upload_url,
-              release_id: draftRelease.id,
-            };
+            core.setOutput("upload_url", draftRelease.data.upload_url);
+            core.setOutput("release_id", draftRelease.data.id);
 
   upload-release-asset:
     needs: prepare-release-assets
