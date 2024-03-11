@@ -75,8 +75,8 @@ jobs:
             }
             console.log(draftRelease)
             return {
-              upload_url: draftRelease.data.upload_url,
-              release_id: draftRelease.data.id,
+              upload_url: draftRelease.upload_url,
+              release_id: draftRelease.id,
             };
 
   upload-release-asset:
