@@ -112,11 +112,13 @@ jobs:
             const assetName = 'ChromeExtension.zip';
             const assetContentType = 'application/zip'; 
             const data = require('fs').readFileSync(assetPath);
+            console.log(`Uploading asset ${assetPath} to release ${releaseId}`);
             await github.rest.repos.updateRelease({
               owner,
               repo,
               release_id: releaseId,
               draft: false,
+              tag_name: releaseTag,
             });
             console.log(`Release published: https://github.com/${owner}/${repo}/releases/tag/${releaseId}`);
             await github.rest.repos.uploadReleaseAsset({
