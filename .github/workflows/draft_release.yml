@@ -15,7 +15,6 @@ permissions:
 jobs:
   prepare-release-assets:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true || github.event.pull_request.merged == false
     outputs:
       upload_url: ${{ steps.draft_release.outputs.upload_url }}
       release_id: ${{ steps.draft_release.outputs.release_id }}
@@ -71,6 +70,8 @@ jobs:
                 draft: true,
               });
             }
+            console.log(`Draft release created`);
+            console.log(draftRelease.data)
             return {
               upload_url: draftRelease.data.upload_url,
               release_id: draftRelease.data.id,
