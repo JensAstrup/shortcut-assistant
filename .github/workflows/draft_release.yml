@@ -125,7 +125,7 @@ jobs:
               owner,
               repo,
               release_id: release.id,
-              assetName,
+              name: assetName,
               data,
             });
             console.log('Asset uploaded');
