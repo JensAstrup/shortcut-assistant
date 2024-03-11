@@ -93,7 +93,6 @@ jobs:
             const assetName = 'dist.zip';
             const assetContentType = 'application/zip'; 
             const data = require('fs').readFileSync(assetPath);
-            const releaseId = ${{ needs.prepare-release-assets.outputs.release_id }};
             await github.rest.repos.updateRelease({
               owner,
               repo,
