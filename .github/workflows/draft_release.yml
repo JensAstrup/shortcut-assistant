@@ -106,6 +106,7 @@ jobs:
             });
             let draftRelease = releases.data.find(release => release.tag_name === releaseTag && release.draft === true);
             const releaseId = draftRelease.id;
+            const releaseTag = pr.title;
             const assetPath = './dist/dist.zip';
             const assetName = 'ChromeExtension.zip';
             const assetContentType = 'application/zip'; 
