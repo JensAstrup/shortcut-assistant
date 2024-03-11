@@ -37,9 +37,10 @@ jobs:
 
       - name: Build and zip the extension
         run: |
+          mkdir dist
           cd src
           ./node_modules/.bin/webpack
-          zip -r dist/dist.zip . -x "coverage*" "*/*.test.js"
+          zip -r ../dist/dist.zip . -x "coverage*" "*/*.test.js"
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           VERSION: ${{ env.VERSION }}
