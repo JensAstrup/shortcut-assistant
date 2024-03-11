@@ -62,6 +62,7 @@ jobs:
             });
             let draftRelease = releases.data.find(release => release.tag_name === releaseTag && release.draft === true);
             if (!draftRelease) {
+            console.log(`Creating draft release`);
               draftRelease = await github.rest.repos.createRelease({
                 owner,
                 repo,
@@ -70,9 +71,9 @@ jobs:
                 body: releaseNotes,
                 draft: true,
               });
+              console.log(`Draft release created`);
             }
-            console.log(`Draft release created`);
-            console.log(draftRelease.data)
+            console.log(draftRelease)
             return {
               upload_url: draftRelease.data.upload_url,
               release_id: draftRelease.data.id,
