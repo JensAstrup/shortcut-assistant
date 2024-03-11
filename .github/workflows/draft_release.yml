@@ -46,6 +46,12 @@ jobs:
           VERSION: ${{ env.VERSION }}
           SENTRY_RELEASE: "shortcut-assistant@${{ env.VERSION }}"
 
+      - name: Upload dist.zip as an artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist-zip
+          path: dist/dist.zip
+
       - name: Create or update draft release
         id: draft_release
         uses: actions/github-script@v6
@@ -82,6 +88,12 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged == true || github.event.pull_request.merged == false
     steps:
+      - name: Download dist.zip artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: dist-zip
+          path: dist
+
       - name: Upload release asset
         uses: actions/github-script@v6
         with:
