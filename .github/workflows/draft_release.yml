@@ -100,6 +100,7 @@ jobs:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
             const { owner, repo } = context.repo;
+            const pr = context.payload.pull_request;
             const releases = await github.rest.repos.listReleases({
               owner,
               repo,
