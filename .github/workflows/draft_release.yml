@@ -37,6 +37,7 @@ jobs:
 
       - name: Build and zip the extension
         run: |
+          cd src
           ./node_modules/.bin/webpack
           zip -r dist/dist.zip . -x "coverage*" "*/*.test.js"
         env:
