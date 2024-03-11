@@ -112,7 +112,7 @@ jobs:
               draft: false,
             });
             console.log(`Release published: https://github.com/${owner}/${repo}/releases/tag/${releaseId}`);
-            octokit.rest.repos.uploadReleaseAsset({
+            await github.rest.repos.uploadReleaseAsset({
               owner,
               repo,
               releaseId,
