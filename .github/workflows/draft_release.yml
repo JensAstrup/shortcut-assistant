@@ -100,9 +100,14 @@ jobs:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
             const { owner, repo } = context.repo;
-            const releaseId = ${{ needs.prepare-release-assets.outputs.release_id }};
+            const releases = await github.rest.repos.listReleases({
+              owner,
+              repo,
+            });
+            let draftRelease = releases.data.find(release => release.tag_name === releaseTag && release.draft === true);
+            const releaseId = draftRelease.id;
             const assetPath = './dist/dist.zip';
-            const assetName = 'dist.zip';
+            const assetName = 'ChromeExtension.zip';
             const assetContentType = 'application/zip'; 
             const data = require('fs').readFileSync(assetPath);
             await github.rest.repos.updateRelease({
