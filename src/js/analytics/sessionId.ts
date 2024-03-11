@@ -1,7 +1,6 @@
 const SESSION_EXPIRATION_IN_MIN = 30;
 
-export async function getOrCreateSessionId() {
-    // Store session in memory storage
+export async function getOrCreateSessionId(): Promise<string> {
     let {sessionData} = await chrome.storage.session.get('sessionData');
     // Check if session exists and is still valid
     const currentTimeInMs = Date.now();

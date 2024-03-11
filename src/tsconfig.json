@@ -28,12 +28,6 @@
     // "noLib": true,                                    /* Disable including any library files, including the default lib.d.ts. */
     // "useDefineForClassFields": true,                  /* Emit ECMAScript-standard-compliant class fields. */
     // "moduleDetection": "auto",                        /* Control what method is used to detect module-format JS files. */
-    "include": [
-      "src/**/*",
-      "tests/**/*",
-      "custom-jest.d.ts"
-      // Include your custom type definition file
-    ],
     /* Modules */
     "module": "commonjs",
     /* Specify what module code is generated. */
@@ -42,10 +36,14 @@
     // "baseUrl": "./",                                  /* Specify the base directory to resolve non-relative module names. */
     // "paths": {},                                      /* Specify a set of entries that re-map imports to additional lookup locations. */
     // "rootDirs": [],                                   /* Allow multiple folders to be treated as one when resolving modules. */
-    // "typeRoots": [],                                  /* Specify multiple folders that act like './node_modules/@types'. */
+    "typeRoots": [
+      "./node_modules/@types",
+    ],
+    /* Specify multiple folders that act like './node_modules/@types'. */
     "types": [
       "chrome",
-      "jest"
+      "jest",
+      "node"
     ],
     /* Specify type package names to be included without being referenced in a source file. */
     // "allowUmdGlobalAccess": true,                     /* Allow accessing UMD globals from modules. */

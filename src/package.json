@@ -4,6 +4,8 @@
     "@babel/preset-env": "^7.24.0",
     "@babel/preset-typescript": "^7.23.3",
     "@types/jest": "^29.5.12",
+    "@types/node": "^20.11.24",
+    "@types/uuid": "^9.0.8",
     "autoprefixer": "10.4.17",
     "babel-jest": "^29.7.0",
     "babel-loader": "9.1.3",
@@ -18,13 +20,13 @@
     "ts-jest": "^29.1.2",
     "ts-loader": "^9.5.1",
     "typescript": "^5.3.3",
-    "webpack": "5.90.3",
-    "webpack-cli": "5.1.4"
+    "webpack": "^5.90.3",
+    "webpack-cli": "^5.1.4"
   },
   "scripts": {
     "dev": "webpack --config webpack.config.dev.js",
     "build-css": "postcss styles/index.css -o styles/output.css",
-    "test": "jest --config jest.config.js",
+    "test": "TZ='UTC' jest --config jest.config.js",
     "build": "node buildManifest.js",
     "dist": "npx webpack && zip -r ../dist/dist.zip . -x \"coverage*\" \"*/*.test.js\"\n"
   },
@@ -33,9 +35,10 @@
     "@sentry/webpack-plugin": "2.14.2",
     "@tailwindcss/typography": "0.5.10",
     "@types/chrome": "^0.0.262",
+    "dayjs": "^1.11.10",
     "jest-environment-jsdom": "29.7.0",
-    "moment": "2.30.1",
-    "openai": "4.28.0"
+    "openai": "4.28.0",
+    "uuid": "^9.0.1"
   },
   "jest": {
     "setupFiles": [

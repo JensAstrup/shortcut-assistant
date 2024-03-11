@@ -1,12 +1,17 @@
-import {GA_ENDPOINT, GOOGLE_ANALYTICS_API_SECRET, MEASUREMENT_ID} from './config'
+import {
+  GA_ENDPOINT,
+  GOOGLE_ANALYTICS_API_SECRET,
+  MEASUREMENT_ID,
+  DEFAULT_ENGAGEMENT_TIME_IN_MSEC
+} from './config'
 import {getOrCreateClientId} from './clientId'
 import {getOrCreateSessionId} from './sessionId'
 
 
-const DEFAULT_ENGAGEMENT_TIME_IN_MSEC = 100
-const version = chrome.runtime.getManifest().version
+const version: string = chrome.runtime.getManifest().version
 
-export async function sendEvent(eventName, params = {}) {
+
+export async function sendEvent(eventName: string, params = {}): Promise<void> {
   fetch(
     `${GA_ENDPOINT}?measurement_id=${MEASUREMENT_ID}&api_secret=${GOOGLE_ANALYTICS_API_SECRET}`,
     {
@@ -20,6 +25,7 @@ export async function sendEvent(eventName, params = {}) {
               client_id: await getOrCreateClientId(),
               session_id: await getOrCreateSessionId(),
               engagement_time_msec: DEFAULT_ENGAGEMENT_TIME_IN_MSEC,
+              debug_mode: process.env.NODE_ENV === 'development',
               version,
               ...params
             }

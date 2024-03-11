@@ -1,6 +1,13 @@
 module.exports = {
   testEnvironment: 'jsdom',
-  setupFiles: ['./jest.chromeSetup.js'],
+  setupFilesAfterEnv: ['./jest.chromeSetup.js'],
   collectCoverage: true,
-  collectCoverageFrom: ['js/**/*.js', 'js/**/*.ts']
+  collectCoverageFrom: ['js/**/*.js', 'js/**/*.ts', '!js/coverage/**'],
+  transform: {
+    '^.+\\.tsx?$': 'ts-jest',
+    '^.+\\.jsx?$': 'babel-jest'
+  },
+  testMatch: [
+    '<rootDir>/js/**/*.test.js' // Matches any file ending with .test.js in the js directory
+  ]
 }
