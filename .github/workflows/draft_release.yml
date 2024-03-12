@@ -39,6 +39,7 @@ jobs:
         run: |
           mkdir dist
           cd src
+          npm run build-css
           ./node_modules/.bin/webpack
           zip -r ../dist/dist.zip . -x "coverage*" "*/*.test.js"
         env:
