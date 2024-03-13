@@ -19,6 +19,7 @@ export class Todoist {
     newButton.dataset.tooltip = tooltip
     newButton.dataset.key = title
     newButton.tabIndex = 2
+    newButton.setAttribute('data-todoist', 'true')
     return newButton
   }
 
@@ -33,34 +34,34 @@ export class Todoist {
     }
   }
 
-  buttonExists(title) {
-    return document.querySelector(`[data-key="${title}]"`)
+  buttonExists() {
+    return document.querySelector('button[data-todoist="true"]')
   }
 
   async addButtonIfNotExists(title, newButton) {
-    const container = await getEditDescriptionButtonContainer()
     const existingButton = this.buttonExists(title)
     if (!existingButton) {
+      const container = await getEditDescriptionButtonContainer()
       container.appendChild(newButton)
     }
   }
 
   async setTaskButton(title, tooltip, taskTitle) {
     const newButton = this.createButton(tooltip, title)
-    const buttonExists = this.buttonExists(title)
-    if (buttonExists) {
-      Ï
-      return
-    }
+    const buttonExists = this.buttonExists()
     taskTitle = this.createTooltipText(taskTitle, title)
     newButton.addEventListener('click', function () {
       window.open(`https://todoist.com/add?content=${taskTitle}`, '_blank')
     })
-
     const span = document.createElement('span')
+
     span.className = 'fa fa-plus'
     newButton.appendChild(span)
     newButton.append(' ' + title + '   ')
+
+    if (buttonExists) {
+      return
+    }
 
     this.addButtonIfNotExists(title, newButton).catch(logError)
   }
