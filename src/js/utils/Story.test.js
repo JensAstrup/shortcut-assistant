@@ -80,50 +80,6 @@ describe('Story.getTimeInState', () => {
     expect(mockNow.format).toHaveBeenCalledWith('MMM D YYYY, h:mm A')
     expect(result).toBe(24)
   })
-
-  it('Uses date in state if now is false', () => {
-    const state = 'ExpectedState'
-
-    const getDateInState = jest.spyOn(Story, 'getDateInState')
-    getDateInState.mockReturnValueOnce('Jan 31 2022, 2:00 AM')
-    hoursBetweenExcludingWeekends.mockReturnValueOnce(48)
-    const result = Story.getTimeInState(state, false)
-    expect(result).toBe(48)
-    expect(getDateInState).toHaveBeenCalledWith(state)
-    expect(hoursBetweenExcludingWeekends).toHaveBeenCalledWith('Jan 31 2022, 2:00 AM')
-  })
-
-  it('Uses date in state if now is not provided', () => {
-    const state = 'ExpectedState'
-
-    const getDateInState = jest.spyOn(Story, 'getDateInState')
-    getDateInState.mockReturnValueOnce('Jan 31 2022, 2:00 AM')
-    hoursBetweenExcludingWeekends.mockReturnValueOnce(48)
-    const result = Story.getTimeInState(state)
-    expect(result).toBe(48)
-    expect(getDateInState).toHaveBeenCalledWith(state)
-    expect(hoursBetweenExcludingWeekends).toHaveBeenCalledWith('Jan 31 2022, 2:00 AM')
-  })
-
-  it('Returns 0 if date element is null', () => {
-    console.warn = jest.fn()
-    const state = 'ExpectedState'
-    const getDateInState = jest.spyOn(Story, 'getDateInState')
-    getDateInState.mockReturnValueOnce(null)
-    const result = Story.getTimeInState(state, false)
-    expect(result).toBe(0)
-    expect(console.warn).toHaveBeenCalledWith('Could not find date element for state ExpectedState')
-  })
-
-  it('Returns 0 if date element is undefined', () => {
-    console.warn = jest.fn()
-    const state = 'ExpectedState'
-    const getDateInState = jest.spyOn(Story, 'getDateInState')
-    getDateInState.mockReturnValueOnce(undefined)
-    const result = Story.getTimeInState(state, false)
-    expect(result).toBe(0)
-    expect(console.warn).toHaveBeenCalledWith('Could not find date element for state ExpectedState')
-  })
 })
 
 

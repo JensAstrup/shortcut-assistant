@@ -25,11 +25,6 @@ describe('DevelopmentTime.setTimeSpan', () => {
     mockStateSpan.textContent = 'Current state'
   })
 
-  test('should subtract one day and show negative days for hours less than 48', () => {
-    DevelopmentTime.setTimeSpan(24)
-    expect(mockStateSpan.textContent).toBe('Current state (0.00 days)')
-  })
-
   test('should accurately show days for hours equal to or greater than 48', () => {
     DevelopmentTime.setTimeSpan(72)
     expect(mockStateSpan.textContent).toBe('Current state (3.00 days)')

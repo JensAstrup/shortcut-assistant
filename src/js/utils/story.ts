@@ -24,24 +24,15 @@ export class Story {
   }
 
   /**
-   * Calculates the time spent in a given state.
+   * Calculates the time between a given state and the current time.
    *
    * @param {string} state - The state for which to calculate the time spent.
-   * @param {boolean} now - Whether to consider the current datetime as the end date
    * @returns {number} - The time spent in the state in hours, excluding weekends.
    */
-  static getTimeInState(state: string, now: boolean = false): number | null {
-    if (now) {
+  static getTimeInState(state: string): number | null {
       const now = dayjs()
       const nowFormatted = now.format('MMM D YYYY, h:mm A')
       return hoursBetweenExcludingWeekends(this.getDateInState(state), nowFormatted)
-    }
-    const dateElement = this.getDateInState(state)
-    if (dateElement === null || dateElement === undefined) {
-      console.warn(`Could not find date element for state ${state}`)
-      return null
-    }
-    return hoursBetweenExcludingWeekends(dateElement)
   }
 
   static getDateInState(state: string) {

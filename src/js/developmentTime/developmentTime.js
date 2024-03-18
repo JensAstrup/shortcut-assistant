@@ -7,17 +7,11 @@ export class DevelopmentTime{
         const stateDiv = document.querySelector('.story-state')
         const stateSpan = stateDiv.querySelector('.value')
         let daysElapsed = hoursElapsed / 24
-        if (hoursElapsed < 48) {
-            // Was seeing odd behavior where additional days were being added to the final count.
-            // While unable to determine the exact cause, it was happening only for hours less than 48.
-            // This is a hacky temporary fix to prevent the issue from occurring.
-            daysElapsed -= 1
-        }
         daysElapsed = Math.abs(daysElapsed)
         stateSpan.textContent = `${stateSpan.textContent} (${daysElapsed.toFixed(2)} days)`
     }
 
-    static async set(){
+  static async set(attempts = 0) {
         await storyPageIsReady()
         const inDevelopment = Story.isInState('In Development')
         const inReview = Story.isInState('Ready for Review')
@@ -26,11 +20,17 @@ export class DevelopmentTime{
         }
 
         if (inDevelopment) {
-            let hoursElapsed = Story.getTimeInState('In Development', false)
+          let hoursElapsed = Story.getTimeInState('In Development')
+          if (hoursElapsed === null && attempts < 2) {
+            await this.set(attempts + 1)
+          }
             this.setTimeSpan(hoursElapsed)
         }
         if (inReview) {
-            let hoursElapsed = Story.getTimeInState('Ready for Review', true)
+          let hoursElapsed = Story.getTimeInState('Ready for Review')
+          if (hoursElapsed === null && attempts < 2) {
+            await this.set(attempts + 1)
+          }
             this.setTimeSpan(hoursElapsed)
         }
     }
