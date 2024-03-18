@@ -30,7 +30,7 @@ export class Story {
    * @param {boolean} now - Whether to consider the current datetime as the end date
    * @returns {number} - The time spent in the state in hours, excluding weekends.
    */
-  static getTimeInState(state: string, now: boolean = false): number {
+  static getTimeInState(state: string, now: boolean = false): number | null {
     if (now) {
       const now = dayjs()
       const nowFormatted = now.format('MMM D YYYY, h:mm A')
@@ -39,7 +39,7 @@ export class Story {
     const dateElement = this.getDateInState(state)
     if (dateElement === null || dateElement === undefined) {
       console.warn(`Could not find date element for state ${state}`)
-      return 0
+      return null
     }
     return hoursBetweenExcludingWeekends(dateElement)
   }
