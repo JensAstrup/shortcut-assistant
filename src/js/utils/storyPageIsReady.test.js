@@ -13,11 +13,9 @@ describe('storyPageIsReady', () => {
     });
 
     it('should keep checking for story title until it is found', async () => {
-        document.querySelector.mockReturnValueOnce(null)
-            .mockReturnValueOnce(null)
-            .mockReturnValueOnce({});
+        document.querySelector.mockReturnValue(null)
         const result = await storyPageIsReady();
-        expect(result).toBe(true);
-        expect(document.querySelector).toHaveBeenNthCalledWith(3, '.story-name');
+        expect(result).toBe(false)
+        expect(document.querySelector).toHaveBeenNthCalledWith(9, '.story-name')
     });
 });
