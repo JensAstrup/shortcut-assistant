@@ -1,8 +1,8 @@
 import sleep from './sleep'
 
 
-async function storyPageIsReady() {
-  let storyTitle = document.querySelector('.story-name')
+export default async function storyPageIsReady(): Promise<boolean> {
+  let storyTitle: Element | null = document.querySelector('.story-name')
   let loop = 0
   while (storyTitle === null) {
     await sleep(loop * 1000)
@@ -12,5 +12,3 @@ async function storyPageIsReady() {
   await sleep(500)
   return true
 }
-
-export default storyPageIsReady
