@@ -1,6 +1,6 @@
 import {captureException} from '@sentry/browser'
 import {findFirstMatchingElementForState} from '../developmentTime/findFirstMatchingElementForState'
-import {hoursBetweenExcludingWeekends} from './hoursBetweenExcludingWeekends'
+import getEditDescriptionButtonContainer from './getEditDescriptionButtonContainer'
 import {Story} from './story'
 
 
@@ -19,6 +19,7 @@ jest.mock('./hoursBetweenExcludingWeekends', () => ({
 jest.mock('../developmentTime/findFirstMatchingElementForState', () => ({
   findFirstMatchingElementForState: jest.fn()
 }))
+jest.mock('./sleep', () => jest.fn().mockResolvedValue(undefined))
 
 
 describe('Story.title', () => {
@@ -56,6 +57,57 @@ describe('Story.description', () => {
   })
 })
 
+describe('getEditDescriptionButtonContainer', () => {
+  let originalQuerySelector
+
+  beforeEach(() => {
+    originalQuerySelector = document.querySelector
+
+    document.querySelector = jest.fn()
+  })
+
+  afterEach(() => {
+    document.querySelector = originalQuerySelector
+    jest.clearAllTimers()
+  })
+
+  it('should return the container immediately if the button is found', async () => {
+    const mockContainer = document.createElement('div')
+    document.querySelector.mockReturnValue({parentElement: mockContainer})
+
+    const container = await Story.getEditDescriptionButtonContainer()
+
+    expect(container).toBe(mockContainer)
+    expect(document.querySelector).toHaveBeenCalledTimes(1)
+  })
+
+  it('should return the container after a few attempts if the button initially does not exist', async () => {
+    const mockContainer = document.createElement('div')
+    document.querySelector
+    .mockReturnValueOnce({parentElement: null}) // First call, button not found
+    .mockReturnValueOnce({parentElement: null}) // Second call, button still not found
+    .mockReturnValue({parentElement: mockContainer}) // Third call, button found
+
+    const promise = Story.getEditDescriptionButtonContainer()
+
+    const container = await promise
+
+    expect(container).toBe(mockContainer)
+    expect(document.querySelector).toHaveBeenCalledTimes(3)
+  })
+
+  it('should return null if the button is not found within the maximum number of attempts', async () => {
+    document.querySelector.mockReturnValue({parentElement: null})
+
+    const promise = Story.getEditDescriptionButtonContainer()
+
+    const container = await promise
+
+    expect(container).toBeNull()
+    expect(document.querySelector).toHaveBeenCalledTimes(12)
+  })
+})
+
 
 describe('Story.getTimeInState', () => {
   beforeEach(() => {
@@ -71,19 +123,38 @@ describe('Story.getTimeInState', () => {
       `
   })
 
+  afterAll(() => {
+    jest.clearAllMocks()
+    jest.restoreAllMocks()
+  })
+
   it('returns the difference between now and the date in state', () => {
-    const getDateInState = jest.fn()
-    const dateElement = document.querySelector('.latest-update .element .date')
-    getDateInState.mockReturnValueOnce(dateElement.innerHTML)
+    jest.spyOn(Story, 'getDateInState').mockReturnValue('Feb 2 2022, 2:00 AM')
     const state = 'ExpectedState'
-    const result = Story.getTimeInState(state, true)
+    const result = Story.getTimeInState(state)
     expect(mockNow.format).toHaveBeenCalledWith('MMM D YYYY, h:mm A')
     expect(result).toBe(24)
+  })
+
+  it('returns the difference between now and the date in state', () => {
+    jest.spyOn(Story, 'getDateInState').mockReturnValue(null)
+    const result = Story.getTimeInState('13')
+    expect(mockNow.format).toHaveBeenCalledWith('MMM D YYYY, h:mm A')
+    expect(result).toBeNull()
   })
 })
 
 
 describe('Story.getDateInState', () => {
+  beforeEach(() => {
+    document.body.innerHTML = `
+            <div class="story-state">
+            <span class="value">ExpectedState</span>
+            </div>
+        `
+    jest.clearAllMocks()
+  })
+
   it('returns null when no elements match the state', () => {
     findFirstMatchingElementForState.mockReturnValueOnce(null)
 
@@ -100,7 +171,7 @@ describe('Story.getDateInState', () => {
     }
     findFirstMatchingElementForState.mockReturnValueOnce({element: latestUpdateElement})
 
-    const result = Story.getDateInState('ExpectedState')
+    const result = Story.getDateInState('ExpectedState2')
     expect(result).toBe('2022-03-01')
   })
 
