@@ -3,6 +3,7 @@ import * as Sentry from '@sentry/browser'
 import {findFirstMatchingElementForState} from '../developmentTime/findFirstMatchingElementForState'
 import {hoursBetweenExcludingWeekends} from './hoursBetweenExcludingWeekends'
 import sleep from "./sleep";
+import {getActiveTabUrl} from "./getActiveTabUrl";
 
 
 export class Story {
@@ -22,6 +23,12 @@ export class Story {
             return null
         }
         return description
+    }
+
+    static async id(): Promise<string | null> {
+        const url = await getActiveTabUrl()
+        const match = url?.match(/\/story\/(\d+)/)
+        return match ? match[1] : null
     }
 
     static async getEditDescriptionButtonContainer(): Promise<HTMLElement | null | undefined> {

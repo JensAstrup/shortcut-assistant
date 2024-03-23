@@ -1,6 +1,7 @@
 import {captureException} from '@sentry/browser'
 import {findFirstMatchingElementForState} from '../developmentTime/findFirstMatchingElementForState'
-import getEditDescriptionButtonContainer from './getEditDescriptionButtonContainer'
+import * as urlModule from './getActiveTabUrl'
+import {getStoryId} from './getStoryId'
 import {Story} from './story'
 
 
@@ -20,6 +21,9 @@ jest.mock('../developmentTime/findFirstMatchingElementForState', () => ({
   findFirstMatchingElementForState: jest.fn()
 }))
 jest.mock('./sleep', () => jest.fn().mockResolvedValue(undefined))
+jest.mock('./getActiveTabUrl', () => ({
+  getActiveTabUrl: jest.fn()
+}))
 
 
 describe('Story.title', () => {
@@ -237,5 +241,27 @@ describe('isInState function', () => {
     Story.isInState(state)
     expect(console.warn).toHaveBeenCalledWith('Could not find state element for state TestState')
     expect(captureException).toHaveBeenCalledWith(new Error('Could not find state element for state TestState'))
+  })
+})
+
+describe('Story id', () => {
+  it('returns the correct story ID from a valid URL', async () => {
+    urlModule.getActiveTabUrl.mockResolvedValue('https://app.shortcut.com/story/12345')
+    await expect(getStoryId()).resolves.toBe('12345')
+  })
+
+  it('returns null if the URL does not contain a story ID', async () => {
+    urlModule.getActiveTabUrl.mockResolvedValue('https://app.shortcut.com/profile')
+    await expect(getStoryId()).resolves.toBeNull()
+  })
+
+  it('handles URLs with additional path segments correctly', async () => {
+    urlModule.getActiveTabUrl.mockResolvedValue('https://app.shortcut.com/story/12345/details')
+    await expect(getStoryId()).resolves.toBe('12345')
+  })
+
+  it('returns null if getActiveTabUrl rejects', async () => {
+    urlModule.getActiveTabUrl.mockRejectedValue(new Error('Error fetching URL'))
+    await expect(getStoryId()).rejects.toThrow('Error fetching URL')
   })
 })
