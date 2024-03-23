@@ -1,8 +1,12 @@
-import {getStoryId} from '../utils/getStoryId'
+import {Story} from '../utils/story'
 import {NotesPopup} from './notesPopup'
 
 
-jest.mock('../utils/getStoryId')
+jest.mock('../utils/story', () => ({
+  Story: {
+    id: jest.fn()
+  }
+}))
 jest.mock('../utils/sleep', () => jest.fn(() => Promise.resolve()))
 
 describe('NotesPopup', () => {
@@ -28,7 +32,7 @@ describe('NotesPopup', () => {
   })
 
   it('saves note and updates button text correctly', async () => {
-    getStoryId.mockResolvedValue('123')
+    Story.id.mockResolvedValue('123')
     const popup = new NotesPopup()
     popup.saveButton = {
       disabled: false,
@@ -50,7 +54,7 @@ describe('NotesPopup', () => {
   })
 
   it('retrieves and displays saved note', async () => {
-    getStoryId.mockResolvedValue('123')
+    Story.id.mockResolvedValue('123')
     global.chrome.storage.sync.get.mockResolvedValue({'notes_123': 'Saved note'})
     const popup = new NotesPopup()
     await popup.set()

@@ -1,9 +1,7 @@
 import {Todoist} from './Todoist'
-import getEditDescriptionButtonContainer from '../utils/getEditDescriptionButtonContainer'
 import {Story} from '../utils/story'
 
 
-jest.mock('../utils/getEditDescriptionButtonContainer')
 jest.mock('../utils/logError')
 jest.mock('../utils/story', () => ({
   Story: {
@@ -35,8 +33,8 @@ describe('Todoist', () => {
 
   describe('constructor', () => {
     it('should set task buttons if in story page', async () => {
-      const todoist = new Todoist()
-      expect(window.open).not.toHaveBeenCalled() // Constructor does not immediately call window.open
+      new Todoist()
+      expect(window.open).not.toHaveBeenCalled()
     })
   })
 
