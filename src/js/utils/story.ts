@@ -4,7 +4,6 @@ import {findFirstMatchingElementForState} from '../developmentTime/findFirstMatc
 import {hoursBetweenExcludingWeekends} from './hoursBetweenExcludingWeekends'
 import sleep from "./sleep";
 import {getActiveTabUrl} from "./getActiveTabUrl";
-import {getNotesKey} from "../serviceWorker/notes";
 
 
 export class Story {

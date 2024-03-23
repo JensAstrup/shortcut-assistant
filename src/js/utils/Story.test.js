@@ -264,13 +264,18 @@ describe('Story.notes', () => {
   it('should return story notes when set', () => {
     jest.spyOn(Story, 'id').mockResolvedValue('123')
     chrome.storage.sync.get.mockResolvedValue({notes_123: 'Test note'})
-    return expect(Story.notes()).resolves.toBe('Test note')
+    expect(Story.notes()).resolves.toBe('Test note')
   })
 
   it('should return null when notes are not set', () => {
     jest.spyOn(Story, 'id').mockResolvedValue('123')
     chrome.storage.sync.get.mockResolvedValue({})
-    return expect(Story.notes()).resolves.toBeNull()
+    expect(Story.notes()).resolves.toBeNull()
+  })
+
+  it('should return null when story ID is not set', () => {
+    jest.spyOn(Story, 'id').mockResolvedValue(null)
+    expect(Story.notes()).resolves.toBeNull()
   })
 })
 
