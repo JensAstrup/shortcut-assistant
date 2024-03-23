@@ -1,5 +1,5 @@
-import {getStoryId} from '../utils/getStoryId'
 import sleep from '../utils/sleep'
+import {Story} from '../utils/story'
 
 
 export class NotesPopup {
@@ -21,7 +21,7 @@ export class NotesPopup {
   }
 
   async save() {
-    const data = {[this.getKey(await getStoryId())]: this.getInput().value}
+    const data = {[this.getKey(await Story.id())]: this.getInput().value}
     await chrome.storage.sync.set(data)
     this.saveButton.textContent = 'Saved!'
     await sleep(2000)
@@ -38,7 +38,7 @@ export class NotesPopup {
 
   async set() {
     this.resizeInput().catch(console.error)
-    const key = this.getKey(await getStoryId())
+    const key = this.getKey(await Story.id())
     const storyNotesInput = this.getInput()
     const result = await chrome.storage.sync.get(key)
     const value = result[key]
