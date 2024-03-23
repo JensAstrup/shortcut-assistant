@@ -255,6 +255,25 @@ describe('isInState function', () => {
   })
 })
 
+describe('Story.notes', () => {
+  afterEach(() => {
+    jest.clearAllMocks()
+    jest.restoreAllMocks()
+  })
+
+  it('should return story notes when set', () => {
+    jest.spyOn(Story, 'id').mockResolvedValue('123')
+    chrome.storage.sync.get.mockResolvedValue({notes_123: 'Test note'})
+    return expect(Story.notes()).resolves.toBe('Test note')
+  })
+
+  it('should return null when notes are not set', () => {
+    jest.spyOn(Story, 'id').mockResolvedValue('123')
+    chrome.storage.sync.get.mockResolvedValue({})
+    return expect(Story.notes()).resolves.toBeNull()
+  })
+})
+
 describe('Story id', () => {
   it('returns the correct story ID from a valid URL', async () => {
     urlModule.getActiveTabUrl.mockResolvedValue('https://app.shortcut.com/story/12345')
