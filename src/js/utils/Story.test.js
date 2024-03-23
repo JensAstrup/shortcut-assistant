@@ -209,6 +209,18 @@ describe('isInState function', () => {
     expect(Story.isInState(state)).toBe(true)
   })
 
+  it('returns true if the state is found within the story state', () => {
+    const state = 'TestState'
+    document.querySelector = jest.fn(() => {
+      return {
+        querySelector: jest.fn(() => {
+          return {textContent: 'TestState, TestState2'}
+        })
+      }
+    })
+    expect(Story.isInState(state)).toBe(true)
+  })
+
   it('returns false if the state does not have a value', () => {
     const state = 'TestState'
     document.querySelector = jest.fn(() => {

@@ -1,5 +1,3 @@
-import {Story} from '../utils/story'
-import storyPageIsReady from '../utils/storyPageIsReady'
 import * as StoryModule from '../utils/story'
 import {DevelopmentTime} from './developmentTime'
 
@@ -14,7 +12,11 @@ jest.mock('../utils/story', () => ({
 }))
 
 describe('DevelopmentTime.setTimeSpan', () => {
-  const mockStateSpan = {textContent: 'Current state'}
+  const mockStateSpan = {
+    textContent: 'Current state',
+    appendChild: jest.fn(),
+    querySelector: jest.fn()
+  }
 
   beforeEach(() => {
     jest.clearAllMocks()
@@ -25,9 +27,34 @@ describe('DevelopmentTime.setTimeSpan', () => {
     mockStateSpan.textContent = 'Current state'
   })
 
-  test('should accurately show days for hours equal to or greater than 48', () => {
+  it('appends a span with days elapsed to the state span', () => {
     DevelopmentTime.setTimeSpan(72)
-    expect(mockStateSpan.textContent).toBe('Current state (3.00 days)')
+    expect(mockStateSpan.appendChild.mock.calls[0][0].textContent).toBe(' (3.00 days)')
+  })
+
+  it('sets data-assistant attribute to true', () => {
+    DevelopmentTime.setTimeSpan(72)
+    expect(mockStateSpan.appendChild.mock.calls[0][0].getAttribute('data-assistant')).toBe('true')
+  })
+})
+
+describe('DevelopmentTime.remove', () => {
+  const mockTimeSpan = {remove: jest.fn()}
+
+  beforeEach(() => {
+    jest.clearAllMocks()
+    document.querySelector = jest.fn().mockImplementation(() => mockTimeSpan)
+  })
+
+  it('removes the time span', () => {
+    DevelopmentTime.remove()
+    expect(mockTimeSpan.remove).toHaveBeenCalled()
+  })
+
+  it('does not remove the time span if it does not exist', () => {
+    document.querySelector = jest.fn().mockImplementation(() => null)
+    DevelopmentTime.remove()
+    expect(mockTimeSpan.remove).not.toHaveBeenCalled()
   })
 })
 
@@ -42,7 +69,7 @@ describe('DevelopmentTime.set', () => {
     })
   })
 
-  test('calls setTimeSpan with hours from In Development state', async () => {
+  it('calls setTimeSpan with hours from In Development state', async () => {
     StoryModule.Story.isInState.mockImplementation(state => state === 'In Development')
     StoryModule.Story.getTimeInState.mockReturnValue(24)
 
@@ -51,7 +78,7 @@ describe('DevelopmentTime.set', () => {
     expect(DevelopmentTime.setTimeSpan).toHaveBeenCalledWith(24)
   })
 
-  test('calls setTimeSpan with hours from Ready for Review state', async () => {
+  it('calls setTimeSpan with hours from Ready for Review state', async () => {
     StoryModule.Story.isInState.mockImplementation(state => state === 'Ready for Review')
     StoryModule.Story.getTimeInState.mockReturnValue(72)
 
@@ -60,7 +87,7 @@ describe('DevelopmentTime.set', () => {
     expect(DevelopmentTime.setTimeSpan).toHaveBeenCalledWith(72)
   })
 
-  test('does not call setTimeSpan when not in Development or Review state', async () => {
+  it('does not call setTimeSpan when not in Development or Review state', async () => {
     await DevelopmentTime.set()
 
     expect(DevelopmentTime.setTimeSpan).not.toHaveBeenCalled()

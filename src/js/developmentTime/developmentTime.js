@@ -8,11 +8,22 @@ export class DevelopmentTime {
     const stateSpan = stateDiv.querySelector('.value')
     let daysElapsed = hoursElapsed / 24
     daysElapsed = Math.abs(daysElapsed)
-    stateSpan.textContent = `${stateSpan.textContent} (${daysElapsed.toFixed(2)} days)`
+    const timeSpan = document.createElement('span')
+    timeSpan.setAttribute('data-assistant', 'true')
+    timeSpan.innerHTML = ` (${daysElapsed.toFixed(2)} days)`
+    stateSpan.appendChild(timeSpan)
+  }
+
+  static remove() {
+    const timeSpan = document.querySelector('[data-assistant="true"]')
+    if (timeSpan) {
+      timeSpan.remove()
+    }
   }
 
   static async set() {
     await storyPageIsReady()
+    this.remove()
     const inDevelopment = Story.isInState('In Development')
     const inReview = Story.isInState('Ready for Review')
     if (!inDevelopment && !inReview) {

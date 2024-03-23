@@ -83,6 +83,6 @@ export class Story {
             console.warn(`Could not find state element for state ${state}`)
             Sentry.captureException(e)
         }
-        return storyState === state
+        return storyState.includes(state)
     }
 }
