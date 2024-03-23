@@ -1,16 +1,15 @@
 import {Todoist} from './Todoist'
-import getEditDescriptionButtonContainer from '../utils/getEditDescriptionButtonContainer'
-import {logError} from '../utils/logError'
 import {Story} from '../utils/story'
 
 
-jest.mock('../utils/getEditDescriptionButtonContainer')
 jest.mock('../utils/logError')
 jest.mock('../utils/story', () => ({
   Story: {
-    title: 'Mocked Story Title'
+    title: 'Mocked Story Title',
+    getEditDescriptionButtonContainer: jest.fn().mockResolvedValue({appendChild: jest.fn()})
   }
 }))
+
 describe('Todoist', () => {
   beforeAll(() => {
     document.createElement = jest.fn().mockImplementation(tag => {
@@ -34,8 +33,8 @@ describe('Todoist', () => {
 
   describe('constructor', () => {
     it('should set task buttons if in story page', async () => {
-      const todoist = new Todoist()
-      expect(window.open).not.toHaveBeenCalled() // Constructor does not immediately call window.open
+      new Todoist()
+      expect(window.open).not.toHaveBeenCalled()
     })
   })
 
@@ -91,11 +90,10 @@ describe('Todoist', () => {
   describe('addButtonIfNotExists', () => {
     it('appends new button if it does not exist', async () => {
       document.querySelector.mockReturnValue(null)
-      getEditDescriptionButtonContainer.mockResolvedValue({appendChild: jest.fn()})
       const todoist = new Todoist()
       const button = document.createElement('button')
       await todoist.addButtonIfNotExists('Test title', button)
-      expect(getEditDescriptionButtonContainer).toHaveBeenCalled()
+      expect(Story.getEditDescriptionButtonContainer).toHaveBeenCalled()
     })
 
     it('does not append new button if it already exists', async () => {
@@ -103,7 +101,7 @@ describe('Todoist', () => {
       const todoist = new Todoist()
       const button = document.createElement('button')
       await todoist.addButtonIfNotExists('Test title', button)
-      expect(getEditDescriptionButtonContainer).not.toHaveBeenCalled()
+      expect(Story.getEditDescriptionButtonContainer).not.toHaveBeenCalled()
     })
   })
 
@@ -124,7 +122,7 @@ describe('Todoist', () => {
       const todoist = new Todoist()
       await todoist.setTaskButton('Test title', 'Tooltip', 'Task title')
       expect(document.querySelector).toHaveBeenCalled()
-      expect(getEditDescriptionButtonContainer).not.toHaveBeenCalled()
+      expect(Story.getEditDescriptionButtonContainer).not.toHaveBeenCalled()
     })
   })
 })

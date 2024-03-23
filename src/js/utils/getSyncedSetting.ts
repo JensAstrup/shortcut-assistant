@@ -1,4 +1,4 @@
-export async function getSyncedSetting(setting, defaultValue) {
+export async function getSyncedSetting(setting: string, defaultValue: string | undefined): Promise<string | undefined> {
     try {
         const result = await chrome.storage.sync.get(setting);
         const {[setting]: value = defaultValue} = result;

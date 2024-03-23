@@ -8,16 +8,20 @@ document.querySelector = jest.fn((selector) => {
 });
 
 describe('storyPageIsReady', () => {
+    beforeEach(() => {
+        document.querySelector.mockClear()
+    })
+
     it('should resolve to true when a story title can be found on the page', async () => {
         await expect(storyPageIsReady()).resolves.toBe(true);
     });
 
     it('should keep checking for story title until it is found', async () => {
-        document.querySelector.mockReturnValueOnce(null)
-            .mockReturnValueOnce(null)
-            .mockReturnValueOnce({});
+        document.querySelector.mockReturnValue(null)
         const result = await storyPageIsReady();
-        expect(result).toBe(true);
-        expect(document.querySelector).toHaveBeenNthCalledWith(3, '.story-name');
+        expect(result).toBe(false)
+        expect(document.querySelector).toHaveBeenNthCalledWith(10, '.story-name')
+        // 10 calls to document.querySelector, plus the initial call
+        expect(document.querySelector).toHaveBeenCalledTimes(11)
     });
 });

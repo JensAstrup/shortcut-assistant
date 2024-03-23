@@ -2,10 +2,9 @@ import * as Sentry from '@sentry/browser'
 import getOpenAiToken from '../ai/getOpenAiToken'
 import callOpenAI from '../ai/callOpenAI'
 import {sendEvent} from '../analytics/event'
-import {KeyboardShortcuts} from '../keyboard/keyboardShortcuts'
 import {getActiveTab} from '../utils/getActiveTab'
-import {getSyncedSetting} from '../utils/getSyncedSetting.js'
-import {getNotes} from './notes'
+import {getSyncedSetting} from '../utils/getSyncedSetting.ts'
+import {Story} from '../utils/story'
 import {onInstallAndUpdate} from './onInstallAndUpdate'
 import {SlugManager} from './slugManager'
 
@@ -37,7 +36,7 @@ if (typeof self !== 'undefined' && self instanceof ServiceWorkerGlobalScope) {
             return true;
         }
         if (request.action === 'getSavedNotes') {
-            getNotes().then(value => {
+            Story.notes().then(value => {
                 sendResponse({data: value});
             });
             return true;
@@ -96,7 +95,7 @@ chrome.tabs.onUpdated.addListener(async function (tabId, changeInfo, tab){
             }
             chrome.tabs.sendMessage(tabId, {
                 message: 'initNotes',
-                data: await getNotes(),
+                data: await Story.notes(),
                 url: changeInfo.url
             })
         }
