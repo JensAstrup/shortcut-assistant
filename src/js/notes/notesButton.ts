@@ -22,11 +22,11 @@ export class NotesButton {
 
     newButton.append(' Has Notes')
 
-    let container = await Story.getEditDescriptionButtonContainer()
+    const container = await Story.getEditDescriptionButtonContainer()
     // Check if the button already exists in the container
-    const existingButton = container.querySelector('.action.edit-description.view-notes.micro.flat-white')
+    const existingButton = container?.querySelector('.action.edit-description.view-notes.micro.flat-white')
     if (!existingButton) {
-      container.appendChild(newButton)
+      container?.appendChild(newButton)
     }
   }
 
@@ -37,7 +37,7 @@ export class NotesButton {
     }
   }
 
-  async setContentIfDataExists(data) {
+  async setContentIfDataExists(data: object | undefined = undefined) {
     if (data === undefined) {
       const response = await chrome.runtime.sendMessage({action: 'getSavedNotes'})
       data = response.data
@@ -49,5 +49,4 @@ export class NotesButton {
       this.setContentExistsNotice().catch(logError)
     }
   }
-
 }
