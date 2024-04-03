@@ -1,7 +1,20 @@
-const {sentryWebpackPlugin} = require('@sentry/webpack-plugin')
 const path = require('path')
-const Dotenv = require('dotenv-webpack')
+
+const CopyWebpackPlugin = require('copy-webpack-plugin')
+
 require('dotenv').config()
+const Dotenv = require('dotenv-webpack')
+const {sentryWebpackPlugin} = require('@sentry/webpack-plugin')
+const copyConfig = new CopyWebpackPlugin({
+  patterns: [
+    {from: './src/manifest.json', to: 'manifest.json'},
+    {from: './src/assets', to: 'assets'},
+    {from: './src/styles', to: 'styles'},
+    {from: './src/html', to: 'html'},
+    {from: './src/js', to: 'js'},
+    {from: './node_modules/**', to: 'node_modules'}
+  ]
+})
 
 module.exports = {
   mode: 'production',
@@ -23,7 +36,7 @@ module.exports = {
       './src/js/contentScripts.js',
       './src/js/index.js'
     ],
-    'analytics': './src/js/analytics/event.ts'
+    'analytics/bundle': './src/js/analytics/event.ts'
   },
 
   output: {
@@ -40,7 +53,6 @@ module.exports = {
       },
       {
         test: /\.js$/,
-        exclude: /node_modules/,
         use: {
           loader: 'babel-loader'
         }
@@ -52,6 +64,7 @@ module.exports = {
   },
 
   plugins: [new Dotenv(),
+    copyConfig,
     sentryWebpackPlugin({
       authToken: process.env.SENTRY_AUTH_TOKEN,
       org: 'jens-astrup',

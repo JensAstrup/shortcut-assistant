@@ -4,7 +4,7 @@
     "default_icon": "assets/assistant.png"
   },
   "background": {
-    "service_worker": "build/service_worker/bundle.js",
+    "service_worker": "service_worker/bundle.js",
     "type": "module"
   },
   "commands": {
@@ -43,8 +43,9 @@
         "https://app.shortcut.com/*"
       ],
       "js": [
-        "build/contentScripts/bundle.js"
+        "contentScripts/bundle.js"
       ],
+      "type": "module",
       "run_at": "document_end"
     }
   ],
