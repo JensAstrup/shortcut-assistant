@@ -7,8 +7,6 @@ module.exports = {
     '^.+\\.tsx?$': 'ts-jest',
     '^.+\\.jsx?$': 'babel-jest'
   },
-  testMatch: [
-    '<rootDir>/src/js/**/*.test.js', // Matches any file ending with .test.js in the js directory
-    '<rootDir>/tests/**/*.test.js' // Matches any file ending with .test.js in the js directory
-  ]
+  roots: ['<rootDir>/src', '<rootDir>/tests'],
+  testMatch: ['**/tests/*', '**/?(*.)+(spec|test).js']
 }
