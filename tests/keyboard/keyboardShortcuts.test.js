@@ -47,6 +47,22 @@ describe('Shortcuts', () => {
     expect(document.getElementById).toHaveBeenCalledWith('story-dialog-state-dropdown')
   })
 
+  it('should log error to console if no popup is found in changeState function', async () => {
+    console.error = jest.fn()
+    const mockedDropdown = {click: jest.fn()}
+    const mockedPopup = {querySelector: jest.fn().mockReturnValue(null)}
+
+
+    document.getElementById.mockReturnValueOnce(mockedDropdown)
+    document.querySelector.mockReturnValueOnce(null)
+
+    instance = new KeyboardShortcuts()
+    await instance.changeState()
+
+    expect(mockedDropdown.click).toHaveBeenCalled()
+    expect(mockedPopup.querySelector).not.toHaveBeenCalled()
+  })
+
   test('changeState function with no input', async () => {
     const mockedDropdown = {click: jest.fn()}
     const mockedPopup = {querySelector: jest.fn()}
@@ -90,6 +106,49 @@ describe('Shortcuts', () => {
     expect(mockedIterationSelect.click).toHaveBeenCalled()
     expect(mockedIterationPopup.querySelector).toHaveBeenCalledWith('.autocomplete-input')
     expect(mockInput.focus).toHaveBeenCalled()
+  })
+
+  it('should error to console if no input select is found in changeIteration function', async () => {
+    const mockChildButton = {click: jest.fn()}
+    console.log = jest.fn()
+    document.querySelector.mockReturnValueOnce(null)
+    const mockedIterationSelect = {
+      querySelector: jest.fn().mockReturnValue(mockChildButton),
+      click: jest.fn()
+    }
+
+    await instance.changeIteration()
+
+    expect(mockedIterationSelect.querySelector).not.toHaveBeenCalledWith('[role="button"]')
+    expect(mockChildButton.click).not.toHaveBeenCalled()
+    expect(mockedIterationSelect.click).not.toHaveBeenCalled()
+  })
+
+  it('should error to console if no input is found in changeIteration function', async () => {
+    const mockChildButton = {click: jest.fn()}
+    const mockedIterationSelect = {
+      querySelector: jest.fn().mockReturnValue(mockChildButton),
+      click: jest.fn()
+    }
+    const mockInput = {focus: jest.fn(), value: ''}
+    const mockedIterationPopup = {querySelector: jest.fn().mockReturnValue(null)}
+
+    document.querySelector.mockImplementation((selector) => {
+      if (selector === '[data-perma-id="iteration-select"]') {
+        return mockedIterationSelect
+      }
+      else if (selector === '.iteration-selector') {
+        return mockedIterationPopup
+      }
+    })
+
+    await instance.changeIteration()
+
+    expect(mockedIterationSelect.querySelector).toHaveBeenCalledWith('[role="button"]')
+    expect(mockChildButton.click).toHaveBeenCalled()
+    expect(mockedIterationSelect.click).toHaveBeenCalled()
+    expect(mockedIterationPopup.querySelector).toHaveBeenCalledWith('.autocomplete-input')
+    expect(mockInput.focus).not.toHaveBeenCalled()
   })
 
   test('changeIteration function with no childButton', async () => {
@@ -157,6 +216,35 @@ describe('Shortcuts', () => {
 
     expect(mockedGitHelpers.click).toHaveBeenCalled()
     expect(global.navigator.clipboard.writeText).toHaveBeenCalled()
+  })
+
+  it('should error to console when no githelpers are found in copyGitBranch function', async () => {
+    const mockedGitHelpers = {click: jest.fn()}
+    console.error = jest.fn()
+    document.getElementById.mockReturnValueOnce(null)
+
+    global.navigator.clipboard = {writeText: jest.fn()}
+
+    await instance.copyGitBranch()
+
+    expect(console.error).toHaveBeenCalledWith('The git helpers dropdown was not found.')
+    expect(mockedGitHelpers.click).not.toHaveBeenCalled()
+    expect(global.navigator.clipboard.writeText).not.toHaveBeenCalled()
+  })
+
+  it('should error to console if git branch input not found in copyGitBranch function', async () => {
+    const mockedGitHelpers = {click: jest.fn()}
+    console.error = jest.fn()
+    document.getElementById.mockReturnValueOnce(mockedGitHelpers)
+    document.querySelector.mockReturnValueOnce(null)
+
+    global.navigator.clipboard = {writeText: jest.fn()}
+
+    await instance.copyGitBranch()
+
+    expect(console.error).toHaveBeenCalledWith('The git branch input was not found.')
+    expect(mockedGitHelpers.click).toHaveBeenCalled()
+    expect(global.navigator.clipboard.writeText).not.toHaveBeenCalled()
   })
 
   test('_getStateDivWithText function', () => {
