@@ -1,5 +1,5 @@
-import {Story} from '../../src/js/utils/story'
 import {NotesButton} from '../../src/js/notes/notesButton'
+import {Story} from '../../src/js/utils/story'
 
 
 jest.mock('../../src/js/utils/sleep', () => ({
