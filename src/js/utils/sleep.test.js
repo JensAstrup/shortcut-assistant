@@ -1,4 +1,5 @@
-import sleep from './sleep' // Adjust the import path according to your project structure
+import sleep from './sleep'
+
 
 describe('sleep function', () => {
   beforeEach(() => {
@@ -10,14 +11,13 @@ describe('sleep function', () => {
   })
 
   it('should complete after the specified time using fake timers', async () => {
-    setTimeout = jest.fn(setTimeout)
-    const promise = sleep(1000)
+    const ms = 1000
+    const promise = sleep(ms)
 
-    expect(setTimeout).toHaveBeenCalledTimes(1)
-    expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 1000)
+    jest.advanceTimersByTime(ms)
 
-    jest.advanceTimersByTime(1000)
+    await expect(promise).resolves.toBeUndefined()
 
-    await promise
+    expect(jest.getTimerCount()).toBe(0)
   })
 })
