@@ -18,31 +18,51 @@ Sentry.init({
   environment: process.env.NODE_ENV
 })
 
+async function handleOpenAICall(prompt: string, tabId: number): Promise<{ data: any } | { error: any }> {
+  try {
+    const response = await callOpenAI(prompt, tabId)
+    return {data: response}
+  } catch (e) {
+    console.error('Error calling OpenAI:', e)
+    chrome.runtime.sendMessage({message: 'OpenAIResponseFailed'})
+    return {error: e}
+  }
+}
+
+async function handleGetOpenAiToken(): Promise<{ token: string }> {
+  const token = await getOpenAiToken()
+  return {token}
+}
+
+async function handleGetSavedNotes(): Promise<{ data: string | null }> {
+  const value = await Story.notes()
+  return {data: value}
+}
 
 if (typeof self !== 'undefined' && self instanceof ServiceWorkerGlobalScope) {
-  chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  chrome.runtime.onMessage.addListener((request: {
+    action?: string,
+    data?: { prompt: string }
+    message?: string,
+  }, sender: chrome.runtime.MessageSender, sendResponse: (response: unknown) => void) => {
+    if (!request.data) {
+      return
+    }
     if (request.action === 'callOpenAI') {
-      callOpenAI(request.data.prompt, sender.tab!.id).then(response => {
-        if (response) {
-          sendResponse({data: response})
-        }
-      }).catch(e => {
-        console.error('Error calling OpenAI:', e)
-        sendResponse({error: e})
-        chrome.runtime.sendMessage({message: 'OpenAIResponseFailed'})
-      })
+      if (!sender.tab || !sender.tab.id) {
+        return
+      }
+      handleOpenAICall(request.data.prompt, sender.tab.id).then(sendResponse)
       return true // Keep the message channel open for the async response
     }
+
     if (request.message === 'getOpenAiToken') {
-      getOpenAiToken().then(token => {
-        sendResponse({token: token})
-      })
+      handleGetOpenAiToken().then(sendResponse)
       return true
     }
+
     if (request.action === 'getSavedNotes') {
-      Story.notes().then(value => {
-        sendResponse({data: value})
-      })
+      handleGetSavedNotes().then(sendResponse)
       return true
     }
   })
