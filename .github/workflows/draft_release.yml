@@ -40,8 +40,7 @@ jobs:
           mkdir dist
           cd src
           npm run build-css
-          ./node_modules/.bin/webpack
-          zip -r ../dist/dist.zip . -x "coverage*" "*/*.test.js"
+          npm run dist
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           VERSION: ${{ env.VERSION }}
