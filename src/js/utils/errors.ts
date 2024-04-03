@@ -1,6 +1,6 @@
 export class OpenAIError extends Error {
   constructor(message) {
-    super(message);
-    this.name = "OpenAIError";
+    super(message)
+    this.name = 'OpenAIError'
   }
 }
