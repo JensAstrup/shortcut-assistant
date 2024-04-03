@@ -30,8 +30,8 @@
     "webpack-cli": "^5.1.4"
   },
   "scripts": {
-    "dev": "node_modules/.bin/webpack --config webpack.config.dev.js",
-    "build-css": "node_modules/.bin/postcss src/styles/index.css -o styles/output.css",
+    "dev": "webpack --config webpack.config.dev.js",
+    "build-css": "postcss src/styles/index.css -o src/styles/output.css",
     "test": "TZ='UTC' jest --config jest.config.js",
     "build": "node src/buildManifest.js",
     "dist": "npx webpack && zip -r dist/dist.zip build/* -x \"coverage*\" \"*/*.test.js\""
