@@ -1,6 +1,6 @@
 .idea/*
 *.pem
-/src/node_modules/
+node_modules/
 /src/build/
 **/coverage/
 **/dist/*
