@@ -1,5 +1,5 @@
 import {getOrCreateClientId} from '../../src/js/analytics/clientId'
-import getCompletionFromProxy from '../../src/js/ai/getCompletionFromProxy'
+import getCompletionFromProxy from '../../src/js/ai/get-completion-from-proxy'
 import fetch from 'node-fetch'
 
 

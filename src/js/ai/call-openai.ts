@@ -1,12 +1,14 @@
 import * as Sentry from '@sentry/browser'
+
 import {sendEvent} from '../analytics/event'
 import {OpenAIError} from '../utils/errors'
-import {fetchCompletion} from './fetchCompletion'
-import getCompletionFromProxy from './getCompletionFromProxy'
-import getOpenAiToken from './getOpenAiToken'
+
+import {fetchCompletion} from './fetch-completion'
+import getCompletionFromProxy from './get-completion-from-proxy'
+import getOpenAiToken from './get-openai-token'
 
 
-async function callOpenAI(description, tabId) {
+async function callOpenAi(description: string, tabId: number) {
   const token = await getOpenAiToken()
   let messagesData
   let message
@@ -25,10 +27,10 @@ async function callOpenAI(description, tabId) {
         console.error('Error sending event:', e)
         Sentry.captureException(e)
       })
-    } catch (e) {
-      throw new OpenAIError('Error getting completion from OpenAI:', e)
+    } catch (e: unknown) {
+      throw new OpenAIError(`Error getting completion from OpenAI: ${e}`)
     }
   }
 }
 
-export default callOpenAI
+export default callOpenAi

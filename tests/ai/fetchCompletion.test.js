@@ -1,10 +1,10 @@
 import OpenAI, {mockOpenAI} from 'openai'
 
-import {fetchCompletion} from '../../src/js/ai/fetchCompletion'
-import getOpenAiToken from '../../src/js/ai/getOpenAiToken'
+import {fetchCompletion} from '../../src/js/ai/fetch-completion'
+import getOpenAiToken from '../../src/js/ai/get-openai-token'
 
 
-jest.mock('../../src/js/ai/getOpenAiToken', () => jest.fn().mockResolvedValue('test-token'))
+jest.mock('../../src/js/ai/get-openai-token', () => jest.fn().mockResolvedValue('test-token'))
 
 
 describe('fetchCompletion', () => {

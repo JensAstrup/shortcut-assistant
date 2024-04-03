@@ -2,10 +2,13 @@ import {getOrCreateClientId} from '../analytics/clientId'
 import {OpenAIError} from '../utils/errors'
 
 
-async function getCompletionFromProxy(description) {
+export default async function getCompletionFromProxy(description: string) {
   let response
   try {
     const url = process.env.PROXY_URL
+    if (!url) {
+      throw new OpenAIError('PROXY_URL is not set')
+    }
     const instanceId = await getOrCreateClientId()
     response = await fetch(url, {
       method: 'POST',
@@ -18,7 +21,7 @@ async function getCompletionFromProxy(description) {
       }
     })
   } catch (e) {
-    throw new OpenAIError('Error getting completion from proxy:', e)
+    throw new OpenAIError(`Error getting completion from proxy: ${e}`)
   }
 
   if (!response.ok) {
@@ -28,5 +31,3 @@ async function getCompletionFromProxy(description) {
   const data = await response.json()
   return data.content
 }
-
-export default getCompletionFromProxy
