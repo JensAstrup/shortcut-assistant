@@ -30,7 +30,7 @@ module.exports = {
     ],
     'service_worker/bundle': [
       './src/js/service-worker/service-worker.ts',
-      './src/js/service-worker/omnibox/listeners.js'
+      './src/js/service-worker/omnibox/listeners.ts'
     ],
     'contentScripts/bundle': [
       './src/js/contentScripts.js',

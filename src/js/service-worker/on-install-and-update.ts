@@ -1,4 +1,5 @@
 import * as Sentry from '@sentry/browser'
+import InstalledDetails = chrome.runtime.InstalledDetails
 
 
 export class InstallAndUpdate {
@@ -22,7 +23,7 @@ export class InstallAndUpdate {
 }
 
 
-export function onInstallAndUpdate(details: Record<string, string>) {
+export function onInstallAndUpdate(details: InstalledDetails) {
   if (details.reason === 'install') {
     InstallAndUpdate.onInstall()
   }
