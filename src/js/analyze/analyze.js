@@ -1,4 +1,4 @@
-import {AiFunctions} from './aiFunctions'
+import {AiFunctions} from './aiFunctions.js'
 
 
 document.getElementById('analyzeButton').addEventListener('click', AiFunctions.analyzeStoryDetails)
