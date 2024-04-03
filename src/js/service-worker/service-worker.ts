@@ -7,7 +7,7 @@ import {getActiveTab} from '../utils/getActiveTab'
 import {getSyncedSetting} from '../utils/getSyncedSetting'
 import {Story} from '../utils/story'
 
-import {onInstallAndUpdate} from './onInstallAndUpdate'
+import {onInstallAndUpdate} from './on-install-and-update'
 import {SlugManager} from './slug-manager'
 
 

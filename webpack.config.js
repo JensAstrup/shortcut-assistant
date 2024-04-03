@@ -29,8 +29,8 @@ module.exports = {
       './src/js/popup/popupInitializer.js'
     ],
     'service_worker/bundle': [
-      './src/js/serviceWorker/service-worker.ts',
-      './src/js/serviceWorker/omnibox/listeners.js'
+      './src/js/service-worker/service-worker.ts',
+      './src/js/service-worker/omnibox/listeners.js'
     ],
     'contentScripts/bundle': [
       './src/js/contentScripts.js',

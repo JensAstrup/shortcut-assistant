@@ -1,5 +1,5 @@
 import {captureException} from '@sentry/browser'
-import {InstallAndUpdate, onInstallAndUpdate} from '../../src/js/service-worker/onInstallAndUpdate'
+import {InstallAndUpdate, onInstallAndUpdate} from '../../src/js/service-worker/on-install-and-update'
 import * as Sentry from '@sentry/browser'
 
 

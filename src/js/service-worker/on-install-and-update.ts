@@ -22,14 +22,14 @@ export class InstallAndUpdate {
 }
 
 
-export function onInstallAndUpdate(details) {
+export function onInstallAndUpdate(details: Record<string, string>) {
   if (details.reason === 'install') {
-    InstallAndUpdate.onInstall(details)
+    InstallAndUpdate.onInstall()
   }
   else if (details.reason === 'update') {
     // Only display the update page if the changelog has been updated for the current version
     if (process.env.CHANGELOG_VERSION === process.env.VERSION) {
-      InstallAndUpdate.onUpdate(details).catch(e => {
+      InstallAndUpdate.onUpdate().catch(e => {
         console.error('Error updating:', e)
         Sentry.captureException(e)
       })
