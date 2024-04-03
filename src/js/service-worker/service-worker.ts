@@ -8,7 +8,7 @@ import {getSyncedSetting} from '../utils/getSyncedSetting'
 import {Story} from '../utils/story'
 
 import {onInstallAndUpdate} from './onInstallAndUpdate'
-import {SlugManager} from './slugManager'
+import {SlugManager} from './slug-manager'
 
 
 const manifestData = chrome.runtime.getManifest()
