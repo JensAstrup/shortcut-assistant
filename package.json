@@ -34,7 +34,7 @@
     "build-css": "node_modules/.bin/postcss src/styles/index.css -o styles/output.css",
     "test": "TZ='UTC' jest --config jest.config.js",
     "build": "node src/buildManifest.js",
-    "dist": "npx webpack && zip -r dist/dist.zip . -x \\\\\\\\\\\\\\\"coverage*\\\\\\\\\\\\\\\" \\\\\\\\\\\\\\\"*/*.test.js\\\\\\\\\\\\\\\"\\\\\\\\n"
+    "dist": "npx webpack && zip -r dist/dist.zip build/* -x \"coverage*\" \"*/*.test.js\""
   },
   "dependencies": {
     "@sentry/browser": "7.105.0",
