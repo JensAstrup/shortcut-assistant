@@ -34,7 +34,8 @@ module.exports = {
     ],
     'contentScripts/bundle': [
       './src/js/contentScripts.js',
-      './src/js/index.js'
+      './src/js/index.js',
+      './src/js/analyze/contentScript.js'
     ],
     'analytics/bundle': './src/js/analytics/event.ts'
   },
