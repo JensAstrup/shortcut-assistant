@@ -1,5 +1,6 @@
-import {SlugManager} from '../../src/js/serviceWorker/slugManager'
 import * as Sentry from '@sentry/browser'
+
+import {SlugManager} from '../../src/js/service-worker/slug-manager'
 
 
 global.chrome = {
@@ -31,6 +32,14 @@ describe('SlugManager', () => {
       const result = await SlugManager.getCompanySlugFromTab(1, testData)
 
       expect(result).toEqual('companySlug')
+    })
+
+    it('should return null if the company slug is not found', async () => {
+      const testData = { }
+
+      const result = await SlugManager.getCompanySlugFromTab(1, testData)
+
+      expect(result).toEqual(null)
     })
   })
 

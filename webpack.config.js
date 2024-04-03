@@ -29,12 +29,13 @@ module.exports = {
       './src/js/popup/popupInitializer.js'
     ],
     'service_worker/bundle': [
-      './src/js/serviceWorker/service_worker.js',
-      './src/js/serviceWorker/omnibox/listeners.js'
+      './src/js/service-worker/service-worker.ts',
+      './src/js/service-worker/omnibox/listeners.ts'
     ],
     'contentScripts/bundle': [
       './src/js/contentScripts.js',
-      './src/js/index.js'
+      './src/js/index.js',
+      './src/js/analyze/contentScript.js'
     ],
     'analytics/bundle': './src/js/analytics/event.ts'
   },

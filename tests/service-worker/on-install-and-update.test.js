@@ -1,6 +1,6 @@
-import {captureException} from '@sentry/browser'
-import {InstallAndUpdate, onInstallAndUpdate} from '../../src/js/serviceWorker/onInstallAndUpdate'
 import * as Sentry from '@sentry/browser'
+
+import {InstallAndUpdate, onInstallAndUpdate} from '../../src/js/service-worker/on-install-and-update'
 
 
 describe('onInstall function', () => {
