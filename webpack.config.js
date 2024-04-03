@@ -9,21 +9,21 @@ module.exports = {
   devtool: 'source-map',
 
   entry: {
-    'analyze/analyze': './js/analyze/analyze.js',
+    'analyze/analyze': './src/js/analyze/analyze.js',
     'popup/bundle': [
-      './js/popup/Popup.js',
-      './js/popup/notesPopup.js',
-      './js/popup/popupInitializer.js'
+      './src/js/popup/Popup.js',
+      './src/js/popup/notesPopup.js',
+      './src/js/popup/popupInitializer.js'
     ],
     'service_worker/bundle': [
-      './js/serviceWorker/service_worker.js',
-      './js/serviceWorker/omnibox/listeners.js'
+      './src/js/serviceWorker/service_worker.js',
+      './src/js/serviceWorker/omnibox/listeners.js'
     ],
     'contentScripts/bundle': [
-      './js/contentScripts.js',
-      './js/index.js'
+      './src/js/contentScripts.js',
+      './src/js/index.js'
     ],
-    'analytics': './js/analytics/event.ts'
+    'analytics': './src/js/analytics/event.ts'
   },
 
   output: {

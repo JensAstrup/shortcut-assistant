@@ -1,5 +1,7 @@
 import {captureException} from '@sentry/browser'
+
 import {findFirstMatchingElementForState} from '../developmentTime/findFirstMatchingElementForState'
+
 import * as urlModule from './getActiveTabUrl'
 import {Story} from './story'
 
