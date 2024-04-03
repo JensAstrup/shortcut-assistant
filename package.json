@@ -37,7 +37,7 @@
     "dist": "npx webpack && zip -r dist/dist.zip build/* -x \"coverage*\" \"*/*.test.js\""
   },
   "dependencies": {
-    "@sentry/browser": "7.105.0",
+    "@sentry/browser": "7.109.0",
     "@sentry/webpack-plugin": "2.14.3",
     "@tailwindcss/typography": "0.5.10",
     "dayjs": "^1.11.10",
