@@ -1,4 +1,6 @@
 import * as Sentry from '@sentry/browser'
+
+import {sendEvent} from '../../../src/js/analytics/event'
 import {
   redirectFromOmnibox,
   setOmniboxSuggestion
@@ -9,7 +11,6 @@ jest.mock('@sentry/browser', () => ({
   captureException: jest.fn()
 }))
 
-import {sendEvent} from '../../../src/js/analytics/event'
 
 
 jest.mock('../../../src/js/analytics/event', () => ({
@@ -60,8 +61,10 @@ describe('Omnibox interactions', () => {
   })
 
   it('captures exception with Sentry if sendEvent fails', async () => {
+    console.error = jest.fn()
     sendEvent.mockImplementationOnce(() => Promise.reject(new Error('Test Error')))
     await inputEnteredCallback('test query', 'currentTab') // Directly call the callback
     expect(Sentry.captureException).toHaveBeenCalled()
+    expect(console.error).toHaveBeenCalled()
   })
 })
