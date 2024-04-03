@@ -11,7 +11,7 @@ export class Todoist {
     }
   }
 
-  createButton(tooltip, title) {
+  createButton(tooltip: string, title: string) {
     const newButton = document.createElement('button')
     newButton.className = 'action edit-description add-task micro flat-white'
     newButton.dataset.tabindex = ''
@@ -22,10 +22,10 @@ export class Todoist {
     return newButton
   }
 
-  createTooltipText(taskTitle, title) {
+  createTooltipText(taskTitle: string | null, title: string) {
     const storyTitle = Story.title
     const storyLink = window.location.href
-    if (taskTitle === undefined) {
+    if (!taskTitle) {
       return `${title} [${storyTitle}](${storyLink})`
     }
     else {
@@ -37,15 +37,15 @@ export class Todoist {
     return document.querySelector('button[data-todoist="true"]')
   }
 
-  async addButtonIfNotExists(title, newButton) {
-    const existingButton = this.buttonExists(title)
+  async addButtonIfNotExists(newButton: HTMLButtonElement) {
+    const existingButton = this.buttonExists()
     if (!existingButton) {
       const container = await Story.getEditDescriptionButtonContainer()
-      container.appendChild(newButton)
+      container?.appendChild(newButton)
     }
   }
 
-  async setTaskButton(title, tooltip, taskTitle) {
+  async setTaskButton(title: string, tooltip: string, taskTitle: string | null = null) {
     const newButton = this.createButton(tooltip, title)
     const buttonExists = this.buttonExists()
     taskTitle = this.createTooltipText(taskTitle, title)
@@ -62,6 +62,6 @@ export class Todoist {
       return
     }
 
-    this.addButtonIfNotExists(title, newButton).catch(logError)
+    this.addButtonIfNotExists(newButton).catch(logError)
   }
 }
