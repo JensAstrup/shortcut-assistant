@@ -1,4 +1,5 @@
 import * as Sentry from '@sentry/browser'
+
 import InstalledDetails = chrome.runtime.InstalledDetails
 
 
