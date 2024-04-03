@@ -37,11 +37,9 @@ export class NotesButton {
     }
   }
 
-  async setContentIfDataExists(data: object | undefined = undefined) {
-    if (data === undefined) {
-      const response = await chrome.runtime.sendMessage({action: 'getSavedNotes'})
-      data = response.data
-    }
+  async setContentIfDataExists() {
+    const response = await chrome.runtime.sendMessage({action: 'getSavedNotes'})
+    const data = response.data
     if (!data) {
       this.remove()
     }
