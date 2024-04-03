@@ -1,8 +1,8 @@
 import {
   redirectFromOmnibox,
   setOmniboxSuggestion
-} from '../../../src/js/serviceWorker/omnibox/omnibox'
-import {SlugManager} from '../../../src/js/serviceWorker/slugManager'
+} from '../../../src/js/service-worker/omnibox/omnibox'
+import {SlugManager} from '../../../src/js/service-worker/slugManager'
 
 global.chrome = {
     tabs: {

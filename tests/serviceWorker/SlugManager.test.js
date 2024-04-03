@@ -1,4 +1,4 @@
-import {SlugManager} from '../../src/js/serviceWorker/slugManager'
+import {SlugManager} from '../../src/js/service-worker/slugManager'
 import * as Sentry from '@sentry/browser'
 
 
