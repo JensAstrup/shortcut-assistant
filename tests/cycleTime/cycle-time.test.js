@@ -1,7 +1,7 @@
+import {CycleTime} from '../../src/js/cycle-time/cycle-time'
 import {hoursBetweenExcludingWeekends} from '../../src/js/utils/hoursBetweenExcludingWeekends'
 import {Story} from '../../src/js/utils/story'
 import storyPageIsReady from '../../src/js/utils/storyPageIsReady'
-import {CycleTime} from '../../src/js/cycleTime/cycleTime'
 
 
 jest.mock('../../src/js/utils/hoursBetweenExcludingWeekends', () => ({
@@ -55,6 +55,30 @@ describe('set function', () => {
     expect(storyPageIsReady).toHaveBeenCalledTimes(1)
     expect(Story.isInState).toHaveBeenCalledWith('Completed')
     expect(storyCreatedDivParent.insertBefore).not.toHaveBeenCalled()
+  })
+
+  it('should log an error if there is no created date', async () => {
+    Story.isInState.mockReturnValue(true)
+    document.querySelector = jest.fn().mockImplementation(selector => {
+      if (selector === '.story-date-cycle-time') return null // simulate absence initially
+      if (selector === '.story-date-created') return null
+      if (selector === '.story-date-completed') return completedDiv
+    })
+    console.error = jest.fn()
+    await CycleTime.set()
+    expect(console.error).toHaveBeenCalledWith('Could not find created date')
+  })
+
+  it('should log an error if there is no in development date', async () => {
+    Story.isInState.mockReturnValue(true)
+    document.querySelector = jest.fn().mockImplementation(selector => {
+      if (selector === '.story-date-cycle-time') return null // simulate absence initially
+      if (selector === '.story-date-created') return createdDiv
+      if (selector === '.story-date-completed') return null
+    })
+    console.error = jest.fn()
+    await CycleTime.set()
+    expect(console.error).toHaveBeenCalledWith('Could not find completed date')
   })
 
   it('should not display cycle time when the cycle time is not a number', async () => {

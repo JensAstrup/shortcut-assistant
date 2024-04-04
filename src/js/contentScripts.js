@@ -6,7 +6,7 @@ import {Todoist} from './todoist/Todoist'
 import {logError} from './utils/logError'
 import storyPageIsReady from './utils/storyPageIsReady'
 import {getSyncedSetting} from './utils/getSyncedSetting'
-import {CycleTime} from './cycleTime/cycleTime'
+import {CycleTime} from './cycle-time/cycle-time'
 import {analyzeStoryDescription} from './analyze/analyzeStoryDescription'
 import {KeyboardShortcuts} from './keyboard/keyboardShortcuts'
 

@@ -22,7 +22,18 @@ export class CycleTime {
     const createdDiv = document.querySelector('.story-date-created')
     const inDevelopmentDateString = Story.getDateInState('In Development')
     const completedDiv = document.querySelector('.story-date-completed')
-    const completedDateString = completedDiv.querySelector('.value').innerHTML
+    const completedValue = completedDiv?.querySelector('.value')
+    const completedDateString = completedValue?.innerHTML
+
+    if (!createdDiv) {
+      console.error('Could not find created date')
+      return
+    }
+
+    if (!inDevelopmentDateString || !completedDateString) {
+      console.error('Could not find completed date')
+      return
+    }
 
     const cycleTimeDiv = document.createElement('div')
 
@@ -38,6 +49,6 @@ export class CycleTime {
             <span class='name'>Cycle Time</span>
             <span class='value'>${cycleTimeDisplay}</span>`
     const storyCreatedDivParent = createdDiv.parentElement
-    storyCreatedDivParent.insertBefore(cycleTimeDiv, createdDiv)
+    storyCreatedDivParent?.insertBefore(cycleTimeDiv, createdDiv)
   }
 }
