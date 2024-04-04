@@ -45,10 +45,7 @@ if (typeof self !== 'undefined' && self instanceof ServiceWorkerGlobalScope) {
     data?: { prompt: string }
     message?: string,
   }, sender: chrome.runtime.MessageSender, sendResponse: (response: unknown) => void) => {
-    if (!request.data) {
-      return
-    }
-    if (request.action === 'callOpenAI') {
+    if (request.action === 'callOpenAI' && request.data) {
       if (!sender.tab || !sender.tab.id) {
         return
       }
