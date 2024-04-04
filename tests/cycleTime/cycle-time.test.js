@@ -1,4 +1,4 @@
-import {CycleTime} from '../../src/js/cycleTime/cycle-time'
+import {CycleTime} from '../../src/js/cycle-time/cycle-time'
 import {hoursBetweenExcludingWeekends} from '../../src/js/utils/hoursBetweenExcludingWeekends'
 import {Story} from '../../src/js/utils/story'
 import storyPageIsReady from '../../src/js/utils/storyPageIsReady'
