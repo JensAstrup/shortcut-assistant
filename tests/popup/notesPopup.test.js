@@ -1,5 +1,5 @@
 import {Story} from '../../src/js/utils/story'
-import {NotesPopup} from '../../src/js/popup/notesPopup'
+import {NotesPopup} from '../../src/js/popup/notes-popup'
 
 
 jest.mock('../../src/js/utils/story', () => ({
