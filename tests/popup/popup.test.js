@@ -2,11 +2,12 @@
  * @jest-environment jsdom
  */
 
-import {Popup} from '../../src/js/popup/popup'
 import * as Sentry from '@sentry/browser'
+
 import {sendEvent} from '../../src/js/analytics/event'
-import {getSyncedSetting} from '../../src/js/utils/getSyncedSetting'
 import {NotesPopup} from '../../src/js/popup/notes-popup'
+import {Popup} from '../../src/js/popup/popup'
+import {getSyncedSetting} from '../../src/js/utils/getSyncedSetting'
 import sleep from '../../src/js/utils/sleep'
 
 
@@ -88,7 +89,7 @@ describe('Popup', () => {
   })
 
   test('setOpenAIToken sets token in chrome storage', async () => {
-    await popup.setOpenAIToken()
+    await popup.setOpenAIToken('test-token')
     expect(chrome.storage.local.set).toHaveBeenCalledWith({openAIToken: 'test-token'})
   })
 
