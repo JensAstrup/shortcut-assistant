@@ -228,7 +228,7 @@ describe('popupLoaded', () => {
     expect(document.getElementById).toHaveBeenCalledWith('settingsTab')
     expect(document.getElementById).toHaveBeenCalledWith('infoTab')
     expect(document.getElementById).toHaveBeenCalledWith('versionInfo')
-    expect(mockVersionSpan.textContent).toBe(`Version: 1.0.0`)
+    expect(mockVersionSpan.textContent).toBe('Version: 1.0.0')
 
     expect(getSyncedSetting).toHaveBeenCalledWith('enableTodoistOptions', false)
     expect(popup.todoistCheckbox.setAttribute).toHaveBeenCalledWith('checked', 'checked')
@@ -252,7 +252,7 @@ describe('popupLoaded', () => {
     expect(document.getElementById).toHaveBeenCalledWith('settingsTab')
     expect(document.getElementById).toHaveBeenCalledWith('infoTab')
     expect(document.getElementById).toHaveBeenCalledWith('versionInfo')
-    expect(mockVersionSpan.textContent).toBe(`Version: 1.0.0`)
+    expect(mockVersionSpan.textContent).toBe('Version: 1.0.0')
 
     expect(getSyncedSetting).toHaveBeenCalledWith('enableTodoistOptions', false)
     expect(popup.todoistCheckbox.removeAttribute).toHaveBeenCalledWith('checked')
