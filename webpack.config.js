@@ -26,7 +26,7 @@ module.exports = {
     'popup/bundle': [
       './src/js/popup/popup.ts',
       './src/js/popup/notes-popup.ts',
-      './src/js/popup/popupInitializer.js'
+      './src/js/popup/popup-initializer.ts'
     ],
     'service_worker/bundle': [
       './src/js/service-worker/service-worker.ts',

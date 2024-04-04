@@ -1,7 +1,9 @@
 import * as Sentry from '@sentry/browser'
+
 import {sendEvent} from '../analytics/event'
 import {getSyncedSetting} from '../utils/getSyncedSetting'
 import sleep from '../utils/sleep'
+
 import {NotesPopup} from './notes-popup'
 
 
