@@ -1,9 +1,9 @@
 import * as Sentry from '@sentry/browser'
 import {sendEvent} from '../../src/js/analytics/event'
-import callOpenAI from '../../src/js/ai/callOpenAI'
-import {fetchCompletion} from '../../src/js/ai/fetchCompletion'
-import getCompletionFromProxy from '../../src/js/ai/getCompletionFromProxy'
-import getOpenAiToken from '../../src/js/ai/getOpenAiToken'
+import callOpenAI from '../../src/js/ai/call-openai'
+import {fetchCompletion} from '../../src/js/ai/fetch-completion'
+import getCompletionFromProxy from '../../src/js/ai/get-completion-from-proxy'
+import getOpenAiToken from '../../src/js/ai/get-openai-token'
 
 
 jest.mock('@sentry/browser', () => ({
@@ -15,15 +15,15 @@ jest.mock('../../src/js/analytics/event', () => ({
   getOrCreateClientId: jest.fn().mockResolvedValue('test-client-id')
 }))
 
-jest.mock('../../src/js/ai/fetchCompletion', () => {
+jest.mock('../../src/js/ai/fetch-completion', () => {
   return {
     fetchCompletion: jest.fn()
   }
 })
 
-jest.mock('../../src/js/ai/getCompletionFromProxy', () => jest.fn())
+jest.mock('../../src/js/ai/get-completion-from-proxy', () => jest.fn())
 
-jest.mock('../../src/js/ai/getOpenAiToken', () => jest.fn())
+jest.mock('../../src/js/ai/get-openai-token', () => jest.fn())
 
 global.chrome = {
   tabs: {

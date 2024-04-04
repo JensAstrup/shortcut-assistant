@@ -1,5 +1,5 @@
 import {getOrCreateClientId} from '../../src/js/analytics/clientId'
-import getCompletionFromProxy from '../../src/js/ai/getCompletionFromProxy'
+import getCompletionFromProxy from '../../src/js/ai/get-completion-from-proxy'
 import fetch from 'node-fetch'
 
 
@@ -17,17 +17,14 @@ describe('getCompletionFromProxy', () => {
   const mockUrl = 'https://test.url'
   let originalEnv
 
-  beforeAll(() => {
-    originalEnv = process.env
-    process.env.PROXY_URL = mockUrl
-  })
-
   afterAll(() => {
     process.env = originalEnv
   })
 
   beforeEach(() => {
     jest.resetAllMocks()
+    originalEnv = process.env
+    process.env.PROXY_URL = mockUrl
     fetch.mockImplementation(() => Promise.resolve({
       ok: true,
       json: () => Promise.resolve(mockSuccessResponse)
@@ -50,6 +47,12 @@ describe('getCompletionFromProxy', () => {
       }
     })
     expect(result).toEqual(mockSuccessResponse.content)
+  })
+
+  it('should throw an error if PROXY_URL is not set', async () => {
+    delete process.env.PROXY_URL
+
+    await expect(getCompletionFromProxy('test description')).rejects.toThrow('PROXY_URL is not set')
   })
 
   it('should throw an error for non-ok response from proxy', async () => {
