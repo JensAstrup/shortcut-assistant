@@ -84,10 +84,8 @@ export class Popup {
 
   /**
    * Hides the new version indicator if the Chrome badge is empty.
-   *
-   * @returns {Promise<void>} A promise that resolves when the version badges are handled.
    */
-  async handleNewVersionBadge() {
+  async handleNewVersionBadge(): Promise<void> {
     const badgeBackgroundText = await chrome.action.getBadgeText({})
     if (badgeBackgroundText === '') {
       const infoTab = document.getElementById('infoTab')

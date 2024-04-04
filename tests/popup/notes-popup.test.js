@@ -1,5 +1,5 @@
-import {Story} from '../../src/js/utils/story'
 import {NotesPopup} from '../../src/js/popup/notes-popup'
+import {Story} from '../../src/js/utils/story'
 
 
 jest.mock('../../src/js/utils/story', () => ({
@@ -9,8 +9,23 @@ jest.mock('../../src/js/utils/story', () => ({
 }))
 jest.mock('../../src/js/utils/sleep', () => jest.fn(() => Promise.resolve()))
 
+
+const mockElement = (options = {}) => {
+  return {
+    addEventListener: jest.fn(),
+    click: jest.fn(),
+    querySelector: jest.fn(() => ({
+      style: {
+        display: ''
+      }
+    })),
+    ...options
+  }
+}
+
+
 describe('NotesPopup', () => {
-  let messageListenerCallback
+  let inputElement
 
   beforeEach(() => {
     document.body.innerHTML = `
@@ -20,15 +35,19 @@ describe('NotesPopup', () => {
     jest.clearAllMocks()
     global.chrome.storage.sync.set = jest.fn(() => Promise.resolve())
     global.chrome.storage.sync.get = jest.fn(() => Promise.resolve({}))
-    global.chrome.runtime.onMessage.addListener = jest.fn((callback) => {
-      messageListenerCallback = callback
-    })
+    global.chrome.runtime.onMessage.addListener = jest.fn()
+    inputElement = document.getElementById('storyNotes')
   })
 
   it('attaches click event listener to saveButton on instantiation', () => {
     const addEventListenerSpy = jest.spyOn(document.getElementById('saveButton'), 'addEventListener')
     new NotesPopup()
     expect(addEventListenerSpy).toHaveBeenCalledWith('click', expect.any(Function))
+  })
+
+  it('throws error if saveButton is not found', () => {
+    document.body.innerHTML = ''
+    expect(() => new NotesPopup()).toThrow('saveButton not found')
   })
 
   it('saves note and updates button text correctly', async () => {
@@ -60,15 +79,23 @@ describe('NotesPopup', () => {
     await popup.set()
     expect(document.getElementById('storyNotes').value).toBe('Saved note')
   })
-  it('auto-expands textarea on input', () => {
+
+  it('throws an error if storyNotesInput is not found', async () => {
+    document.getElementById = jest.fn().mockImplementation((id) => {
+      if (id === 'storyNotes') {
+        return null
+      }
+      return mockElement({
+        value: id === 'openAIToken' ? 'test-token' : '',
+        checked: true,
+        textContent: ''
+      })
+    }
+    )
     const popup = new NotesPopup()
-    const inputEvent = new Event('input')
-    const storyNotesInput = document.getElementById('storyNotes')
-    jest.spyOn(storyNotesInput, 'addEventListener')
-    popup.resizeInput()
-    expect(storyNotesInput.addEventListener).toHaveBeenCalledWith('input', expect.any(Function))
-    storyNotesInput.dispatchEvent(inputEvent)
+    await expect(popup.set()).rejects.toThrow('storyNotesInput not found')
   })
+
   it('handles message to check notes', async () => {
     const fakeMessage = {message: 'checkNotes'}
     await expect(NotesPopup.handleMessage(fakeMessage)).resolves.toBeUndefined()

@@ -21,7 +21,6 @@ describe('Popup Initializer', () => {
   })
 
   it('should instantiate Popup class on DOM content loaded', () => {
-    // Mock event listener being called
     document.addEventListener = jest.fn((event, callback) => {
       if (event === 'DOMContentLoaded') {
         callback()

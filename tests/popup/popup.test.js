@@ -53,6 +53,7 @@ describe('Popup', () => {
 
   afterEach(() => {
     getElementById.mockRestore()
+    jest.clearAllMocks()
   })
 
   test('constructor initializes event listeners', () => {
@@ -218,7 +219,7 @@ describe('popupLoaded', () => {
     })
   })
 
-  test('popupLoaded sets up correctly', async () => {
+  it('sets up correctly', async () => {
     getSyncedSetting.mockResolvedValueOnce(true) // enableTodoistOptions
     const popup = new Popup()
     popup.handleNewVersionBadge = jest.fn().mockResolvedValue(null)
@@ -240,6 +241,78 @@ describe('popupLoaded', () => {
       page_title: 'Popup',
       page_location: '/popup.html'
     })
+  })
+
+  it('throws and error if actionsTab is not found', async () => {
+    document.getElementById = jest.fn().mockImplementation((id) => {
+      if (id !== 'actionsTab') {
+        return mockElement()
+      }
+      return null
+    })
+    const popup = new Popup()
+    const expected = 'actionsTab, settingsTab, infoTab, actionsSection, settingsSection, or infoSection not found'
+    await expect(popup.popupLoaded()).rejects.toThrow(expected)
+  })
+
+  it('throws and error if settingsTab is not found', async () => {
+    document.getElementById = jest.fn().mockImplementation((id) => {
+      if (id !== 'settingsTab') {
+        return mockElement()
+      }
+      return null
+    })
+    const popup = new Popup()
+    const expected = 'actionsTab, settingsTab, infoTab, actionsSection, settingsSection, or infoSection not found'
+    await expect(popup.popupLoaded()).rejects.toThrow(expected)
+  })
+
+  it('throws and error if infoTab is not found', async () => {
+    document.getElementById = jest.fn().mockImplementation((id) => {
+      if (id !== 'infoTab') {
+        return mockElement()
+      }
+      return null
+    })
+    const popup = new Popup()
+    const expected = 'actionsTab, settingsTab, infoTab, actionsSection, settingsSection, or infoSection not found'
+    await expect(popup.popupLoaded()).rejects.toThrow(expected)
+  })
+
+  it('throws and error if actionsSection is not found', async () => {
+    document.getElementById = jest.fn().mockImplementation((id) => {
+      if (id !== 'actionsSection') {
+        return mockElement()
+      }
+      return null
+    })
+    const popup = new Popup()
+    const expected = 'actionsTab, settingsTab, infoTab, actionsSection, settingsSection, or infoSection not found'
+    await expect(popup.popupLoaded()).rejects.toThrow(expected)
+  })
+
+  it('throws and error if settingsSection is not found', async () => {
+    document.getElementById = jest.fn().mockImplementation((id) => {
+      if (id !== 'settingsSection') {
+        return mockElement()
+      }
+      return null
+    })
+    const popup = new Popup()
+    const expected = 'actionsTab, settingsTab, infoTab, actionsSection, settingsSection, or infoSection not found'
+    await expect(popup.popupLoaded()).rejects.toThrow(expected)
+  })
+
+  it('throws and error if infoSection is not found', async () => {
+    document.getElementById = jest.fn().mockImplementation((id) => {
+      if (id !== 'infoSection') {
+        return mockElement()
+      }
+      return null
+    })
+    const popup = new Popup()
+    const expected = 'actionsTab, settingsTab, infoTab, actionsSection, settingsSection, or infoSection not found'
+    await expect(popup.popupLoaded()).rejects.toThrow(expected)
   })
 
   test('popupLoaded sets up correctly with todoist disabled', async () => {
@@ -264,5 +337,17 @@ describe('popupLoaded', () => {
       page_title: 'Popup',
       page_location: '/popup.html'
     })
+  })
+
+  it('logs error if handleNewVersionBadge fails', async () => {
+    console.error = jest.fn()
+    const error = new Error('test error')
+    getSyncedSetting.mockResolvedValueOnce(true)
+    const popup = new Popup()
+    popup.handleNewVersionBadge = jest.fn().mockRejectedValue(error)
+    await popup.popupLoaded()
+
+    expect(console.error).toHaveBeenCalledWith(new Error('test error'))
+    expect(Sentry.captureException).toHaveBeenCalled()
   })
 })
