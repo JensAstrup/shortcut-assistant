@@ -1,8 +1,10 @@
 import * as Sentry from '@sentry/browser'
+
 import {sendEvent} from '../analytics/event'
 import {getSyncedSetting} from '../utils/getSyncedSetting'
 import sleep from '../utils/sleep'
-import {NotesPopup} from './notesPopup'
+
+import {NotesPopup} from './notes-popup'
 
 
 /**
@@ -11,12 +13,25 @@ import {NotesPopup} from './notesPopup'
  * @class
  */
 export class Popup {
-  constructor() {
-    this.saveButton = document.getElementById('saveKeyButton')
-    this.analyzeButton = document.getElementById('analyzeButton')
-    this.todoistCheckbox = document.getElementById('todoistOptions')
-    this.changelogButton = document.getElementById('changelog')
+  private saveButton: HTMLButtonElement
+  private analyzeButton: HTMLButtonElement
+  private todoistCheckbox: HTMLInputElement
+  private changelogButton: HTMLButtonElement
 
+  constructor() {
+    const saveButton = document.getElementById('saveKeyButton') as HTMLButtonElement
+    const analyzeButton = document.getElementById('analyzeButton') as HTMLButtonElement
+    const todoistCheckbox = document.getElementById('todoistOptions') as HTMLInputElement
+    const changelogButton = document.getElementById('changelog') as HTMLButtonElement
+
+    if (saveButton === null || analyzeButton === null || todoistCheckbox === null || changelogButton === null) {
+      throw new Error('saveButton, analyzeButton, todoistCheckbox, or changelogButton not found')
+    }
+
+    this.saveButton = saveButton
+    this.analyzeButton = analyzeButton
+    this.todoistCheckbox = todoistCheckbox
+    this.changelogButton = changelogButton
     this.saveButton.addEventListener('click', this.saveButtonClicked.bind(this))
 
     this.changelogButton.addEventListener('click', async () => {
@@ -33,9 +48,8 @@ export class Popup {
     })
   }
 
-  async setOpenAIToken() {
-    const openAIToken = document.getElementById('openAIToken').value
-    await chrome.storage.local.set({'openAIToken': openAIToken})
+  async setOpenAIToken(token: string) {
+    await chrome.storage.local.set({'openAIToken': token})
   }
 
   async saveOptions() {
@@ -45,7 +59,8 @@ export class Popup {
 
   async saveButtonClicked() {
     this.saveButton.disabled = true
-    const openAIToken = document.getElementById('openAIToken').value
+    const openAITokenInput = document.getElementById('openAIToken') as HTMLInputElement
+    const openAIToken = openAITokenInput.value
     if (openAIToken !== '') {
       await this.setOpenAIToken(openAIToken)
     }
@@ -57,7 +72,7 @@ export class Popup {
     this.saveButton.textContent = 'Save'
   }
 
-  setSectionDisplay(tabToShow, sectionToShow, tabsToHide, sectionsToHide) {
+  setSectionDisplay(tabToShow: HTMLElement, sectionToShow: HTMLElement, tabsToHide: HTMLElement[], sectionsToHide: HTMLElement[]) {
     tabToShow.addEventListener('click', function (e) {
       e.preventDefault()
       sectionToShow.classList.remove('hidden')
@@ -69,15 +84,19 @@ export class Popup {
 
   /**
    * Hides the new version indicator if the Chrome badge is empty.
-   *
-   * @returns {Promise<void>} A promise that resolves when the version badges are handled.
    */
-  async handleNewVersionBadge() {
+  async handleNewVersionBadge(): Promise<void> {
     const badgeBackgroundText = await chrome.action.getBadgeText({})
     if (badgeBackgroundText === '') {
       const infoTab = document.getElementById('infoTab')
-      const tabBadge = infoTab.querySelector('.badge')
+      const tabBadge = infoTab?.querySelector('.badge') as HTMLElement
+      if (!tabBadge) {
+        throw new Error('tabBadge not found')
+      }
       const whatsNewBadge = document.getElementById('whatsNewBadge')
+      if (!whatsNewBadge) {
+        throw new Error('whatsNewBadge not found')
+      }
       tabBadge.style.display = 'none'
       whatsNewBadge.style.display = 'none'
     }
@@ -90,6 +109,10 @@ export class Popup {
     const actionsSection = document.getElementById('actionsSection')
     const settingsSection = document.getElementById('settingsSection')
     const infoSection = document.getElementById('infoSection')
+
+    if (actionsTab === null || settingsTab === null || infoTab === null || actionsSection === null || settingsSection === null || infoSection === null) {
+      throw new Error('actionsTab, settingsTab, infoTab, actionsSection, settingsSection, or infoSection not found')
+    }
 
     const todoistEnabled = await getSyncedSetting('enableTodoistOptions', false)
     if (todoistEnabled) {
@@ -109,6 +132,9 @@ export class Popup {
       Sentry.captureException(e)
     })
     const versionSpan = document.getElementById('versionInfo')
+    if (versionSpan === null) {
+      throw new Error('versionSpan not found')
+    }
     const version = await chrome.runtime.getManifest().version
     versionSpan.textContent = `Version: ${version}`
     new NotesPopup()

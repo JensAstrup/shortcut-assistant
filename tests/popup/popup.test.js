@@ -2,11 +2,12 @@
  * @jest-environment jsdom
  */
 
-import {Popup} from '../../src/js/popup/Popup'
 import * as Sentry from '@sentry/browser'
+
 import {sendEvent} from '../../src/js/analytics/event'
+import {NotesPopup} from '../../src/js/popup/notes-popup'
+import {Popup} from '../../src/js/popup/popup'
 import {getSyncedSetting} from '../../src/js/utils/getSyncedSetting'
-import {NotesPopup} from '../../src/js/popup/notesPopup'
 import sleep from '../../src/js/utils/sleep'
 
 
@@ -16,7 +17,7 @@ jest.mock('../../src/js/analytics/event', () => ({
 }))
 jest.mock('../../src/js/utils/getSyncedSetting')
 jest.mock('../../src/js/utils/sleep', () => jest.fn().mockResolvedValue())
-jest.mock('../../src/js/popup/notesPopup')
+jest.mock('../../src/js/popup/notes-popup')
 
 
 const mockElement = (options = {}) => {
@@ -44,7 +45,7 @@ describe('Popup', () => {
         checked: true,
         textContent: ''
       })
-      }
+    }
     )
     sleep.mockResolvedValue()
     popup = new Popup()
@@ -52,6 +53,7 @@ describe('Popup', () => {
 
   afterEach(() => {
     getElementById.mockRestore()
+    jest.clearAllMocks()
   })
 
   test('constructor initializes event listeners', () => {
@@ -88,7 +90,7 @@ describe('Popup', () => {
   })
 
   test('setOpenAIToken sets token in chrome storage', async () => {
-    await popup.setOpenAIToken()
+    await popup.setOpenAIToken('test-token')
     expect(chrome.storage.local.set).toHaveBeenCalledWith({openAIToken: 'test-token'})
   })
 
@@ -217,7 +219,7 @@ describe('popupLoaded', () => {
     })
   })
 
-  test('popupLoaded sets up correctly', async () => {
+  it('sets up correctly', async () => {
     getSyncedSetting.mockResolvedValueOnce(true) // enableTodoistOptions
     const popup = new Popup()
     popup.handleNewVersionBadge = jest.fn().mockResolvedValue(null)
@@ -227,7 +229,7 @@ describe('popupLoaded', () => {
     expect(document.getElementById).toHaveBeenCalledWith('settingsTab')
     expect(document.getElementById).toHaveBeenCalledWith('infoTab')
     expect(document.getElementById).toHaveBeenCalledWith('versionInfo')
-    expect(mockVersionSpan.textContent).toBe(`Version: 1.0.0`)
+    expect(mockVersionSpan.textContent).toBe('Version: 1.0.0')
 
     expect(getSyncedSetting).toHaveBeenCalledWith('enableTodoistOptions', false)
     expect(popup.todoistCheckbox.setAttribute).toHaveBeenCalledWith('checked', 'checked')
@@ -241,6 +243,78 @@ describe('popupLoaded', () => {
     })
   })
 
+  it('throws and error if actionsTab is not found', async () => {
+    document.getElementById = jest.fn().mockImplementation((id) => {
+      if (id !== 'actionsTab') {
+        return mockElement()
+      }
+      return null
+    })
+    const popup = new Popup()
+    const expected = 'actionsTab, settingsTab, infoTab, actionsSection, settingsSection, or infoSection not found'
+    await expect(popup.popupLoaded()).rejects.toThrow(expected)
+  })
+
+  it('throws and error if settingsTab is not found', async () => {
+    document.getElementById = jest.fn().mockImplementation((id) => {
+      if (id !== 'settingsTab') {
+        return mockElement()
+      }
+      return null
+    })
+    const popup = new Popup()
+    const expected = 'actionsTab, settingsTab, infoTab, actionsSection, settingsSection, or infoSection not found'
+    await expect(popup.popupLoaded()).rejects.toThrow(expected)
+  })
+
+  it('throws and error if infoTab is not found', async () => {
+    document.getElementById = jest.fn().mockImplementation((id) => {
+      if (id !== 'infoTab') {
+        return mockElement()
+      }
+      return null
+    })
+    const popup = new Popup()
+    const expected = 'actionsTab, settingsTab, infoTab, actionsSection, settingsSection, or infoSection not found'
+    await expect(popup.popupLoaded()).rejects.toThrow(expected)
+  })
+
+  it('throws and error if actionsSection is not found', async () => {
+    document.getElementById = jest.fn().mockImplementation((id) => {
+      if (id !== 'actionsSection') {
+        return mockElement()
+      }
+      return null
+    })
+    const popup = new Popup()
+    const expected = 'actionsTab, settingsTab, infoTab, actionsSection, settingsSection, or infoSection not found'
+    await expect(popup.popupLoaded()).rejects.toThrow(expected)
+  })
+
+  it('throws and error if settingsSection is not found', async () => {
+    document.getElementById = jest.fn().mockImplementation((id) => {
+      if (id !== 'settingsSection') {
+        return mockElement()
+      }
+      return null
+    })
+    const popup = new Popup()
+    const expected = 'actionsTab, settingsTab, infoTab, actionsSection, settingsSection, or infoSection not found'
+    await expect(popup.popupLoaded()).rejects.toThrow(expected)
+  })
+
+  it('throws and error if infoSection is not found', async () => {
+    document.getElementById = jest.fn().mockImplementation((id) => {
+      if (id !== 'infoSection') {
+        return mockElement()
+      }
+      return null
+    })
+    const popup = new Popup()
+    const expected = 'actionsTab, settingsTab, infoTab, actionsSection, settingsSection, or infoSection not found'
+    await expect(popup.popupLoaded()).rejects.toThrow(expected)
+  })
+
   test('popupLoaded sets up correctly with todoist disabled', async () => {
     getSyncedSetting.mockResolvedValueOnce(false)
     const popup = new Popup()
@@ -251,7 +325,7 @@ describe('popupLoaded', () => {
     expect(document.getElementById).toHaveBeenCalledWith('settingsTab')
     expect(document.getElementById).toHaveBeenCalledWith('infoTab')
     expect(document.getElementById).toHaveBeenCalledWith('versionInfo')
-    expect(mockVersionSpan.textContent).toBe(`Version: 1.0.0`)
+    expect(mockVersionSpan.textContent).toBe('Version: 1.0.0')
 
     expect(getSyncedSetting).toHaveBeenCalledWith('enableTodoistOptions', false)
     expect(popup.todoistCheckbox.removeAttribute).toHaveBeenCalledWith('checked')
@@ -263,5 +337,17 @@ describe('popupLoaded', () => {
       page_title: 'Popup',
       page_location: '/popup.html'
     })
+  })
+
+  it('logs error if handleNewVersionBadge fails', async () => {
+    console.error = jest.fn()
+    const error = new Error('test error')
+    getSyncedSetting.mockResolvedValueOnce(true)
+    const popup = new Popup()
+    popup.handleNewVersionBadge = jest.fn().mockRejectedValue(error)
+    await popup.popupLoaded()
+
+    expect(console.error).toHaveBeenCalledWith(new Error('test error'))
+    expect(Sentry.captureException).toHaveBeenCalled()
   })
 })

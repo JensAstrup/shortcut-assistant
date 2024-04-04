@@ -24,9 +24,9 @@ module.exports = {
   entry: {
     'analyze/analyze': './src/js/analyze/analyze.js',
     'popup/bundle': [
-      './src/js/popup/Popup.js',
-      './src/js/popup/notesPopup.js',
-      './src/js/popup/popupInitializer.js'
+      './src/js/popup/popup.ts',
+      './src/js/popup/notes-popup.ts',
+      './src/js/popup/popup-initializer.ts'
     ],
     'service_worker/bundle': [
       './src/js/service-worker/service-worker.ts',

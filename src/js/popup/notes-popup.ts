@@ -3,16 +3,22 @@ import {Story} from '../utils/story'
 
 
 export class NotesPopup {
+  private saveButton: HTMLElement
+
   constructor() {
     const saveButton = document.getElementById('saveButton')
-    saveButton.addEventListener('click', this.save.bind(this))
+    if (saveButton === null) {
+      throw new Error('saveButton not found')
+    }
+    saveButton!.addEventListener('click', this.save.bind(this))
     this.set.bind(this)().catch(console.error)
     this.saveButton = saveButton
   }
 
-  _autoExpandTextarea() {
-    this.style.height = 'auto'
-    this.style.height = (this.scrollHeight) + 'px'
+  _autoExpandTextarea(event: Event) {
+    const target = event.target as HTMLTextAreaElement
+    target.style.height = 'auto'
+    target.style.height = (target.scrollHeight) + 'px'
   }
 
   async resizeInput() {
@@ -29,25 +35,28 @@ export class NotesPopup {
   }
 
   getInput() {
-    return document.getElementById('storyNotes')
+    return document.getElementById('storyNotes') as HTMLInputElement
   }
 
-  getKey(storyId) {
+  getKey(storyId: string) {
     return 'notes_' + storyId
   }
 
   async set() {
     this.resizeInput().catch(console.error)
     const key = this.getKey(await Story.id())
-    const storyNotesInput = this.getInput()
+    const storyNotesInput: HTMLInputElement | null = this.getInput()
     const result = await chrome.storage.sync.get(key)
     const value = result[key]
+    if (storyNotesInput === null) {
+      throw new Error('storyNotesInput not found')
+    }
     if (value !== undefined) {
       storyNotesInput.value = value
     }
   }
 
-  static async handleMessage(message, sender, sendResponse) {
+  static async handleMessage(message: Record<string, string>) {
     if (message.message === 'checkNotes') {
       new NotesPopup()
     }

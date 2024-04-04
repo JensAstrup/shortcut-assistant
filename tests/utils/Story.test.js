@@ -291,7 +291,7 @@ describe('Story id', () => {
 
   it('returns null if the URL does not contain a story ID', async () => {
     urlModule.getActiveTabUrl.mockResolvedValue('https://app.shortcut.com/profile')
-    await expect(Story.id()).resolves.toBeNull()
+    await expect(Story.id()).rejects.toThrow('Story ID not found')
   })
 
   it('handles URLs with additional path segments correctly', async () => {
