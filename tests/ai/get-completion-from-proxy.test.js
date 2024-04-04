@@ -52,6 +52,12 @@ describe('getCompletionFromProxy', () => {
     expect(result).toEqual(mockSuccessResponse.content)
   })
 
+  it('should throw an error if PROXY_URL is not set', async () => {
+    delete process.env.PROXY_URL
+
+    await expect(getCompletionFromProxy('test description')).rejects.toThrow('PROXY_URL is not set')
+  })
+
   it('should throw an error for non-ok response from proxy', async () => {
     fetch.mockImplementationOnce(() => Promise.resolve({
       ok: false,
