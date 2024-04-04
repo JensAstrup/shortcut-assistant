@@ -17,17 +17,14 @@ describe('getCompletionFromProxy', () => {
   const mockUrl = 'https://test.url'
   let originalEnv
 
-  beforeAll(() => {
-    originalEnv = process.env
-    process.env.PROXY_URL = mockUrl
-  })
-
   afterAll(() => {
     process.env = originalEnv
   })
 
   beforeEach(() => {
     jest.resetAllMocks()
+    originalEnv = process.env
+    process.env.PROXY_URL = mockUrl
     fetch.mockImplementation(() => Promise.resolve({
       ok: true,
       json: () => Promise.resolve(mockSuccessResponse)
