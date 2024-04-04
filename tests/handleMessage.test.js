@@ -1,12 +1,12 @@
 import {handleMessage} from '../src/js/contentScripts'
-import {DevelopmentTime} from '../src/js/developmentTime/developmentTime'
+import {DevelopmentTime} from '../src/js/development-time/development-time'
 import {CycleTime} from '../src/js/cycle-time/cycle-time'
 import {analyzeStoryDescription} from '../src/js/analyze/analyzeStoryDescription'
 import {NotesButton} from '../src/js/notes/notesButton'
 import {Todoist} from '../src/js/todoist/Todoist'
 
 
-jest.mock('../src/js/developmentTime/developmentTime', () => ({
+jest.mock('../src/js/development-time/development-time', () => ({
   DevelopmentTime: {
     set: jest.fn().mockResolvedValue()
   }

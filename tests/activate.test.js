@@ -2,7 +2,7 @@ import {activate} from '../src/js/contentScripts'
 import {getSyncedSetting} from '../src/js/utils/getSyncedSetting'
 import storyPageIsReady from '../src/js/utils/storyPageIsReady'
 import {CycleTime} from '../src/js/cycle-time/cycle-time'
-import {DevelopmentTime} from '../src/js/developmentTime/developmentTime'
+import {DevelopmentTime} from '../src/js/development-time/development-time'
 import {Todoist} from '../src/js/todoist/Todoist'
 import {NotesButton} from '../src/js/notes/notesButton'
 import {KeyboardShortcuts} from '../src/js/keyboard/keyboardShortcuts'
@@ -14,7 +14,7 @@ jest.mock('../src/js/cycle-time/cycle-time', () => ({
     set: jest.fn().mockResolvedValue()
   }
 }))
-jest.mock('../src/js/developmentTime/developmentTime', () => ({
+jest.mock('../src/js/development-time/development-time', () => ({
   DevelopmentTime: {
     set: jest.fn().mockResolvedValue()
   }

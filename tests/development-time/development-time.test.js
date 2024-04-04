@@ -1,5 +1,5 @@
+import {DevelopmentTime} from '../../src/js/development-time/development-time'
 import * as StoryModule from '../../src/js/utils/story'
-import {DevelopmentTime} from '../../src/js/developmentTime/developmentTime'
 
 
 jest.mock('../../src/js/utils/storyPageIsReady', () => jest.fn().mockResolvedValue(true))
@@ -25,6 +25,11 @@ describe('DevelopmentTime.setTimeSpan', () => {
       return null
     })
     mockStateSpan.textContent = 'Current state'
+  })
+
+  it('throws an error if story state is not found', () => {
+    document.querySelector = jest.fn().mockImplementation(() => null)
+    expect(() => DevelopmentTime.setTimeSpan(24)).toThrowError('Story state not found')
   })
 
   it('appends a span with days elapsed to the state span', () => {
@@ -76,6 +81,24 @@ describe('DevelopmentTime.set', () => {
     await DevelopmentTime.set()
 
     expect(DevelopmentTime.setTimeSpan).toHaveBeenCalledWith(24)
+  })
+
+  it('does not call setTimeSpan with hours if hours are null', async () => {
+    StoryModule.Story.isInState.mockImplementation(state => state === 'In Development')
+    StoryModule.Story.getTimeInState.mockReturnValue(null)
+
+    await DevelopmentTime.set()
+
+    expect(DevelopmentTime.setTimeSpan).not.toHaveBeenCalled()
+  })
+
+  it('does not call setTimeSpan with hours if hours under review is null', async () => {
+    StoryModule.Story.isInState.mockImplementation(state => state === 'Ready for Review')
+    StoryModule.Story.getTimeInState.mockReturnValue(null)
+
+    await DevelopmentTime.set()
+
+    expect(DevelopmentTime.setTimeSpan).not.toHaveBeenCalled()
   })
 
   it('calls setTimeSpan with hours from Ready for Review state', async () => {

@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
 import * as Sentry from '@sentry/browser'
-import {findFirstMatchingElementForState} from '../developmentTime/findFirstMatchingElementForState'
+import {findFirstMatchingElementForState} from '../development-time/find-first-matching-element-for-state'
 import {hoursBetweenExcludingWeekends} from './hoursBetweenExcludingWeekends'
 import sleep from './sleep'
 import {getActiveTabUrl} from './getActiveTabUrl'

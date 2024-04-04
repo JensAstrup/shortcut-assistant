@@ -3,9 +3,17 @@ import storyPageIsReady from '../utils/storyPageIsReady'
 
 
 export class DevelopmentTime {
-  static setTimeSpan(hoursElapsed) {
+  static setTimeSpan(hoursElapsed: number): void {
     const stateDiv = document.querySelector('.story-state')
+    if (!stateDiv) {
+      throw new Error('Story state not found')
+      return
+    }
     const stateSpan = stateDiv.querySelector('.value')
+    if (!stateSpan) {
+      throw new Error('Story state span not found')
+      return
+    }
     let daysElapsed = hoursElapsed / 24
     daysElapsed = Math.abs(daysElapsed)
     const timeSpan = document.createElement('span')
@@ -31,12 +39,16 @@ export class DevelopmentTime {
     }
 
     if (inDevelopment) {
-      let hoursElapsed = Story.getTimeInState('In Development')
-      this.setTimeSpan(hoursElapsed)
+      const hoursElapsed = Story.getTimeInState('In Development')
+      if (hoursElapsed) {
+        this.setTimeSpan(hoursElapsed)
+      }
     }
     if (inReview) {
-      let hoursElapsed = Story.getTimeInState('Ready for Review')
-      this.setTimeSpan(hoursElapsed)
+      const hoursElapsed = Story.getTimeInState('Ready for Review')
+      if (hoursElapsed) {
+        this.setTimeSpan(hoursElapsed)
+      }
     }
   }
 }
