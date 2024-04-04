@@ -45,7 +45,7 @@ describe('Popup', () => {
         checked: true,
         textContent: ''
       })
-      }
+    }
     )
     sleep.mockResolvedValue()
     popup = new Popup()
