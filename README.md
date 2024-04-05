@@ -1,8 +1,8 @@
 # Shortcut Assistant
 
 [![codecov](https://codecov.io/gh/JensAstrup/shortcut-assistant/graph/badge.svg?token=BNRO19POX5)](https://codecov.io/gh/JensAstrup/shortcut-assistant)
-![Chrome Web Store Version](https://img.shields.io/chrome-web-store/v/kmdlofehocppnlkpokdbiaalcelhedef)
-![Chrome Web Store Users](https://img.shields.io/chrome-web-store/users/kmdlofehocppnlkpokdbiaalcelhedef)
+[![Chrome Web Store Version](https://img.shields.io/chrome-web-store/v/kmdlofehocppnlkpokdbiaalcelhedef)](https://chromewebstore.google.com/detail/shortcut-assistant/kmdlofehocppnlkpokdbiaalcelhedef?hl=en&authuser=0)
+[![Chrome Web Store Users](https://img.shields.io/chrome-web-store/users/kmdlofehocppnlkpokdbiaalcelhedef)](https://chromewebstore.google.com/detail/shortcut-assistant/kmdlofehocppnlkpokdbiaalcelhedef?hl=en&authuser=0)
 
 Shortcut Assistant is a Chrome extension that adds various additional features to Shortcut.
 
