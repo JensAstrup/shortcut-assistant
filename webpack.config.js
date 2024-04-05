@@ -22,7 +22,7 @@ module.exports = {
   devtool: 'source-map',
 
   entry: {
-    'analyze/analyze': './src/js/analyze/analyze.js',
+    'analyze/analyze': './src/js/analyze/listeners.ts',
     'popup/bundle': [
       './src/js/popup/popup.ts',
       './src/js/popup/notes-popup.ts',
@@ -33,9 +33,9 @@ module.exports = {
       './src/js/service-worker/omnibox/listeners.ts'
     ],
     'contentScripts/bundle': [
-      './src/js/contentScripts.js',
-      './src/js/index.js',
-      './src/js/analyze/contentScript.js'
+      './src/js/content-scripts.ts',
+      './src/js/index.ts',
+      './src/js/analyze/content-script.ts'
     ],
     'analytics/bundle': './src/js/analytics/event.ts'
   },
