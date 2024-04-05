@@ -11,8 +11,6 @@ const copyConfig = new CopyWebpackPlugin({
     {from: './src/assets', to: 'assets'},
     {from: './src/styles', to: 'styles'},
     {from: './src/html', to: 'html'},
-    {from: './src/js', to: 'js'},
-    {from: './node_modules/**', to: 'node_modules'}
   ]
 })
 
@@ -56,12 +54,13 @@ module.exports = {
         test: /\.js$/,
         use: {
           loader: 'babel-loader'
-        }
+        },
+        exclude: /node_modules/
       }
     ]
   },
   resolve: {
-    extensions: ['.tsx', '.ts', '.js'] // Add this line
+    extensions: ['.tsx', '.ts', '.js']
   },
 
   plugins: [new Dotenv(),
