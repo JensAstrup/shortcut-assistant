@@ -6,7 +6,7 @@
   "author": "Jens Astrup",
   "devDependencies": {
     "@babel/core": "^7.24.0",
-    "@babel/preset-env": "^7.24.0",
+    "@babel/preset-env": "^7.24.4",
     "@babel/preset-typescript": "^7.23.3",
     "@types/chrome": "^0.0.263",
     "@types/jest": "^29.5.12",
