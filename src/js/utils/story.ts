@@ -1,9 +1,9 @@
 import dayjs from 'dayjs'
 import * as Sentry from '@sentry/browser'
 import {findFirstMatchingElementForState} from '../development-time/find-first-matching-element-for-state'
-import {hoursBetweenExcludingWeekends} from './hoursBetweenExcludingWeekends'
+import {hoursBetweenExcludingWeekends} from './hours-between-excluding-weekends'
 import sleep from './sleep'
-import {getActiveTabUrl} from './getActiveTabUrl'
+import {getActiveTabUrl} from './get-active-tab-url'
 
 
 export class Story {

@@ -1,4 +1,4 @@
-import {getActiveTab} from './getActiveTab'
+import {getActiveTab} from './get-active-tab'
 
 
 export async function getActiveTabUrl() {

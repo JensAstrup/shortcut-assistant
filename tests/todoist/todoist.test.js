@@ -1,8 +1,8 @@
-import {Todoist} from '../../src/js/todoist/Todoist'
+import {Todoist} from '../../src/js/todoist/todoist'
 import {Story} from '../../src/js/utils/story'
 
 
-jest.mock('../../src/js/utils/logError')
+jest.mock('../../src/js/utils/log-error')
 jest.mock('../../src/js/utils/story', () => ({
   Story: {
     title: 'Mocked Story Title',

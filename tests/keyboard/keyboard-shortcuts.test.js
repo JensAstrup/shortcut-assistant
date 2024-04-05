@@ -1,4 +1,4 @@
-import {KeyboardShortcuts} from '../../src/js/keyboard/keyboardShortcuts'
+import {KeyboardShortcuts} from '../../src/js/keyboard/keyboard-shortcuts'
 
 
 jest.mock('../../src/js/utils/sleep', () => jest.fn().mockResolvedValue(undefined))

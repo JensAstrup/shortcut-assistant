@@ -2,9 +2,9 @@
  * @jest-environment node
  */
 
-import {getOrCreateClientId} from '../../src/js/analytics/clientId'
+import {getOrCreateClientId} from '../../src/js/analytics/client-id'
 import {sendEvent} from '../../src/js/analytics/event'
-import {getOrCreateSessionId} from '../../src/js/analytics/sessionId'
+import {getOrCreateSessionId} from '../../src/js/analytics/session-id'
 import {
   GA_ENDPOINT,
   GOOGLE_ANALYTICS_API_SECRET,
@@ -13,10 +13,10 @@ import {
 } from '../../src/js/analytics/config'
 
 
-jest.mock('../../src/js/analytics/clientId', () => ({
+jest.mock('../../src/js/analytics/client-id', () => ({
   getOrCreateClientId: jest.fn()
 }))
-jest.mock('../../src/js/analytics/sessionId', () => ({
+jest.mock('../../src/js/analytics/session-id', () => ({
   getOrCreateSessionId: jest.fn()
 }))
 
