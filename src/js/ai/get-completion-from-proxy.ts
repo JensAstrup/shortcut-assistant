@@ -1,4 +1,4 @@
-import {getOrCreateClientId} from '../analytics/clientId'
+import {getOrCreateClientId} from '../analytics/client-id'
 import {OpenAIError} from '../utils/errors'
 
 

@@ -2,7 +2,7 @@
  * @jest-environment node
  */
 
-import {getOrCreateClientId} from '../../src/js/analytics/clientId'
+import {getOrCreateClientId} from '../../src/js/analytics/client-id'
 
 
 const get = jest.fn().mockResolvedValue({clientId: 'randomClientId'})

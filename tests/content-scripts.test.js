@@ -2,8 +2,8 @@ import {handleMessage} from '../src/js/content-scripts'
 import {DevelopmentTime} from '../src/js/development-time/development-time'
 import {CycleTime} from '../src/js/cycle-time/cycle-time'
 import {analyzeStoryDescription} from '../src/js/analyze/analyze-story-description'
-import {NotesButton} from '../src/js/notes/notesButton'
-import {Todoist} from '../src/js/todoist/Todoist'
+import {NotesButton} from '../src/js/notes/notes-button'
+import {Todoist} from '../src/js/todoist/todoist'
 
 
 jest.mock('../src/js/development-time/development-time', () => ({
@@ -21,19 +21,19 @@ jest.mock('../src/js/analyze/analyze-story-description', () => {
     analyzeStoryDescription: jest.fn().mockResolvedValue()
   }
 })
-jest.mock('../src/js/notes/notesButton', () => {
+jest.mock('../src/js/notes/notes-button', () => {
   return {
     NotesButton: jest.fn().mockImplementation(() => {
     })
   }
 })
-jest.mock('../src/js/todoist/Todoist', () => {
+jest.mock('../src/js/todoist/todoist', () => {
   return {
     Todoist: jest.fn().mockImplementation(() => {
     })
   }
 })
-jest.mock('../src/js/utils/logError', () => jest.fn())
+jest.mock('../src/js/utils/log-error', () => jest.fn())
 
 
 describe('handleMessage function', () => {

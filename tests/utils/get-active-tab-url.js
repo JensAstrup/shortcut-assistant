@@ -1,4 +1,4 @@
-import {getActiveTabUrl} from '../../src/js/utils/getActiveTabUrl'
+import {getActiveTabUrl} from '../../src/js/utils/get-active-tab-url'
 
 
 describe('getActiveTabUrl function', () => {

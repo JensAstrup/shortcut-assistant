@@ -1,7 +1,7 @@
 /**
  * @jest-environment jsdom
  */
-import {hoursBetweenExcludingWeekends} from '../../src/js/utils/hoursBetweenExcludingWeekends'
+import {hoursBetweenExcludingWeekends} from '../../src/js/utils/hours-between-excluding-weekends'
 
 describe('hoursBetweenExcludingWeekends', () => {
     // Test case: when the dates are both on the same weekday

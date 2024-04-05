@@ -1,5 +1,5 @@
 import {Story} from '../utils/story'
-import storyPageIsReady from '../utils/storyPageIsReady'
+import storyPageIsReady from '../utils/story-page-is-ready'
 
 
 export class DevelopmentTime {

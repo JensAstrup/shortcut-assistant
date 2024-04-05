@@ -1,4 +1,4 @@
-import {getOrCreateSessionId} from '../../src/js/analytics/sessionId'
+import {getOrCreateSessionId} from '../../src/js/analytics/session-id'
 
 
 describe('getOrCreateSessionId', () => {

@@ -1,4 +1,4 @@
-import {logError} from '../utils/logError'
+import {logError} from '../utils/log-error'
 import {Story} from '../utils/story'
 
 

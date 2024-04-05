@@ -4,7 +4,7 @@ import {
   findFirstMatchingElementForState
 } from '../../src/js/development-time/find-first-matching-element-for-state'
 
-import * as urlModule from '../../src/js/utils/getActiveTabUrl'
+import * as urlModule from '../../src/js/utils/get-active-tab-url'
 import {Story} from '../../src/js/utils/story'
 
 
@@ -17,14 +17,14 @@ jest.mock('dayjs', () => {
 jest.mock('@sentry/browser', () => ({
   captureException: jest.fn()
 }))
-jest.mock('../../src/js/utils/hoursBetweenExcludingWeekends', () => ({
+jest.mock('../../src/js/utils/hours-between-excluding-weekends', () => ({
   hoursBetweenExcludingWeekends: jest.fn().mockReturnValue(24)
 }))
 jest.mock('../../src/js/development-time/find-first-matching-element-for-state', () => ({
   findFirstMatchingElementForState: jest.fn()
 }))
 jest.mock('../../src/js/utils/sleep', () => jest.fn().mockResolvedValue(undefined))
-jest.mock('../../src/js/utils/getActiveTabUrl', () => ({
+jest.mock('../../src/js/utils/get-active-tab-url', () => ({
   getActiveTabUrl: jest.fn()
 }))
 

@@ -1,4 +1,4 @@
-import {NotesButton} from '../../src/js/notes/notesButton'
+import {NotesButton} from '../../src/js/notes/notes-button'
 import {Story} from '../../src/js/utils/story'
 
 
