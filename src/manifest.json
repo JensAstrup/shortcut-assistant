@@ -45,6 +45,7 @@
       "js": [
         "contentScripts/bundle.js"
       ],
+      "type": "module",
       "run_at": "document_end"
     }
   ],

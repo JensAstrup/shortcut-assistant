@@ -1,7 +1,9 @@
-import {sendEvent} from '../../src/js/analytics/event'
-import sleep from '../../src/js/utils/sleep'
-import {AiFunctions} from '../../src/js/analyze/aiFunctions'
 import * as Sentry from '@sentry/browser'
+
+import {sendEvent} from '../../src/js/analytics/event'
+import {AiFunctions} from '../../src/js/analyze/ai-functions'
+import sleep from '../../src/js/utils/sleep'
+
 
 
 jest.mock('../../src/js/analytics/event', () => ({
@@ -41,7 +43,7 @@ describe('OpenAI class', () => {
 
   describe('analyzeStoryDetails', () => {
     it('should append loading spinner and send message to active tab', async () => {
-      await AiFunctions.analyzeStoryDetails()
+      await new AiFunctions().analyzeStoryDetails()
 
       const loadingSpan = document.getElementById('loadingSpan')
       expect(loadingSpan).not.toBeNull()
@@ -49,11 +51,12 @@ describe('OpenAI class', () => {
       expect(chrome.tabs.sendMessage).toHaveBeenCalledWith(1, {message: 'analyzeStoryDescription'})
       expect(sendEvent).toHaveBeenCalledWith('analyze_story_details')
     })
+
     it('should catch sendEvent error and capture exception', async () => {
       const error = new Error('error')
       sendEvent.mockRejectedValue(error)
       console.error = jest.fn()
-      await AiFunctions.analyzeStoryDetails()
+      await new AiFunctions().analyzeStoryDetails()
 
       expect(sendEvent).toHaveBeenCalledWith('analyze_story_details')
       expect(console.error).toHaveBeenCalledWith(error)
@@ -63,7 +66,7 @@ describe('OpenAI class', () => {
 
   describe('processOpenAIResponse', () => {
     it('should handle OpenAIResponseCompleted message', async () => {
-      await AiFunctions.processOpenAIResponse({type: 'OpenAIResponseCompleted'})
+      await new AiFunctions().processOpenAIResponse({type: 'OpenAIResponseCompleted'})
 
       const analyzeText = document.getElementById('analyzeText')
       expect(analyzeText.textContent).toBe('Analyze Story')
@@ -72,7 +75,7 @@ describe('OpenAI class', () => {
 
     it('should handle OpenAIResponseFailed message and hide errorState after 6 seconds', async () => {
       jest.useFakeTimers()
-      await AiFunctions.processOpenAIResponse({type: 'OpenAIResponseFailed'})
+      await new AiFunctions().processOpenAIResponse({type: 'OpenAIResponseFailed'})
 
       const errorState = document.getElementById('errorState')
       expect(sleep).toHaveBeenCalledWith(6000)
@@ -86,7 +89,7 @@ describe('OpenAI class', () => {
       const error = new Error('error')
       sendEvent.mockRejectedValue(error)
       console.error = jest.fn()
-      await AiFunctions.processOpenAIResponse({type: 'OpenAIResponseFailed'})
+      await new AiFunctions().processOpenAIResponse({type: 'OpenAIResponseFailed'})
 
       expect(sendEvent).toHaveBeenCalledWith('analyze_story_details_failed')
       expect(console.error).toHaveBeenCalledWith(error)

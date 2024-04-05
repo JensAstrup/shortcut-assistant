@@ -1,4 +1,4 @@
-import {activate} from '../src/js/contentScripts'
+import {activate} from '../src/js/content-scripts'
 import {getSyncedSetting} from '../src/js/utils/getSyncedSetting'
 import storyPageIsReady from '../src/js/utils/storyPageIsReady'
 import {CycleTime} from '../src/js/cycle-time/cycle-time'

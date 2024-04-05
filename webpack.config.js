@@ -22,20 +22,20 @@ module.exports = {
   devtool: 'source-map',
 
   entry: {
-    'analyze/analyze': './src/js/analyze/analyze.js',
+    'analyze/analyze': './src/js/analyze/listeners.ts',
     'popup/bundle': [
       './src/js/popup/popup.ts',
       './src/js/popup/notes-popup.ts',
-      './src/js/popup/popup-initializer.ts'
+      './src/js/popup/initializer.ts'
     ],
     'service_worker/bundle': [
       './src/js/service-worker/service-worker.ts',
       './src/js/service-worker/omnibox/listeners.ts'
     ],
     'contentScripts/bundle': [
-      './src/js/contentScripts.js',
-      './src/js/index.js',
-      './src/js/analyze/contentScript.js'
+      './src/js/content-scripts.ts',
+      './src/js/index.ts',
+      './src/js/comment-box/content-script.ts',
     ],
     'analytics/bundle': './src/js/analytics/event.ts'
   },

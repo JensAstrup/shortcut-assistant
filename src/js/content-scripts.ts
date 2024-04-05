@@ -1,14 +1,14 @@
 import * as Sentry from '@sentry/browser'
 
+import {analyzeStoryDescription} from './analyze/analyze-story-description'
+import {CycleTime} from './cycle-time/cycle-time'
 import {DevelopmentTime} from './development-time/development-time'
+import {KeyboardShortcuts} from './keyboard/keyboardShortcuts'
 import {NotesButton} from './notes/notesButton'
 import {Todoist} from './todoist/Todoist'
+import {getSyncedSetting} from './utils/getSyncedSetting'
 import {logError} from './utils/logError'
 import storyPageIsReady from './utils/storyPageIsReady'
-import {getSyncedSetting} from './utils/getSyncedSetting'
-import {CycleTime} from './cycle-time/cycle-time'
-import {analyzeStoryDescription} from './analyze/analyzeStoryDescription'
-import {KeyboardShortcuts} from './keyboard/keyboardShortcuts'
 
 
 const manifestData = chrome.runtime.getManifest()
@@ -42,7 +42,7 @@ export async function activate() {
 
 }
 
-export async function handleMessage(request, sender, sendResponse) {
+export async function handleMessage(request: { message: string, url: string }) {
   const activeTabUrl = window.location.href
   if (request.message === 'initDevelopmentTime' && request.url.includes('story')) {
     DevelopmentTime.set().catch(logError)
