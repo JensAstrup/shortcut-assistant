@@ -26,7 +26,7 @@ module.exports = {
     'popup/bundle': [
       './src/js/popup/popup.ts',
       './src/js/popup/notes-popup.ts',
-      './src/js/popup/popup-initializer.ts'
+      './src/js/popup/initializer.ts'
     ],
     'service_worker/bundle': [
       './src/js/service-worker/service-worker.ts',
@@ -35,7 +35,7 @@ module.exports = {
     'contentScripts/bundle': [
       './src/js/content-scripts.ts',
       './src/js/index.ts',
-      './src/js/analyze/content-script.ts'
+      './src/js/comment-box/content-script.ts',
     ],
     'analytics/bundle': './src/js/analytics/event.ts'
   },
