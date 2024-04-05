@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/browser'
 
-import {DevelopmentTime} from './developmentTime/developmentTime'
+import {DevelopmentTime} from './development-time/development-time'
 import {NotesButton} from './notes/notesButton'
 import {Todoist} from './todoist/Todoist'
 import {logError} from './utils/logError'

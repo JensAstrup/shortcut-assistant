@@ -5,7 +5,7 @@
 
 import {
   findFirstMatchingElementForState
-} from '../../src/js/developmentTime/findFirstMatchingElementForState'
+} from '../../src/js/development-time/find-first-matching-element-for-state'
 
 global.chrome = {
     runtime: {

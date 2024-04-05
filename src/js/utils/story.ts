@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
 import * as Sentry from '@sentry/browser'
-import {findFirstMatchingElementForState} from '../developmentTime/findFirstMatchingElementForState'
+import {findFirstMatchingElementForState} from '../development-time/find-first-matching-element-for-state'
 import {hoursBetweenExcludingWeekends} from './hoursBetweenExcludingWeekends'
 import sleep from './sleep'
 import {getActiveTabUrl} from './getActiveTabUrl'
@@ -80,13 +80,13 @@ export class Story {
   }
 
   static getDateInState(state: string): string | null {
-    let latestUpdateElements = findFirstMatchingElementForState(state)
+    const latestUpdateElements = findFirstMatchingElementForState(state)
     if (!latestUpdateElements) {
       return null
     }
 
     const parentDiv = latestUpdateElements.element.parentElement
-    const dateElement = parentDiv.querySelector('.date')
+    const dateElement = parentDiv?.querySelector('.date')
     return dateElement ? dateElement.innerHTML : null
   }
 

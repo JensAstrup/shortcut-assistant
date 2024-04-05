@@ -92,8 +92,10 @@ describe('NotesPopup', () => {
       })
     }
     )
+    console.error = jest.fn()
     const popup = new NotesPopup()
     await expect(popup.set()).rejects.toThrow('storyNotesInput not found')
+    expect(console.error).toHaveBeenCalled()
   })
 
   it('handles message to check notes', async () => {
