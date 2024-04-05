@@ -1,4 +1,4 @@
-import {AiFunctions} from './ai-functions.js'
+import {AiFunctions} from './ai-functions'
 
 
 document.getElementById('analyzeButton')?.addEventListener('click', AiFunctions.triggerAnalysis)
