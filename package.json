@@ -1,4 +1,9 @@
 {
+  "name": "shortcut-assistant",
+  "description": "A browser extension for power users of Shortcut",
+  "main": "src/index.ts",
+  "repository": "https://github.com/JensAstrup/shortcut-assistant",
+  "author": "Jens Astrup",
   "devDependencies": {
     "@babel/core": "^7.24.0",
     "@babel/preset-env": "^7.24.0",
