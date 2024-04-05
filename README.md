@@ -1,13 +1,15 @@
 # Shortcut Assistant
 
 [![codecov](https://codecov.io/gh/JensAstrup/shortcut-assistant/graph/badge.svg?token=BNRO19POX5)](https://codecov.io/gh/JensAstrup/shortcut-assistant)
+![Chrome Web Store Version](https://img.shields.io/chrome-web-store/v/kmdlofehocppnlkpokdbiaalcelhedef)
+![Chrome Web Store Users](https://img.shields.io/chrome-web-store/users/kmdlofehocppnlkpokdbiaalcelhedef)
 
 Shortcut Assistant is a Chrome extension that adds various additional features to Shortcut.
 
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
-
+If you're looking to install the extension
 ### Prerequisites
 
 - [Node.js](https://nodejs.org/)
@@ -21,7 +23,6 @@ These instructions will get you a copy of the project up and running on your loc
 2. **Install Dependencies**
 
    ```bash
-   cd src
    npm install
    ```
 
@@ -31,12 +32,15 @@ These instructions will get you a copy of the project up and running on your loc
     cp .env.example .env
     ```
     - `VERSION` - The version of the extension.
-   - `SENTRY_RELEASE` - This should be the same as the `VERSION` variable.
-   - `CHANGELOG_VERSION` - The version the in-app changelog was last updated for.
+    - `SENTRY_RELEASE` - This should be the same as the `VERSION` variable.
+    - `CHANGELOG_VERSION` - The version the in-app changelog was last updated for.
     - `SENTRY_AUTH_TOKEN` - The Sentry auth token for the project.
     - `GOOGLE_ANALYTICS_API_SECRET` - A Google Analytics API secret. 
     - `GOOGLE_MEASUREMENT_ID` - The Google Measurement ID for the project.
     - `PROXY_URL` - The URL of the proxy server for OpenAI's API
+   
+Note that some of these variables are missing from the `.env` file in this repository as they are 
+included in the GitHub repository secrets.
 
 ### Running the Extension Locally
 
@@ -44,27 +48,26 @@ These instructions will get you a copy of the project up and running on your loc
 
 2. Enable 'Developer mode' in the top right corner.
 
-3. Click on 'Load unpacked' and select the `src` folder within your project directory.
+3. Run `npm run dev` to build the extension.
 
-4. The extension should now be visible in the extensions list and active in the Chrome browser.
+4. Click on 'Load unpacked' and select the `build` folder within your project directory.
+
+5. The extension should now be visible in the extensions list and active in the Chrome browser.
 
 ## Development Workflow
 
 - Run `npm run dev`.
 - Make changes to the source files.
 - Reload the extension from `chrome://extensions/` by clicking the 'Reload' button under the extension.
+- Changes to service worker files and the manifest tend to require a full reload of the extension.
 
 ## Packaging the Extension for Distribution
 
 1. **Build the Project**
    ```bash
    npm run build
-   npx webpack
    ```
-2. In the root project directory, zip the `src` folder.
-   ```
-   zip -r dist/dist.zip src
-   ```
+2. Generate a ZIP file of the `build` folder. `npm run dist` will do this for you.
 
 ## Versioning
 
