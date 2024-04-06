@@ -140,9 +140,7 @@ describe('Story.getTimeInState', () => {
 describe('Story.getDateInState', () => {
   beforeEach(() => {
     document.body.innerHTML = `
-            <div class="story-state">
-            <span class="value">ExpectedState</span>
-            </div>
+          <div id="story-dialog-state-dropdown"><span class="value">In Development</span></div>
         `
     jest.clearAllMocks()
   })
@@ -177,7 +175,7 @@ describe('Story.getDateInState', () => {
 describe('Story.state', () => {
   it('should return story state when set', () => {
     document.body.innerHTML = '<div id="story-dialog-state-dropdown"><span class="value">In Development</span></div>'
-    expect(Story.state).toEqual('In Development')
+    expect(Story.state.innerHTML).toEqual('In Development')
   })
 
   it('should return null when state is not set', () => {
@@ -190,16 +188,12 @@ describe('Story.state', () => {
 describe('isInState function', () => {
   beforeEach(() => {
     jest.clearAllMocks()
-    document.body.innerHTML = `
-      <div class="story-state">
-        <span class="value">TestState</span>
-      </div>
-    `
+    document.body.innerHTML = '<div id="story-dialog-state-dropdown"><span class="value">In Development</span></div>'
   })
 
   it('returns true if the state is same as the story state', () => {
     const state = 'TestState'
-    document.querySelector = jest.fn(() => {
+    document.getElementById = jest.fn(() => {
       return {
         querySelector: jest.fn(() => {
           return {textContent: state}
@@ -211,7 +205,7 @@ describe('isInState function', () => {
 
   it('returns true if the state is found within the story state', () => {
     const state = 'TestState'
-    document.querySelector = jest.fn(() => {
+    document.getElementById = jest.fn(() => {
       return {
         querySelector: jest.fn(() => {
           return {textContent: 'TestState, TestState2'}
@@ -223,7 +217,7 @@ describe('isInState function', () => {
 
   it('returns false if the state does not have a value', () => {
     const state = 'TestState'
-    document.querySelector = jest.fn(() => {
+    document.getElementById = jest.fn(() => {
       return {
         querySelector: jest.fn(() => {
           return null
@@ -239,14 +233,14 @@ describe('isInState function', () => {
   })
 
   it('returns false if the state is not found', () => {
-    document.querySelector = jest.fn(() => null)
+    document.getElementById = jest.fn(() => null)
     const state = 'TestState'
     expect(Story.isInState(state)).toBe(false)
   })
 
   it('logs a warning if the state is not found', () => {
     console.warn = jest.fn()
-    document.querySelector = jest.fn().mockImplementation(() => {
+    document.getElementById = jest.fn().mockImplementation(() => {
       throw new Error('Could not find state element for state TestState')
     })
     const state = 'TestState'
@@ -288,7 +282,7 @@ describe('Story id', () => {
 
   it('returns null if the URL does not contain a story ID', async () => {
     urlModule.getActiveTabUrl.mockResolvedValue('https://app.shortcut.com/profile')
-    await expect(Story.id()).rejects.toThrow('Story ID not found')
+    await expect(Story.id()).resolves.toBeNull(); // Using `resolves` for promises
   })
 
   it('handles URLs with additional path segments correctly', async () => {
