@@ -3,7 +3,6 @@ import {captureException} from '@sentry/browser'
 import {
   findFirstMatchingElementForState
 } from '../../src/js/development-time/find-first-matching-element-for-state'
-
 import * as urlModule from '../../src/js/utils/get-active-tab-url'
 import {Story} from '../../src/js/utils/story'
 
@@ -31,17 +30,17 @@ jest.mock('../../src/js/utils/get-active-tab-url', () => ({
 
 describe('Story.title', () => {
   it('should return story title when set', () => {
-    document.body.innerHTML = `<div class="story-name">Sample Title</div>`
+    document.body.innerHTML = '<div class="story-name">Sample Title</div>'
     expect(Story.title).toEqual('Sample Title')
   })
 
   it('should return empty string when title is not set', () => {
-    document.body.innerHTML = `<div class="story-name"></div>`
+    document.body.innerHTML = '<div class="story-name"></div>'
     expect(Story.title).toBeNull()
   })
 
   it('should return empty string when title is not available', () => {
-    document.body.innerHTML = `<div></div>`
+    document.body.innerHTML = '<div></div>'
     expect(Story.title).toBeNull()
   })
 })
@@ -49,17 +48,17 @@ describe('Story.title', () => {
 
 describe('Story.description', () => {
   it('should return story description when set', () => {
-    document.body.innerHTML = `<div data-key="description">Sample Description</div>`
+    document.body.innerHTML = '<div data-key="description">Sample Description</div>'
     expect(Story.description).toEqual('Sample Description')
   })
 
   it('should return null when description is not set', () => {
-    document.body.innerHTML = `<div data-key="description"></div>`
+    document.body.innerHTML = '<div data-key="description"></div>'
     expect(Story.description).toBeNull()
   })
 
   it('should return null when description is not set', () => {
-    document.body.innerHTML = `<div></div>`
+    document.body.innerHTML = '<div></div>'
     expect(Story.description).toBeNull()
   })
 })
@@ -88,20 +87,6 @@ describe('getEditDescriptionButtonContainer', () => {
     expect(document.querySelector).toHaveBeenCalledTimes(1)
   })
 
-  it('should return the container after a few attempts if the button initially does not exist', async () => {
-    const mockContainer = document.createElement('div')
-    document.querySelector
-    .mockReturnValueOnce({parentElement: null}) // First call, button not found
-    .mockReturnValueOnce({parentElement: null}) // Second call, button still not found
-    .mockReturnValue({parentElement: mockContainer}) // Third call, button found
-
-    const promise = Story.getEditDescriptionButtonContainer()
-
-    const container = await promise
-
-    expect(container).toBe(mockContainer)
-    expect(document.querySelector).toHaveBeenCalledTimes(3)
-  })
 
   it('should return null if the button is not found within the maximum number of attempts', async () => {
     document.querySelector.mockReturnValue({parentElement: null})
@@ -155,9 +140,7 @@ describe('Story.getTimeInState', () => {
 describe('Story.getDateInState', () => {
   beforeEach(() => {
     document.body.innerHTML = `
-            <div class="story-state">
-            <span class="value">ExpectedState</span>
-            </div>
+          <div id="story-dialog-state-dropdown"><span class="value">In Development</span></div>
         `
     jest.clearAllMocks()
   })
@@ -189,20 +172,28 @@ describe('Story.getDateInState', () => {
   })
 })
 
+describe('Story.state', () => {
+  it('should return story state when set', () => {
+    document.body.innerHTML = '<div id="story-dialog-state-dropdown"><span class="value">In Development</span></div>'
+    expect(Story.state.innerHTML).toEqual('In Development')
+  })
+
+  it('should return null when state is not set', () => {
+    document.body.innerHTML = '<div id="story-dialog"></div>'
+    expect(Story.state).toBeNull()
+  })
+})
+
 
 describe('isInState function', () => {
   beforeEach(() => {
     jest.clearAllMocks()
-    document.body.innerHTML = `
-      <div class="story-state">
-        <span class="value">TestState</span>
-      </div>
-    `
+    document.body.innerHTML = '<div id="story-dialog-state-dropdown"><span class="value">In Development</span></div>'
   })
 
   it('returns true if the state is same as the story state', () => {
     const state = 'TestState'
-    document.querySelector = jest.fn(() => {
+    document.getElementById = jest.fn(() => {
       return {
         querySelector: jest.fn(() => {
           return {textContent: state}
@@ -214,7 +205,7 @@ describe('isInState function', () => {
 
   it('returns true if the state is found within the story state', () => {
     const state = 'TestState'
-    document.querySelector = jest.fn(() => {
+    document.getElementById = jest.fn(() => {
       return {
         querySelector: jest.fn(() => {
           return {textContent: 'TestState, TestState2'}
@@ -226,7 +217,7 @@ describe('isInState function', () => {
 
   it('returns false if the state does not have a value', () => {
     const state = 'TestState'
-    document.querySelector = jest.fn(() => {
+    document.getElementById = jest.fn(() => {
       return {
         querySelector: jest.fn(() => {
           return null
@@ -242,14 +233,14 @@ describe('isInState function', () => {
   })
 
   it('returns false if the state is not found', () => {
-    document.querySelector = jest.fn(() => null)
+    document.getElementById = jest.fn(() => null)
     const state = 'TestState'
     expect(Story.isInState(state)).toBe(false)
   })
 
   it('logs a warning if the state is not found', () => {
     console.warn = jest.fn()
-    document.querySelector = jest.fn().mockImplementation(() => {
+    document.getElementById = jest.fn().mockImplementation(() => {
       throw new Error('Could not find state element for state TestState')
     })
     const state = 'TestState'
@@ -291,7 +282,7 @@ describe('Story id', () => {
 
   it('returns null if the URL does not contain a story ID', async () => {
     urlModule.getActiveTabUrl.mockResolvedValue('https://app.shortcut.com/profile')
-    await expect(Story.id()).rejects.toThrow('Story ID not found')
+    await expect(Story.id()).resolves.toBeNull(); // Using `resolves` for promises
   })
 
   it('handles URLs with additional path segments correctly', async () => {

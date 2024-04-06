@@ -38,11 +38,11 @@ export class Story {
     return result[key]
   }
 
-  static async id(): Promise<string> {
+  static async id(): Promise<string | null> {
     const url = await getActiveTabUrl()
     const match = url?.match(/\/story\/(\d+)/)
     if (!match) {
-      throw new Error('Story ID not found')
+      return null
     }
     return match[1]
   }
@@ -90,11 +90,18 @@ export class Story {
     return dateElement ? dateElement.innerHTML : null
   }
 
+  static get state(): HTMLElement | null {
+    const storyStateDiv: HTMLElement | null = document.getElementById('story-dialog-state-dropdown')
+    if (!storyStateDiv) {
+      return null
+    }
+    return storyStateDiv.querySelector('.value')
+  }
+
   static isInState(state: string): boolean {
     let storyState = ''
     try {
-      const storyStateDiv: Element | null = document.querySelector('.story-state')
-      storyState = storyStateDiv?.querySelector('.value')?.textContent || ''
+      storyState = this.state?.textContent || ''
     } catch (e) {
       console.warn(`Could not find state element for state ${state}`)
       Sentry.captureException(e)
