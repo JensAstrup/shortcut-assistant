@@ -9,6 +9,7 @@
   "build-css": "postcss src/styles/index.css -o src/styles/output.css",
   "test": "TZ='UTC' jest --config jest.config.js",
   "lint": "eslint --ext .ts src",
+  "lint-fix": "eslint --ext .ts src --fix",
   "build": "node src/build-manifest.ts",
   "dist": "npx webpack && cp -r node_modules build/ && cd build && zip -r ../dist/dist.zip . -x \"coverage*\" \"*/*.test.js\""
 },
