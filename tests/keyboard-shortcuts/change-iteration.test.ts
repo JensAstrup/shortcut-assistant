@@ -1,5 +1,6 @@
 import changeIteration from '../../src/js/keyboard-shortcuts/change-iteration'
 
+
 interface MockedButtonElement extends HTMLElement {
   click: jest.Mock;
 }

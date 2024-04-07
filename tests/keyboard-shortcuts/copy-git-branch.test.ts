@@ -1,5 +1,6 @@
 import copyGitBranch from '../../src/js/keyboard-shortcuts/copy-git-branch'
 
+
 describe('copy git branch', () => {
   beforeAll(() => {
     Object.defineProperty(navigator, 'clipboard', {

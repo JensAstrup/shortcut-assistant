@@ -4,6 +4,7 @@ import copyBranchAndMoveToInDevelopment
 import copyGitBranch from '../../src/js/keyboard-shortcuts/copy-git-branch'
 import {getStateDiv} from '../../src/js/utils/get-state-div'
 
+
 jest.mock('../../src/js/keyboard-shortcuts/copy-git-branch', () => ({
   __esModule: true,
   default: jest.fn(),
