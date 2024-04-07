@@ -4,7 +4,7 @@
     "default_icon": "assets/assistant.png"
   },
   "background": {
-    "service_worker": "service_worker/bundle.js",
+    "service_worker": "js/service_worker/bundle.js",
     "type": "module"
   },
   "commands": {
@@ -43,9 +43,8 @@
         "https://app.shortcut.com/*"
       ],
       "js": [
-        "contentScripts/bundle.js"
+        "js/contentScripts/bundle.js"
       ],
-      "type": "module",
       "run_at": "document_end"
     }
   ],
@@ -61,7 +60,9 @@
   },
   "manifest_version": 3,
   "name": "Shortcut Assistant",
-  "omnibox": { "keyword" : "sc" },
+  "omnibox": {
+    "keyword": "sc"
+  },
   "permissions": [
     "activeTab",
     "clipboardWrite",

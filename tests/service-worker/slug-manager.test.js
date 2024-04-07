@@ -23,6 +23,9 @@ global.chrome = {
 }
 
 describe('SlugManager', () => {
+  beforeEach(() => {
+    jest.clearAllMocks()
+  })
   describe('getCompanySlugFromTab', () => {
     it('should get the company slug from tab info', async () => {
       const testData = {
@@ -113,7 +116,7 @@ describe('SlugManager', () => {
     })
 
     it('should not set the company slug if the company slug is not found', async () => {
-      SlugManager.getCompanySlugFromTab.mockResolvedValue(undefined)
+      jest.spyOn(SlugManager, 'getCompanySlugFromTab').mockResolvedValue(undefined)
       const setSpy = jest.spyOn(SlugManager, 'setCompanySlug')
 
       await SlugManager.refreshCompanySlug(1, {url: 'https://testing.com/newCompanySlug/page'})

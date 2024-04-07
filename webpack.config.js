@@ -21,21 +21,21 @@ module.exports = {
 
   entry: {
     'analyze/analyze': './src/js/analyze/listeners.ts',
-    'popup/bundle': [
+    'js/popup/bundle': [
       './src/js/popup/popup.ts',
       './src/js/popup/notes-popup.ts',
       './src/js/popup/initializer.ts'
     ],
-    'service_worker/bundle': [
+    'js/service_worker/bundle': [
       './src/js/service-worker/service-worker.ts',
       './src/js/service-worker/omnibox/listeners.ts'
     ],
-    'contentScripts/bundle': [
+    'js/contentScripts/bundle': [
       './src/js/content-scripts.ts',
       './src/js/index.ts',
       './src/js/comment-box/content-script.ts',
     ],
-    'analytics/bundle': './src/js/analytics/event.ts'
+    'js/analytics/bundle': './src/js/analytics/event.ts'
   },
 
   output: {
