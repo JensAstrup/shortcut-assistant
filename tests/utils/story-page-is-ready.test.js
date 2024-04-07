@@ -1,4 +1,4 @@
-import storyPageIsReady from '../../src/js/utils/storyPageIsReady'
+import storyPageIsReady from '../../src/js/utils/story-page-is-ready'
 
 
 jest.mock('../../src/js/utils/sleep', () => jest.fn().mockResolvedValue(undefined))

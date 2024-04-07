@@ -3,12 +3,15 @@ import * as Sentry from '@sentry/browser'
 import {analyzeStoryDescription} from './analyze/analyze-story-description'
 import {CycleTime} from './cycle-time/cycle-time'
 import {DevelopmentTime} from './development-time/development-time'
-import {KeyboardShortcuts} from './keyboard/keyboardShortcuts'
-import {NotesButton} from './notes/notesButton'
-import {Todoist} from './todoist/Todoist'
-import {getSyncedSetting} from './utils/getSyncedSetting'
-import {logError} from './utils/logError'
-import storyPageIsReady from './utils/storyPageIsReady'
+import changeIteration from './keyboard-shortcuts/change-iteration'
+import changeState from './keyboard-shortcuts/change-state'
+import copyGitBranch from './keyboard-shortcuts/copy-git-branch'
+import {KeyboardShortcuts} from './keyboard-shortcuts/keyboard-shortcuts'
+import {NotesButton} from './notes/notes-button'
+import {Todoist} from './todoist/todoist'
+import {getSyncedSetting} from './utils/get-synced-setting'
+import {logError} from './utils/log-error'
+import storyPageIsReady from './utils/story-page-is-ready'
 
 
 const manifestData = chrome.runtime.getManifest()
@@ -57,15 +60,14 @@ export async function handleMessage(request: { message: string, url: string }) {
   if (request.message === 'initTodos' && request.url.includes('story')) {
     new Todoist()
   }
-  const shortcuts = new KeyboardShortcuts()
   if (request.message === 'change-state') {
-    await shortcuts.changeState()
+    await changeState()
   }
   if (request.message === 'change-iteration') {
-    await shortcuts.changeIteration()
+    await changeIteration()
   }
   if (request.message === 'copy-git-branch') {
-    await shortcuts.copyGitBranch()
+    await copyGitBranch()
   }
 }
 

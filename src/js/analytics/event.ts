@@ -4,8 +4,8 @@ import {
   MEASUREMENT_ID,
   DEFAULT_ENGAGEMENT_TIME_IN_MSEC
 } from './config'
-import {getOrCreateClientId} from './clientId'
-import {getOrCreateSessionId} from './sessionId'
+import {getOrCreateClientId} from './client-id'
+import {getOrCreateSessionId} from './session-id'
 
 
 const version: string = chrome.runtime.getManifest().version

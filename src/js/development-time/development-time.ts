@@ -1,18 +1,12 @@
 import {Story} from '../utils/story'
-import storyPageIsReady from '../utils/storyPageIsReady'
+import storyPageIsReady from '../utils/story-page-is-ready'
 
 
 export class DevelopmentTime {
   static setTimeSpan(hoursElapsed: number): void {
-    const stateDiv = document.querySelector('.story-state')
-    if (!stateDiv) {
-      throw new Error('Story state not found')
-      return
-    }
-    const stateSpan = stateDiv.querySelector('.value')
+    const stateSpan = Story.state
     if (!stateSpan) {
       throw new Error('Story state span not found')
-      return
     }
     let daysElapsed = hoursElapsed / 24
     daysElapsed = Math.abs(daysElapsed)

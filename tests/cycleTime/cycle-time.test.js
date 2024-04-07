@@ -1,13 +1,13 @@
 import {CycleTime} from '../../src/js/cycle-time/cycle-time'
-import {hoursBetweenExcludingWeekends} from '../../src/js/utils/hoursBetweenExcludingWeekends'
+import {hoursBetweenExcludingWeekends} from '../../src/js/utils/hours-between-excluding-weekends'
 import {Story} from '../../src/js/utils/story'
-import storyPageIsReady from '../../src/js/utils/storyPageIsReady'
+import storyPageIsReady from '../../src/js/utils/story-page-is-ready'
 
 
-jest.mock('../../src/js/utils/hoursBetweenExcludingWeekends', () => ({
+jest.mock('../../src/js/utils/hours-between-excluding-weekends', () => ({
   hoursBetweenExcludingWeekends: jest.fn()
 }))
-jest.mock('../../src/js/utils/storyPageIsReady', () => jest.fn())
+jest.mock('../../src/js/utils/story-page-is-ready', () => jest.fn())
 jest.mock('../../src/js/utils/story', () => ({
   Story: {
     isInState: jest.fn(),

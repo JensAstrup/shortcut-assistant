@@ -1,4 +1,4 @@
-import {logError} from '../../src/js/utils/logError'
+import {logError} from '../../src/js/utils/log-error'
 import * as Sentry from '@sentry/browser'
 
 

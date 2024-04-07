@@ -27,7 +27,11 @@ export class NotesPopup {
   }
 
   async save() {
-    const data = {[this.getKey(await Story.id())]: this.getInput().value}
+    const storyId = await Story.id()
+    if (!storyId) {
+      throw new Error('Story ID not found')
+    }
+    const data = {[this.getKey(storyId)]: this.getInput().value}
     await chrome.storage.sync.set(data)
     this.saveButton.textContent = 'Saved!'
     await sleep(2000)
@@ -44,7 +48,11 @@ export class NotesPopup {
 
   async set() {
     this.resizeInput().catch(console.error)
-    const key = this.getKey(await Story.id())
+    const storyId = await Story.id()
+    if (!storyId) {
+      throw new Error('Story ID not found')
+    }
+    const key = this.getKey(storyId)
     const storyNotesInput: HTMLInputElement | null = this.getInput()
     const result = await chrome.storage.sync.get(key)
     const value = result[key]

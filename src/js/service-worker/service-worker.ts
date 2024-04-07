@@ -3,8 +3,8 @@ import * as Sentry from '@sentry/browser'
 import callOpenAI from '../ai/call-openai'
 import getOpenAiToken from '../ai/get-openai-token'
 import {sendEvent} from '../analytics/event'
-import {getActiveTab} from '../utils/getActiveTab'
-import {getSyncedSetting} from '../utils/getSyncedSetting'
+import {getActiveTab} from '../utils/get-active-tab'
+import {getSyncedSetting} from '../utils/get-synced-setting'
 import {Story} from '../utils/story'
 
 import {onInstallAndUpdate} from './on-install-and-update'
@@ -18,14 +18,14 @@ Sentry.init({
   environment: process.env.NODE_ENV
 })
 
-async function handleOpenAICall(prompt: string, tabId: number): Promise<{ data: any } | { error: any }> {
+async function handleOpenAICall(prompt: string, tabId: number): Promise<{ data: string } | { error: Error }> {
   try {
     const response = await callOpenAI(prompt, tabId)
     return {data: response}
-  } catch (e) {
+  } catch (e: unknown) {
     console.error('Error calling OpenAI:', e)
     chrome.runtime.sendMessage({message: 'OpenAIResponseFailed'})
-    return {error: e}
+    return {error: e as Error}
   }
 }
 

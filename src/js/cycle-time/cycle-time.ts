@@ -1,6 +1,6 @@
-import {hoursBetweenExcludingWeekends} from '../utils/hoursBetweenExcludingWeekends'
+import {hoursBetweenExcludingWeekends} from '../utils/hours-between-excluding-weekends'
 import {Story} from '../utils/story'
-import storyPageIsReady from '../utils/storyPageIsReady'
+import storyPageIsReady from '../utils/story-page-is-ready'
 
 
 export class CycleTime {

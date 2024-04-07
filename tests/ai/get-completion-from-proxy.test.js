@@ -1,4 +1,4 @@
-import {getOrCreateClientId} from '../../src/js/analytics/clientId'
+import {getOrCreateClientId} from '../../src/js/analytics/client-id'
 import getCompletionFromProxy from '../../src/js/ai/get-completion-from-proxy'
 import fetch from 'node-fetch'
 
@@ -7,7 +7,7 @@ if (!global.fetch) {
   global.fetch = fetch
 }
 // Mocking the dependencies
-jest.mock('../../src/js/analytics/clientId', () => ({
+jest.mock('../../src/js/analytics/client-id', () => ({
   getOrCreateClientId: jest.fn()
 }))
 jest.mock('node-fetch', () => jest.fn())

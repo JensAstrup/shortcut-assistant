@@ -1,4 +1,4 @@
-import {getSyncedSetting} from '../../src/js/utils/getSyncedSetting'
+import {getSyncedSetting} from '../../src/js/utils/get-synced-setting'
 
 
 describe('getSyncedSetting function', () => {
