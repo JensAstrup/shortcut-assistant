@@ -37,10 +37,7 @@
       "description": "Update the iteration of the current story"
     },
     "update-estimate": {
-      "suggested_key": {
-        "default": "Ctrl+Shift+E",
-        "mac": "Command+Shift+E"
-      },
+      
       "description": "Update the estimate of the current story"
     }
   },
