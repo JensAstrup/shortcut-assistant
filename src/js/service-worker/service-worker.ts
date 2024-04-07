@@ -18,14 +18,14 @@ Sentry.init({
   environment: process.env.NODE_ENV
 })
 
-async function handleOpenAICall(prompt: string, tabId: number): Promise<{ data: any } | { error: any }> {
+async function handleOpenAICall(prompt: string, tabId: number): Promise<{ data: string } | { error: Error }> {
   try {
     const response = await callOpenAI(prompt, tabId)
     return {data: response}
-  } catch (e) {
+  } catch (e: unknown) {
     console.error('Error calling OpenAI:', e)
     chrome.runtime.sendMessage({message: 'OpenAIResponseFailed'})
-    return {error: e}
+    return {error: e as Error}
   }
 }
 

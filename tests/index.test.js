@@ -5,7 +5,7 @@ import {CycleTime} from '../src/js/cycle-time/cycle-time'
 import {DevelopmentTime} from '../src/js/development-time/development-time'
 import {Todoist} from '../src/js/todoist/todoist'
 import {NotesButton} from '../src/js/notes/notes-button'
-import {KeyboardShortcuts} from '../src/js/keyboard/keyboard-shortcuts'
+import {KeyboardShortcuts} from '../src/js/keyboard-shortcuts/keyboard-shortcuts'
 
 
 jest.mock('@sentry/browser')
@@ -21,7 +21,7 @@ jest.mock('../src/js/development-time/development-time', () => ({
 }))
 jest.mock('../src/js/todoist/todoist')
 jest.mock('../src/js/notes/notes-button')
-jest.mock('../src/js/keyboard/keyboard-shortcuts')
+jest.mock('../src/js/keyboard-shortcuts/keyboard-shortcuts')
 jest.mock('../src/js/utils/story-page-is-ready', () => jest.fn().mockResolvedValue())
 jest.mock('../src/js/utils/get-synced-setting', () => ({
   getSyncedSetting: jest.fn()

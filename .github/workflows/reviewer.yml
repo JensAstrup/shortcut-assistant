@@ -10,6 +10,7 @@ jobs:
     continue-on-error: true
     steps:
       - name: Review Pull Request
+        continue-on-error: true
         uses: "JensAstrup/ai-reviewer@v1.0.2"
         with:
           OPENAI_API_KEY: ${{ secrets.OPENAI_TOKEN }}

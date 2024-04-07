@@ -82,7 +82,10 @@ describe('redirectFromOmnibox', () => {
 })
 
 describe('setOmniboxSuggestion', () => {
-  jest.spyOn(SlugManager, 'getCompanySlug').mockResolvedValue('test')
+  beforeEach(() => {
+    global.chrome.omnibox.setDefaultSuggestion.mockClear()
+    jest.spyOn(SlugManager, 'getCompanySlug').mockResolvedValue('test')
+  })
 
   it('should set the default suggestion to open the story when a number is provided', async () => {
     const text = '123'

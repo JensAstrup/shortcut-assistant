@@ -4,7 +4,16 @@
   "main": "src/index.ts",
   "repository": "https://github.com/JensAstrup/shortcut-assistant",
   "author": "Jens Astrup",
-  "devDependencies": {
+  "scripts": {
+  "dev": "webpack --config webpack.config.dev.js",
+  "build-css": "postcss src/styles/index.css -o src/styles/output.css",
+  "test": "TZ='UTC' jest --config jest.config.js",
+  "lint": "eslint --ext .ts src",
+  "lint-fix": "eslint --ext .ts src --fix",
+  "build": "node src/build-manifest.ts",
+  "dist": "npx webpack && cp -r node_modules build/ && cd build && zip -r ../dist/dist.zip . -x \"coverage*\" \"*/*.test.js\""
+},
+"devDependencies": {
     "@babel/core": "^7.24.0",
     "@babel/preset-env": "^7.24.4",
     "@babel/preset-typescript": "^7.23.3",
@@ -34,13 +43,6 @@
     "typescript": "^5.4.3",
     "webpack": "^5.90.3",
     "webpack-cli": "^5.1.4"
-  },
-  "scripts": {
-    "dev": "webpack --config webpack.config.dev.js",
-    "build-css": "postcss src/styles/index.css -o src/styles/output.css",
-    "test": "TZ='UTC' jest --config jest.config.js",
-    "build": "node src/build-manifest.ts",
-    "dist": "npx webpack && cp -r node_modules build/ && cd build && zip -r ../dist/dist.zip . -x \"coverage*\" \"*/*.test.js\""
   },
   "dependencies": {
     "@sentry/browser": "7.109.0",
