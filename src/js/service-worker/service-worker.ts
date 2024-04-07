@@ -18,7 +18,7 @@ Sentry.init({
   environment: process.env.NODE_ENV
 })
 
-async function handleOpenAICall(prompt: string, tabId: number): Promise<{ data: any } | { error: any }> {
+async function handleOpenAICall(prompt: string, tabId: number): Promise<{ data: unknown } | { error: unknown }> {
   try {
     const response = await callOpenAI(prompt, tabId)
     return {data: response}
