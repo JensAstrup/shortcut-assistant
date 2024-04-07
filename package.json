@@ -43,7 +43,6 @@
     "dist": "npx webpack && cp -r node_modules build/ && cd build && zip -r ../dist/dist.zip . -x \"coverage*\" \"*/*.test.js\""
   },
   "dependencies": {
-    "@actions/exec": "^1.1.1",
     "@sentry/browser": "7.109.0",
     "@sentry/webpack-plugin": "2.14.3",
     "@tailwindcss/typography": "0.5.10",
