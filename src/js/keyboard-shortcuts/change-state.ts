@@ -1,5 +1,6 @@
 import sleep from '../utils/sleep'
 
+
 async function changeState(): Promise<void> {
   const dropdownParent: null | HTMLElement = document.getElementById('story-dialog-state-dropdown')
   if (!dropdownParent) {

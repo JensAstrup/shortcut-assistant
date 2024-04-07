@@ -1,5 +1,6 @@
 import sleep from '../utils/sleep'
 
+
 async function changeIteration(): Promise<void> {
   const iterationSelect: HTMLInputElement | null = document.querySelector('[data-perma-id="iteration-select"]')
   const childButton: HTMLButtonElement | null | undefined = iterationSelect?.querySelector('[role="button"]')
