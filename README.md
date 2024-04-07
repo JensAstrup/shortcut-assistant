@@ -73,6 +73,16 @@ included in the GitHub repository secrets.
 
 We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](/tags).
 
+Standard: `MAJOR.MINOR.PATCH.INTERNAL`
+
+**Major**: Breaking changes
+
+**Minor**: New features
+
+**Patch**: Bug fixes
+
+**Internal**: Internal changes not affecting the user experience
+
 ## Authors
 
 - **Jens Astrup** - [JensAstrup](https://github.com/JensAstrup)
