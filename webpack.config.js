@@ -20,7 +20,7 @@ module.exports = {
   devtool: 'source-map',
 
   entry: {
-    'analyze/analyze': './src/js/analyze/listeners.ts',
+    'js/analyze/analyze': './src/js/analyze/listeners.ts',
     'js/popup/bundle': [
       './src/js/popup/popup.ts',
       './src/js/popup/notes-popup.ts',
