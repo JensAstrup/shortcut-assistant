@@ -46,7 +46,7 @@
   },
   "dependencies": {
     "@sentry/browser": "7.109.0",
-    "@sentry/webpack-plugin": "2.14.3",
+    "@sentry/webpack-plugin": "2.16.1",
     "@tailwindcss/typography": "0.5.10",
     "dayjs": "^1.11.10",
     "jest-environment-jsdom": "29.7.0",
