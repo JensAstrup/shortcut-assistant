@@ -3,6 +3,7 @@ import copyBranchAndMoveToInDevelopment
   from '../../src/js/keyboard-shortcuts/copy-branch-move-to-in-development'
 import copyGitBranch from '../../src/js/keyboard-shortcuts/copy-git-branch'
 import {getStateDiv} from '../../src/js/utils/get-state-div'
+import sleep from '../../src/js/utils/sleep'
 
 
 jest.mock('../../src/js/keyboard-shortcuts/copy-git-branch', () => ({
@@ -17,6 +18,8 @@ jest.mock('../../src/js/utils/get-state-div', () => ({
   __esModule: true,
   getStateDiv: jest.fn(),
 }))
+jest.mock('../../src/js/utils/sleep', () => jest.fn(() => Promise.resolve()))
+
 
 interface MockedHtmlElement extends HTMLElement {
   click: jest.Mock
@@ -38,6 +41,7 @@ describe('copyBranchAndMoveToInDevelopment', () => {
 
     expect(mockedCopyGitBranch).toHaveBeenCalled()
     expect(mockedChangeState).toHaveBeenCalled()
+    expect(sleep).toHaveBeenCalledWith(300)
   })
 
   it('clicks the state div if it is found', async () => {

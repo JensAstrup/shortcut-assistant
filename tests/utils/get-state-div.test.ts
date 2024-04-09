@@ -7,7 +7,7 @@ interface MockParentDiv extends Element {
 
 describe('get state div', () => {
   it('returns the div on match', () => {
-    const childDivs = [{innerText: 'In Development '}]
+    const childDivs = [{innerText: 'In Development ', tagName: 'DIV', children: []}]
     const parentDiv = {querySelectorAll: jest.fn().mockReturnValue(childDivs)} as MockParentDiv
     jest.spyOn(document, 'querySelector').mockReturnValueOnce(parentDiv)
 
@@ -18,7 +18,7 @@ describe('get state div', () => {
   })
 
   it('return null on no match', () => {
-    const childDivs = [{innerText: 'Other'}]
+    const childDivs = [{innerText: 'Other', children: []}]
     const parentDiv = {querySelectorAll: jest.fn().mockReturnValue(childDivs)} as MockParentDiv
 
     jest.spyOn(document, 'querySelector').mockReturnValueOnce(parentDiv)
