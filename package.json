@@ -14,7 +14,7 @@
   "dist": "npx webpack && cp -r node_modules build/ && cd build && zip -r ../dist/dist.zip . -x \"coverage*\" \"*/*.test.js\""
 },
 "devDependencies": {
-    "@babel/core": "^7.24.0",
+    "@babel/core": "^7.24.4",
     "@babel/preset-env": "^7.24.4",
     "@babel/preset-typescript": "^7.23.3",
     "@types/chrome": "^0.0.266",
