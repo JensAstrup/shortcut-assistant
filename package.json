@@ -50,7 +50,7 @@
     "@tailwindcss/typography": "0.5.10",
     "dayjs": "^1.11.10",
     "jest-environment-jsdom": "29.7.0",
-    "openai": "4.29.1",
+    "openai": "4.33.1",
     "uuid": "^9.0.1"
   },
   "jest": {
