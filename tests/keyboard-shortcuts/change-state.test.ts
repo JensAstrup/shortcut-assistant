@@ -1,6 +1,4 @@
 import changeState from '../../src/js/keyboard-shortcuts/change-state'
-import Mock = jest.Mock
-import Mocked = jest.Mocked
 
 
 jest.mock('../../src/js/utils/sleep', () => jest.fn().mockResolvedValue(undefined))
