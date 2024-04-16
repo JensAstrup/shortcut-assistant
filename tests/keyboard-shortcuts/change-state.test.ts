@@ -27,7 +27,7 @@ describe('change state', () => {
   })
 
   it('should open dropdown when called', async () => {
-    const mockedPopup = {querySelector: jest.fn()} as MockedSelectElement
+    const mockedPopup = {} as MockedSelectElement
     const mockedInput = {
       focus: jest.fn(),
       set value(_: unknown) {
@@ -35,14 +35,11 @@ describe('change state', () => {
     } as MockedInputElement
 
     const mockedInputParent = {querySelector: jest.fn().mockReturnValue(mockedInput)} as MockedSelectElement
-    jest.spyOn(document, 'querySelector').mockReturnValueOnce(mockedPopup)
-
-    mockedPopup.querySelector.mockReturnValue(mockedInputParent)
+    jest.spyOn(document, 'querySelector').mockReturnValueOnce(mockedPopup).mockReturnValueOnce(mockedInputParent)
 
     await changeState()
 
     expect(mockedDropdown.click).toHaveBeenCalled()
-    expect(mockedPopup.querySelector).toHaveBeenCalled()
     expect(mockedInput.focus).toHaveBeenCalled()
   })
 
