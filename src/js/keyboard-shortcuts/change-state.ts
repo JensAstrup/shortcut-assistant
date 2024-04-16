@@ -15,7 +15,7 @@ async function changeState(): Promise<void> {
       console.error('The dropdown popup was not found.')
       return
     }
-    const inputParent: HTMLElement | null = dropdownPopup.querySelector('#clubhouse_shared_popover_portal')
+    const inputParent: HTMLElement | null = document.querySelector('[data-perma-id="popover"]')
     if (!inputParent) {
       console.error('The input parent was not found.')
       return
