@@ -48,13 +48,11 @@ export class Story {
   }
 
   static async getEditDescriptionButtonContainer(): Promise<HTMLElement | null | undefined> {
-    let descriptionButton: Element | null = document.querySelector(`[data-on-click="App.Controller.Story.editDescription"]`)
-    let container: HTMLElement | null | undefined = descriptionButton?.parentElement
+    let container: HTMLElement | null | undefined
     let attempts = 0
-    while (container === null) {
+    while (!container) {
       await sleep(1000)
-      descriptionButton = document.querySelector(`[data-on-click="App.Controller.Story.editDescription"]`)
-      container = descriptionButton?.parentElement
+      container = document.querySelector('#story-description-v2') as HTMLElement
       attempts++
       if (attempts > 10) {
         break
