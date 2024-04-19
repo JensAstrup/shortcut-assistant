@@ -18,6 +18,7 @@ export class Todoist {
     newButton.dataset.tooltip = tooltip
     newButton.dataset.key = title
     newButton.tabIndex = 2
+    newButton.style.marginTop = '10px'
     newButton.setAttribute('data-todoist', 'true')
     return newButton
   }
