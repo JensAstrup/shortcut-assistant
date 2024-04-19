@@ -13,20 +13,21 @@ jest.mock('../../src/js/utils/story', () => ({
 describe('Todoist', () => {
   beforeAll(() => {
     document.createElement = jest.fn().mockImplementation(tag => {
-      const element = {
+      return {
         appendChild: jest.fn(),
         setAttribute: jest.fn(),
-        addEventListener: jest.fn()
+        addEventListener: jest.fn(),
+        tagName: tag.toUpperCase()
       }
-      element.tagName = tag.toUpperCase()
-      return element
     })
     document.querySelector = jest.fn()
     window.open = jest.fn()
   })
 
   beforeEach(() => {
+    // @ts-expect-error Migrating from JS
     delete window.location
+    // @ts-expect-error Migrating from JS
     window.location = {href: 'https://example.com/story'}
     jest.clearAllMocks()
   })
@@ -45,9 +46,10 @@ describe('Todoist', () => {
           appendChild: jest.fn(),
           setAttribute: jest.fn(),
           addEventListener: jest.fn(),
-          dataset: {}
-        }
-        element.tagName = tag.toUpperCase()
+          dataset: {},
+          tagName: tag.toUpperCase(),
+          style: {}
+        } as unknown as HTMLElement
         return element
       })
       document.querySelector = jest.fn().mockReturnValue(mockButton)
@@ -62,7 +64,7 @@ describe('Todoist', () => {
   describe('createTooltipText', () => {
     it('returns tooltip text with title when taskTitle is undefined', () => {
       const todoist = new Todoist()
-      const tooltipText = todoist.createTooltipText(undefined, 'Test title')
+      const tooltipText = todoist.createTooltipText(null, 'Test title')
       expect(tooltipText).toBe('Test title [Mocked Story Title](https://example.com/story)')
     })
 
@@ -75,12 +77,15 @@ describe('Todoist', () => {
 
   describe('buttonExists', () => {
     it('returns false when no button exists', () => {
+      document.querySelector = jest.fn()
+      // @ts-expect-error Migrating from JS
       document.querySelector.mockReturnValue(null)
       const todoist = new Todoist()
       expect(todoist.buttonExists()).toBe(null)
     })
 
     it('returns true when a button exists', () => {
+      // @ts-expect-error Migrating from JS
       document.querySelector.mockReturnValue(document.createElement('button'))
       const todoist = new Todoist()
       expect(todoist.buttonExists()).toBeTruthy()
@@ -89,18 +94,20 @@ describe('Todoist', () => {
 
   describe('addButtonIfNotExists', () => {
     it('appends new button if it does not exist', async () => {
+      // @ts-expect-error Migrating from JS
       document.querySelector.mockReturnValue(null)
       const todoist = new Todoist()
       const button = document.createElement('button')
-      await todoist.addButtonIfNotExists('Test title', button)
+      await todoist.addButtonIfNotExists(button)
       expect(Story.getEditDescriptionButtonContainer).toHaveBeenCalled()
     })
 
     it('does not append new button if it already exists', async () => {
+      // @ts-expect-error Migrating from JS
       document.querySelector.mockReturnValue(document.createElement('button'))
       const todoist = new Todoist()
       const button = document.createElement('button')
-      await todoist.addButtonIfNotExists('Test title', button)
+      await todoist.addButtonIfNotExists(button)
       expect(Story.getEditDescriptionButtonContainer).not.toHaveBeenCalled()
     })
   })
@@ -113,9 +120,10 @@ describe('Todoist', () => {
           setAttribute: jest.fn(),
           addEventListener: jest.fn(),
           append: jest.fn(),
-          dataset: {}
-        }
-        element.tagName = tag.toUpperCase()
+          dataset: {},
+          tagname: tag.toUpperCase(),
+          style: {}
+        } as unknown as HTMLElement
         return element
       })
       document.querySelector = jest.fn().mockReturnValue(mockButton)

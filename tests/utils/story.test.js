@@ -79,7 +79,7 @@ describe('getEditDescriptionButtonContainer', () => {
 
   it('should return the container immediately if the button is found', async () => {
     const mockContainer = document.createElement('div')
-    document.querySelector.mockReturnValue({parentElement: mockContainer})
+    document.querySelector.mockReturnValue(mockContainer)
 
     const container = await Story.getEditDescriptionButtonContainer()
 
@@ -89,14 +89,14 @@ describe('getEditDescriptionButtonContainer', () => {
 
 
   it('should return null if the button is not found within the maximum number of attempts', async () => {
-    document.querySelector.mockReturnValue({parentElement: null})
+    document.querySelector.mockReturnValue(null)
 
     const promise = Story.getEditDescriptionButtonContainer()
 
     const container = await promise
 
     expect(container).toBeNull()
-    expect(document.querySelector).toHaveBeenCalledTimes(12)
+    expect(document.querySelector).toHaveBeenCalledTimes(11)
   })
 })
 
