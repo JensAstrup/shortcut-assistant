@@ -3,6 +3,10 @@ import {handleCommands, handleOpenAICall} from '@sx/service-worker/handlers'
 
 
 jest.mock('@sx/ai/call-openai')
+jest.mock('@sx/analytics/event', () => ({
+  sendEvent: jest.fn().mockResolvedValue({}),
+}))
+jest.mock('@sentry/browser')
 
 const mockCallOpenAi = callOpenAi as jest.MockedFunction<typeof callOpenAi>
 
