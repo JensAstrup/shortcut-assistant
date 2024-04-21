@@ -1,4 +1,4 @@
-import {Story} from '../utils/story'
+import {Story} from '@sx/utils/story'
 
 
 export async function analyzeStoryDescription(activeTabUrl: string) {
