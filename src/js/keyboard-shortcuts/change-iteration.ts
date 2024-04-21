@@ -2,6 +2,7 @@ import sleep from '../utils/sleep'
 
 
 async function changeIteration(): Promise<void> {
+  chrome.runtime.sendMessage({action: 'sendEvent', data: {eventName: 'change_iteration'}})
   const iterationSelect: HTMLInputElement | null = document.querySelector('[data-perma-id="iteration-select"]')
   const childButton: HTMLButtonElement | null | undefined = iterationSelect?.querySelector('[role="button"]')
 

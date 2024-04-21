@@ -1,8 +1,6 @@
 jest.mock('../../src/js/popup/popup', () => {
   return {
-    Popup: jest.fn().mockImplementation(() => {
-      console.log('Popup initialized')
-    })
+    Popup: jest.fn().mockImplementation(() => {})
   }
 })
 
