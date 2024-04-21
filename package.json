@@ -51,6 +51,7 @@
     "dayjs": "^1.11.10",
     "jest-chrome": "^0.8.0",
     "jest-environment-jsdom": "29.7.0",
+    "node-html-parser": "^6.1.13",
     "openai": "4.29.1",
     "uuid": "^9.0.1"
   },

@@ -2,9 +2,9 @@ import {captureException} from '@sentry/browser'
 
 import {
   findFirstMatchingElementForState
-} from '../../src/js/development-time/find-first-matching-element-for-state'
-import * as urlModule from '../../src/js/utils/get-active-tab-url'
-import {Story} from '../../src/js/utils/story'
+} from '@sx/development-time/find-first-matching-element-for-state'
+import * as urlModule from '@sx/utils/get-active-tab-url'
+import {Story} from '@sx/utils/story'
 
 
 const mockNow = {
@@ -48,12 +48,12 @@ describe('Story.title', () => {
 
 describe('Story.description', () => {
   it('should return story description when set', () => {
-    document.body.innerHTML = '<div data-key="description">Sample Description</div>'
+    document.body.innerHTML = '<div id="story-description-v2">Sample Description</div>'
     expect(Story.description).toEqual('Sample Description')
   })
 
   it('should return null when description is not set', () => {
-    document.body.innerHTML = '<div data-key="description"></div>'
+    document.body.innerHTML = '<div id="story-description-v2"></div>'
     expect(Story.description).toBeNull()
   })
 
@@ -64,6 +64,7 @@ describe('Story.description', () => {
 })
 
 describe('getEditDescriptionButtonContainer', () => {
+  // @ts-expect-error Remnants from before typescript implementation
   let originalQuerySelector
 
   beforeEach(() => {
@@ -73,12 +74,14 @@ describe('getEditDescriptionButtonContainer', () => {
   })
 
   afterEach(() => {
+    // @ts-expect-error Remnants from before typescript implementation
     document.querySelector = originalQuerySelector
     jest.clearAllTimers()
   })
 
   it('should return the container immediately if the button is found', async () => {
     const mockContainer = document.createElement('div')
+    // @ts-expect-error Remnants from before typescript implementation
     document.querySelector.mockReturnValue(mockContainer)
 
     const container = await Story.getEditDescriptionButtonContainer()
@@ -89,6 +92,7 @@ describe('getEditDescriptionButtonContainer', () => {
 
 
   it('should return null if the button is not found within the maximum number of attempts', async () => {
+    // @ts-expect-error Remnants from before typescript implementation
     document.querySelector.mockReturnValue(null)
 
     const promise = Story.getEditDescriptionButtonContainer()
@@ -146,6 +150,7 @@ describe('Story.getDateInState', () => {
   })
 
   it('returns null when no elements match the state', () => {
+    // @ts-expect-error Remnants from before typescript implementation
     findFirstMatchingElementForState.mockReturnValueOnce(null)
 
     const result = Story.getDateInState('NonExistentState')
@@ -159,6 +164,7 @@ describe('Story.getDateInState', () => {
         querySelector: jest.fn().mockReturnValueOnce({innerHTML: '2022-03-01'})
       }
     }
+    // @ts-expect-error Remnants from before typescript implementation
     findFirstMatchingElementForState.mockReturnValueOnce({element: latestUpdateElement})
 
     const result = Story.getDateInState('ExpectedState2')
@@ -166,6 +172,7 @@ describe('Story.getDateInState', () => {
   })
 
   it('returns null when state div and date element do not exist', () => {
+    // @ts-expect-error Remnants from before typescript implementation
     findFirstMatchingElementForState.mockReturnValueOnce({element: {parentElement: {querySelector: jest.fn().mockReturnValueOnce(null)}}})
     const result = Story.getDateInState('ExpectedState')
     expect(result).toBeNull()
@@ -175,7 +182,7 @@ describe('Story.getDateInState', () => {
 describe('Story.state', () => {
   it('should return story state when set', () => {
     document.body.innerHTML = '<div id="story-dialog-state-dropdown"><span class="value">In Development</span></div>'
-    expect(Story.state.innerHTML).toEqual('In Development')
+    expect(Story.state?.innerHTML).toEqual('In Development')
   })
 
   it('should return null when state is not set', () => {
@@ -198,7 +205,7 @@ describe('isInState function', () => {
         querySelector: jest.fn(() => {
           return {textContent: state}
         })
-      }
+      } as unknown as HTMLElement
     })
     expect(Story.isInState(state)).toBe(true)
   })
@@ -210,7 +217,7 @@ describe('isInState function', () => {
         querySelector: jest.fn(() => {
           return {textContent: 'TestState, TestState2'}
         })
-      }
+      } as unknown as HTMLElement
     })
     expect(Story.isInState(state)).toBe(true)
   })
@@ -222,7 +229,7 @@ describe('isInState function', () => {
         querySelector: jest.fn(() => {
           return null
         })
-      }
+      } as unknown as HTMLElement
     })
     expect(Story.isInState(state)).toBe(false)
   })
@@ -258,12 +265,14 @@ describe('Story.notes', () => {
 
   it('should return story notes when set', () => {
     jest.spyOn(Story, 'id').mockResolvedValue('123')
+    // @ts-expect-error Remnants from before typescript implementation
     chrome.storage.sync.get.mockResolvedValue({notes_123: 'Test note'})
     expect(Story.notes()).resolves.toBe('Test note')
   })
 
   it('should return null when notes are not set', () => {
     jest.spyOn(Story, 'id').mockResolvedValue('123')
+    // @ts-expect-error Remnants from before typescript implementation
     chrome.storage.sync.get.mockResolvedValue({})
     expect(Story.notes()).resolves.toBeNull()
   })
@@ -276,21 +285,25 @@ describe('Story.notes', () => {
 
 describe('Story id', () => {
   it('returns the correct story ID from a valid URL', async () => {
+    // @ts-expect-error Remnants from before typescript implementation
     urlModule.getActiveTabUrl.mockResolvedValue('https://app.shortcut.com/story/12345')
     await expect(Story.id()).resolves.toBe('12345')
   })
 
   it('returns null if the URL does not contain a story ID', async () => {
+    // @ts-expect-error Remnants from before typescript implementation
     urlModule.getActiveTabUrl.mockResolvedValue('https://app.shortcut.com/profile')
-    await expect(Story.id()).resolves.toBeNull(); // Using `resolves` for promises
+    await expect(Story.id()).resolves.toBeNull()
   })
 
   it('handles URLs with additional path segments correctly', async () => {
+    // @ts-expect-error Remnants from before typescript implementation
     urlModule.getActiveTabUrl.mockResolvedValue('https://app.shortcut.com/story/12345/details')
     await expect(Story.id()).resolves.toBe('12345')
   })
 
   it('returns null if getActiveTabUrl rejects', async () => {
+    // @ts-expect-error Remnants from before typescript implementation
     urlModule.getActiveTabUrl.mockRejectedValue(new Error('Error fetching URL'))
     await expect(Story.id()).rejects.toThrow('Error fetching URL')
   })
