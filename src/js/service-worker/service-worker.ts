@@ -42,7 +42,7 @@ async function handleGetSavedNotes(): Promise<{ data: string | null }> {
 if (typeof self !== 'undefined' && self instanceof ServiceWorkerGlobalScope) {
   chrome.runtime.onMessage.addListener((request: {
     action?: string,
-    data?: { prompt: string }
+    data?: { eventName?: string, params?: Record<string, string>, prompt: string },
     message?: string,
   }, sender: chrome.runtime.MessageSender, sendResponse: (response: unknown) => void) => {
     if (request.action === 'callOpenAI' && request.data) {
@@ -61,6 +61,13 @@ if (typeof self !== 'undefined' && self instanceof ServiceWorkerGlobalScope) {
     if (request.action === 'getSavedNotes') {
       handleGetSavedNotes().then(sendResponse)
       return true
+    }
+    if (request.action === 'sendEvent') {
+      if(!request.data || !request.data.eventName) return true
+      sendEvent(request.data.eventName, request.data.params).catch(e => {
+        console.error('Error sending event:', e)
+        Sentry.captureException(e)
+      })
     }
   })
 }
