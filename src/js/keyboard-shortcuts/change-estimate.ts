@@ -1,4 +1,5 @@
 async function changeEstimate(): Promise<void> {
+  chrome.runtime.sendMessage({action: 'sendEvent', data: {eventName: 'change_estimate'}})
   const dropdown: HTMLElement | null = document.querySelector('#story-dialog-estimate-dropdown')
   if (!dropdown) {
     console.error('The estimate dropdown was not found.')

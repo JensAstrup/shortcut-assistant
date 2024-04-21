@@ -1,3 +1,7 @@
+import * as Sentry from '@sentry/browser'
+
+import camelToSnake from '../utils/camel-to-snake'
+
 import changeEstimate from './change-estimate'
 import changeIteration from './change-iteration'
 import changeState from './change-state'
@@ -97,7 +101,11 @@ export class KeyboardShortcuts {
       event.preventDefault()
       const func: (() => Promise<void>) | undefined = this.shortcuts.get(serializedEventKey)
       if (func) {
-        func().catch(console.error)
+        chrome.runtime.sendMessage({action: 'sendEvent', data: {eventName: 'keyboard-shortcut', params: {shortcutAction: camelToSnake(func.name)}}})
+        func().catch(e => {
+          console.error('Error running shortcut:', e)
+          Sentry.captureException(e)
+        })
       }
     }
   }

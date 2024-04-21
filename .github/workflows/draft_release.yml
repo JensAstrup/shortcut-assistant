@@ -29,7 +29,7 @@ jobs:
           node-version: '21'
 
       - name: Install dependencies
-        run: cd src && npm install --yes
+        run: cd src && yarn
 
       - name: Extract tag name
         id: extract_tag
@@ -39,8 +39,8 @@ jobs:
         run: |
           mkdir dist
           cd src
-          npm run build-css
-          npm run dist
+          yarn run build-css
+          yarn run dist
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           VERSION: ${{ env.VERSION }}

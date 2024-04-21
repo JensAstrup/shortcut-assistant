@@ -1,9 +1,11 @@
-import dayjs from 'dayjs'
 import * as Sentry from '@sentry/browser'
+import dayjs from 'dayjs'
+
 import {findFirstMatchingElementForState} from '../development-time/find-first-matching-element-for-state'
+
+import {getActiveTabUrl} from './get-active-tab-url'
 import {hoursBetweenExcludingWeekends} from './hours-between-excluding-weekends'
 import sleep from './sleep'
-import {getActiveTabUrl} from './get-active-tab-url'
 
 
 export class Story {
@@ -17,7 +19,7 @@ export class Story {
   }
 
   static get description(): string | null {
-    const descriptionDiv: Element | null = document.querySelector('[data-key="description"]')
+    const descriptionDiv: Element | null = document.querySelector('#story-description-v2')
     const description: string | null | undefined = descriptionDiv?.textContent
     if (!description) {
       return null

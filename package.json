@@ -5,15 +5,15 @@
   "repository": "https://github.com/JensAstrup/shortcut-assistant",
   "author": "Jens Astrup",
   "scripts": {
-  "dev": "webpack --config webpack.config.dev.js",
-  "build-css": "postcss src/styles/index.css -o src/styles/output.css",
-  "test": "TZ='UTC' jest --config jest.config.js",
-  "lint": "eslint --ext .ts src",
-  "lint-fix": "eslint --ext .ts src --fix",
-  "build": "node src/build-manifest.ts",
-  "dist": "npx webpack && cp -r node_modules build/ && cd build && zip -r ../dist/dist.zip . -x \"coverage*\" \"*/*.test.js\""
-},
-"devDependencies": {
+    "dev": "webpack --config webpack.config.dev.js",
+    "build-css": "postcss src/styles/index.css -o src/styles/output.css",
+    "test": "TZ='UTC' jest --config jest.config.js",
+    "lint": "eslint --ext .ts src",
+    "lint-fix": "eslint --ext .ts src --fix",
+    "build": "node src/build-manifest.ts",
+    "dist": "npx webpack && cp -r node_modules build/ && cd build && zip -r ../dist/dist.zip . -x \"coverage*\" \"*/*.test.js\""
+  },
+  "devDependencies": {
     "@babel/core": "^7.24.0",
     "@babel/preset-env": "^7.24.4",
     "@babel/preset-typescript": "^7.23.3",
@@ -49,7 +49,9 @@
     "@sentry/webpack-plugin": "2.16.1",
     "@tailwindcss/typography": "0.5.10",
     "dayjs": "^1.11.10",
+    "jest-chrome": "^0.8.0",
     "jest-environment-jsdom": "29.7.0",
+    "node-html-parser": "^6.1.13",
     "openai": "4.29.1",
     "uuid": "^9.0.1"
   },

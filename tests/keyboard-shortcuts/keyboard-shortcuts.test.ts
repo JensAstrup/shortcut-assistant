@@ -1,6 +1,9 @@
-import {KeyboardShortcuts} from '../../src/js/keyboard-shortcuts/keyboard-shortcuts'
+import * as Sentry from '@sentry/browser'
+
+import {KeyboardShortcuts} from '@sx/keyboard-shortcuts/keyboard-shortcuts'
 
 
+jest.mock('@sentry/browser')
 jest.mock('../../src/js/utils/sleep', () => jest.fn().mockResolvedValue(undefined))
 
 describe('Shortcuts', () => {
@@ -67,24 +70,26 @@ describe('Shortcuts', () => {
 
     // Further, verify that the function mapped to the serialized key is indeed the mockFunction,
     // considering it's bound to the KeyboardShortcuts instance, we directly compare the reference here
-    const registeredFunction = keyboardShortcuts.shortcuts.get(expectedSerializedKey)
+    const registeredFunction: (() => Promise<void>) | undefined = keyboardShortcuts.shortcuts.get(expectedSerializedKey)
     expect(registeredFunction).toBeDefined()
 
     // Since we cannot directly compare bound functions, we'll invoke it and check if the mock was called
-    registeredFunction()
+    registeredFunction?.()
     expect(mockFunction).toHaveBeenCalled()
   })
 
   describe('KeyboardShortcuts class', () => {
-    let keyboardShortcuts
-    let mockFunction
+    let keyboardShortcuts: KeyboardShortcuts
+    let mockFunction: jest.MockedFn<jest.MockableFunction>
 
     beforeEach(() => {
       keyboardShortcuts = new KeyboardShortcuts()
-      mockFunction = jest.fn().mockResolvedValue(undefined) // Simulate a function that returns a promise
+      mockFunction = jest.fn()
+      mockFunction.mockResolvedValue(undefined) // Simulate a function that returns a promise
     })
 
     it('calls the registered function for a matching keydown event', async () => {
+      chrome.runtime.sendMessage = jest.fn()
       const shortcut = {
         key: 'n',
         shiftKey: true,
@@ -104,6 +109,7 @@ describe('Shortcuts', () => {
 
       expect(preventDefaultSpy).toHaveBeenCalled()
       expect(mockFunction).toHaveBeenCalled()
+      expect(chrome.runtime.sendMessage).toHaveBeenCalledWith({action: 'sendEvent', data: {eventName: 'keyboard-shortcut', params: {shortcutAction: 'bound mock_constructor'}}})
     })
 
     it('does not call preventDefault or a function for a non-matching keydown event', async () => {
@@ -120,6 +126,34 @@ describe('Shortcuts', () => {
       expect(preventDefaultSpy).not.toHaveBeenCalled()
       // Since no function is registered for this key, the mock function should not be called
       expect(mockFunction).not.toHaveBeenCalled()
+    })
+
+    it('logs an error if the called function throws an error', async () => {
+      const error = new Error('error')
+      mockFunction.mockRejectedValue(error)
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation()
+
+      const shortcut = {
+        key: 'n',
+        shiftKey: true,
+        ctrlKey: true,
+        func: mockFunction
+      }
+
+      keyboardShortcuts.registerShortcut(shortcut)
+      const event = new KeyboardEvent('keydown', {
+        key: 'n',
+        shiftKey: true,
+        ctrlKey: true
+      })
+
+      const preventDefaultSpy = jest.spyOn(event, 'preventDefault')
+      await keyboardShortcuts.handleKeyDown(event)
+
+      expect(preventDefaultSpy).toHaveBeenCalled()
+      expect(mockFunction).toHaveBeenCalled()
+      expect(consoleErrorSpy).toHaveBeenCalledWith('Error running shortcut:', error)
+      expect(Sentry.captureException).toHaveBeenCalledWith(error)
     })
   })
 })

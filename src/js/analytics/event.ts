@@ -1,10 +1,10 @@
+import {getOrCreateClientId} from './client-id'
 import {
+  DEFAULT_ENGAGEMENT_TIME_IN_MSEC,
   GA_ENDPOINT,
   GOOGLE_ANALYTICS_API_SECRET,
-  MEASUREMENT_ID,
-  DEFAULT_ENGAGEMENT_TIME_IN_MSEC
+  MEASUREMENT_ID
 } from './config'
-import {getOrCreateClientId} from './client-id'
 import {getOrCreateSessionId} from './session-id'
 
 

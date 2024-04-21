@@ -26,6 +26,12 @@ describe('change state', () => {
     jest.spyOn(document, 'getElementById').mockReturnValueOnce(mockedDropdownParent)
   })
 
+  it('should send an event to the background script', async () => {
+    chrome.runtime.sendMessage = jest.fn()
+    await changeState()
+    expect(chrome.runtime.sendMessage).toHaveBeenCalledWith({action: 'sendEvent', data: {eventName: 'change_state'}})
+  })
+
   it('should open dropdown when called', async () => {
     const mockedPopup = {} as MockedSelectElement
     const mockedInput = {
