@@ -1,4 +1,6 @@
 import {KeyboardShortcuts} from '../../src/js/keyboard-shortcuts/keyboard-shortcuts'
+import Func = jest.Func
+import {Key} from 'node:readline'
 
 
 jest.mock('../../src/js/utils/sleep', () => jest.fn().mockResolvedValue(undefined))
@@ -67,17 +69,17 @@ describe('Shortcuts', () => {
 
     // Further, verify that the function mapped to the serialized key is indeed the mockFunction,
     // considering it's bound to the KeyboardShortcuts instance, we directly compare the reference here
-    const registeredFunction = keyboardShortcuts.shortcuts.get(expectedSerializedKey)
+    const registeredFunction: (() => Promise<void>) | undefined = keyboardShortcuts.shortcuts.get(expectedSerializedKey)
     expect(registeredFunction).toBeDefined()
 
     // Since we cannot directly compare bound functions, we'll invoke it and check if the mock was called
-    registeredFunction()
+    registeredFunction?.()
     expect(mockFunction).toHaveBeenCalled()
   })
 
   describe('KeyboardShortcuts class', () => {
-    let keyboardShortcuts
-    let mockFunction
+    let keyboardShortcuts: KeyboardShortcuts
+    let mockFunction: Func
 
     beforeEach(() => {
       keyboardShortcuts = new KeyboardShortcuts()

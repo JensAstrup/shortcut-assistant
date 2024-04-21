@@ -30,6 +30,12 @@ const mockedChangeState = changeState as jest.MockedFunction<typeof changeState>
 const mockedGetStateDiv = getStateDiv as jest.MockedFunction<typeof getStateDiv>
 
 describe('copyBranchAndMoveToInDevelopment', () => {
+  it('sends an event to the background script', async () => {
+    chrome.runtime.sendMessage = jest.fn()
+    await copyBranchAndMoveToInDevelopment()
+    expect(chrome.runtime.sendMessage).toHaveBeenCalledWith({action: 'sendEvent', data: {eventName: 'copy_git_branch_and_move_to_in_development'}})
+  })
+
   it('calls copyGitBranch and then changes state', async () => {
     const stateDivMock = {click: jest.fn()} as MockedHtmlElement
 

@@ -16,7 +16,13 @@ interface MockedSelectElement extends HTMLElement {
 }
 
 describe('change iteration', () => {
-  test('changeIteration function', async () => {
+  it('should send an event to the background script', async () => {
+    chrome.runtime.sendMessage = jest.fn()
+    await changeIteration()
+    expect(chrome.runtime.sendMessage).toHaveBeenCalledWith({action: 'sendEvent', data: {eventName: 'change_iteration'}})
+  })
+
+  it('should open the iteration dropdown', async () => {
     const mockChildButton = {click: jest.fn()} as MockedButtonElement
     const mockedIterationSelect = {
       querySelector: jest.fn().mockReturnValue(mockChildButton),

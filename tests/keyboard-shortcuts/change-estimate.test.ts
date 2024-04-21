@@ -6,6 +6,14 @@ interface MockedElement extends Element {
 }
 
 describe('change estimate', () => {
+  it('should send an event to the background script', async () => {
+    chrome.runtime.sendMessage = jest.fn()
+
+    await changeEstimate()
+
+    expect(chrome.runtime.sendMessage).toHaveBeenCalledWith({action: 'sendEvent', data: {eventName: 'change_estimate'}})
+  })
+
   it('click on the dropdown', async () => {
     const mockDropdown = {click: jest.fn()} as MockedElement
     jest.spyOn(document, 'querySelector').mockReturnValueOnce(mockDropdown)

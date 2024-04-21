@@ -15,6 +15,18 @@ describe('copy git branch', () => {
     document.body.innerHTML = ''
   })
 
+  it('should send an event to the background script', async () => {
+    chrome.runtime.sendMessage = jest.fn()
+    await copyGitBranch()
+    expect(chrome.runtime.sendMessage).toHaveBeenCalledWith({action: 'sendEvent', data: {eventName: 'copy_git_branch'}})
+  })
+
+  it('should not send an event if the track parameter is false', async () => {
+    chrome.runtime.sendMessage = jest.fn()
+    await copyGitBranch(false)
+    expect(chrome.runtime.sendMessage).not.toHaveBeenCalled()
+  })
+
   it('should copy the git branch to the clipboard', async () => {
     const gitHelpers = document.createElement('div')
     gitHelpers.id = 'open-git-helpers-dropdown'
