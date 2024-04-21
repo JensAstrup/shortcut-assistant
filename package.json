@@ -49,6 +49,7 @@
     "@sentry/webpack-plugin": "2.16.1",
     "@tailwindcss/typography": "0.5.10",
     "dayjs": "^1.11.10",
+    "jest-chrome": "^0.8.0",
     "jest-environment-jsdom": "29.7.0",
     "openai": "4.29.1",
     "uuid": "^9.0.1"
