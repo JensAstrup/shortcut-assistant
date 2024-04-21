@@ -2,6 +2,7 @@ import * as Sentry from '@sentry/browser'
 
 import {sendEvent} from '@sx/analytics/event'
 import {handleCommands} from '@sx/service-worker/handlers'
+import registerListeners from '@sx/service-worker/listeners'
 import {getSyncedSetting} from '@sx/utils/get-synced-setting'
 import {Story} from '@sx/utils/story'
 
@@ -9,6 +10,7 @@ import {onInstallAndUpdate} from './on-install-and-update'
 import {SlugManager} from './slug-manager'
 
 
+registerListeners()
 const manifestData = chrome.runtime.getManifest()
 Sentry.init({
   dsn: 'https://966b241d3d57856bd13a0945fa9fa162@o49777.ingest.sentry.io/4506624214368256',

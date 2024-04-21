@@ -28,7 +28,8 @@ module.exports = {
     ],
     'js/service_worker/bundle': [
       './src/js/service-worker/service-worker.ts',
-      './src/js/service-worker/omnibox/listeners.ts'
+      './src/js/service-worker/omnibox/listeners.ts',
+      './src/js/service-worker/listeners'
     ],
     'js/contentScripts/bundle': [
       './src/js/content-scripts.ts',
