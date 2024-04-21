@@ -87,6 +87,7 @@ describe('Shortcuts', () => {
     })
 
     it('calls the registered function for a matching keydown event', async () => {
+      chrome.runtime.sendMessage = jest.fn()
       const shortcut = {
         key: 'n',
         shiftKey: true,
@@ -106,6 +107,7 @@ describe('Shortcuts', () => {
 
       expect(preventDefaultSpy).toHaveBeenCalled()
       expect(mockFunction).toHaveBeenCalled()
+      expect(chrome.runtime.sendMessage).toHaveBeenCalledWith({action: 'sendEvent', data: {eventName: 'keyboard-shortcut', params: {shortcutAction: 'bound mock_constructor'}}})
     })
 
     it('does not call preventDefault or a function for a non-matching keydown event', async () => {
