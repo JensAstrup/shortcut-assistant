@@ -6,7 +6,8 @@ import copyGitBranch from './copy-git-branch'
 
 
 async function copyBranchAndMoveToInDevelopment(): Promise<void> {
-  await copyGitBranch()
+  chrome.runtime.sendMessage({action: 'sendEvent', data: {eventName: 'copy_git_branch_and_move_to_in_development'}})
+  await copyGitBranch(false)
   await changeState()
   await sleep(300)
   const stateDiv = getStateDiv('In Development')
