@@ -60,6 +60,10 @@ module.exports = {
     ]
   },
   resolve: {
+    alias: {
+      // Translate TypeScript paths to Webpack aliases
+      '@sx': path.resolve(__dirname, './src/js/')
+    },
     extensions: ['.tsx', '.ts', '.js']
   },
 
