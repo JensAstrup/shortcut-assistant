@@ -1,8 +1,9 @@
-import {KeyboardShortcuts} from '../../src/js/keyboard-shortcuts/keyboard-shortcuts'
-import Func = jest.Func
-import {Key} from 'node:readline'
+import * as Sentry from '@sentry/browser'
+
+import {KeyboardShortcuts} from '@sx/keyboard-shortcuts/keyboard-shortcuts'
 
 
+jest.mock('@sentry/browser')
 jest.mock('../../src/js/utils/sleep', () => jest.fn().mockResolvedValue(undefined))
 
 describe('Shortcuts', () => {
@@ -79,11 +80,12 @@ describe('Shortcuts', () => {
 
   describe('KeyboardShortcuts class', () => {
     let keyboardShortcuts: KeyboardShortcuts
-    let mockFunction: Func
+    let mockFunction: jest.MockedFn<jest.MockableFunction>
 
     beforeEach(() => {
       keyboardShortcuts = new KeyboardShortcuts()
-      mockFunction = jest.fn().mockResolvedValue(undefined) // Simulate a function that returns a promise
+      mockFunction = jest.fn()
+      mockFunction.mockResolvedValue(undefined) // Simulate a function that returns a promise
     })
 
     it('calls the registered function for a matching keydown event', async () => {
@@ -124,6 +126,34 @@ describe('Shortcuts', () => {
       expect(preventDefaultSpy).not.toHaveBeenCalled()
       // Since no function is registered for this key, the mock function should not be called
       expect(mockFunction).not.toHaveBeenCalled()
+    })
+
+    it('logs an error if the called function throws an error', async () => {
+      const error = new Error('error')
+      mockFunction.mockRejectedValue(error)
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation()
+
+      const shortcut = {
+        key: 'n',
+        shiftKey: true,
+        ctrlKey: true,
+        func: mockFunction
+      }
+
+      keyboardShortcuts.registerShortcut(shortcut)
+      const event = new KeyboardEvent('keydown', {
+        key: 'n',
+        shiftKey: true,
+        ctrlKey: true
+      })
+
+      const preventDefaultSpy = jest.spyOn(event, 'preventDefault')
+      await keyboardShortcuts.handleKeyDown(event)
+
+      expect(preventDefaultSpy).toHaveBeenCalled()
+      expect(mockFunction).toHaveBeenCalled()
+      expect(consoleErrorSpy).toHaveBeenCalledWith('Error running shortcut:', error)
+      expect(Sentry.captureException).toHaveBeenCalledWith(error)
     })
   })
 })
