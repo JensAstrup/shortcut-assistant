@@ -52,7 +52,7 @@
     "jest-chrome": "^0.8.0",
     "jest-environment-jsdom": "29.7.0",
     "node-html-parser": "^6.1.13",
-    "openai": "4.29.1",
+    "openai": "4.38.2",
     "uuid": "^9.0.1"
   },
   "jest": {
