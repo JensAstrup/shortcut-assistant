@@ -1,6 +1,8 @@
 import {Todoist} from '@sx/todoist/todoist'
 import {Story} from '@sx/utils/story'
 
+import Func = jest.Func
+
 
 jest.mock('../../src/js/utils/log-error')
 jest.mock('../../src/js/utils/story', () => ({
@@ -106,6 +108,51 @@ describe('Todoist', () => {
   })
 
   describe('setTaskButton', () => {
+    let capturedEventListener: Func
+    it('calls addButtonIfNotExists if button exists', async () => {
+      const element = {
+        appendChild: jest.fn(),
+        setAttribute: jest.fn(),
+        addEventListener: jest.fn((event, handler) => {
+          capturedEventListener = handler
+        }),
+        append: jest.fn(),
+        dataset: {},
+        tagname: 'tag',
+        style: {}
+      } as unknown as HTMLButtonElement
+      jest.spyOn(Todoist, 'createButton').mockReturnValue(element)
+      document.querySelector = jest.fn().mockReturnValue(null)
+      window.open = jest.fn()
+      await Todoist.setTaskButton('Test title', 'Tooltip', 'Task title')
+      expect(document.querySelector).toHaveBeenCalled()
+      expect(Story.getEditDescriptionButtonContainer).toHaveBeenCalled()
+      expect(Todoist.createButton).toHaveBeenCalled()
+      expect(element.addEventListener).toHaveBeenCalled()
+      // Get the function passed to addEventListener
+      capturedEventListener()
+      expect(window.open).toHaveBeenCalledWith('https://todoist.com/add?content=Task title [Mocked Story Title](https://example.com/story)', '_blank')
+    })
+
+    it('should return if button exists', async () => {
+      const mockButton = document.createElement = jest.fn().mockImplementation(tag => {
+        const element = {
+          appendChild: jest.fn(),
+          setAttribute: jest.fn(),
+          addEventListener: jest.fn(),
+          append: jest.fn(),
+          dataset: {},
+          tagname: tag.toUpperCase(),
+          style: {}
+        } as unknown as HTMLElement
+        return element
+      })
+      document.querySelector = jest.fn().mockReturnValue(mockButton)
+      await Todoist.setTaskButton('Test title', 'Tooltip', 'Task title')
+      expect(document.querySelector).toHaveBeenCalled()
+      expect(Story.getEditDescriptionButtonContainer).not.toHaveBeenCalled()
+    })
+
     it('does not call addButtonIfNotExists if button exists', async () => {
       const mockButton = document.createElement = jest.fn().mockImplementation(tag => {
         const element = {
