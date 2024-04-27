@@ -1,106 +1,85 @@
-import {chrome} from 'jest-chrome'
+import * as Sentry from '@sentry/browser'
 
-import {sendEvent} from '@sx/analytics/event'
-import Tab = chrome.tabs.Tab
-import {
-  handleGetOpenAiToken,
-  handleGetSavedNotes,
-  handleOpenAICall
-} from '@sx/service-worker/handlers'
-import ManifestV3 = chrome.runtime.ManifestV3
-
-
-jest.mock('@sx/service-worker/handlers', () => ({
-  handleOpenAICall: jest.fn().mockResolvedValue({data: 'mock'}),
-  handleGetOpenAiToken: jest.fn().mockResolvedValue({token: 'mock'}),
-  handleGetSavedNotes: jest.fn().mockResolvedValue({data: 'mock'}),
-}))
-
-jest.mock('../../src/js/analytics/event', () => ({
-  sendEvent: jest.fn().mockResolvedValue({}),
-}))
-
-Object.assign(global, require('jest-chrome'))
+import { sendEvent } from '@sx/analytics/event'
+import { handleCommands } from '@sx/service-worker/handlers'
+import { onInstallAndUpdate } from '@sx/service-worker/on-install-and-update'
+import { SlugManager } from '@sx/service-worker/slug-manager'
+import checkHost from '@sx/utils/check-host'
+import { getSyncedSetting } from '@sx/utils/get-synced-setting'
+import { Story } from '@sx/utils/story'
 
 
-describe('chrome.runtime.onMessage listener', () => {
-  require('@sx/service-worker/listeners')
 
-  const manifest: ManifestV3 = {
-    name: 'shortcut assistant mock',
-    version: '1.0.0',
-    manifest_version: 3,
+jest.mock('@sentry/browser')
+jest.mock('@sx/analytics/event')
+jest.mock('@sx/service-worker/handlers')
+jest.mock('@sx/utils/check-host')
+const mockedCheckHost = checkHost as jest.MockedFunction<typeof checkHost>
+jest.mock('@sx/utils/get-synced-setting')
+const mockedGetSyncedSetting = getSyncedSetting as jest.MockedFunction<typeof getSyncedSetting>
+jest.mock('@sx/utils/story', () => ({
+  Story: {
+    notes: jest.fn()
   }
+}))
+const mockedStory = Story as jest.Mocked<typeof Story>
 
-  chrome.runtime.getManifest.mockImplementation(() => manifest)
-  beforeEach(() => {
-    jest.clearAllMocks()
+describe('Chrome Extension behavior', () => {
+  describe('Sentry initialization', () => {
+    it('should initialize Sentry with correct parameters', () => {
+      expect(Sentry.init).toHaveBeenCalledWith({
+        dsn: expect.any(String),
+        release: expect.any(String),
+        environment: expect.any(String)
+      })
+    })
   })
 
-  it('calls handleOpenAICall if action is "callOpenAI"', async () => {
-    const sendResponse = jest.fn()
-    const mockTabId = 123
-    const mockPrompt = 'How to use Jest with TypeScript?'
-
-
-    chrome.runtime.onMessage.callListeners({
-      action: 'callOpenAI',
-      data: {prompt: mockPrompt}
-    }, {tab: {id: mockTabId, index: 0, pinned: false, windowId: 1, active: true} as Tab}, sendResponse)
-
-    expect(handleOpenAICall).toHaveBeenCalledWith(mockPrompt, mockTabId)
-    await new Promise(process.nextTick) // Wait for all promises to resolve
-    expect(sendResponse).toHaveBeenCalled()
+  describe('Command handling', () => {
+    it('should add a listener for chrome.commands.onCommand', () => {
+      expect(chrome.commands.onCommand.addListener).toHaveBeenCalledWith(handleCommands)
+    })
   })
 
-  it('handles missing tab information correctly', () => {
-    const sendResponse = jest.fn()
-    chrome.runtime.onMessage.callListeners({
-      action: 'callOpenAI',
-      data: {prompt: 'prompt'}
-    }, {}, sendResponse)
-
-    expect(sendResponse).not.toHaveBeenCalled()
-    expect(handleOpenAICall).not.toHaveBeenCalled()
+  describe('Installation and update handling', () => {
+    it('should add a listener for chrome.runtime.onInstalled', () => {
+      expect(chrome.runtime.onInstalled.addListener).toHaveBeenCalledWith(onInstallAndUpdate)
+    })
   })
 
-  it('calls handleGetOpenAiToken when message is "getOpenAiToken"', async () => {
-    const sendResponse = jest.fn()
+  describe('Tab update handling', () => {
+    beforeEach(() => {
+      jest.clearAllMocks()
+    })
 
-    chrome.runtime.onMessage.callListeners({
-      message: 'getOpenAiToken'
-    }, {}, sendResponse)
+    it('should handle tab URL updates with a recognized host', async () => {
+      const tabId = 123
+      const changeInfo = { url: 'http://validurl.com/path' }
+      mockedCheckHost.mockReturnValue(true)
+      mockedGetSyncedSetting.mockResolvedValue(true)
+      mockedStory.notes.mockResolvedValue('notes')
 
-    await new Promise(process.nextTick)
-    expect(handleGetOpenAiToken).toHaveBeenCalled()
-    expect(sendResponse).toHaveBeenCalled()
-  })
+      // @ts-expect-error Migrating from JS
+      await chrome.tabs.onUpdated.callListeners(tabId, changeInfo)
 
-  it('calls handleGetSavedNotes when action is "getSavedNotes"', async () => {
-    const sendResponse = jest.fn()
+      expect(SlugManager.refreshCompanySlug).toHaveBeenCalledWith(tabId, changeInfo)
+      expect(chrome.tabs.sendMessage).toHaveBeenCalledWith(tabId, expect.objectContaining({
+        message: 'update',
+        url: changeInfo.url
+      }))
+      expect(sendEvent).toHaveBeenCalledTimes(2)
+    })
 
-    chrome.runtime.onMessage.callListeners({
-      action: 'getSavedNotes'
-    }, {}, sendResponse)
+    it('should not handle tab updates for unrecognized hosts', async () => {
+      const tabId = 123
+      const changeInfo = { url: 'http://invalidurl.com/path' }
+      mockedCheckHost.mockReturnValue(false)
 
-    await new Promise(process.nextTick)
-    expect(handleGetSavedNotes).toHaveBeenCalled()
-    expect(sendResponse).toHaveBeenCalled()
-  })
+      // @ts-expect-error Migrating from JS
+      await chrome.tabs.onUpdated.callListeners(tabId, changeInfo)
 
-  it('calls sendEvent when action is "sendEvent" and data is valid', async () => {
-    const sendResponse = jest.fn()
-    const mockEventName = 'userLogin'
-    const mockParams = {user: 'testUser'}
-
-    require('@sx/service-worker/service-worker')
-
-    chrome.runtime.onMessage.callListeners({
-      action: 'sendEvent',
-      data: {eventName: mockEventName, params: mockParams}
-    }, {}, sendResponse)
-
-    // await new Promise(process.nextTick)
-    expect(sendEvent).toHaveBeenCalledWith(mockEventName, mockParams)
+      expect(SlugManager.refreshCompanySlug).not.toHaveBeenCalled()
+      expect(chrome.tabs.sendMessage).not.toHaveBeenCalled()
+    })
   })
 })
