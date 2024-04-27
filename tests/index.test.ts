@@ -1,35 +1,40 @@
-import {activate} from '../src/js/content-scripts'
-import {getSyncedSetting} from '../src/js/utils/get-synced-setting'
+import {activate} from '@sx/content-scripts'
+import {CycleTime} from '@sx/cycle-time/cycle-time'
+import {DevelopmentTime} from '@sx/development-time/development-time'
+import {KeyboardShortcuts} from '@sx/keyboard-shortcuts/keyboard-shortcuts'
+import {NotesButton} from '@sx/notes/notes-button'
+import {Todoist} from '@sx/todoist/todoist'
+import {getSyncedSetting} from '@sx/utils/get-synced-setting'
+
 import storyPageIsReady from '../src/js/utils/story-page-is-ready'
-import {CycleTime} from '../src/js/cycle-time/cycle-time'
-import {DevelopmentTime} from '../src/js/development-time/development-time'
-import {Todoist} from '../src/js/todoist/todoist'
-import {NotesButton} from '../src/js/notes/notes-button'
-import {KeyboardShortcuts} from '../src/js/keyboard-shortcuts/keyboard-shortcuts'
+
+import Manifest = chrome.runtime.Manifest
 
 
 jest.mock('@sentry/browser')
 jest.mock('../src/js/cycle-time/cycle-time', () => ({
   CycleTime: {
-    set: jest.fn().mockResolvedValue()
+    set: jest.fn().mockResolvedValue(null)
   }
 }))
 jest.mock('../src/js/development-time/development-time', () => ({
   DevelopmentTime: {
-    set: jest.fn().mockResolvedValue()
+    set: jest.fn().mockResolvedValue(null)
   }
 }))
 jest.mock('../src/js/todoist/todoist')
 jest.mock('../src/js/notes/notes-button')
 jest.mock('../src/js/keyboard-shortcuts/keyboard-shortcuts')
-jest.mock('../src/js/utils/story-page-is-ready', () => jest.fn().mockResolvedValue())
+jest.mock('../src/js/utils/story-page-is-ready', () => jest.fn().mockResolvedValue(null))
 jest.mock('../src/js/utils/get-synced-setting', () => ({
   getSyncedSetting: jest.fn()
 }))
+const mockedGetSyncedSetting = getSyncedSetting as jest.Mock
 
 global.chrome = {
   runtime: {
-    getManifest: jest.fn(() => ({version: '1.0.0'})),
+    getManifest: jest.fn(() => ({version: '1.0.0'} as Manifest)),
+    // @ts-expect-error Migrating from JS
     onMessage: {
       addListener: jest.fn()
     }
@@ -37,7 +42,7 @@ global.chrome = {
 }
 
 describe('activate function', () => {
-  let originalError
+  let originalError: typeof console.error
 
   beforeEach(() => {
     jest.clearAllMocks()
@@ -60,7 +65,7 @@ describe('activate function', () => {
   })
 
   it('logs an error if CycleTime.set fails', async () => {
-    CycleTime.set.mockRejectedValueOnce(new Error('Test Error'))
+    jest.spyOn(CycleTime, 'set').mockRejectedValueOnce(new Error('Test Error'))
     await activate()
     expect(console.error).toHaveBeenCalledWith(expect.any(Error))
   })
@@ -71,30 +76,33 @@ describe('activate function', () => {
   })
 
   it('logs an error if DevelopmentTime.set fails', async () => {
-    DevelopmentTime.set.mockRejectedValueOnce(new Error('Test Error'))
+    jest.spyOn(DevelopmentTime, 'set').mockRejectedValueOnce(new Error('Test Error'))
     await activate()
     expect(console.error).toHaveBeenCalledWith(expect.any(Error))
   })
 
   it('conditionally initializes Todoist based on enableTodoistOptions setting', async () => {
-    getSyncedSetting.mockResolvedValueOnce(false)
+    const setTaskButtons = jest.spyOn(Todoist, 'setTaskButtons').mockResolvedValue(undefined)
+    mockedGetSyncedSetting.mockResolvedValueOnce(false)
     await activate()
-    expect(Todoist).not.toHaveBeenCalled()
+    expect(setTaskButtons).not.toHaveBeenCalled()
 
-    getSyncedSetting.mockResolvedValueOnce(true)
+    mockedGetSyncedSetting.mockResolvedValueOnce(true)
+
     await activate()
-    expect(Todoist).toHaveBeenCalledTimes(1)
+    expect(setTaskButtons).toHaveBeenCalledTimes(1)
   })
 
   it('instantiates NotesButton and activates KeyboardShortcuts unconditionally', async () => {
     await activate()
     expect(NotesButton).toHaveBeenCalled()
     expect(KeyboardShortcuts).toHaveBeenCalled()
+    // @ts-expect-error Migrating from JS
     expect(KeyboardShortcuts.mock.instances[0].activate).toHaveBeenCalled()
   })
 
   it('handles getSyncedSetting failure gracefully', async () => {
-    getSyncedSetting.mockRejectedValueOnce(new Error('Failed to fetch setting'))
+    mockedGetSyncedSetting.mockRejectedValueOnce(new Error('Failed to fetch setting'))
     await activate()
     expect(console.error).toHaveBeenCalledWith(expect.any(Error))
   })

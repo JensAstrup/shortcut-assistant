@@ -1,8 +1,19 @@
-import {DevelopmentTime} from '../../src/js/development-time/development-time'
-import {Story} from '../../src/js/utils/story'
+import {DevelopmentTime} from '@sx/development-time/development-time'
+import {Story} from '@sx/utils/story'
 
 
-jest.mock('../../src/js/utils/story-page-is-ready', () => jest.fn().mockResolvedValue(true))
+jest.mock('@sx/utils/story-page-is-ready', () => jest.fn().mockResolvedValue(true))
+
+global.chrome.storage.sync = {get: jest.fn()} as unknown as jest.Mocked<typeof chrome.storage.sync>
+
+// @ts-expect-error - TS doesn't know about the mock implementation
+global.chrome.storage.sync.get.mockImplementation((key, callback) => {
+  const data = {inDevelopmentText: 'In Development'}
+  if (typeof callback === 'function') {
+    callback(data)
+  }
+  return data
+})
 
 
 describe('DevelopmentTime.setTimeSpan', () => {
@@ -18,28 +29,31 @@ describe('DevelopmentTime.setTimeSpan', () => {
   })
 
   it('appends a correctly formatted time span for positive hours', () => {
-    const mockElement = {appendChild: jest.fn()}
+    const mockElement = {appendChild: jest.fn()} as unknown as HTMLElement
     jest.spyOn(Story, 'state', 'get').mockReturnValue(mockElement)
     const hoursElapsed = 48 // 2 days
     DevelopmentTime.setTimeSpan(hoursElapsed)
+    // @ts-expect-error - TS doesn't know about mockElement
     const timeSpan = mockElement.appendChild.mock.calls[0][0]
     expect(timeSpan.innerHTML).toBe(' (2.00 days)')
   })
 
   it('appends a correctly formatted time span for negative hours', () => {
-    const mockElement = {appendChild: jest.fn()}
+    const mockElement = {appendChild: jest.fn()} as unknown as HTMLElement
     jest.spyOn(Story, 'state', 'get').mockReturnValue(mockElement)
     const hoursElapsed = -72 // -3 days, but should be 3 days after abs
     DevelopmentTime.setTimeSpan(hoursElapsed)
+    // @ts-expect-error - TS doesn't know about mockElement
     const timeSpan = mockElement.appendChild.mock.calls[0][0]
     expect(timeSpan.innerHTML).toBe(' (3.00 days)')
   })
 
   it('appends a correctly formatted time span for zero hours', () => {
-    const mockElement = {appendChild: jest.fn()}
+    const mockElement = {appendChild: jest.fn()} as unknown as HTMLElement
     jest.spyOn(Story, 'state', 'get').mockReturnValue(mockElement)
     const hoursElapsed = 0
     DevelopmentTime.setTimeSpan(hoursElapsed)
+    // @ts-expect-error - TS doesn't know about mockElement
     const timeSpan = mockElement.appendChild.mock.calls[0][0]
     expect(timeSpan.innerHTML).toBe(' (0.00 days)')
   })

@@ -1,4 +1,4 @@
-import sleep from '../utils/sleep'
+import sleep from '@sx/utils/sleep'
 
 
 async function changeState(): Promise<void> {
