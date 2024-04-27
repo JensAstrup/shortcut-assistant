@@ -2,6 +2,7 @@ import * as Sentry from '@sentry/browser'
 
 import {sendEvent} from '@sx/analytics/event'
 import {handleCommands} from '@sx/service-worker/handlers'
+import checkHost from '@sx/utils/check-host'
 import {getSyncedSetting} from '@sx/utils/get-synced-setting'
 import {Story} from '@sx/utils/story'
 
@@ -21,7 +22,7 @@ chrome.commands.onCommand.addListener(handleCommands)
 chrome.runtime.onInstalled.addListener(onInstallAndUpdate)
 
 chrome.tabs.onUpdated.addListener(async function (tabId, changeInfo) {
-  if (changeInfo.url && changeInfo.url.includes('app.shortcut.com')) {
+  if (changeInfo.url && checkHost(changeInfo.url)) {
     SlugManager.refreshCompanySlug(tabId, changeInfo).catch(e => {
       console.error('Error refreshing company slug:', e)
       Sentry.captureException(e)

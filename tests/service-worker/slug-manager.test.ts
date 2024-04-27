@@ -4,7 +4,9 @@ import {SlugManager} from '../../src/js/service-worker/slug-manager'
 
 
 global.chrome = {
+  // @ts-expect-error Migrating from JS
   storage: {
+    ...chrome.storage,
     sync: {
       get: jest.fn((key, callback) => {
         const data = {'companySlug': 'companySlug1'}
@@ -12,15 +14,16 @@ global.chrome = {
           callback(data)
         }
         return data
-      }),
+      }) as jest.Mock,
       set: jest.fn((data, callback) => {
         if (typeof callback === 'function') {
           callback()
         }
-      })
+      }) as jest.Mock
     }
-  }
+  } as unknown as jest.Mocked<chrome.storage.StorageArea>,
 }
+
 
 describe('SlugManager', () => {
   beforeEach(() => {
@@ -58,6 +61,7 @@ describe('SlugManager', () => {
 
   describe('getCompanySlug', () => {
     it('should get the company slug from chrome storage', async () => {
+      // @ts-expect-error Migrating from JS
       global.chrome.storage.sync.get.mockImplementation((key, callback) => {
         const data = {'companySlug': 'companySlug'}
         if (typeof callback === 'function') {
@@ -73,6 +77,7 @@ describe('SlugManager', () => {
     })
 
     it('should return null if the company slug is not found', async () => {
+      // @ts-expect-error Migrating from JS
       global.chrome.storage.sync.get.mockImplementation((key, callback) => {
         const data = {'companySlug': undefined}
         if (typeof callback === 'function') {
@@ -116,7 +121,7 @@ describe('SlugManager', () => {
     })
 
     it('should not set the company slug if the company slug is not found', async () => {
-      jest.spyOn(SlugManager, 'getCompanySlugFromTab').mockResolvedValue(undefined)
+      jest.spyOn(SlugManager, 'getCompanySlugFromTab').mockResolvedValue(null)
       const setSpy = jest.spyOn(SlugManager, 'setCompanySlug')
 
       await SlugManager.refreshCompanySlug(1, {url: 'https://testing.com/newCompanySlug/page'})
