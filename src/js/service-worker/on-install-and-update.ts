@@ -3,7 +3,7 @@ import * as Sentry from '@sentry/browser'
 import InstalledDetails = chrome.runtime.InstalledDetails
 
 
-export class InstallAndUpdate {
+class InstallAndUpdate {
   static onInstall() {
     chrome.windows.create({
       url: '../html/installed.html',
@@ -24,7 +24,7 @@ export class InstallAndUpdate {
 }
 
 
-export function onInstallAndUpdate(details: InstalledDetails) {
+function onInstallAndUpdate(details: InstalledDetails) {
   if (details.reason === 'install') {
     InstallAndUpdate.onInstall()
   }
@@ -38,3 +38,5 @@ export function onInstallAndUpdate(details: InstalledDetails) {
     }
   }
 }
+
+export {InstallAndUpdate, onInstallAndUpdate}
