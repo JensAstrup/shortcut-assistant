@@ -1,6 +1,7 @@
-import {hoursBetweenExcludingWeekends} from '../utils/hours-between-excluding-weekends'
-import {Story} from '../utils/story'
-import storyPageIsReady from '../utils/story-page-is-ready'
+import {getSyncedSetting} from '@sx/utils/get-synced-setting'
+import {hoursBetweenExcludingWeekends} from '@sx/utils/hours-between-excluding-weekends'
+import {Story} from '@sx/utils/story'
+import storyPageIsReady from '@sx/utils/story-page-is-ready'
 
 
 export class CycleTime {
@@ -15,12 +16,14 @@ export class CycleTime {
   static async set() {
     await storyPageIsReady()
     this.clear()
-    const isCompleted = Story.isInState('Completed')
+    const doneText = await getSyncedSetting('doneText', 'Completed')
+    const isCompleted = Story.isInState(doneText)
     if (!isCompleted) {
       return
     }
     const createdDiv = document.querySelector('.story-date-created')
-    const inDevelopmentDateString = Story.getDateInState('In Development')
+    const inDevelopmentText = await getSyncedSetting('inDevelopmentText', 'In Development')
+    const inDevelopmentDateString = Story.getDateInState(inDevelopmentText)
     const completedDiv = document.querySelector('.story-date-completed')
     const completedValue = completedDiv?.querySelector('.value')
     const completedDateString = completedValue?.innerHTML
