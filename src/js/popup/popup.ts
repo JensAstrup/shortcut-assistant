@@ -1,8 +1,8 @@
 import * as Sentry from '@sentry/browser'
 
-import {sendEvent} from '../analytics/event'
-import {getSyncedSetting} from '../utils/get-synced-setting'
-import sleep from '../utils/sleep'
+import {sendEvent} from '@sx/analytics/event'
+import {getSyncedSetting} from '@sx/utils/get-synced-setting'
+import sleep from '@sx/utils/sleep'
 
 import {NotesPopup} from './notes-popup'
 
@@ -13,24 +13,35 @@ import {NotesPopup} from './notes-popup'
  * @class
  */
 export class Popup {
-  private saveButton: HTMLButtonElement
   private analyzeButton: HTMLButtonElement
   private todoistCheckbox: HTMLInputElement
+  private inDevelopmentText: HTMLInputElement
+  private inReviewText: HTMLInputElement
+  private completedText: HTMLInputElement
+  private saveButton: HTMLButtonElement
   private changelogButton: HTMLButtonElement
 
   constructor() {
-    const saveButton = document.getElementById('saveKeyButton') as HTMLButtonElement
     const analyzeButton = document.getElementById('analyzeButton') as HTMLButtonElement
+
     const todoistCheckbox = document.getElementById('todoistOptions') as HTMLInputElement
+    const inDevelopmentText = document.getElementById('inDevelopmentText') as HTMLInputElement
+    const inReviewText = document.getElementById('inReviewText') as HTMLInputElement
+    const completedText = document.getElementById('completedText') as HTMLInputElement
+    const saveButton = document.getElementById('saveKeyButton') as HTMLButtonElement
+
     const changelogButton = document.getElementById('changelog') as HTMLButtonElement
 
     if (saveButton === null || analyzeButton === null || todoistCheckbox === null || changelogButton === null) {
       throw new Error('saveButton, analyzeButton, todoistCheckbox, or changelogButton not found')
     }
 
-    this.saveButton = saveButton
     this.analyzeButton = analyzeButton
     this.todoistCheckbox = todoistCheckbox
+    this.inDevelopmentText = inDevelopmentText
+    this.inReviewText = inReviewText
+    this.completedText = completedText
+    this.saveButton = saveButton
     this.changelogButton = changelogButton
     this.saveButton.addEventListener('click', this.saveButtonClicked.bind(this))
 
@@ -55,6 +66,9 @@ export class Popup {
   async saveOptions() {
     const enableTodoistOptions = this.todoistCheckbox.checked
     await chrome.storage.sync.set({'enableTodoistOptions': enableTodoistOptions})
+    await chrome.storage.sync.set({'inDevelopmentText': this.inDevelopmentText.value})
+    await chrome.storage.sync.set({'inReviewText': this.inReviewText.value})
+    await chrome.storage.sync.set({'completedText': this.completedText.value})
   }
 
   async saveButtonClicked() {
@@ -102,6 +116,23 @@ export class Popup {
     }
   }
 
+  async updateFromSettings() {
+    const todoistEnabled = await getSyncedSetting('enableTodoistOptions', false)
+    if (todoistEnabled) {
+      this.todoistCheckbox.setAttribute('checked', 'checked')
+    }
+    else if (typeof this.todoistCheckbox['removeAttribute'] === 'function'
+      && this.todoistCheckbox.hasAttribute('checked')) {
+      this.todoistCheckbox.removeAttribute('checked')
+    }
+
+    this.inDevelopmentText.value = await getSyncedSetting('inDevelopmentText', 'In Development')
+
+    this.inReviewText.value = await getSyncedSetting('inReviewText', 'Ready for Review')
+
+    this.completedText.value = await getSyncedSetting('completedText', 'Done')
+  }
+
   async popupLoaded() {
     const actionsTab = document.getElementById('actionsTab')
     const settingsTab = document.getElementById('settingsTab')
@@ -114,14 +145,7 @@ export class Popup {
       throw new Error('actionsTab, settingsTab, infoTab, actionsSection, settingsSection, or infoSection not found')
     }
 
-    const todoistEnabled = await getSyncedSetting('enableTodoistOptions', false)
-    if (todoistEnabled) {
-      this.todoistCheckbox.setAttribute('checked', 'checked')
-    }
-    else if (typeof this.todoistCheckbox['removeAttribute'] === 'function'
-      && this.todoistCheckbox.hasAttribute('checked')) {
-      this.todoistCheckbox.removeAttribute('checked')
-    }
+    await this.updateFromSettings()
 
     this.setSectionDisplay(actionsTab, actionsSection, [settingsTab, infoTab], [settingsSection, infoSection])
     this.setSectionDisplay(settingsTab, settingsSection, [actionsTab, infoTab], [actionsSection, infoSection])

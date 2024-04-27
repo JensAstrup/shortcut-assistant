@@ -1,24 +1,35 @@
-import changeState from '../../src/js/keyboard-shortcuts/change-state'
+import changeState from '@sx/keyboard-shortcuts/change-state'
 import copyBranchAndMoveToInDevelopment
-  from '../../src/js/keyboard-shortcuts/copy-branch-move-to-in-development'
-import copyGitBranch from '../../src/js/keyboard-shortcuts/copy-git-branch'
-import {getStateDiv} from '../../src/js/utils/get-state-div'
-import sleep from '../../src/js/utils/sleep'
+  from '@sx/keyboard-shortcuts/copy-branch-move-to-in-development'
+import copyGitBranch from '@sx/keyboard-shortcuts/copy-git-branch'
+import {getStateDiv} from '@sx/utils/get-state-div'
+import sleep from '@sx/utils/sleep'
 
 
-jest.mock('../../src/js/keyboard-shortcuts/copy-git-branch', () => ({
+jest.mock('@sx/keyboard-shortcuts/copy-git-branch', () => ({
   __esModule: true,
   default: jest.fn(),
 }))
-jest.mock('../../src/js/keyboard-shortcuts/change-state', () => ({
+jest.mock('@sx/keyboard-shortcuts/change-state', () => ({
   __esModule: true,
   default: jest.fn().mockResolvedValue(undefined), // Assuming it resolves to undefined
 }))
-jest.mock('../../src/js/utils/get-state-div', () => ({
+jest.mock('@sx/utils/get-state-div', () => ({
   __esModule: true,
   getStateDiv: jest.fn(),
 }))
-jest.mock('../../src/js/utils/sleep', () => jest.fn(() => Promise.resolve()))
+jest.mock('@sx/utils/sleep', () => jest.fn(() => Promise.resolve()))
+
+global.chrome.storage.sync = {get: jest.fn()} as unknown as jest.Mocked<typeof chrome.storage.sync>
+
+// @ts-expect-error - TS doesn't know about the mock implementation
+global.chrome.storage.sync.get.mockImplementation((key, callback) => {
+  const data = {inDevelopmentText: 'In Development'}
+  if (typeof callback === 'function') {
+    callback(data)
+  }
+  return data
+})
 
 
 interface MockedHtmlElement extends HTMLElement {
@@ -33,7 +44,10 @@ describe('copyBranchAndMoveToInDevelopment', () => {
   it('sends an event to the background script', async () => {
     chrome.runtime.sendMessage = jest.fn()
     await copyBranchAndMoveToInDevelopment()
-    expect(chrome.runtime.sendMessage).toHaveBeenCalledWith({action: 'sendEvent', data: {eventName: 'copy_git_branch_and_move_to_in_development'}})
+    expect(chrome.runtime.sendMessage).toHaveBeenCalledWith({
+      action: 'sendEvent',
+      data: {eventName: 'copy_git_branch_and_move_to_in_development'}
+    })
   })
 
   it('calls copyGitBranch and then changes state', async () => {

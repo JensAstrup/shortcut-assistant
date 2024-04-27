@@ -1,5 +1,3 @@
-import {sleep} from 'openai/core'
-
 import {logError} from '@sx/utils/log-error'
 import {Story} from '@sx/utils/story'
 

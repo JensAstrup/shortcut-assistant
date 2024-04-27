@@ -1,23 +1,23 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as Sentry from '@sentry/browser'
 
-import {sendEvent} from '../../src/js/analytics/event'
-import {NotesPopup} from '../../src/js/popup/notes-popup'
-import {Popup} from '../../src/js/popup/popup'
-import {getSyncedSetting} from '../../src/js/utils/get-synced-setting'
-import sleep from '../../src/js/utils/sleep'
+import {sendEvent} from '@sx/analytics/event'
+import {NotesPopup} from '@sx/popup/notes-popup'
+import {Popup} from '@sx/popup/popup'
+import {getSyncedSetting} from '@sx/utils/get-synced-setting'
+import sleep from '@sx/utils/sleep'
 
 
 jest.mock('@sentry/browser')
-jest.mock('../../src/js/analytics/event', () => ({
-  sendEvent: jest.fn().mockResolvedValue()
+jest.mock('@sx/analytics/event', () => ({
+  sendEvent: jest.fn().mockResolvedValue(null)
 }))
-jest.mock('../../src/js/utils/get-synced-setting')
-jest.mock('../../src/js/utils/sleep', () => jest.fn().mockResolvedValue())
-jest.mock('../../src/js/popup/notes-popup')
+const mockedSendEvent = sendEvent as jest.MockedFunction<typeof sendEvent>
+jest.mock('@sx/utils/get-synced-setting')
+const mockedGetSyncedSetting = getSyncedSetting as jest.MockedFunction<typeof getSyncedSetting>
+jest.mock('@sx/utils/sleep', () => jest.fn().mockResolvedValue(null))
+const mockedSleep = sleep as jest.MockedFunction<typeof sleep>
+
+jest.mock('@sx/popup/notes-popup')
 
 
 const mockElement = (options = {}) => {
@@ -34,11 +34,12 @@ const mockElement = (options = {}) => {
 }
 
 describe('Popup', () => {
-  let popup
-  let getElementById
+  let popup: Popup
+  let getElementById: jest.SpyInstance
 
   beforeEach(() => {
 
+    // @ts-expect-error Migrating from JS
     getElementById = jest.spyOn(document, 'getElementById').mockImplementation((id) => {
       return mockElement({
         value: id === 'openAIToken' ? 'test-token' : '',
@@ -47,7 +48,7 @@ describe('Popup', () => {
       })
     }
     )
-    sleep.mockResolvedValue()
+    mockedSleep.mockResolvedValue(undefined)
     popup = new Popup()
   })
 
@@ -64,25 +65,27 @@ describe('Popup', () => {
     expect(getElementById).toHaveBeenCalledWith('analyzeButton')
     expect(getElementById).toHaveBeenCalledWith('todoistOptions')
     expect(getElementById).toHaveBeenCalledWith('changelog')
+    // @ts-expect-error Migrating from JS
     expect(popup.saveButton.addEventListener).toHaveBeenCalledWith('click', expect.any(Function))
+    // @ts-expect-error Migrating from JS
     expect(popup.changelogButton.addEventListener).toHaveBeenCalledWith('click', expect.any(Function))
     expect(sendEvent).toHaveBeenCalledWith('popup_view')
   })
 
   test('sendEvent is called on window load', async () => {
-    sendEvent.mockResolvedValue()
+    mockedSendEvent.mockResolvedValue(undefined)
     popup = new Popup()
     window.dispatchEvent(new Event('load'))
-    expect(sendEvent).toHaveBeenCalledWith('popup_view')
+    expect(mockedSendEvent).toHaveBeenCalledWith('popup_view')
   })
 
   test('sendEvent is called on window load, logs errors', async () => {
     console.error = jest.fn()
     const error = new Error('test error')
-    sendEvent.mockRejectedValue(error)
+    mockedSendEvent.mockRejectedValue(error)
     popup = new Popup()
     window.dispatchEvent(new Event('load'))
-    expect(sendEvent).toHaveBeenCalledWith('popup_view')
+    expect(mockedSendEvent).toHaveBeenCalledWith('popup_view')
     // Wait for the promise passed to addEventListener to resolve
     await sleep(100)
     expect(console.error).toHaveBeenCalledWith(new Error('test error'))
@@ -95,21 +98,27 @@ describe('Popup', () => {
   })
 
   test('saveOptions sets options in chrome storage', async () => {
+    // @ts-expect-error Migrating from JS
     popup.todoistCheckbox = {checked: true}
     await popup.saveOptions()
     expect(chrome.storage.sync.set).toHaveBeenCalledWith({enableTodoistOptions: true})
   })
 
   test('saveButtonClicked', async () => {
+    // @ts-expect-error Migrating from JS
     popup.saveButton = {
       disabled: false,
       get textContent() {
+        // @ts-expect-error Migrating from JS
         return this._textContent
       },
       set textContent(value) {
+        // @ts-expect-error Migrating from JS
         this._textContent = value
+        // @ts-expect-error Migrating from JS
         this.textChanges.push(value)
       },
+      // @ts-expect-error Migrating from JS
       textChanges: []
     }
     popup.setOpenAIToken = jest.fn().mockResolvedValue(null)
@@ -118,9 +127,13 @@ describe('Popup', () => {
     await popup.saveButtonClicked()
     expect(popup.setOpenAIToken).toHaveBeenCalledWith('test-token')
     expect(popup.saveOptions).toHaveBeenCalled()
+    // @ts-expect-error Migrating from JS
     expect(popup.saveButton.disabled).toBeFalsy()
+    // @ts-expect-error Migrating from JS
     expect(popup.analyzeButton.disabled).toBeFalsy()
+    // @ts-expect-error Migrating from JS
     expect(popup.saveButton.textChanges).toContain('Saved!')
+    // @ts-expect-error Migrating from JS
     expect(popup.saveButton.textChanges).toContain('Save')
 
   })
@@ -164,47 +177,58 @@ describe('handleNewVersionBadge', () => {
   })
 
   test('hides badges when badge text is empty', async () => {
+    // @ts-expect-error Migrating from JS
     chrome.action.getBadgeText.mockResolvedValue('')
 
     const popup = new Popup()
     await popup.handleNewVersionBadge()
 
     const infoTab = document.getElementById('infoTab')
+    // @ts-expect-error Migrating from JS
     const tabBadge = infoTab.querySelector('.badge')
     const whatsNewBadge = document.getElementById('whatsNewBadge')
 
+    // @ts-expect-error Migrating from JS
     expect(tabBadge.style.display).toBe('')
+    // @ts-expect-error Migrating from JS
     expect(whatsNewBadge.style.display).toBe('')
   })
 
   test('does nothing when badge text is not empty', async () => {
+    // @ts-expect-error Migrating from JS
     chrome.action.getBadgeText.mockResolvedValue('New!')
 
     const popup = new Popup()
     await popup.handleNewVersionBadge()
 
     const infoTab = document.getElementById('infoTab')
+    // @ts-expect-error Migrating from JS
     const tabBadge = infoTab.querySelector('.badge')
     const whatsNewBadge = document.getElementById('whatsNewBadge')
 
+    // @ts-expect-error Migrating from JS
     expect(tabBadge.style.display).toBe('')
+    // @ts-expect-error Migrating from JS
     expect(whatsNewBadge.style.display).toBe('')
   })
 })
 
 describe('popupLoaded', () => {
-  let mockVersionSpan
+  let mockVersionSpan: {textContent: string}
 
   beforeEach(() => {
+    // @ts-expect-error Migrating from JS
     Sentry.captureException.mockClear()
+    // @ts-expect-error Migrating from JS
     sendEvent.mockClear()
+    // @ts-expect-error Migrating from JS
     NotesPopup.mockClear()
-    getSyncedSetting.mockClear()
+    mockedGetSyncedSetting.mockClear()
 
     mockVersionSpan = {
       textContent: ''
     }
-    const todoistCheckbox = mockElement()
+    const todoistCheckbox = mockElement() as unknown as jest.Mocked<HTMLElement>
     todoistCheckbox.removeAttribute = jest.fn()
     todoistCheckbox.setAttribute = jest.fn()
     todoistCheckbox.hasAttribute = jest.fn().mockReturnValue(true)
@@ -220,7 +244,7 @@ describe('popupLoaded', () => {
   })
 
   it('sets up correctly', async () => {
-    getSyncedSetting.mockResolvedValueOnce(true) // enableTodoistOptions
+    mockedGetSyncedSetting.mockResolvedValueOnce(true) // enableTodoistOptions
     const popup = new Popup()
     popup.handleNewVersionBadge = jest.fn().mockResolvedValue(null)
     await popup.popupLoaded()
@@ -231,7 +255,8 @@ describe('popupLoaded', () => {
     expect(document.getElementById).toHaveBeenCalledWith('versionInfo')
     expect(mockVersionSpan.textContent).toBe('Version: 1.0.0')
 
-    expect(getSyncedSetting).toHaveBeenCalledWith('enableTodoistOptions', false)
+    expect(mockedGetSyncedSetting).toHaveBeenCalledWith('enableTodoistOptions', false)
+    // @ts-expect-error Migrating from JS
     expect(popup.todoistCheckbox.setAttribute).toHaveBeenCalledWith('checked', 'checked')
 
     expect(NotesPopup).toHaveBeenCalled()
@@ -316,7 +341,7 @@ describe('popupLoaded', () => {
   })
 
   test('popupLoaded sets up correctly with todoist disabled', async () => {
-    getSyncedSetting.mockResolvedValueOnce(false)
+    mockedGetSyncedSetting.mockResolvedValueOnce(false)
     const popup = new Popup()
     popup.handleNewVersionBadge = jest.fn().mockResolvedValue(null)
     await popup.popupLoaded()
@@ -327,7 +352,8 @@ describe('popupLoaded', () => {
     expect(document.getElementById).toHaveBeenCalledWith('versionInfo')
     expect(mockVersionSpan.textContent).toBe('Version: 1.0.0')
 
-    expect(getSyncedSetting).toHaveBeenCalledWith('enableTodoistOptions', false)
+    expect(mockedGetSyncedSetting).toHaveBeenCalledWith('enableTodoistOptions', false)
+    // @ts-expect-error Migrating from JS
     expect(popup.todoistCheckbox.removeAttribute).toHaveBeenCalledWith('checked')
 
     expect(NotesPopup).toHaveBeenCalled()
@@ -342,7 +368,7 @@ describe('popupLoaded', () => {
   it('logs error if handleNewVersionBadge fails', async () => {
     console.error = jest.fn()
     const error = new Error('test error')
-    getSyncedSetting.mockResolvedValueOnce(true)
+    mockedGetSyncedSetting.mockResolvedValueOnce(true)
     const popup = new Popup()
     popup.handleNewVersionBadge = jest.fn().mockRejectedValue(error)
     await popup.popupLoaded()

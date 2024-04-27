@@ -1,5 +1,6 @@
-import {Story} from '../utils/story'
-import storyPageIsReady from '../utils/story-page-is-ready'
+import {getSyncedSetting} from '@sx/utils/get-synced-setting'
+import {Story} from '@sx/utils/story'
+import storyPageIsReady from '@sx/utils/story-page-is-ready'
 
 
 export class DevelopmentTime {
@@ -26,20 +27,22 @@ export class DevelopmentTime {
   static async set() {
     await storyPageIsReady()
     this.remove()
-    const inDevelopment = Story.isInState('In Development')
-    const inReview = Story.isInState('Ready for Review')
+    const inDevelopmentText = await getSyncedSetting('inDevelopmentText', 'In Development')
+    const inReviewText = await getSyncedSetting('inReviewText', 'Ready for Review')
+    const inDevelopment = Story.isInState(inDevelopmentText)
+    const inReview = Story.isInState(inReviewText)
     if (!inDevelopment && !inReview) {
       return
     }
 
     if (inDevelopment) {
-      const hoursElapsed = Story.getTimeInState('In Development')
+      const hoursElapsed = Story.getTimeInState(<string>inDevelopmentText)
       if (hoursElapsed) {
         this.setTimeSpan(hoursElapsed)
       }
     }
     if (inReview) {
-      const hoursElapsed = Story.getTimeInState('Ready for Review')
+      const hoursElapsed = Story.getTimeInState(inReviewText)
       if (hoursElapsed) {
         this.setTimeSpan(hoursElapsed)
       }

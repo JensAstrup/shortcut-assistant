@@ -1,10 +1,10 @@
-jest.mock('../../src/js/popup/popup', () => {
+jest.mock('@sx/popup/popup', () => {
   return {
     Popup: jest.fn().mockImplementation(() => {})
   }
 })
 
-import {Popup} from '../../src/js/popup/popup'
+import {Popup} from '@sx/popup/popup'
 
 
 describe('Popup Initializer', () => {
@@ -14,14 +14,15 @@ describe('Popup Initializer', () => {
 
   it('should add DOM event listener', () => {
     const addEventListenerSpy = jest.spyOn(document, 'addEventListener')
-    require('../../src/js/popup/initializer')
+    require('@sx/popup/initializer')
     expect(addEventListenerSpy).toHaveBeenCalledWith('DOMContentLoaded', expect.any(Function))
   })
 
   it('should instantiate Popup class on DOM content loaded', () => {
     document.addEventListener = jest.fn((event, callback) => {
       if (event === 'DOMContentLoaded') {
-        callback()
+        // @ts-expect-error - TS doesn't know about the mock implementation
+        if(typeof callback === 'function') callback()
       }
     })
     document.dispatchEvent(new Event('DOMContentLoaded'))
