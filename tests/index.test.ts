@@ -1,11 +1,13 @@
 import {activate} from '@sx/content-scripts'
-import {getSyncedSetting} from '@sx/utils/get-synced-setting'
-import storyPageIsReady from '../src/js/utils/story-page-is-ready'
 import {CycleTime} from '@sx/cycle-time/cycle-time'
 import {DevelopmentTime} from '@sx/development-time/development-time'
-import {Todoist} from '@sx/todoist/todoist'
-import {NotesButton} from '@sx/notes/notes-button'
 import {KeyboardShortcuts} from '@sx/keyboard-shortcuts/keyboard-shortcuts'
+import {NotesButton} from '@sx/notes/notes-button'
+import {Todoist} from '@sx/todoist/todoist'
+import {getSyncedSetting} from '@sx/utils/get-synced-setting'
+
+import storyPageIsReady from '../src/js/utils/story-page-is-ready'
+
 import Manifest = chrome.runtime.Manifest
 
 
