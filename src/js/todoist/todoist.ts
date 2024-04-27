@@ -1,17 +1,11 @@
-import {logError} from '../utils/log-error'
-import {Story} from '../utils/story'
+import {sleep} from 'openai/core'
+
+import {logError} from '@sx/utils/log-error'
+import {Story} from '@sx/utils/story'
 
 
 export class Todoist {
-  constructor() {
-    if (window.location.href.includes('story')) {
-      this.setTaskButton('Work on', 'Set task to work on story').catch(logError)
-      this.setTaskButton('Review', 'Set task to review story').catch(logError)
-      this.setTaskButton('Follow up', 'Set task to follow up on story', 'Follow up on').catch(logError)
-    }
-  }
-
-  createButton(tooltip: string, title: string) {
+  static createButton(tooltip: string, title: string) {
     const newButton = document.createElement('button')
     newButton.className = 'action edit-description add-task micro flat-white'
     newButton.dataset.tabindex = ''
@@ -23,33 +17,31 @@ export class Todoist {
     return newButton
   }
 
-  createTooltipText(taskTitle: string | null, title: string) {
+  static createTooltipText(taskTitle: string | null, title: string) {
     const storyTitle = Story.title
     const storyLink = window.location.href
     if (!taskTitle) {
       return `${title} [${storyTitle}](${storyLink})`
-    }
-    else {
+    } else {
       return `${taskTitle} [${storyTitle}](${storyLink})`
     }
   }
 
-  buttonExists() {
+  static buttonExists() {
     return document.querySelector('button[data-todoist="true"]')
   }
 
-  async addButtonIfNotExists(newButton: HTMLButtonElement) {
-    const existingButton = this.buttonExists()
+  static async addButtonIfNotExists(newButton: HTMLButtonElement) {
+    const existingButton = Todoist.buttonExists()
     if (!existingButton) {
       const container = await Story.getEditDescriptionButtonContainer()
       container?.appendChild(newButton)
     }
   }
 
-  async setTaskButton(title: string, tooltip: string, taskTitle: string | null = null) {
-    const newButton = this.createButton(tooltip, title)
-    const buttonExists = this.buttonExists()
-    taskTitle = this.createTooltipText(taskTitle, title)
+  static async setTaskButton(title: string, tooltip: string, taskTitle: string | null = null) {
+    const newButton = Todoist.createButton(tooltip, title)
+    taskTitle = Todoist.createTooltipText(taskTitle, title)
     newButton.addEventListener('click', function () {
       window.open(`https://todoist.com/add?content=${taskTitle}`, '_blank')
     })
@@ -59,10 +51,17 @@ export class Todoist {
     newButton.appendChild(span)
     newButton.append(' ' + title + '   ')
 
-    if (buttonExists) {
+    if (Todoist.buttonExists()) {
       return
     }
 
-    this.addButtonIfNotExists(newButton).catch(logError)
+    Todoist.addButtonIfNotExists(newButton).catch(logError)
+  }
+
+  static async setTaskButtons() {
+    if (Todoist.buttonExists()) return
+    Todoist.setTaskButton('Work on', 'Set task to work on story').catch(logError)
+    Todoist.setTaskButton('Review', 'Set task to review story').catch(logError)
+    Todoist.setTaskButton('Follow up', 'Set task to follow up on story', 'Follow up on').catch(logError)
   }
 }

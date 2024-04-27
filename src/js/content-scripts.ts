@@ -35,7 +35,7 @@ export async function activate() {
   try {
     const enableTodoistOptions = await getSyncedSetting('enableTodoistOptions', false)
     if (enableTodoistOptions) {
-      new Todoist()
+      Todoist.setTaskButtons().catch(logError)
     }
   } catch (e) {
     console.error(e)
@@ -58,7 +58,7 @@ export async function handleMessage(request: { message: string, url: string }) {
     new NotesButton()
   }
   if (request.message === 'initTodos' && request.url.includes('story')) {
-    new Todoist()
+    Todoist.setTaskButtons().catch(logError)
   }
   if (request.message === 'change-state') {
     await changeState()
