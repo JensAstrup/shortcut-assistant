@@ -130,7 +130,7 @@ export class Popup {
 
     this.inReviewText.value = await getSyncedSetting('inReviewText', 'Ready for Review')
 
-    this.completedText.value = await getSyncedSetting('completedText', 'Done')
+    this.completedText.value = await getSyncedSetting('completedText', 'Completed')
   }
 
   async popupLoaded() {
