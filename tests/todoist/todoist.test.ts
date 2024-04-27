@@ -1,5 +1,7 @@
-import {Todoist} from '../../src/js/todoist/todoist'
-import {Story} from '../../src/js/utils/story'
+import {Todoist} from '@sx/todoist/todoist'
+import {Story} from '@sx/utils/story'
+
+import Func = jest.Func
 
 
 jest.mock('../../src/js/utils/log-error')
@@ -34,7 +36,7 @@ describe('Todoist', () => {
 
   describe('constructor', () => {
     it('should set task buttons if in story page', async () => {
-      new Todoist()
+      Todoist.setTaskButtons()
       expect(window.open).not.toHaveBeenCalled()
     })
   })
@@ -53,8 +55,7 @@ describe('Todoist', () => {
         return element
       })
       document.querySelector = jest.fn().mockReturnValue(mockButton)
-      const todoist = new Todoist()
-      const button = todoist.createButton('Tooltip text', 'Title text')
+      const button = Todoist.createButton('Tooltip text', 'Title text')
       expect(button).toHaveProperty('tagName', 'BUTTON')
       expect(button.setAttribute).toHaveBeenCalledWith('data-todoist', 'true')
       expect(button.dataset.tooltip).toBe('Tooltip text')
@@ -63,14 +64,12 @@ describe('Todoist', () => {
 
   describe('createTooltipText', () => {
     it('returns tooltip text with title when taskTitle is undefined', () => {
-      const todoist = new Todoist()
-      const tooltipText = todoist.createTooltipText(null, 'Test title')
+      const tooltipText = Todoist.createTooltipText(null, 'Test title')
       expect(tooltipText).toBe('Test title [Mocked Story Title](https://example.com/story)')
     })
 
     it('returns tooltip text with taskTitle when defined', () => {
-      const todoist = new Todoist()
-      const tooltipText = todoist.createTooltipText('Task title', 'Test title')
+      const tooltipText = Todoist.createTooltipText('Task title', 'Test title')
       expect(tooltipText).toBe('Task title [Mocked Story Title](https://example.com/story)')
     })
   })
@@ -80,15 +79,13 @@ describe('Todoist', () => {
       document.querySelector = jest.fn()
       // @ts-expect-error Migrating from JS
       document.querySelector.mockReturnValue(null)
-      const todoist = new Todoist()
-      expect(todoist.buttonExists()).toBe(null)
+      expect(Todoist.buttonExists()).toBe(null)
     })
 
     it('returns true when a button exists', () => {
       // @ts-expect-error Migrating from JS
       document.querySelector.mockReturnValue(document.createElement('button'))
-      const todoist = new Todoist()
-      expect(todoist.buttonExists()).toBeTruthy()
+      expect(Todoist.buttonExists()).toBeTruthy()
     })
   })
 
@@ -96,23 +93,66 @@ describe('Todoist', () => {
     it('appends new button if it does not exist', async () => {
       // @ts-expect-error Migrating from JS
       document.querySelector.mockReturnValue(null)
-      const todoist = new Todoist()
       const button = document.createElement('button')
-      await todoist.addButtonIfNotExists(button)
+      await Todoist.addButtonIfNotExists(button)
       expect(Story.getEditDescriptionButtonContainer).toHaveBeenCalled()
     })
 
     it('does not append new button if it already exists', async () => {
       // @ts-expect-error Migrating from JS
       document.querySelector.mockReturnValue(document.createElement('button'))
-      const todoist = new Todoist()
       const button = document.createElement('button')
-      await todoist.addButtonIfNotExists(button)
+      await Todoist.addButtonIfNotExists(button)
       expect(Story.getEditDescriptionButtonContainer).not.toHaveBeenCalled()
     })
   })
 
   describe('setTaskButton', () => {
+    let capturedEventListener: Func
+    it('calls addButtonIfNotExists if button exists', async () => {
+      const element = {
+        appendChild: jest.fn(),
+        setAttribute: jest.fn(),
+        addEventListener: jest.fn((event, handler) => {
+          capturedEventListener = handler
+        }),
+        append: jest.fn(),
+        dataset: {},
+        tagname: 'tag',
+        style: {}
+      } as unknown as HTMLButtonElement
+      jest.spyOn(Todoist, 'createButton').mockReturnValue(element)
+      document.querySelector = jest.fn().mockReturnValue(null)
+      window.open = jest.fn()
+      await Todoist.setTaskButton('Test title', 'Tooltip', 'Task title')
+      expect(document.querySelector).toHaveBeenCalled()
+      expect(Story.getEditDescriptionButtonContainer).toHaveBeenCalled()
+      expect(Todoist.createButton).toHaveBeenCalled()
+      expect(element.addEventListener).toHaveBeenCalled()
+      // Get the function passed to addEventListener
+      capturedEventListener()
+      expect(window.open).toHaveBeenCalledWith('https://todoist.com/add?content=Task title [Mocked Story Title](https://example.com/story)', '_blank')
+    })
+
+    it('should return if button exists', async () => {
+      const mockButton = document.createElement = jest.fn().mockImplementation(tag => {
+        const element = {
+          appendChild: jest.fn(),
+          setAttribute: jest.fn(),
+          addEventListener: jest.fn(),
+          append: jest.fn(),
+          dataset: {},
+          tagname: tag.toUpperCase(),
+          style: {}
+        } as unknown as HTMLElement
+        return element
+      })
+      document.querySelector = jest.fn().mockReturnValue(mockButton)
+      await Todoist.setTaskButton('Test title', 'Tooltip', 'Task title')
+      expect(document.querySelector).toHaveBeenCalled()
+      expect(Story.getEditDescriptionButtonContainer).not.toHaveBeenCalled()
+    })
+
     it('does not call addButtonIfNotExists if button exists', async () => {
       const mockButton = document.createElement = jest.fn().mockImplementation(tag => {
         const element = {
@@ -127,8 +167,7 @@ describe('Todoist', () => {
         return element
       })
       document.querySelector = jest.fn().mockReturnValue(mockButton)
-      const todoist = new Todoist()
-      await todoist.setTaskButton('Test title', 'Tooltip', 'Task title')
+      await Todoist.setTaskButton('Test title', 'Tooltip', 'Task title')
       expect(document.querySelector).toHaveBeenCalled()
       expect(Story.getEditDescriptionButtonContainer).not.toHaveBeenCalled()
     })

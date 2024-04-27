@@ -1,12 +1,12 @@
-import {handleMessage} from '../src/js/content-scripts'
-import {DevelopmentTime} from '../src/js/development-time/development-time'
-import {CycleTime} from '../src/js/cycle-time/cycle-time'
-import {analyzeStoryDescription} from '../src/js/analyze/analyze-story-description'
-import changeIteration from '../src/js/keyboard-shortcuts/change-iteration'
-import changeState from '../src/js/keyboard-shortcuts/change-state'
-import copyGitBranch from '../src/js/keyboard-shortcuts/copy-git-branch'
-import {NotesButton} from '../src/js/notes/notes-button'
-import {Todoist} from '../src/js/todoist/todoist'
+import {analyzeStoryDescription} from '@sx/analyze/analyze-story-description'
+import {handleMessage} from '@sx/content-scripts'
+import {CycleTime} from '@sx/cycle-time/cycle-time'
+import {DevelopmentTime} from '@sx/development-time/development-time'
+import changeIteration from '@sx/keyboard-shortcuts/change-iteration'
+import changeState from '@sx/keyboard-shortcuts/change-state'
+import copyGitBranch from '@sx/keyboard-shortcuts/copy-git-branch'
+import {NotesButton} from '@sx/notes/notes-button'
+import {Todoist} from '@sx/todoist/todoist'
 
 
 jest.mock('../src/js/development-time/development-time', () => ({
@@ -32,8 +32,9 @@ jest.mock('../src/js/notes/notes-button', () => {
 })
 jest.mock('../src/js/todoist/todoist', () => {
   return {
-    Todoist: jest.fn().mockImplementation(() => {
-    })
+    Todoist: {
+      setTaskButtons: jest.fn().mockResolvedValue(null)
+    }
   }
 })
 jest.mock('../src/js/utils/log-error', () => jest.fn())
@@ -89,7 +90,7 @@ describe('handleMessage function', () => {
   it('initializes Todoist for initTodos message', async () => {
     const request = {message: 'initTodos', url: 'https://example.com/story'}
     await handleMessage(request)
-    expect(Todoist).toHaveBeenCalled()
+    expect(Todoist.setTaskButtons).toHaveBeenCalled()
   })
 
   it('does not initialize DevelopmentTime and CycleTime for unrelated URL', async () => {
