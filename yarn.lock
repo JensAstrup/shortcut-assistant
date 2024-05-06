@@ -3144,6 +3144,11 @@ escodegen@^2.0.0:
   optionalDependencies:
     source-map "~0.6.1"
 
+eslint-config-yenz@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/eslint-config-yenz/-/eslint-config-yenz-1.0.6.tgz#1030afaeb3bfb41c386120d01e209d93e9b5a756"
+  integrity sha512-Um5CEwJtVmKLKxtml8DkaKhxhvrBc6n8Bt21QAY0Z9tYyM0g40gHdDBdTznqsohhBKOdqL/WrVueGRLNYQUqFw==
+
 eslint-import-resolver-node@^0.3.9:
   version "0.3.9"
   resolved "https://registry.npmjs.org/eslint-import-resolver-node/-/eslint-import-resolver-node-0.3.9.tgz"
