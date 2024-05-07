@@ -20,6 +20,15 @@ const mockedSleep = sleep as jest.MockedFunction<typeof sleep>
 jest.mock('@sx/popup/notes-popup')
 
 
+global.chrome = {
+  ...global.chrome,
+  action: {
+    ...global.chrome.action,
+    getBadgeText: jest.fn().mockResolvedValue(() => Promise.resolve('New!')),
+  }
+}
+
+
 const mockElement = (options = {}) => {
   return {
     addEventListener: jest.fn(),
@@ -69,6 +78,18 @@ describe('Popup', () => {
     // @ts-expect-error Migrating from JS
     expect(popup.changelogButton.addEventListener).toHaveBeenCalledWith('click', expect.any(Function))
     expect(sendEvent).toHaveBeenCalledWith('popup_view')
+  })
+
+  it('constructor throws an error if saveButton, todoistCheckbox, or changelogButton is not found', () => {
+    document.getElementById = jest.fn().mockImplementation((id) => {
+      if (id === 'saveKeyButton' || id === 'todoistOptions' || id === 'changelog') {
+        return null
+      }
+      return mockElement()
+    })
+
+    const expected = 'saveButton, todoistCheckbox, or changelogButton not found'
+    expect(() => new Popup()).toThrow(expected)
   })
 
   test('sendEvent is called on window load', async () => {
@@ -173,7 +194,7 @@ describe('handleNewVersionBadge', () => {
     })
   })
 
-  test('hides badges when badge text is empty', async () => {
+  it('hides badges when badge text is empty', async () => {
     // @ts-expect-error Migrating from JS
     chrome.action.getBadgeText.mockResolvedValue('')
 
@@ -191,22 +212,57 @@ describe('handleNewVersionBadge', () => {
     expect(whatsNewBadge.style.display).toBe('')
   })
 
-  test('does nothing when badge text is not empty', async () => {
+  it('throws an error if tabBadge is not found', async () => {
+    // @ts-expect-error Migrating from JS
+    chrome.action.getBadgeText.mockResolvedValue('')
+
+    document.getElementById = jest.fn().mockImplementation((id) => {
+      if (id === 'infoTab') {
+        return {
+          querySelector: jest.fn().mockReturnValue(null)
+        }
+      }
+      else {
+        return mockElement()
+      }
+    })
+
+    const popup = new Popup()
+    await expect(popup.handleNewVersionBadge()).rejects.toThrow('tabBadge not found')
+  })
+
+  it('does nothing when badge text is not empty', async () => {
     // @ts-expect-error Migrating from JS
     chrome.action.getBadgeText.mockResolvedValue('New!')
 
     const popup = new Popup()
     await popup.handleNewVersionBadge()
 
-    const infoTab = document.getElementById('infoTab')
-    // @ts-expect-error Migrating from JS
-    const tabBadge = infoTab.querySelector('.badge')
+    const infoTab = document.getElementById('infoTab') as HTMLAnchorElement
+    const tabBadge = infoTab!.querySelector('.badge')
     const whatsNewBadge = document.getElementById('whatsNewBadge')
 
+    // @ts-expect-error Style does exist
+    expect(tabBadge!.style.display).toBe('')
+    expect(whatsNewBadge!.style.display).toBe('')
+  })
+
+  it('throws an error if whatsNewBadge is not found', async () => {
     // @ts-expect-error Migrating from JS
-    expect(tabBadge.style.display).toBe('')
-    // @ts-expect-error Migrating from JS
-    expect(whatsNewBadge.style.display).toBe('')
+    chrome.action.getBadgeText.mockResolvedValue('')
+
+    document.getElementById = jest.fn().mockImplementation((id) => {
+      if (id === 'whatsNewBadge') {
+        return null
+      }
+      else {
+        return mockElement()
+      }
+    })
+
+    const popup = new Popup()
+    await expect(popup.handleNewVersionBadge()).rejects.toThrow('whatsNewBadge not found')
+
   })
 })
 
