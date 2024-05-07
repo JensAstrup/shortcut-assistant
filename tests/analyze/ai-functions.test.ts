@@ -24,6 +24,46 @@ describe('AiFunctions', () => {
     })
   })
 
+  describe('buttonExists', () => {
+    it('should return the button if it exists', () => {
+      document.body.innerHTML = '<button data-analyze="true"></button>'
+      expect(AiFunctions.buttonExists()).toBeTruthy()
+    })
+
+    it('should return null if the button does not exist', () => {
+      document.body.innerHTML = ''
+      expect(AiFunctions.buttonExists()).toBeNull()
+    })
+  })
+
+  describe('addButtonIfNotExists', () => {
+    it('should append the button if it does not exist', async () => {
+      document.body.innerHTML = '<div id="buttonContainer"></div>'
+      const container = document.getElementById('buttonContainer')
+      Story.getEditDescriptionButtonContainer = jest.fn().mockResolvedValue(container)
+
+      const newButton = document.createElement('button')
+      newButton.setAttribute('data-analyze', 'true')
+
+      await AiFunctions.addButtonIfNotExists(newButton)
+
+      expect(container?.querySelector('button')).toBeTruthy()
+    })
+
+    it('should remove duplicate buttons after 2 seconds', async () => {
+      document.body.innerHTML = '<div id="buttonContainer"></div>'
+      const container = document.getElementById('buttonContainer')
+      Story.getEditDescriptionButtonContainer = jest.fn().mockResolvedValue(container)
+
+      const newButton = document.createElement('button')
+      newButton.setAttribute('data-analyze', 'true')
+
+      await AiFunctions.addButtonIfNotExists(newButton)
+
+      expect(container?.querySelectorAll('button').length).toBe(1)
+    })
+  })
+
   describe('addAnalyzeButton', () => {
     it('adds the analyze button if it does not exist', async () => {
       document.body.innerHTML = '<div id="buttonContainer"></div>'
