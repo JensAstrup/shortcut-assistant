@@ -1,61 +1,73 @@
 import * as Sentry from '@sentry/browser'
 
-import {sendEvent} from '../analytics/event'
-import sleep from '../utils/sleep'
+import {sendEvent} from '@sx/analytics/event'
+import sleep from '@sx/utils/sleep'
+import {Story} from '@sx/utils/story'
 
 
 export class AiFunctions {
-  private analyzeButton: HTMLButtonElement
-  private analyzeText: HTMLSpanElement
+  static analyzeButton: HTMLButtonElement
 
-  constructor() {
-    const analyzeButton: HTMLButtonElement | null = <HTMLButtonElement | null>document.getElementById('analyzeButton')
-    if (!analyzeButton) {
-      throw new Error('Analyze button not found')
+  static createButton(): HTMLButtonElement {
+    const newButton = document.createElement('button')
+    newButton.className = 'action edit-description add-task micro flat-white'
+    newButton.dataset.tabindex = ''
+    newButton.dataset.tooltip = 'Analyse Story Details'
+    newButton.dataset.key = 'Analyze'
+    newButton.tabIndex = 2
+    newButton.style.marginTop = '10px'
+    newButton.setAttribute('data-analyze', 'true')
+    return newButton
+  }
+
+  static buttonExists() {
+    return document.querySelector('button[data-todoist="true"]')
+  }
+
+  static async addButtonIfNotExists(newButton: HTMLButtonElement) {
+    const existingButton = AiFunctions.buttonExists()
+    if (!existingButton) {
+      const container = await Story.getEditDescriptionButtonContainer()
+      container?.appendChild(newButton)
     }
-    this.analyzeButton = analyzeButton
-    const analyzeText = <HTMLSpanElement | null>document.getElementById('analyzeText')
-    if (!analyzeText) {
-      throw new Error('Analyze text not found')
+  }
+
+  static async addAnalyzeButton() {
+    const newButton = AiFunctions.createButton()
+    AiFunctions.analyzeButton = newButton
+    newButton.addEventListener('click', async function () {
+      await AiFunctions.triggerAnalysis()
+    })
+    newButton.textContent = 'Analyze Story'
+    if (AiFunctions.buttonExists()) {
+      return
     }
-    this.analyzeText = analyzeText
+    await AiFunctions.addButtonIfNotExists(newButton)
   }
 
   static async triggerAnalysis() {
-    const aiFunctions = new AiFunctions()
-    await aiFunctions.analyzeStoryDetails()
+    await AiFunctions.analyzeStoryDescription(window.location.href)
   }
 
-  async analyzeStoryDetails() {
-    const analyzeButton = document.getElementById('analyzeButton')
-    const analyzeText = document.getElementById('analyzeText')
-    if (!analyzeButton || !analyzeText) {
-      throw new Error('Analyze button or text not found')
+  static async analyzeStoryDescription(activeTabUrl: string) {
+    if (activeTabUrl.includes('story')) {
+      const description = Story.description
+      AiFunctions.analyzeButton.textContent = 'Analyzing...'
+      await chrome.runtime.sendMessage({
+        action: 'callOpenAI',
+        data: {prompt: description}
+      })
     }
-    analyzeText.textContent = ''
-    const loadingSpan = document.createElement('span')
-    loadingSpan.classList.add('loading', 'loading-spinner', 'loading-spinner-sm')
-    analyzeButton.classList.add('cursor-progress')
-    loadingSpan.id = 'loadingSpan'
-    analyzeButton.appendChild(loadingSpan)
-
-    chrome.tabs.query({active: true, currentWindow: true}, function (activeTabs) {
-      const tabId = activeTabs[0].id
-      if (!tabId) {
-        throw new Error('Tab ID not found')
-      }
-      chrome.tabs.sendMessage(tabId, {message: 'analyzeStoryDescription'})
-    })
-    sendEvent('analyze_story_details').catch((e) => {
-      console.error(e)
-      Sentry.captureException(e)
-    })
   }
 
-  async processOpenAIResponse(message: { message: string, type: string }) {
+  static async complete(){
+    AiFunctions.analyzeButton.textContent = 'Analyze Story'
+  }
+
+  static async processOpenAIResponse(message: { message?: string, type: string }) {
     if (message.type === 'OpenAIResponseCompleted' || message.type === 'OpenAIResponseFailed') {
 
-      this.analyzeText.textContent = 'Analyze Story'
+      AiFunctions.analyzeButton.textContent = 'Analyze Story'
       const loadingSpan = document.getElementById('loadingSpan')
       loadingSpan?.remove()
       this.analyzeButton.classList.remove('cursor-progress')
@@ -64,7 +76,8 @@ export class AiFunctions {
       const errorState = document.getElementById('errorState')
       if (errorState) {
         errorState.style.cssText = ''
-        await sleep(6000)
+        const SIX_SECONDS = 6000
+        await sleep(SIX_SECONDS)
         errorState.style.display = 'none'
       }
       sendEvent('analyze_story_details_failed').catch((e) => {

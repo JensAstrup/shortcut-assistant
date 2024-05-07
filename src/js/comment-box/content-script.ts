@@ -1,3 +1,5 @@
+import {AiFunctions} from '@sx/analyze/ai-functions'
+
 import {logError} from '../utils/log-error'
 import sleep from '../utils/sleep'
 
@@ -32,12 +34,14 @@ export class CommentBox {
     }
     commentBox.value = commentBox.value + text
     this.resizeToFitContent(commentBox)
+    AiFunctions.complete()
   }
 
   static async clear() {
     const commentBox = await this.getCommentBox()
     commentBox.value = ''
     this.resizeToFitContent(commentBox)
+    AiFunctions.complete()
   }
 }
 

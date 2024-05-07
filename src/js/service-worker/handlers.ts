@@ -10,9 +10,10 @@ async function handleOpenAICall(prompt: string, tabId: number): Promise<{ data: 
   try {
     const response = await callOpenAi(prompt, tabId)
     return {data: response}
-  } catch (e: unknown) {
+  }
+  catch (e: unknown) {
     console.error('Error calling OpenAI:', e)
-    chrome.runtime.sendMessage({message: 'OpenAIResponseFailed'})
+    chrome.tabs.sendMessage(tabId, {message: 'OpenAIResponseFailed'})
     return {error: e as Error}
   }
 }
@@ -34,9 +35,11 @@ export async function handleCommands(command: string) {
   }
   if (command === 'change-state') {
     await chrome.tabs.sendMessage(activeTab.id, {message: 'change-state'})
-  } else if (command === 'change-iteration') {
+  }
+  else if (command === 'change-iteration') {
     await chrome.tabs.sendMessage(activeTab.id, {message: 'change-iteration'})
-  } else if (command === 'copy-git-branch') {
+  }
+  else if (command === 'copy-git-branch') {
     await chrome.tabs.sendMessage(activeTab.id, {message: 'copy-git-branch'})
   }
 }

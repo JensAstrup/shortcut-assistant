@@ -5,6 +5,5 @@ document.getElementById('analyzeButton')?.addEventListener('click', AiFunctions.
 
 
 chrome.runtime.onMessage.addListener(async (message) => {
-  const aiFunctions = new AiFunctions()
-  await aiFunctions.processOpenAIResponse(message)
+  await AiFunctions.processOpenAIResponse(message)
 })

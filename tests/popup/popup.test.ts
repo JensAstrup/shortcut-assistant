@@ -62,7 +62,6 @@ describe('Popup', () => {
     window.addEventListener = jest.fn()
     popup = new Popup()
     expect(getElementById).toHaveBeenCalledWith('saveKeyButton')
-    expect(getElementById).toHaveBeenCalledWith('analyzeButton')
     expect(getElementById).toHaveBeenCalledWith('todoistOptions')
     expect(getElementById).toHaveBeenCalledWith('changelog')
     // @ts-expect-error Migrating from JS
@@ -129,8 +128,6 @@ describe('Popup', () => {
     expect(popup.saveOptions).toHaveBeenCalled()
     // @ts-expect-error Migrating from JS
     expect(popup.saveButton.disabled).toBeFalsy()
-    // @ts-expect-error Migrating from JS
-    expect(popup.analyzeButton.disabled).toBeFalsy()
     // @ts-expect-error Migrating from JS
     expect(popup.saveButton.textChanges).toContain('Saved!')
     // @ts-expect-error Migrating from JS

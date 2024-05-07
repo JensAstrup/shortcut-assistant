@@ -5,28 +5,28 @@ import {KeyboardShortcuts} from '@sx/keyboard-shortcuts/keyboard-shortcuts'
 import {NotesButton} from '@sx/notes/notes-button'
 import {Todoist} from '@sx/todoist/todoist'
 import {getSyncedSetting} from '@sx/utils/get-synced-setting'
-
-import storyPageIsReady from '../src/js/utils/story-page-is-ready'
+import storyPageIsReady from '@sx/utils/story-page-is-ready'
 
 import Manifest = chrome.runtime.Manifest
 
 
 jest.mock('@sentry/browser')
-jest.mock('../src/js/cycle-time/cycle-time', () => ({
+jest.mock('@sx/cycle-time/cycle-time', () => ({
   CycleTime: {
     set: jest.fn().mockResolvedValue(null)
   }
 }))
-jest.mock('../src/js/development-time/development-time', () => ({
+jest.mock('@sx/development-time/development-time', () => ({
   DevelopmentTime: {
     set: jest.fn().mockResolvedValue(null)
   }
 }))
-jest.mock('../src/js/todoist/todoist')
-jest.mock('../src/js/notes/notes-button')
-jest.mock('../src/js/keyboard-shortcuts/keyboard-shortcuts')
-jest.mock('../src/js/utils/story-page-is-ready', () => jest.fn().mockResolvedValue(null))
-jest.mock('../src/js/utils/get-synced-setting', () => ({
+jest.mock('@sx/todoist/todoist')
+jest.mock('@sx/notes/notes-button')
+jest.mock('@sx/keyboard-shortcuts/keyboard-shortcuts')
+jest.mock('@sx/analyze/analyze-story-description')
+jest.mock('@sx/utils/story-page-is-ready', () => jest.fn().mockResolvedValue(null))
+jest.mock('@sx/utils/get-synced-setting', () => ({
   getSyncedSetting: jest.fn()
 }))
 const mockedGetSyncedSetting = getSyncedSetting as jest.Mock

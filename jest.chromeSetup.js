@@ -15,7 +15,9 @@ global.chrome = {
         version: '1.0.0'
       }
     }),
-    sendMessage: jest.fn(),
+    sendMessage: jest.fn().mockImplementation(() => {
+      return Promise.resolve()
+    }),
     onMessage: {
       addListener: jest.fn()
     }
