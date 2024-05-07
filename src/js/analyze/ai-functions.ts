@@ -3,6 +3,7 @@ import * as Sentry from '@sentry/browser'
 import {sendEvent} from '@sx/analytics/event'
 import sleep from '@sx/utils/sleep'
 import {Story} from '@sx/utils/story'
+import '@sx/analyze/listeners'
 
 
 export class AiFunctions {
@@ -64,7 +65,7 @@ export class AiFunctions {
     AiFunctions.analyzeButton.textContent = 'Analyze Story'
   }
 
-  static async processOpenAIResponse(message: { message?: string, type: string }) {
+  static async processOpenAIResponse(message: { message?: string, type?: string }) {
     if (message.type === 'OpenAIResponseCompleted' || message.type === 'OpenAIResponseFailed') {
 
       AiFunctions.analyzeButton.textContent = 'Analyze Story'
