@@ -1,12 +1,20 @@
 import * as Sentry from '@sentry/browser'
+import 'jest-chrome'
 
-import {InstallAndUpdate, onInstallAndUpdate} from '../../src/js/service-worker/on-install-and-update'
+import {
+  InstallAndUpdate,
+  onInstallAndUpdate
+} from '@sx/service-worker/on-install-and-update'
+
+import OnInstalledReason = chrome.runtime.OnInstalledReason
 
 
 describe('onInstall function', () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    // @ts-expect-error Migrating from JS
     chrome.action.setBadgeText.mockClear()
+    // @ts-expect-error Migrating from JS
     chrome.action.setBadgeBackgroundColor.mockClear()
   })
 
@@ -25,6 +33,7 @@ describe('onInstall function', () => {
   })
   test('it logs to console and Sentry when an error occurs setting values', async () => {
     const error = new Error('Test error')
+    // @ts-expect-error Migrating from JS
     chrome.storage.sync.set.mockRejectedValue(error)
     console.error = jest.fn()
     const captureException = jest.spyOn(Sentry, 'captureException')
@@ -38,6 +47,7 @@ describe('onInstall function', () => {
 
 describe('onUpdate function ', () => {
   beforeEach(() => {
+    // @ts-expect-error Migrating from JS
     chrome.windows.create.mockClear()
   })
   test('it sets badge text and color', async () => {
@@ -49,28 +59,29 @@ describe('onUpdate function ', () => {
 })
 
 describe('onInstallAndUpdate function', () => {
-  let onInstall, onUpdate
+  let onInstall: jest.SpyInstance, onUpdate: jest.SpyInstance
 
   beforeEach(() => {
     jest.clearAllMocks()
-    onInstall = jest.spyOn(InstallAndUpdate, 'onInstall').mockResolvedValue(null)
-    onUpdate = jest.spyOn(InstallAndUpdate, 'onUpdate').mockResolvedValue(null)
+    // @ts-expect-error Migrating from JS
+    onInstall = jest.spyOn(InstallAndUpdate, 'onInstall').mockResolvedValue()
+    onUpdate = jest.spyOn(InstallAndUpdate, 'onUpdate').mockResolvedValue()
   })
   test('it calls onInstall when reason is install', () => {
-    onInstallAndUpdate({reason: 'install'})
+    onInstallAndUpdate({reason: 'install' as OnInstalledReason})
 
     expect(onInstall).toHaveBeenCalledTimes(1)
   })
   test('it calls onUpdate when reason is update and there is an updated changelog', () => {
     process.env.CHANGELOG_VERSION = '1.0.0'
     process.env.VERSION = '1.0.0'
-    onInstallAndUpdate({reason: 'update'})
+    onInstallAndUpdate({reason: 'update' as OnInstalledReason})
     expect(onUpdate).toHaveBeenCalledTimes(1)
   })
   test('it does not call onUpdate when reason is update and there is no updated changelog', () => {
     process.env.CHANGELOG_VERSION = '1.0.1'
     process.env.VERSION = '1.0.0'
-    onInstallAndUpdate({reason: 'update'})
+    onInstallAndUpdate({reason: 'update' as OnInstalledReason})
     expect(onUpdate).not.toHaveBeenCalled()
   })
   test('it logs to console and Sentry when an error occurs', async () => {
@@ -80,7 +91,7 @@ describe('onInstallAndUpdate function', () => {
     const error = new Error('Test error')
     onUpdate.mockRejectedValue(error)
     console.error = jest.fn()
-    await onInstallAndUpdate({reason: 'update'})
+    await onInstallAndUpdate({reason: 'update' as OnInstalledReason})
 
     expect(console.error).toHaveBeenCalledWith('Error updating:', error)
     expect(captureException).toHaveBeenCalledWith(error)
