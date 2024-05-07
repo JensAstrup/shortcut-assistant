@@ -1,8 +1,17 @@
+import _ from 'lodash'
+
 import {logError} from '@sx/utils/log-error'
+import sleep from '@sx/utils/sleep'
 import {Story} from '@sx/utils/story'
 
 
 export class Todoist {
+  static tasks = {
+    'Work on': 'Set task to work on story',
+    'Review': 'Set task to review story',
+    'Follow up': 'Set task to follow up on story'
+  }
+
   static createButton(tooltip: string, title: string) {
     const newButton = document.createElement('button')
     newButton.className = 'action edit-description add-task micro flat-white'
@@ -12,6 +21,8 @@ export class Todoist {
     newButton.tabIndex = 2
     newButton.style.marginTop = '10px'
     newButton.setAttribute('data-todoist', 'true')
+    const titleAttribute = `data-${_.kebabCase(title)}`
+    newButton.setAttribute(titleAttribute, 'true')
     return newButton
   }
 
@@ -20,7 +31,8 @@ export class Todoist {
     const storyLink = window.location.href
     if (!taskTitle) {
       return `${title} [${storyTitle}](${storyLink})`
-    } else {
+    }
+    else {
       return `${taskTitle} [${storyTitle}](${storyLink})`
     }
   }
@@ -35,6 +47,16 @@ export class Todoist {
       const container = await Story.getEditDescriptionButtonContainer()
       container?.appendChild(newButton)
     }
+    const TWO_SECONDS = 2000
+    sleep(TWO_SECONDS).then(() => {
+      // Iterate through all buttons with data-x="true" where x is the key in Todoist.tasks
+      for(const key of Object.keys(Todoist.tasks)) {
+        const existingButtons = document.querySelectorAll(`button[data-${_.kebabCase(key)}="true"]`)
+        if (existingButtons.length > 1) {
+          existingButtons[0].remove()
+        }
+      }
+    })
   }
 
   static async setTaskButton(title: string, tooltip: string, taskTitle: string | null = null) {
@@ -58,8 +80,8 @@ export class Todoist {
 
   static async setTaskButtons() {
     if (Todoist.buttonExists()) return
-    Todoist.setTaskButton('Work on', 'Set task to work on story').catch(logError)
-    Todoist.setTaskButton('Review', 'Set task to review story').catch(logError)
-    Todoist.setTaskButton('Follow up', 'Set task to follow up on story', 'Follow up on').catch(logError)
+    for (const [tooltip, title] of Object.entries(Todoist.tasks)) {
+      await Todoist.setTaskButton(tooltip, title)
+    }
   }
 }

@@ -4,13 +4,14 @@ import {Story} from '@sx/utils/story'
 import Func = jest.Func
 
 
-jest.mock('../../src/js/utils/log-error')
-jest.mock('../../src/js/utils/story', () => ({
+jest.mock('@sx/utils/log-error')
+jest.mock('@sx/utils/story', () => ({
   Story: {
     title: 'Mocked Story Title',
     getEditDescriptionButtonContainer: jest.fn().mockResolvedValue({appendChild: jest.fn()})
   }
 }))
+jest.mock('@sx/utils/sleep', () => jest.fn().mockResolvedValue(null))
 
 describe('Todoist', () => {
   beforeAll(() => {
@@ -34,17 +35,18 @@ describe('Todoist', () => {
     jest.clearAllMocks()
   })
 
-  describe('constructor', () => {
+  describe('setTaskButtons', () => {
     it('should set task buttons if in story page', async () => {
-      Todoist.setTaskButtons()
-      expect(window.open).not.toHaveBeenCalled()
+      jest.spyOn(Todoist, 'setTaskButton').mockResolvedValue()
+      await Todoist.setTaskButtons()
+      expect(Todoist.setTaskButton).toHaveBeenCalledTimes(3)
     })
   })
 
   describe('createButton', () => {
     it('creates and returns a button with the correct attributes', () => {
       const mockButton = document.createElement = jest.fn().mockImplementation(tag => {
-        const element = {
+        return {
           appendChild: jest.fn(),
           setAttribute: jest.fn(),
           addEventListener: jest.fn(),
@@ -52,7 +54,6 @@ describe('Todoist', () => {
           tagName: tag.toUpperCase(),
           style: {}
         } as unknown as HTMLElement
-        return element
       })
       document.querySelector = jest.fn().mockReturnValue(mockButton)
       const button = Todoist.createButton('Tooltip text', 'Title text')
