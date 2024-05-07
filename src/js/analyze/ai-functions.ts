@@ -65,7 +65,7 @@ export class AiFunctions {
     AiFunctions.analyzeButton.textContent = 'Analyze Story'
   }
 
-  static async processOpenAIResponse(message: { message?: string, type: string }) {
+  static async processOpenAIResponse(message: { message?: string, type?: string }) {
     if (message.type === 'OpenAIResponseCompleted' || message.type === 'OpenAIResponseFailed') {
 
       AiFunctions.analyzeButton.textContent = 'Analyze Story'
