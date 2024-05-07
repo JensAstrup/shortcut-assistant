@@ -13,7 +13,6 @@ import {NotesPopup} from './notes-popup'
  * @class
  */
 export class Popup {
-  private analyzeButton: HTMLButtonElement
   private todoistCheckbox: HTMLInputElement
   private inDevelopmentText: HTMLInputElement
   private inReviewText: HTMLInputElement
@@ -22,8 +21,6 @@ export class Popup {
   private changelogButton: HTMLButtonElement
 
   constructor() {
-    const analyzeButton = document.getElementById('analyzeButton') as HTMLButtonElement
-
     const todoistCheckbox = document.getElementById('todoistOptions') as HTMLInputElement
     const inDevelopmentText = document.getElementById('inDevelopmentText') as HTMLInputElement
     const inReviewText = document.getElementById('inReviewText') as HTMLInputElement
@@ -32,11 +29,10 @@ export class Popup {
 
     const changelogButton = document.getElementById('changelog') as HTMLButtonElement
 
-    if (saveButton === null || analyzeButton === null || todoistCheckbox === null || changelogButton === null) {
-      throw new Error('saveButton, analyzeButton, todoistCheckbox, or changelogButton not found')
+    if (saveButton === null || todoistCheckbox === null || changelogButton === null) {
+      throw new Error('saveButton, todoistCheckbox, or changelogButton not found')
     }
 
-    this.analyzeButton = analyzeButton
     this.todoistCheckbox = todoistCheckbox
     this.inDevelopmentText = inDevelopmentText
     this.inReviewText = inReviewText
@@ -80,7 +76,6 @@ export class Popup {
     }
     await this.saveOptions()
     this.saveButton.disabled = false
-    this.analyzeButton.disabled = false
     this.saveButton.textContent = 'Saved!'
     await sleep(3000)
     this.saveButton.textContent = 'Save'
@@ -121,7 +116,7 @@ export class Popup {
     if (todoistEnabled) {
       this.todoistCheckbox.setAttribute('checked', 'checked')
     }
-    else if (typeof this.todoistCheckbox['removeAttribute'] === 'function'
+    else if (typeof this.todoistCheckbox.removeAttribute === 'function'
       && this.todoistCheckbox.hasAttribute('checked')) {
       this.todoistCheckbox.removeAttribute('checked')
     }

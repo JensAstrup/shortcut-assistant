@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "webpack --config webpack.config.dev.js",
     "build-css": "postcss src/styles/index.css -o src/styles/output.css",
-    "test": "TZ='UTC' jest --config jest.config.js",
+    "test": "TZ='UTC' jest --config jest.config.js --setupFiles --coverage",
     "lint": "eslint --ext .ts src",
     "lint-fix": "eslint --ext .ts src --fix",
     "build": "node src/build-manifest.ts",
@@ -55,10 +55,5 @@
     "node-html-parser": "^6.1.13",
     "openai": "4.38.5",
     "uuid": "^9.0.1"
-  },
-  "jest": {
-    "setupFiles": [
-      "./js/jest.setup.js"
-    ]
   }
 }

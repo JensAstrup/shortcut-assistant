@@ -1,5 +1,5 @@
-import sleep from '../utils/sleep'
-import {Story} from '../utils/story'
+import sleep from '@sx/utils/sleep'
+import {Story} from '@sx/utils/story'
 
 
 export class NotesPopup {
@@ -34,7 +34,8 @@ export class NotesPopup {
     const data = {[this.getKey(storyId)]: this.getInput().value}
     await chrome.storage.sync.set(data)
     this.saveButton.textContent = 'Saved!'
-    await sleep(2000)
+    const TWO_SECONDS = 2000
+    await sleep(TWO_SECONDS)
     this.saveButton.textContent = 'Save'
   }
 
