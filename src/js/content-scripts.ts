@@ -37,7 +37,9 @@ export async function activate() {
   try {
     const enableTodoistOptions = await getSyncedSetting('enableTodoistOptions', false)
     if (enableTodoistOptions) {
-      Todoist.setTaskButtons().catch(logError)
+      // Wait on response because AiFunctions.addAnalyzeButton() will also set a button
+      // and async could affect the order
+      await Todoist.setTaskButtons()
     }
   }
   catch (e) {

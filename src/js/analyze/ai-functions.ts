@@ -3,6 +3,7 @@ import * as Sentry from '@sentry/browser'
 import {sendEvent} from '@sx/analytics/event'
 import sleep from '@sx/utils/sleep'
 import {Story} from '@sx/utils/story'
+import '@sx/analyze/listeners'
 
 
 export class AiFunctions {
