@@ -1,5 +1,7 @@
 import * as Sentry from '@sentry/browser'
 
+import {AiFunctions} from '@sx/analyze/ai-functions'
+
 import {analyzeStoryDescription} from './analyze/analyze-story-description'
 import {CycleTime} from './cycle-time/cycle-time'
 import {DevelopmentTime} from './development-time/development-time'
@@ -35,13 +37,20 @@ export async function activate() {
   try {
     const enableTodoistOptions = await getSyncedSetting('enableTodoistOptions', false)
     if (enableTodoistOptions) {
-      Todoist.setTaskButtons().catch(logError)
+      // Wait on response because AiFunctions.addAnalyzeButton() will also set a button
+      // and async could affect the order
+      await Todoist.setTaskButtons()
     }
-  } catch (e) {
+  }
+  catch (e) {
     console.error(e)
   }
   new NotesButton()
   new KeyboardShortcuts().activate()
+  AiFunctions.addAnalyzeButton().catch((e) => {
+    console.error(e)
+    Sentry.captureException(e)
+  })
 
 }
 

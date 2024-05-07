@@ -1,10 +1,13 @@
 import {AiFunctions} from './ai-functions'
 
 
-document.getElementById('analyzeButton')?.addEventListener('click', AiFunctions.triggerAnalysis)
+chrome.runtime.onMessage.addListener(handleMessages)
 
-
-chrome.runtime.onMessage.addListener(async (message) => {
-  const aiFunctions = new AiFunctions()
-  await aiFunctions.processOpenAIResponse(message)
-})
+export default async function handleMessages(message: { message?: string, type?: string }) {
+  if (message.message === 'update') {
+    await AiFunctions.addAnalyzeButton()
+  }
+  else {
+    await AiFunctions.processOpenAIResponse(message)
+  }
+}

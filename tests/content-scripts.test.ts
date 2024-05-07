@@ -1,5 +1,8 @@
+import {captureException} from '@sentry/browser'
+
+import {AiFunctions} from '@sx/analyze/ai-functions'
 import {analyzeStoryDescription} from '@sx/analyze/analyze-story-description'
-import {handleMessage} from '@sx/content-scripts'
+import {activate, handleMessage} from '@sx/content-scripts'
 import {CycleTime} from '@sx/cycle-time/cycle-time'
 import {DevelopmentTime} from '@sx/development-time/development-time'
 import changeIteration from '@sx/keyboard-shortcuts/change-iteration'
@@ -7,41 +10,79 @@ import changeState from '@sx/keyboard-shortcuts/change-state'
 import copyGitBranch from '@sx/keyboard-shortcuts/copy-git-branch'
 import {NotesButton} from '@sx/notes/notes-button'
 import {Todoist} from '@sx/todoist/todoist'
+import storyPageIsReady from '@sx/utils/story-page-is-ready'
 
 
-jest.mock('../src/js/development-time/development-time', () => ({
+jest.mock('@sx/development-time/development-time', () => ({
   DevelopmentTime: {
     set: jest.fn().mockResolvedValue(null)
   }
 }))
-jest.mock('../src/js/cycle-time/cycle-time', () => ({
+jest.mock('@sx/cycle-time/cycle-time', () => ({
   CycleTime: {
     set: jest.fn().mockResolvedValue(null)
   }
 }))
-jest.mock('../src/js/analyze/analyze-story-description', () => {
+jest.mock('@sx/analyze/analyze-story-description', () => {
   return {
     analyzeStoryDescription: jest.fn().mockResolvedValue(null)
   }
 })
-jest.mock('../src/js/notes/notes-button', () => {
+jest.mock('@sx/notes/notes-button', () => {
   return {
     NotesButton: jest.fn().mockImplementation(() => {
     })
   }
 })
-jest.mock('../src/js/todoist/todoist', () => {
+jest.mock('@sx/keyboard-shortcuts/keyboard-shortcuts', () => {
+  return {
+    KeyboardShortcuts: jest.fn().mockImplementation(() => {
+      return {
+        activate: jest.fn()
+      }
+    })
+  }
+})
+jest.mock('@sx/todoist/todoist', () => {
   return {
     Todoist: {
       setTaskButtons: jest.fn().mockResolvedValue(null)
     }
   }
 })
-jest.mock('../src/js/utils/log-error', () => jest.fn())
-jest.mock('../src/js/keyboard-shortcuts/change-state', () => jest.fn())
-jest.mock('../src/js/keyboard-shortcuts/change-iteration', () => jest.fn())
-jest.mock('../src/js/keyboard-shortcuts/copy-git-branch', () => jest.fn())
+jest.mock('@sx/utils/story-page-is-ready', () => jest.fn())
+const mockedStoryPageIsReady = storyPageIsReady as jest.MockedFunction<typeof storyPageIsReady>
 
+jest.mock('@sentry/browser', () => ({
+  captureException: jest.fn(),
+  init: jest.fn()
+}))
+jest.mock('@sx/utils/log-error', () => jest.fn())
+jest.mock('@sx/keyboard-shortcuts/change-state', () => jest.fn())
+jest.mock('@sx/keyboard-shortcuts/change-iteration', () => jest.fn())
+jest.mock('@sx/keyboard-shortcuts/copy-git-branch', () => jest.fn())
+
+
+describe('activate function', () => {
+  it('should catch and handle errors from addAnalyzeButton', async () => {
+    const errorMessage = 'Analyze button error'
+    jest.spyOn(AiFunctions, 'addAnalyzeButton').mockRejectedValue(new Error(errorMessage))
+    jest.spyOn(DevelopmentTime, 'set').mockResolvedValue()
+    jest.spyOn(CycleTime, 'set').mockResolvedValue()
+
+    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {
+    })
+
+    await activate()
+
+    expect(mockedStoryPageIsReady).toHaveBeenCalled()
+    expect(AiFunctions.addAnalyzeButton).toHaveBeenCalled()
+    expect(errorSpy).toHaveBeenCalledWith(expect.any(Error)) // Checking if console.error was called with an error
+    expect(captureException).toHaveBeenCalledWith(expect.any(Error)) // Check if Sentry captured the exception
+
+    errorSpy.mockRestore()
+  })
+})
 
 describe('handleMessage function', () => {
   const originalLocation = window.location
