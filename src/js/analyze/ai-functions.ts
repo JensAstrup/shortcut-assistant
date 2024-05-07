@@ -22,7 +22,7 @@ export class AiFunctions {
   }
 
   static buttonExists() {
-    return document.querySelector('button[data-todoist="true"]')
+    return document.querySelector('button[data-analyze="true"]')
   }
 
   static async addButtonIfNotExists(newButton: HTMLButtonElement) {
@@ -31,6 +31,14 @@ export class AiFunctions {
       const container = await Story.getEditDescriptionButtonContainer()
       container?.appendChild(newButton)
     }
+    // Prevent duplicate buttons
+    const TWO_SECONDS = 2000
+    sleep(TWO_SECONDS).then(() => {
+      const existingButtons = document.querySelectorAll('button[data-analyze="true"]')
+      if (existingButtons.length > 1) {
+        existingButtons[0].remove()
+      }
+    })
   }
 
   static async addAnalyzeButton() {
