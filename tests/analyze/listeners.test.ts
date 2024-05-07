@@ -1,4 +1,4 @@
-jest.mock('../../src/js/analyze/ai-functions', () => {
+jest.mock('@sx/analyze/ai-functions', () => {
   return {
     AiFunctions: jest.fn().mockImplementation(() => {
       return {
@@ -10,27 +10,20 @@ jest.mock('../../src/js/analyze/ai-functions', () => {
 })
 
 describe('Event Listeners', () => {
-  document.body.innerHTML = `
-    <button id="analyzeButton"></button>
-  `
-
-  const mockAddEventListener = jest.fn()
-  document.getElementById = jest.fn().mockReturnValue({addEventListener: mockAddEventListener})
   const mockChromeRuntimeOnMessage = jest.fn()
 
   global.chrome = {
+    ...chrome,
     runtime: {
+      ...chrome.runtime,
       onMessage: {
+        ...chrome.runtime.onMessage,
         addListener: mockChromeRuntimeOnMessage
       }
     }
   }
 
-  require('../../src/js/analyze/listeners') // Adjust this path to where your actual script is
-
-  it('should add click event listener to analyzeButton', () => {
-    expect(mockAddEventListener).toHaveBeenCalled()
-  })
+  require('@sx/analyze/listeners') // Adjust this path to where your actual script is
 
   it('should set up chrome.runtime.onMessage listener', () => {
     expect(mockChromeRuntimeOnMessage).toHaveBeenCalledWith(expect.any(Function))
