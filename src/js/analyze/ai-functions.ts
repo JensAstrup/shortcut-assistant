@@ -21,26 +21,6 @@ export class AiFunctions {
     return newButton
   }
 
-  static buttonExists() {
-    return document.querySelector('button[data-analyze="true"]')
-  }
-
-  static async addButtonIfNotExists(newButton: HTMLButtonElement) {
-    const existingButton = AiFunctions.buttonExists()
-    if (!existingButton) {
-      const container = await Story.getEditDescriptionButtonContainer()
-      container?.appendChild(newButton)
-    }
-    // Prevent duplicate buttons
-    const TWO_SECONDS = 2000
-    sleep(TWO_SECONDS).then(() => {
-      const existingButtons = document.querySelectorAll('button[data-analyze="true"]')
-      if (existingButtons.length > 1) {
-        existingButtons[0].remove()
-      }
-    })
-  }
-
   static async addAnalyzeButton() {
     const newButton = AiFunctions.createButton()
     AiFunctions.analyzeButton = newButton
@@ -48,10 +28,8 @@ export class AiFunctions {
       await AiFunctions.triggerAnalysis()
     })
     newButton.textContent = 'Analyze Story'
-    if (AiFunctions.buttonExists()) {
-      return
-    }
-    await AiFunctions.addButtonIfNotExists(newButton)
+    const story = new Story()
+    await story.addButton(newButton, 'analyze')
   }
 
   static async triggerAnalysis() {
