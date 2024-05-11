@@ -1,12 +1,15 @@
 import {chrome} from 'jest-chrome'
 
 import {sendEvent} from '@sx/analytics/event'
+
 import Tab = chrome.tabs.Tab
+
 import {
   handleGetOpenAiToken,
   handleGetSavedNotes,
   handleOpenAICall
 } from '@sx/service-worker/handlers'
+
 import ManifestV3 = chrome.runtime.ManifestV3
 
 
@@ -48,7 +51,7 @@ describe('chrome.runtime.onMessage listener', () => {
       data: {prompt: mockPrompt}
     }, {tab: {id: mockTabId, index: 0, pinned: false, windowId: 1, active: true} as Tab}, sendResponse)
 
-    expect(handleOpenAICall).toHaveBeenCalledWith(mockPrompt, mockTabId)
+    expect(handleOpenAICall).toHaveBeenCalledWith(mockPrompt, undefined, mockTabId)
     await new Promise(process.nextTick) // Wait for all promises to resolve
     expect(sendResponse).toHaveBeenCalled()
   })
