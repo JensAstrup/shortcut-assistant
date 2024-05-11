@@ -56,7 +56,7 @@
   "description": "An extension by and for Shortcut power users. Adds AI functionality, keyboard shortcuts, and more.",
   "host_permissions": [
     "https://api.openai.com/*",
-    "https://faas-nyc1-2ef2e6cc.doserverless.co/*"
+    "https://proxy-zcffd.ondigitalocean.app/*"
   ],
   "icons": {
     "16": "assets/assistant.png",

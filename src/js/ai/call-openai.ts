@@ -1,4 +1,7 @@
 import * as Sentry from '@sentry/browser'
+import {coerceBoolean} from 'openai/core'
+
+import {AiPromptType} from '@sx/analyze/types/ai-prompt-type'
 
 import {sendEvent} from '../analytics/event'
 import {OpenAIError} from '../utils/errors'
@@ -8,26 +11,22 @@ import getCompletionFromProxy from './get-completion-from-proxy'
 import getOpenAiToken from './get-openai-token'
 
 
-async function callOpenAi(description: string, tabId: number) {
+async function callOpenAi(description: string, type: AiPromptType, tabId: number) {
   const token = await getOpenAiToken()
-  let messagesData
-  let message
+
+  sendEvent('ai', {token_provided: coerceBoolean(token), type}).catch(e => {
+    console.error('Error sending event:', e)
+    Sentry.captureException(e)
+  })
 
   if (!token) {
-    messagesData = await getCompletionFromProxy(description)
-    message = messagesData
-    chrome.tabs.sendMessage(tabId, {type: 'updateOpenAiResponse', 'data': message})
-    chrome.runtime.sendMessage({type: 'OpenAIResponseCompleted'})
-    return message
+    await getCompletionFromProxy(description, type, tabId)
   }
   else {
     try {
-      await fetchCompletion(description, tabId)
-      sendEvent('analyze_story_details', {token_provided: true}).catch(e => {
-        console.error('Error sending event:', e)
-        Sentry.captureException(e)
-      })
-    } catch (e: unknown) {
+      await fetchCompletion(description, type, tabId)
+    }
+    catch (e: unknown) {
       throw new OpenAIError(`Error getting completion from OpenAI: ${e}`)
     }
   }

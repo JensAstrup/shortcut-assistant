@@ -1,8 +1,10 @@
+import {AiProcessMessage, AiProcessMessageType} from '@sx/analyze/types/AiProcessMessage'
+
 import {getOrCreateClientId} from '../analytics/client-id'
 import {OpenAIError} from '../utils/errors'
 
 
-export default async function getCompletionFromProxy(description: string) {
+export default async function getCompletionFromProxy(description: string, type: string, tabId: number) {
   let response
   try {
     const url = process.env.PROXY_URL
@@ -14,13 +16,15 @@ export default async function getCompletionFromProxy(description: string) {
       method: 'POST',
       body: JSON.stringify({
         description: description,
-        instanceId: instanceId
+        instanceId: instanceId,
+        prompt_type: type,
       }),
       headers: {
         'Content-Type': 'application/json'
       }
     })
-  } catch (e) {
+  }
+  catch (e) {
     throw new OpenAIError(`Error getting completion from proxy: ${e}`)
   }
 
@@ -28,6 +32,28 @@ export default async function getCompletionFromProxy(description: string) {
     throw new OpenAIError(`Proxy response was not ok. Status: ${response.status} ${response.statusText}`)
   }
 
-  const data = await response.json()
-  return data.content
+  const reader = response.body?.getReader()
+  if (!reader) {
+    throw new OpenAIError('No data returned from proxy')
+  }
+
+  function readStream() {
+    reader?.read().then(({done, value}) => {
+      if (done) {
+        chrome.runtime.sendMessage({type: AiProcessMessageType.completed, message: type} as AiProcessMessage)
+        return
+      }
+      const content = new TextDecoder().decode(value)
+      const data = {content, type}
+      chrome.tabs.sendMessage(tabId, {type: AiProcessMessageType.updated, data} as AiProcessMessage)
+
+      // Recursive call to continue reading
+      readStream()
+    }).catch(error => {
+      console.error('Stream reading failed:', error)
+      chrome.runtime.sendMessage({type: AiProcessMessageType.failed, message: error.message} as AiProcessMessage)
+    })
+  }
+
+  readStream()
 }

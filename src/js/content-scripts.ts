@@ -47,10 +47,7 @@ export async function activate() {
   }
   new NotesButton()
   new KeyboardShortcuts().activate()
-  AiFunctions.addAnalyzeButton().catch((e) => {
-    console.error(e)
-    Sentry.captureException(e)
-  })
+  new AiFunctions()
 
 }
 

@@ -49,12 +49,12 @@ export class Story {
     return match[1]
   }
 
-  private buttonExists() {
-    return document.querySelector('button[data-analyze="true"]')
+  private buttonExists(identifier: string) {
+    return document.querySelector(`button[data-${identifier}="true"]`)
   }
 
   public async addButton(newButton: HTMLButtonElement, identifier: string) {
-    const existingButton = this.buttonExists()
+    const existingButton = this.buttonExists(identifier)
     if (!existingButton) {
       const container = await Story.getEditDescriptionButtonContainer()
       container?.appendChild(newButton)
@@ -73,7 +73,8 @@ export class Story {
     let container: HTMLElement | null | undefined
     let attempts = 0
     while (!container) {
-      await sleep(1000)
+      const ONE_SECOND = 1000
+      await sleep(ONE_SECOND)
       container = document.querySelector('#story-description-v2') as HTMLElement
       attempts++
       if (attempts > 10) {
