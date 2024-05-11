@@ -2,6 +2,7 @@ import OpenAI from 'openai'
 
 import {fetchCompletion} from '@sx/ai/fetch-completion'
 import getOpenAiToken from '@sx/ai/get-openai-token'
+import {AiProcessMessageType} from '@sx/analyze/types/AiProcessMessage'
 
 // Mock the required modules
 jest.mock('openai')
@@ -37,19 +38,22 @@ describe('fetchCompletion', () => {
   })
 
   it('successfully fetches and handles data from OpenAI', async () => {
-    await fetchCompletion(description, tabId)
+    await fetchCompletion(description, 'analyze', tabId)
 
     // Check OpenAI was initialized correctly
     expect(mockOpenAI).toHaveBeenCalledWith({apiKey: fakeToken})
 
     // Verify messages sent to the Chrome tab
     expect(chrome.tabs.sendMessage).toHaveBeenCalledWith(tabId, {
-      type: 'updateOpenAiResponse',
-      data: 'response from OpenAI'
+      type: AiProcessMessageType.updated,
+      data: {
+        content: 'response from OpenAI',
+        type: 'analyze'
+      }
     })
 
     // Check final message to runtime
-    expect(chrome.runtime.sendMessage).toHaveBeenCalledWith({type: 'OpenAIResponseCompleted'})
+    expect(chrome.runtime.sendMessage).toHaveBeenCalledWith({type: AiProcessMessageType.completed, message: 'analyze'})
   })
 
   // Additional tests for error scenarios...

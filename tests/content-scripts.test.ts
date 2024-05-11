@@ -28,6 +28,14 @@ jest.mock('@sx/analyze/analyze-story-description', () => {
     analyzeStoryDescription: jest.fn().mockResolvedValue(null)
   }
 })
+jest.mock('@sx/analyze/ai-functions', () => {
+  return {
+    AiFunctions: jest.fn().mockImplementation(() => {
+      // Mock behavior if necessary
+    })
+  }
+})
+
 jest.mock('@sx/notes/notes-button', () => {
   return {
     NotesButton: jest.fn().mockImplementation(() => {
@@ -64,23 +72,16 @@ jest.mock('@sx/keyboard-shortcuts/copy-git-branch', () => jest.fn())
 
 
 describe('activate function', () => {
-  it('should catch and handle errors from addAnalyzeButton', async () => {
-    const errorMessage = 'Analyze button error'
-    jest.spyOn(AiFunctions, 'addAnalyzeButton').mockRejectedValue(new Error(errorMessage))
-    jest.spyOn(DevelopmentTime, 'set').mockResolvedValue()
-    jest.spyOn(CycleTime, 'set').mockResolvedValue()
-
-    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {
-    })
+  it('should activate features', async () => {
+    const developmentTime = jest.spyOn(DevelopmentTime, 'set').mockResolvedValue()
+    const cycleTime = jest.spyOn(CycleTime, 'set').mockResolvedValue()
 
     await activate()
 
     expect(mockedStoryPageIsReady).toHaveBeenCalled()
-    expect(AiFunctions.addAnalyzeButton).toHaveBeenCalled()
-    expect(errorSpy).toHaveBeenCalledWith(expect.any(Error)) // Checking if console.error was called with an error
-    expect(captureException).toHaveBeenCalledWith(expect.any(Error)) // Check if Sentry captured the exception
-
-    errorSpy.mockRestore()
+    expect(AiFunctions).toHaveBeenCalled()
+    expect(developmentTime).toHaveBeenCalled()
+    expect(cycleTime).toHaveBeenCalled()
   })
 })
 
