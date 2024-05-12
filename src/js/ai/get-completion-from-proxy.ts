@@ -1,5 +1,3 @@
-import { TextDecoder } from 'util'
-
 import {AiProcessMessage, AiProcessMessageType} from '@sx/analyze/types/AiProcessMessage'
 
 import {getOrCreateClientId} from '../analytics/client-id'

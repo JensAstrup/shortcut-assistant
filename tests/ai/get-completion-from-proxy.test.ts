@@ -1,3 +1,5 @@
+import { TextDecoder } from 'util'
+
 import getCompletionFromProxy, {readStream} from '@sx/ai/get-completion-from-proxy'
 import {getOrCreateClientId} from '@sx/analytics/client-id'
 import {AiProcessMessageType} from '@sx/analyze/types/AiProcessMessage'
@@ -6,6 +8,7 @@ import {OpenAIError} from '@sx/utils/errors'
 
 jest.mock('@sx/analytics/client-id')
 global.fetch = jest.fn()
+Object.assign(global, {TextDecoder: TextDecoder})
 
 describe('readStream', () => {
   beforeEach(() => {
