@@ -12,6 +12,8 @@ jest.mock('@sentry/browser', () => ({
 jest.mock('@sx/analytics/event', () => ({
   sendEvent: jest.fn().mockResolvedValue(null)
 }))
+const mockSendEvent = sendEvent as jest.Mock
+
 jest.mock('@sx/utils/story', () => ({
   Story: jest.fn().mockImplementation(() => ({
     addButton: jest.fn(),
@@ -66,7 +68,7 @@ describe('AiFunctions', () => {
     }, 3)
   })
 
-  it('createButton should correctly setup button properties', () => {
+  it('should correctly setup button properties', () => {
     const feature = AiFunctions.features.analyze
     const button = AiFunctions.createButton(feature)
     expect(button.className).toBe('action edit-description add-task micro flat-white')
@@ -74,7 +76,7 @@ describe('AiFunctions', () => {
     expect(button.addEventListener).toHaveBeenCalledWith('click', expect.any(Function))
   })
 
-  it('triggerAnalysis should set button text and send message', async () => {
+  it('should set button text and send message on triggerAnalysis', async () => {
     AiFunctions.buttons.analyze = mockButton as HTMLButtonElement
     await AiFunctions.triggerAnalysis()
     expect(chrome.runtime.sendMessage).toHaveBeenCalledWith({
@@ -83,10 +85,26 @@ describe('AiFunctions', () => {
     })
   })
 
+  it('should set button text and send message for triggerBreakUp', async () => {
+    AiFunctions.buttons.breakup = mockButton as HTMLButtonElement
+    await AiFunctions.triggerBreakUp()
+    expect(chrome.runtime.sendMessage).toHaveBeenCalledWith({
+      action: 'callOpenAI',
+      data: {prompt: Story.description, type: 'breakup'}
+    })
+  })
+
   it('analysisComplete should reset button text and style', async () => {
     AiFunctions.buttons.analyze = mockButton as HTMLButtonElement
     await AiFunctions.analysisComplete()
     expect(mockButton.textContent).toBe('Analyze Story')
+    expect(mockButton.classList.contains('cursor-progress')).toBeFalsy()
+  })
+
+  it('should reset button text and style for breakupComplete', async () => {
+    AiFunctions.buttons.breakup = mockButton as HTMLButtonElement
+    await AiFunctions.breakupComplete()
+    expect(mockButton.textContent).toBe('Break Up Story')
     expect(mockButton.classList.contains('cursor-progress')).toBeFalsy()
   })
 
@@ -99,7 +117,7 @@ describe('AiFunctions', () => {
     expect(AiFunctions.features.analyze.callbackFunc).toHaveBeenCalled()
   })
 
-  it('processOpenAIResponse should handle failure and hide error states', async () => {
+  it('should handle failure and hide error states for processOpenAIResponse', async () => {
     const aiFuncs = new AiFunctions()
     const message = {type: AiProcessMessageType.failed, data: {type: 'analyze'}} as AiProcessMessage
     document.getElementById = jest.fn().mockReturnValue({
@@ -110,5 +128,21 @@ describe('AiFunctions', () => {
     await new Promise(process.nextTick) // Ensure all promises are resolved
 
     expect(sendEvent).toHaveBeenCalledWith('ai_request_failed')
+  })
+
+  it('should handle failure of sendEvent', async () => {
+    const aiFuncs = new AiFunctions()
+    const message = {type: AiProcessMessageType.failed, data: {type: 'analyze'}} as AiProcessMessage
+    document.getElementById = jest.fn().mockReturnValue({
+      style: {cssText: '', display: ''}
+    })
+    mockSendEvent.mockRejectedValue(new Error('Failed to send event'))
+
+    await aiFuncs.processOpenAIResponse(message)
+    await new Promise(process.nextTick) // Ensure all promises are resolved
+
+    expect(mockSendEvent).toHaveBeenCalledWith('ai_request_failed')
+    expect(console.error).toHaveBeenCalledWith(new Error('Failed to send event'))
+    expect(Sentry.captureException).toHaveBeenCalledWith(new Error('Failed to send event'))
   })
 })
