@@ -77,7 +77,8 @@ export class Story {
       await sleep(ONE_SECOND)
       container = document.querySelector('#story-description-v2') as HTMLElement
       attempts++
-      if (attempts > 10) {
+      const MAX_ATTEMPTS = 10
+      if (attempts > MAX_ATTEMPTS) {
         break
       }
     }

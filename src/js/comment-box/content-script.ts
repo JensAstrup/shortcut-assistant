@@ -41,10 +41,8 @@ export class CommentBox {
 
 
 chrome.runtime.onMessage.addListener((request: AiProcessMessage) => {
-  if (request.type === AiProcessMessageType.updated) {
-    if (request.data !== undefined) {
-      CommentBox.populate(request.data.content).catch(logError)
-    }
+  if (request.type === AiProcessMessageType.updated && request.data) {
+    CommentBox.populate(request.data.content).catch(logError)
   }
   if (request.type === AiProcessMessageType.completed) {
     CommentBox.clear().catch(logError)
