@@ -38,13 +38,6 @@ export class AiFunctions {
   }
   public static buttons: Partial<Record<AiPromptType, HTMLButtonElement>> = {}
 
-  constructor() {
-    this.addButtons().catch((e) => {
-      console.error(e)
-      Sentry.captureException(e)
-    })
-  }
-
   static createButton(feature: AiFeature): HTMLButtonElement {
     const newButton = document.createElement('button')
     newButton.className = 'action edit-description add-task micro flat-white'

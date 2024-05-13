@@ -62,7 +62,7 @@ export class Story {
     // Prevent duplicate buttons
     const TWO_SECONDS = 2000
     sleep(TWO_SECONDS).then(() => {
-      const existingButtons = document.querySelectorAll(`button[${identifier}="true"]`)
+      const existingButtons = document.querySelectorAll(`button[data-${identifier}="true"]`)
       if (existingButtons.length > 1) {
         existingButtons[0].remove()
       }

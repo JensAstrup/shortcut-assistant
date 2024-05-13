@@ -74,8 +74,9 @@ export class Todoist {
     if (Todoist.buttonExists()) {
       return
     }
-
-    Todoist.addButtonIfNotExists(newButton).catch(logError)
+    const story = new Story()
+    await story.addButton(newButton, _.kebabCase(title))
+    // Todoist.addButtonIfNotExists(newButton).catch(logError)
   }
 
   static async setTaskButtons() {

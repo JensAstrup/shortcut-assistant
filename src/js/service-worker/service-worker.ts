@@ -22,7 +22,7 @@ chrome.commands.onCommand.addListener(handleCommands)
 chrome.runtime.onInstalled.addListener(onInstallAndUpdate)
 
 chrome.tabs.onUpdated.addListener(async function (tabId, changeInfo) {
-  if (changeInfo.url && checkHost(changeInfo.url)) {
+  if (changeInfo.url && checkHost(changeInfo.url) && changeInfo.url.includes('story')) {
     SlugManager.refreshCompanySlug(tabId, changeInfo).catch(e => {
       console.error('Error refreshing company slug:', e)
       Sentry.captureException(e)

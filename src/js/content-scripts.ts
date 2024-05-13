@@ -27,13 +27,18 @@ Sentry.init({
 export async function activate() {
   await storyPageIsReady()
 
+  new KeyboardShortcuts().activate()
+
   CycleTime.set().catch((error) => {
     console.error(error)
   })
-
   DevelopmentTime.set().catch((error) => {
     console.error(error)
   })
+
+  const aiFunctions = new AiFunctions()
+  // Run synchronously to ensure the buttons are added in the correct order
+  await aiFunctions.addButtons()
   try {
     const enableTodoistOptions = await getSyncedSetting('enableTodoistOptions', false)
     if (enableTodoistOptions) {
@@ -46,25 +51,26 @@ export async function activate() {
     console.error(e)
   }
   new NotesButton()
-  new KeyboardShortcuts().activate()
-  new AiFunctions()
 
 }
 
 export async function handleMessage(request: { message: string, url: string }) {
   const activeTabUrl = window.location.href
-  if (request.message === 'initDevelopmentTime' && request.url.includes('story')) {
-    DevelopmentTime.set().catch(logError)
-    CycleTime.set().catch(logError)
-  }
   if (request.message === 'analyzeStoryDescription') {
     await analyzeStoryDescription(activeTabUrl)
   }
-  if (request.message === 'initNotes' && request.url.includes('story')) {
+  if(request.message === 'update'){
+    DevelopmentTime.set().catch(logError)
+    CycleTime.set().catch(logError)
     new NotesButton()
-  }
-  if (request.message === 'initTodos' && request.url.includes('story')) {
-    Todoist.setTaskButtons().catch(logError)
+    const functions = new AiFunctions()
+    await functions.addButtons()
+    const enableTodoistOptions = await getSyncedSetting('enableTodoistOptions', false)
+    if (enableTodoistOptions) {
+      // Wait on response because AiFunctions.addAnalyzeButton() will also set a button
+      // and async could affect the order
+      await Todoist.setTaskButtons()
+    }
   }
   if (request.message === 'change-state') {
     await changeState()
