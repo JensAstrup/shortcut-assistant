@@ -35,10 +35,15 @@ jobs:
         id: extract_tag
         run: echo "VERSION=${{ github.event.pull_request.title }}" >> $GITHUB_ENV
 
+      - name: Add API_KEY to .env
+        run: |
+          echo GOOGLE_ANALYTICS_API_SECRET=${{ secrets.GOOGLE_ANALYTICS_API_SECRET }} >> .env
+
       - name: Build and zip the extension
         run: |
           mkdir dist
           cd src
+          yarn run build
           yarn run build-css
           yarn run dist
         env:

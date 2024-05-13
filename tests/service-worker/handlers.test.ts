@@ -23,10 +23,8 @@ describe('Handle OpenAI Call', () => {
   it('should call callOpenAi with the prompt and tabId', async () => {
     const prompt = 'prompt'
     const tabId = 123
-    mockCallOpenAi.mockResolvedValue({data: 'mock'})
-    const response = await handleOpenAICall(prompt, tabId)
-    expect(mockCallOpenAi).toHaveBeenCalledWith(prompt, tabId)
-    expect(response).toEqual({data: {data: 'mock'}})
+    await handleOpenAICall(prompt, 'analyze', tabId)
+    expect(mockCallOpenAi).toHaveBeenCalledWith(prompt, 'analyze', tabId)
   })
 
   it('should return an error if callOpenAi throws an error', async () => {
@@ -34,7 +32,7 @@ describe('Handle OpenAI Call', () => {
     const tabId = 123
     const error = new Error('error')
     mockCallOpenAi.mockRejectedValue(error)
-    const response = await handleOpenAICall(prompt, tabId)
+    const response = await handleOpenAICall(prompt, 'breakup', tabId)
     expect(response).toEqual({error})
   })
 })

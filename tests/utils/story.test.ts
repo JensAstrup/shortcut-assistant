@@ -308,3 +308,24 @@ describe('Story id', () => {
     await expect(Story.id()).rejects.toThrow('Error fetching URL')
   })
 })
+
+describe('Story addButton', () => {
+  it('should add a button to the container', async () => {
+    const button = document.createElement('button')
+    const container = document.createElement('div')
+    jest.spyOn(Story, 'getEditDescriptionButtonContainer').mockResolvedValue(container)
+    const story = new Story()
+    await story.addButton(button, 'test')
+    expect(container.children).toContain(button)
+  })
+
+  it('should not add a button if it already exists', async () => {
+    const button = document.createElement('button')
+    const container = document.createElement('div')
+    container.appendChild(button)
+    jest.spyOn(Story, 'getEditDescriptionButtonContainer').mockResolvedValue(container)
+    const story = new Story()
+    await story.addButton(button, 'test')
+    expect(container.children.length).toBe(1)
+  })
+})

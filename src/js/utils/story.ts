@@ -49,14 +49,36 @@ export class Story {
     return match[1]
   }
 
+  private buttonExists(identifier: string) {
+    return document.querySelector(`button[data-${identifier}="true"]`)
+  }
+
+  public async addButton(newButton: HTMLButtonElement, identifier: string) {
+    const existingButton = this.buttonExists(identifier)
+    if (!existingButton) {
+      const container = await Story.getEditDescriptionButtonContainer()
+      container?.appendChild(newButton)
+    }
+    // Prevent duplicate buttons
+    const TWO_SECONDS = 2000
+    sleep(TWO_SECONDS).then(() => {
+      const existingButtons = document.querySelectorAll(`button[data-${identifier}="true"]`)
+      if (existingButtons.length > 1) {
+        existingButtons[0].remove()
+      }
+    })
+  }
+
   static async getEditDescriptionButtonContainer(): Promise<HTMLElement | null | undefined> {
     let container: HTMLElement | null | undefined
     let attempts = 0
     while (!container) {
-      await sleep(1000)
+      const ONE_SECOND = 1000
+      await sleep(ONE_SECOND)
       container = document.querySelector('#story-description-v2') as HTMLElement
       attempts++
-      if (attempts > 10) {
+      const MAX_ATTEMPTS = 10
+      if (attempts > MAX_ATTEMPTS) {
         break
       }
     }
@@ -102,7 +124,8 @@ export class Story {
     let storyState = ''
     try {
       storyState = this.state?.textContent || ''
-    } catch (e) {
+    }
+    catch (e) {
       console.warn(`Could not find state element for state ${state}`)
       Sentry.captureException(e)
     }
