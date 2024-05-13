@@ -23,6 +23,7 @@ jest.mock('@sx/development-time/development-time', () => ({
 }))
 jest.mock('@sx/todoist/todoist')
 jest.mock('@sx/notes/notes-button')
+jest.mock('@sx/analyze/ai-functions')
 jest.mock('@sx/keyboard-shortcuts/keyboard-shortcuts')
 jest.mock('@sx/analyze/analyze-story-description')
 jest.mock('@sx/utils/story-page-is-ready', () => jest.fn().mockResolvedValue(null))

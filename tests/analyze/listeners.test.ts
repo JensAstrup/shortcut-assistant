@@ -1,31 +1,24 @@
-import {jest} from '@jest/globals'
-
 import {AiFunctions} from '@sx/analyze/ai-functions'
 import handleMessages from '@sx/analyze/listeners'
-import {AiProcessMessage} from '@sx/analyze/types/AiProcessMessage'
+import {AiProcessMessageType} from '@sx/analyze/types/AiProcessMessage'
 
-
-// Set up mock for chrome.runtime.onMessage.addListener if needed
-global.chrome = {
-  ...chrome,
-  runtime: {
-    ...chrome.runtime,
-    onMessage: {
-      ...chrome.runtime.onMessage,
-      addListener: jest.fn()
-    }
-  }
-}
 
 describe('handleMessages', () => {
-  beforeEach(() => {
-    jest.clearAllMocks()
+  it('should return if message type is not defined', async () => {
+    const result = await handleMessages({})
+    expect(result).toBeUndefined()
   })
 
-  it('calls processOpenAIResponse', async () => {
-    const message = {message: 'something else', data: {type: 'analyze'}} as AiProcessMessage
-    const processOpenAIResponse = jest.spyOn(AiFunctions.prototype, 'processOpenAIResponse')
+  it.each([
+    AiProcessMessageType.updated,
+    AiProcessMessageType.completed,
+    AiProcessMessageType.failed
+  ])('should process OpenAI response if message type is %s', async (type) => {
+    const message = {
+      type
+    }
+    const spy = jest.spyOn(AiFunctions.prototype, 'processOpenAIResponse')
     await handleMessages(message)
-    expect(processOpenAIResponse).toHaveBeenCalledWith(message)
+    expect(spy).toHaveBeenCalledWith(message)
   })
 })

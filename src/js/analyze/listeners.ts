@@ -5,11 +5,12 @@ import {AiFunctions} from './ai-functions'
 
 chrome.runtime.onMessage.addListener(handleMessages)
 
-export default async function handleMessages(message: AiProcessMessage) {
+export default async function handleMessages(message: AiProcessMessage | Record<string, unknown>) {
   const functions = new AiFunctions()
-  if(message.type === AiProcessMessageType.updated || message.type === AiProcessMessageType.completed || message.type === AiProcessMessageType.failed) {
-    await functions.processOpenAIResponse(message)
+  if(message.type === undefined) {
+    return
   }
-  else if (message.message === 'update'){
+  if(message.type === AiProcessMessageType.updated || message.type === AiProcessMessageType.completed || message.type === AiProcessMessageType.failed) {
+    await functions.processOpenAIResponse(<AiProcessMessage>message)
   }
 }
