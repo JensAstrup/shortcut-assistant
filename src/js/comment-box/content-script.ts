@@ -44,7 +44,7 @@ chrome.runtime.onMessage.addListener((request: AiProcessMessage) => {
   if (request.type === AiProcessMessageType.updated && request.data) {
     CommentBox.populate(request.data.content).catch(logError)
   }
-  if (request.type === AiProcessMessageType.completed) {
+  if (request.type === AiProcessMessageType.failed) {
     CommentBox.clear().catch(logError)
   }
 })

@@ -53,9 +53,6 @@ export class Todoist {
     newButton.appendChild(span)
     newButton.append(' ' + title + '   ')
 
-    if (Todoist.buttonExists()) {
-      return
-    }
     const story = new Story()
     await story.addButton(newButton, _.kebabCase(title))
   }
@@ -63,7 +60,7 @@ export class Todoist {
   static async setTaskButtons() {
     if (Todoist.buttonExists()) return
     for (const [tooltip, title] of Object.entries(Todoist.tasks)) {
-      await Todoist.setTaskButton(tooltip, title)
+      Todoist.setTaskButton(tooltip, title).catch(logError)
     }
   }
 }

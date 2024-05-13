@@ -10,5 +10,5 @@ export enum AiProcessMessageType {
 export interface AiProcessMessage {
   type: AiProcessMessageType
   message?: string
-  data?: { content: string, type: AiPromptType }
+  data: { content: string, type: AiPromptType }
 }

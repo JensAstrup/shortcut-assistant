@@ -10,7 +10,6 @@ import {Story} from '@sx/utils/story'
 
 interface AiFeature {
   name: string
-  longName: string
   key: AiPromptType
   description: string
   clickFunc: () => Promise<void>
@@ -18,18 +17,16 @@ interface AiFeature {
 }
 
 export class AiFunctions {
-  static features: Record<string, AiFeature> = {
+  static features: Record<AiPromptType, AiFeature> = {
     analyze: {
       name: 'Analyze',
-      longName: 'Analyze Story Details',
       key: 'analyze',
       description: 'Analyze the story details to get a better understanding of the story.',
       clickFunc: AiFunctions.triggerAnalysis,
       callbackFunc: AiFunctions.analysisComplete
     },
-    breakUp: {
+    breakup: {
       name: 'Break Up',
-      longName: 'Break Up Story',
       key: 'breakup',
       description: 'Break up the story into smaller tasks.',
       clickFunc: AiFunctions.triggerBreakUp,
@@ -59,7 +56,10 @@ export class AiFunctions {
       const newButton = AiFunctions.createButton(feature)
       AiFunctions.buttons[feature.key] = newButton
       const story = new Story()
-      await story.addButton(newButton, feature.key)
+      story.addButton(newButton, feature.key).catch((e) => {
+        console.error(e)
+        Sentry.captureException(e)
+      })
     }
   }
 
@@ -86,13 +86,13 @@ export class AiFunctions {
   }
 
   static async analysisComplete() {
-    AiFunctions.buttons.analyze!.textContent = 'Analyze Story'
+    AiFunctions.buttons.analyze!.textContent = AiFunctions.features.analyze.name
     AiFunctions.buttons.analyze!.classList.remove('cursor-progress')
   }
 
 
   static async breakupComplete() {
-    AiFunctions.buttons.breakup!.textContent = 'Break Up Story'
+    AiFunctions.buttons.breakup!.textContent = AiFunctions.features.breakup.name
     AiFunctions.buttons.breakup!.classList.remove('cursor-progress')
   }
 

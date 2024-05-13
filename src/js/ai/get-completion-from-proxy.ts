@@ -7,9 +7,10 @@ import {OpenAIError} from '../utils/errors'
 export function readStream(reader: ReadableStreamDefaultReader<Uint8Array>, type: string, tabId: number) {
   reader?.read().then(({done, value}) => {
     if (done) {
-      chrome.runtime.sendMessage({
+      chrome.tabs.sendMessage(tabId, {
         type: AiProcessMessageType.completed,
-        message: type
+        message: 'Stream completed',
+        data: {content: '', type}
       } as AiProcessMessage)
       return
     }
@@ -21,7 +22,7 @@ export function readStream(reader: ReadableStreamDefaultReader<Uint8Array>, type
     readStream(reader, type, tabId)
   }).catch(error => {
     console.error('Stream reading failed:', error)
-    chrome.runtime.sendMessage({
+    chrome.tabs.sendMessage(tabId, {
       type: AiProcessMessageType.failed,
       message: error.message
     } as AiProcessMessage)
