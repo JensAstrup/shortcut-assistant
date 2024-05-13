@@ -10,6 +10,7 @@ import changeState from '@sx/keyboard-shortcuts/change-state'
 import copyGitBranch from '@sx/keyboard-shortcuts/copy-git-branch'
 import {NotesButton} from '@sx/notes/notes-button'
 import {Todoist} from '@sx/todoist/todoist'
+import {getSyncedSetting} from '@sx/utils/get-synced-setting'
 import storyPageIsReady from '@sx/utils/story-page-is-ready'
 
 
@@ -28,6 +29,16 @@ jest.mock('@sx/analyze/analyze-story-description', () => {
     analyzeStoryDescription: jest.fn().mockResolvedValue(null)
   }
 })
+const mockAiFunctions = jest.mock('@sx/analyze/ai-functions', () => {
+  return {
+    AiFunctions: jest.fn().mockImplementation(() => {
+      return {
+        addButtons: jest.fn().mockResolvedValue(null)
+      }
+    })
+  }
+})
+
 jest.mock('@sx/notes/notes-button', () => {
   return {
     NotesButton: jest.fn().mockImplementation(() => {
@@ -53,6 +64,11 @@ jest.mock('@sx/todoist/todoist', () => {
 jest.mock('@sx/utils/story-page-is-ready', () => jest.fn())
 const mockedStoryPageIsReady = storyPageIsReady as jest.MockedFunction<typeof storyPageIsReady>
 
+jest.mock('@sx/utils/get-synced-setting', () => ({
+  getSyncedSetting: jest.fn().mockResolvedValue(true)
+}))
+const mockedGetSyncedSetting = getSyncedSetting as jest.MockedFunction<typeof getSyncedSetting>
+
 jest.mock('@sentry/browser', () => ({
   captureException: jest.fn(),
   init: jest.fn()
@@ -61,26 +77,21 @@ jest.mock('@sx/utils/log-error', () => jest.fn())
 jest.mock('@sx/keyboard-shortcuts/change-state', () => jest.fn())
 jest.mock('@sx/keyboard-shortcuts/change-iteration', () => jest.fn())
 jest.mock('@sx/keyboard-shortcuts/copy-git-branch', () => jest.fn())
+jest.mock('@sx/utils/sleep', () => jest.fn().mockResolvedValue(null))
 
 
 describe('activate function', () => {
-  it('should catch and handle errors from addAnalyzeButton', async () => {
-    const errorMessage = 'Analyze button error'
-    jest.spyOn(AiFunctions, 'addAnalyzeButton').mockRejectedValue(new Error(errorMessage))
-    jest.spyOn(DevelopmentTime, 'set').mockResolvedValue()
-    jest.spyOn(CycleTime, 'set').mockResolvedValue()
-
-    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {
-    })
+  it('should activate features', async () => {
+    const developmentTime = jest.spyOn(DevelopmentTime, 'set').mockResolvedValue()
+    const cycleTime = jest.spyOn(CycleTime, 'set').mockResolvedValue()
+    const addButtons = jest.spyOn(AiFunctions.prototype, 'addButtons')
 
     await activate()
 
     expect(mockedStoryPageIsReady).toHaveBeenCalled()
-    expect(AiFunctions.addAnalyzeButton).toHaveBeenCalled()
-    expect(errorSpy).toHaveBeenCalledWith(expect.any(Error)) // Checking if console.error was called with an error
-    expect(captureException).toHaveBeenCalledWith(expect.any(Error)) // Check if Sentry captured the exception
-
-    errorSpy.mockRestore()
+    expect(developmentTime).toHaveBeenCalled()
+    expect(cycleTime).toHaveBeenCalled()
+    expect(addButtons).toHaveBeenCalled()
   })
 })
 
@@ -108,12 +119,6 @@ describe('handleMessage function', () => {
     window.location = originalLocation
   })
 
-  it('initializes DevelopmentTime and CycleTime for initDevelopmentTime message', async () => {
-    const request = {message: 'initDevelopmentTime', url: 'https://example.com/story'}
-    await handleMessage(request)
-    expect(DevelopmentTime.set).toHaveBeenCalled()
-    expect(CycleTime.set).toHaveBeenCalled()
-  })
 
   it('calls analyzeStoryDescription for analyzeStoryDescription message', async () => {
     const request = {message: 'analyzeStoryDescription', url: ''}
@@ -121,24 +126,16 @@ describe('handleMessage function', () => {
     expect(analyzeStoryDescription).toHaveBeenCalledWith('https://example.com/story')
   })
 
-  it('initializes NotesButton for initNotes message', async () => {
-    const request = {message: 'initNotes', url: 'https://example.com/story'}
-    NotesButton
+  it('initializes on update message', async () => {
+    const spy = jest.spyOn(AiFunctions.prototype, 'addButtons')
+    mockedGetSyncedSetting.mockResolvedValue(true)
+    const request = {message: 'update', url: 'https://example.com/story'}
     await handleMessage(request)
+    expect(DevelopmentTime.set).toHaveBeenCalled()
+    expect(CycleTime.set).toHaveBeenCalled()
     expect(NotesButton).toHaveBeenCalled()
-  })
-
-  it('initializes Todoist for initTodos message', async () => {
-    const request = {message: 'initTodos', url: 'https://example.com/story'}
-    await handleMessage(request)
     expect(Todoist.setTaskButtons).toHaveBeenCalled()
-  })
-
-  it('does not initialize DevelopmentTime and CycleTime for unrelated URL', async () => {
-    const request = {message: 'initDevelopmentTime', url: 'https://example.com/unrelated'}
-    await handleMessage(request)
-    expect(DevelopmentTime.set).not.toHaveBeenCalled()
-    expect(CycleTime.set).not.toHaveBeenCalled()
+    expect(spy).toHaveBeenCalled()
   })
 
   it('calls changeState for change-state message', async () => {

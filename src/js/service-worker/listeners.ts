@@ -1,6 +1,7 @@
 import * as Sentry from '@sentry/browser'
 
 import {sendEvent} from '@sx/analytics/event'
+import {AiPromptType} from '@sx/analyze/types/ai-prompt-type'
 import {
   handleGetOpenAiToken,
   handleGetSavedNotes,
@@ -10,7 +11,7 @@ import {
 
 type Request = {
   action?: string,
-  data?: { eventName?: string, params?: Record<string, string>, prompt: string },
+  data?: { eventName?: string, params?: Record<string, string>, prompt: string, type: AiPromptType },
   message?: string,
 }
 
@@ -20,7 +21,7 @@ function registerAiListeners() {
       if (!sender.tab || !sender.tab.id) {
         return
       }
-      handleOpenAICall(request.data.prompt, sender.tab.id).then(sendResponse)
+      handleOpenAICall(request.data.prompt, request.data.type, sender.tab.id).then(sendResponse)
       return true // Keep the message channel open for the async response
     }
 

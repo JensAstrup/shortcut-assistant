@@ -1,15 +1,15 @@
 import callOpenAi from '@sx/ai/call-openai'
 import getOpenAiToken from '@sx/ai/get-openai-token'
+import {AiPromptType} from '@sx/analyze/types/ai-prompt-type'
 import {getActiveTab} from '@sx/utils/get-active-tab'
 import {Story} from '@sx/utils/story'
 
 
-async function handleOpenAICall(prompt: string, tabId: number): Promise<{ data: string } | {
+async function handleOpenAICall(prompt: string, type: AiPromptType, tabId: number): Promise<void | {
   error: Error
 }> {
   try {
-    const response = await callOpenAi(prompt, tabId)
-    return {data: response}
+    await callOpenAi(prompt, type, tabId)
   }
   catch (e: unknown) {
     console.error('Error calling OpenAI:', e)

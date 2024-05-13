@@ -1,41 +1,24 @@
-import {jest} from '@jest/globals'
-
 import {AiFunctions} from '@sx/analyze/ai-functions'
 import handleMessages from '@sx/analyze/listeners'
+import {AiProcessMessageType} from '@sx/analyze/types/AiProcessMessage'
 
-
-// Set up mock for chrome.runtime.onMessage.addListener if needed
-global.chrome = {
-  ...chrome,
-  runtime: {
-    ...chrome.runtime,
-    onMessage: {
-      ...chrome.runtime.onMessage,
-      addListener: jest.fn()
-    }
-  }
-}
 
 describe('handleMessages', () => {
-  beforeEach(() => {
-    jest.clearAllMocks()
+  it('should return if message type is not defined', async () => {
+    const result = await handleMessages({})
+    expect(result).toBeUndefined()
   })
 
-  it('calls addAnalyzeButton when message type is "update"', async () => {
-    const message = {message: 'update', type: 'someType'}
-    const addAnalyzeButton = jest.spyOn(AiFunctions, 'addAnalyzeButton').mockImplementation(() => Promise.resolve())
-    const processOpenAIResponse = jest.spyOn(AiFunctions, 'processOpenAIResponse').mockImplementation(() => Promise.resolve())
+  it.each([
+    AiProcessMessageType.updated,
+    AiProcessMessageType.completed,
+    AiProcessMessageType.failed
+  ])('should process OpenAI response if message type is %s', async (type) => {
+    const message = {
+      type
+    }
+    const spy = jest.spyOn(AiFunctions.prototype, 'processOpenAIResponse')
     await handleMessages(message)
-    expect(addAnalyzeButton).toHaveBeenCalled()
-    expect(processOpenAIResponse).not.toHaveBeenCalled()
-  })
-
-  it('calls processOpenAIResponse for other message types', async () => {
-    const message = {message: 'something else', type: 'otherType'}
-    const addAnalyzeButton = jest.spyOn(AiFunctions, 'addAnalyzeButton')
-    const processOpenAIResponse = jest.spyOn(AiFunctions, 'processOpenAIResponse')
-    await handleMessages(message)
-    expect(processOpenAIResponse).toHaveBeenCalledWith(message)
-    expect(addAnalyzeButton).not.toHaveBeenCalled()
+    expect(spy).toHaveBeenCalledWith(message)
   })
 })
