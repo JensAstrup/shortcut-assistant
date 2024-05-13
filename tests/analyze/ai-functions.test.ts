@@ -97,14 +97,14 @@ describe('AiFunctions', () => {
   it('analysisComplete should reset button text and style', async () => {
     AiFunctions.buttons.analyze = mockButton as HTMLButtonElement
     await AiFunctions.analysisComplete()
-    expect(mockButton.textContent).toBe('Analyze Story')
+    expect(mockButton.textContent).toBe('Analyze')
     expect(mockButton.classList.contains('cursor-progress')).toBeFalsy()
   })
 
   it('should reset button text and style for breakupComplete', async () => {
     AiFunctions.buttons.breakup = mockButton as HTMLButtonElement
     await AiFunctions.breakupComplete()
-    expect(mockButton.textContent).toBe('Break Up Story')
+    expect(mockButton.textContent).toBe('Break Up')
     expect(mockButton.classList.contains('cursor-progress')).toBeFalsy()
   })
 

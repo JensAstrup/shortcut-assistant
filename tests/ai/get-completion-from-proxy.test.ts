@@ -40,9 +40,10 @@ describe('readStream', () => {
     const type = 'type'
     readStream(reader, type, tabId)
     await new Promise(resolve => setTimeout(resolve, 0))
-    expect(chrome.runtime.sendMessage).toHaveBeenCalledWith({
+    expect(chrome.tabs.sendMessage).toHaveBeenCalledWith(tabId, {
       type: AiProcessMessageType.completed,
-      message: type
+      message: 'Stream completed',
+      data: {content: '', type}
     })
   })
 
@@ -54,7 +55,7 @@ describe('readStream', () => {
     const type = 'type'
     readStream(reader, type, tabId)
     await new Promise(resolve => setTimeout(resolve, 0))
-    expect(chrome.runtime.sendMessage).toHaveBeenCalledWith({
+    expect(chrome.tabs.sendMessage).toHaveBeenCalledWith(tabId, {
       type: AiProcessMessageType.failed,
       message: 'error'
     })
