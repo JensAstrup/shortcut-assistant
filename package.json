@@ -11,8 +11,9 @@
     "test-coverage": "TZ='UTC' jest --coverage --config jest.config.js",
     "lint": "eslint --ext .ts src",
     "lint-fix": "eslint --ext .ts src --fix",
-    "build": "node src/build-manifest.ts",
-    "dist": "npx webpack && cp -r node_modules build/ && cd build && zip -r ../dist/dist.zip . -x \"coverage*\" \"*/*.test.js\""
+    "manifest": "node src/build-manifest.ts",
+    "build": "npx webpack && cp -r node_modules build/",
+    "dist": "cd build && zip -r ../dist/dist.zip . -x \"coverage*\" \"*/*.test.js\""
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",
@@ -24,13 +25,12 @@
     "@types/uuid": "^9.0.8",
     "@typescript-eslint/eslint-plugin": "^7.5.0",
     "@typescript-eslint/parser": "^7.8.0",
+    "@types/lodash": "^4.17.1",
     "autoprefixer": "10.4.19",
     "babel-jest": "^29.7.0",
     "babel-loader": "9.1.3",
-    "copy-webpack-plugin": "^12.0.2",
     "daisyui": "4.10.2",
     "dotenv": "16.4.5",
-    "dotenv-webpack": "8.1.0",
     "eslint": "^8.57.0",
     "eslint-config-yenz": "^2.0.1",
     "eslint-plugin-import": "^2.29.1",
@@ -44,19 +44,20 @@
     "tailwindcss": "3.4.1",
     "ts-jest": "^29.1.2",
     "ts-loader": "^9.5.1",
-    "typescript": "^5.4.3",
-    "webpack": "^5.90.3",
-    "webpack-cli": "^5.1.4"
+    "typescript": "^5.4.3"
   },
   "dependencies": {
     "@sentry/browser": "7.113.0",
     "@sentry/webpack-plugin": "2.16.1",
     "@tailwindcss/typography": "0.5.13",
-    "@types/lodash": "^4.17.1",
+    "copy-webpack-plugin": "^12.0.2",
+    "dotenv-webpack": "8.1.0",
     "dayjs": "^1.11.10",
     "lodash": "^4.17.21",
     "node-html-parser": "^6.1.13",
     "openai": "4.38.5",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "webpack": "^5.90.3",
+    "webpack-cli": "^5.1.4"
   }
 }

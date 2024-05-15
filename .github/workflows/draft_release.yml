@@ -31,7 +31,9 @@ jobs:
         with:
           node-version: '21'
 
-      - name: Install dependencies
+      - name: Install all dependencies
+        env:
+          NODE_ENV: development
         run: cd src && yarn
 
       - name: Extract tag name
@@ -42,12 +44,21 @@ jobs:
         run: |
           echo GOOGLE_ANALYTICS_API_SECRET=${{ secrets.GOOGLE_ANALYTICS_API_SECRET }} >> .env
 
-      - name: Build and zip the extension
+      - name: Build extension
+        env:
+          NODE_ENV: development
         run: |
           mkdir dist
           cd src
-          yarn run build
+          yarn run manifest
           yarn run build-css
+          yarn run build
+
+      - name: Zip extension
+        run: |
+          cd src
+          rm -rf node_modules
+          yarn install --production
           yarn run dist
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
