@@ -51,7 +51,7 @@
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
-    "@sentry/browser": "7.113.0",
+    "@sentry/browser": "8.2.1",
     "@sentry/webpack-plugin": "2.16.1",
     "dotenv-webpack": "8.1.0",
     "dayjs": "^1.11.10",
