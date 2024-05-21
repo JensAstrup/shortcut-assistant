@@ -1,6 +1,8 @@
 import * as Sentry from '@sentry/browser'
 import dayjs from 'dayjs'
 
+import {Workspace} from '@sx/workspace/workspace'
+
 import {findFirstMatchingElementForState} from '../development-time/find-first-matching-element-for-state'
 
 import {getActiveTabUrl} from './get-active-tab-url'
@@ -118,6 +120,14 @@ export class Story {
       return null
     }
     return storyStateDiv.querySelector('.value')
+  }
+
+  static async isCompleted(): Promise<boolean> {
+    const workspace = new Workspace()
+    const states = await workspace.states()
+    const doneStates = states.Done
+    const state = this.state?.textContent || ''
+    return doneStates.some((doneState) => state.includes(doneState))
   }
 
   static isInState(state: string): boolean {
