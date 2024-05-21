@@ -1,5 +1,5 @@
 import changeState from '@sx/keyboard-shortcuts/change-state'
-import {getAllInnerText} from '@sx/utils/get-all-inner-text'
+import extractText from '@sx/utils/extract-text'
 import sleep from '@sx/utils/sleep'
 
 
@@ -40,11 +40,12 @@ export default async function _getStates(): Promise<ShortcutWorkflowStates> {
     }
     else if (divs.length > 2) {
       // These are values for the key, aka "In Progress", "In Review", "Blocked"
-      const value = getAllInnerText(divs[2]).trim()
+      const value = extractText(divs[2])
       if (currentKey && value) {
         stateMap[currentKey as keyof ShortcutWorkflowStates].push(value)
       }
     }
   })
+  console.log(stateMap)
   return stateMap
 }
