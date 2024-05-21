@@ -4,7 +4,9 @@ import {sendEvent} from '@sx/analytics/event'
 import {handleCommands} from '@sx/service-worker/handlers'
 import checkHost from '@sx/utils/check-host'
 import {getSyncedSetting} from '@sx/utils/get-synced-setting'
+import {logError} from '@sx/utils/log-error'
 import {Story} from '@sx/utils/story'
+import {Workspace} from '@sx/workspace/activate'
 
 import {onInstallAndUpdate} from './on-install-and-update'
 import {SlugManager} from './slug-manager'
@@ -23,6 +25,9 @@ chrome.runtime.onInstalled.addListener(onInstallAndUpdate)
 
 chrome.tabs.onUpdated.addListener(async function (tabId, changeInfo) {
   if (changeInfo.url && checkHost(changeInfo.url) && changeInfo.url.includes('story')) {
+    const workspace = new Workspace()
+    workspace.activate().catch(logError)
+
     SlugManager.refreshCompanySlug(tabId, changeInfo).catch(e => {
       console.error('Error refreshing company slug:', e)
       Sentry.captureException(e)
