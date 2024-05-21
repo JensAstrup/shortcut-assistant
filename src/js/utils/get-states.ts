@@ -4,7 +4,8 @@ import sleep from '@sx/utils/sleep'
 
 
 const _states = ['Backlog', 'Unstarted', 'Started', 'Done']
-export type ShortcutWorkflowStates = Record<'Backlog' | 'Unstarted' | 'Started' | 'Done', string[]>
+export type ShortcutWorkflowState = 'Backlog' | 'Unstarted' | 'Started' | 'Done'
+export type ShortcutWorkflowStates = Record<ShortcutWorkflowState, string[]>
 /**
  * Goes through the state dropdown and extracts each workflow state with the corresponding states.
  * This should not be used directly, use the Workspace class instead.
@@ -46,6 +47,5 @@ export default async function _getStates(): Promise<ShortcutWorkflowStates> {
       }
     }
   })
-  console.log(stateMap)
   return stateMap
 }
