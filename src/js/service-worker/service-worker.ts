@@ -6,7 +6,7 @@ import checkHost from '@sx/utils/check-host'
 import {getSyncedSetting} from '@sx/utils/get-synced-setting'
 import {logError} from '@sx/utils/log-error'
 import {Story} from '@sx/utils/story'
-import {Workspace} from '@sx/workspace/activate'
+import {Workspace} from '@sx/workspace/workspace'
 
 import {onInstallAndUpdate} from './on-install-and-update'
 import {SlugManager} from './slug-manager'
