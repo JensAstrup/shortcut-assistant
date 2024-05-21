@@ -30,7 +30,6 @@ export class CycleTime {
     const createdDiv = document.querySelector('.story-date-created')
     const inDevelopmentDates: Array<string | null> = []
     for(const state of states.Started){
-      console.log(state)
       inDevelopmentDates.push(Story.getDateInState(state))
     }
     const inDevelopmentDateString = max(inDevelopmentDates)
