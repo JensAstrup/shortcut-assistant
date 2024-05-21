@@ -14,7 +14,7 @@ export type ShortcutWorkflowStates = Record<'Backlog' | 'Unstarted' | 'Started' 
  *  "Done": ["Done", "Closed"]
  *  }
  */
-export default async function getStates(): Promise<ShortcutWorkflowStates> {
+export default async function _getStates(): Promise<ShortcutWorkflowStates> {
   await changeState()
   const WAIT_TIME = 100
   await sleep(WAIT_TIME)
