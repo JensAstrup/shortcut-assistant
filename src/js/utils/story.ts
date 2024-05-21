@@ -1,6 +1,7 @@
 import * as Sentry from '@sentry/browser'
 import dayjs from 'dayjs'
 
+import {ShortcutWorkflowState} from '@sx/utils/get-states'
 import {Workspace} from '@sx/workspace/workspace'
 
 import {findFirstMatchingElementForState} from '../development-time/find-first-matching-element-for-state'
@@ -130,7 +131,7 @@ export class Story {
     return doneStates.some((doneState) => state.includes(doneState))
   }
 
-  static isInState(state: string): boolean {
+  static async isInState(state: ShortcutWorkflowState | string): Promise<boolean> {
     let storyState = ''
     try {
       storyState = this.state?.textContent || ''
@@ -139,6 +140,10 @@ export class Story {
       console.warn(`Could not find state element for state ${state}`)
       Sentry.captureException(e)
     }
-    return storyState.includes(state)
+
+    const workspace = new Workspace()
+    const states = await workspace.states()
+    // @ts-expect-error - If not found it's because it comes from the user's settings
+    return states[state].some((state) => storyState.includes(state))
   }
 }
