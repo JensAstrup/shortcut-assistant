@@ -4,9 +4,9 @@ import _getStates, {ShortcutWorkflowStates} from '@sx/utils/get-states'
 import {logError} from '@sx/utils/log-error'
 
 
-export class Workspace {
+export default class Workspace {
   async activate(): Promise<void> {
-    this.states().catch(logError)
+    Workspace.states().catch(logError)
   }
 
   /**
@@ -15,9 +15,9 @@ export class Workspace {
    * initialization when the values themselves are not needed.
    * @param fetch - If false, will not fetch the states from the Shortcut site if it is not in storage.
    */
-  async states(fetch?: true): Promise<ShortcutWorkflowStates>
-  async states(fetch: false): Promise<ShortcutWorkflowStates | null>
-  async states(fetch: boolean = true): Promise<ShortcutWorkflowStates | null> {
+  static async states(fetch?: true): Promise<ShortcutWorkflowStates>
+  static async states(fetch: false): Promise<ShortcutWorkflowStates | null>
+  static async states(fetch: boolean = true): Promise<ShortcutWorkflowStates | null> {
     let states: ShortcutWorkflowStates
     const storage = await chrome.storage.local.get(['states', 'stateRefreshDate'])
     // Consider the states stale if they are beyond the refresh date

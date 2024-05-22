@@ -4,7 +4,7 @@ import {hoursBetweenExcludingWeekends} from '@sx/utils/hours-between-excluding-w
 import sleep from '@sx/utils/sleep'
 import {Story} from '@sx/utils/story'
 import storyPageIsReady from '@sx/utils/story-page-is-ready'
-import {Workspace} from '@sx/workspace/workspace'
+import Workspace from '@sx/workspace/workspace'
 
 
 export class CycleTime {
@@ -25,14 +25,13 @@ export class CycleTime {
     if (!isCompleted) {
       return
     }
-    const workspace = new Workspace()
-    const states = await workspace.states()
+    const states = await Workspace.states()
     const createdDiv = document.querySelector('.story-date-created')
     const inDevelopmentDates: Array<string | null> = []
     for(const state of states.Started){
       inDevelopmentDates.push(Story.getDateInState(state))
     }
-    const inDevelopmentDateString = max(inDevelopmentDates)
+    const inDevelopmentDateString: undefined | null | string = max(inDevelopmentDates)
     const completedDiv = document.querySelector('.story-date-completed')
     const completedValue = completedDiv?.querySelector('.value')
     const completedDateString = completedValue?.innerHTML
