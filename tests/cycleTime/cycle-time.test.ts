@@ -19,7 +19,6 @@ jest.mock('@sx/utils/story', () => ({
   }
 }))
 jest.mock('@sx/workspace/workspace', () => {
-  // Define a mock class
   class MockWorkspace {
     async activate() {
       await MockWorkspace.states()
