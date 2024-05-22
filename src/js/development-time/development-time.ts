@@ -1,6 +1,6 @@
 import {Story} from '@sx/utils/story'
 import storyPageIsReady from '@sx/utils/story-page-is-ready'
-import {Workspace} from '@sx/workspace/workspace'
+import Workspace from '@sx/workspace/workspace'
 
 
 export class DevelopmentTime {
@@ -27,8 +27,7 @@ export class DevelopmentTime {
   static async set() {
     await storyPageIsReady()
     this.remove()
-    const workspace = new Workspace()
-    const states = await workspace.states()
+    const states = await Workspace.states()
     const inDevelopmentStates = states.Started
     const inDevelopment = await Story.isInState('Started')
     if (!inDevelopment) {
