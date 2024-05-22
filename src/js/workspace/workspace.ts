@@ -5,7 +5,7 @@ import {logError} from '@sx/utils/log-error'
 
 
 export default class Workspace {
-  async activate(): Promise<void> {
+  static async activate(): Promise<void> {
     Workspace.states().catch(logError)
   }
 
