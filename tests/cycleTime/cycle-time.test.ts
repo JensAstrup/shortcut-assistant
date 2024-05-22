@@ -13,25 +13,41 @@ const mockedStoryPageIsReady = storyPageIsReady as jest.MockedFunction<typeof st
 jest.mock('@sx/utils/story', () => ({
   Story: {
     isInState: jest.fn(),
-    getDateInState: jest.fn()
+    getDateInState: jest.fn(),
+    isCompleted: jest.fn(),
+
   }
 }))
+jest.mock('@sx/workspace/workspace', () => {
+  // Define a mock class
+  class MockWorkspace {
+    async activate() {
+      await MockWorkspace.states()
+    }
+
+    static async states(fetch = true) {
+      if (!fetch) {
+        return null
+      }
+      return { Started: ['In Development'] }
+    }
+  }
+
+  return {
+    __esModule: true,
+    default: MockWorkspace,
+  }
+})
+
+
 const mockedStory = Story as jest.Mocked<typeof Story>
 
-global.chrome.storage.sync = {get: jest.fn()} as unknown as jest.Mocked<typeof chrome.storage.sync>
-// @ts-expect-error - TS doesn't know about the mock implementation
-global.chrome.storage.sync.get.mockImplementation((key, callback) => {
-  const data = {doneText: 'Completed'}
-  if (typeof callback === 'function') {
-    callback(data)
-  }
-  return data
-})
 
 describe('set function', () => {
   let createdDiv: HTMLElement, completedDiv: HTMLElement, storyCreatedDivParent: HTMLElement
 
   beforeEach(() => {
+    jest.clearAllMocks()
     mockedStoryPageIsReady.mockClear()
     document.querySelector = jest.fn().mockImplementation(selector => {
       if (selector === '.story-date-cycle-time') return null // simulate absence initially
@@ -62,17 +78,17 @@ describe('set function', () => {
   })
 
   it('should not display cycle time when the story is not completed', async () => {
-    mockedStory.isInState.mockReturnValue(false)
+    mockedStory.isInState.mockResolvedValue(false)
 
     await CycleTime.set()
 
     expect(storyPageIsReady).toHaveBeenCalledTimes(1)
-    expect(mockedStory.isInState).toHaveBeenCalledWith('Completed')
+    expect(mockedStory.isCompleted).toHaveBeenCalledTimes(1)
     expect(storyCreatedDivParent.insertBefore).not.toHaveBeenCalled()
   })
 
   it('should log an error if there is no created date', async () => {
-    mockedStory.isInState.mockReturnValue(true)
+    mockedStory.isCompleted.mockResolvedValue(true)
     document.querySelector = jest.fn().mockImplementation(selector => {
       if (selector === '.story-date-cycle-time') return null // simulate absence initially
       if (selector === '.story-date-created') return null
@@ -84,7 +100,7 @@ describe('set function', () => {
   })
 
   it('should log an error if there is no in development date', async () => {
-    mockedStory.isInState.mockReturnValue(true)
+    mockedStory.isInState.mockResolvedValue(true)
     document.querySelector = jest.fn().mockImplementation(selector => {
       if (selector === '.story-date-cycle-time') return null // simulate absence initially
       if (selector === '.story-date-created') return createdDiv
@@ -96,14 +112,14 @@ describe('set function', () => {
   })
 
   it('should not display cycle time when the cycle time is not a number', async () => {
-    mockedStory.isInState.mockReturnValue(true)
+    mockedStory.isCompleted.mockResolvedValue(true)
     mockedStory.getDateInState.mockReturnValue('2022-08-23')
     mockedHoursBetweenExcludingWeekends.mockReturnValue(NaN) // Simulate NaN
 
     await CycleTime.set()
 
     expect(storyPageIsReady).toHaveBeenCalledTimes(1)
-    expect(mockedStory.isInState).toHaveBeenCalledWith('Completed')
+    expect(mockedStory.isCompleted).toHaveBeenCalledTimes(1)
     expect(mockedStory.getDateInState).toHaveBeenCalledWith('In Development')
     expect(mockedHoursBetweenExcludingWeekends).toHaveBeenCalledWith('2022-08-23', '2022-09-23')
     expect(document.createElement).toHaveBeenCalledWith('div')
@@ -111,14 +127,15 @@ describe('set function', () => {
   })
 
   it('should calculate and display cycle time when the story is completed', async () => {
-    mockedStory.isInState.mockReturnValue(true)
+    mockedStory.isCompleted.mockResolvedValue(true)
     mockedStory.getDateInState.mockReturnValue('2022-08-23')
-    mockedHoursBetweenExcludingWeekends.mockReturnValue(48) // Simulate 48 hours difference
+    const TWO_DAYS = 48
+    mockedHoursBetweenExcludingWeekends.mockReturnValue(TWO_DAYS) // Simulate 48 hours difference
 
     await CycleTime.set()
 
     expect(storyPageIsReady).toHaveBeenCalledTimes(1)
-    expect(mockedStory.isInState).toHaveBeenCalledWith('Completed')
+    expect(mockedStory.isCompleted).toHaveBeenCalledTimes(1)
     expect(mockedStory.getDateInState).toHaveBeenCalledWith('In Development')
     expect(mockedHoursBetweenExcludingWeekends).toHaveBeenCalledWith('2022-08-23', '2022-09-23')
     expect(document.createElement).toHaveBeenCalledWith('div')
