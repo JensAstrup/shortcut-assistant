@@ -7,6 +7,7 @@ import {
   handleGetSavedNotes,
   handleOpenAICall
 } from '@sx/service-worker/handlers'
+import scope from '@sx/utils/sentry'
 
 
 type Request = {
@@ -47,7 +48,7 @@ function registerAnalyticsListeners() {
       if (!request.data || !request.data.eventName) return true
       sendEvent(request.data.eventName, request.data.params).catch(e => {
         console.error('Error sending event:', e)
-        Sentry.captureException(e)
+        scope.captureException(e)
       })
     }
   })

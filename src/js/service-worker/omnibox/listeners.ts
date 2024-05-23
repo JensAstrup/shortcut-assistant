@@ -1,5 +1,7 @@
 import * as Sentry from '@sentry/browser'
 
+import scope from '@sx/utils/sentry'
+
 import {sendEvent} from '../../analytics/event'
 
 import {redirectFromOmnibox, setOmniboxSuggestion} from './omnibox'
@@ -13,6 +15,6 @@ chrome.omnibox.onInputEntered.addListener((text: string, disposition: 'currentTa
   redirectFromOmnibox(text, disposition)
   sendEvent('omnibox_entered').catch((error) => {
     console.error(error)
-    Sentry.captureException(error)
+    scope.captureException(error)
   })
 })

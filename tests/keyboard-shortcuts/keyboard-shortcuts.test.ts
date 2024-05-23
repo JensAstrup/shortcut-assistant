@@ -1,9 +1,8 @@
-import * as Sentry from '@sentry/browser'
-
 import {KeyboardShortcuts} from '@sx/keyboard-shortcuts/keyboard-shortcuts'
+import scope from '@sx/utils/sentry'
 
 
-jest.mock('@sentry/browser')
+jest.mock('@sx/utils/sentry')
 jest.mock('../../src/js/utils/sleep', () => jest.fn().mockResolvedValue(undefined))
 
 describe('Shortcuts', () => {
@@ -153,7 +152,7 @@ describe('Shortcuts', () => {
       expect(preventDefaultSpy).toHaveBeenCalled()
       expect(mockFunction).toHaveBeenCalled()
       expect(consoleErrorSpy).toHaveBeenCalledWith('Error running shortcut:', error)
-      expect(Sentry.captureException).toHaveBeenCalledWith(error)
+      expect(scope.captureException).toHaveBeenCalledWith(error)
     })
   })
 })

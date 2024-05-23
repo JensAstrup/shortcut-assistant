@@ -1,9 +1,8 @@
-import {captureException} from '@sentry/browser'
-
 import {
   findFirstMatchingElementForState
 } from '@sx/development-time/find-first-matching-element-for-state'
 import * as urlModule from '@sx/utils/get-active-tab-url'
+import scope from '@sx/utils/sentry'
 import {Story} from '@sx/utils/story'
 
 
@@ -13,9 +12,7 @@ const mockNow = {
 jest.mock('dayjs', () => {
   return () => (mockNow)
 })
-jest.mock('@sentry/browser', () => ({
-  captureException: jest.fn()
-}))
+jest.mock('@sx/utils/sentry')
 jest.mock('../../src/js/utils/hours-between-excluding-weekends', () => ({
   hoursBetweenExcludingWeekends: jest.fn().mockReturnValue(24)
 }))
@@ -253,7 +250,7 @@ describe('isInState function', () => {
     const state = 'TestState'
     Story.isInState(state)
     expect(console.warn).toHaveBeenCalledWith('Could not find state element for state TestState')
-    expect(captureException).toHaveBeenCalledWith(new Error('Could not find state element for state TestState'))
+    expect(scope.captureException).toHaveBeenCalledWith(new Error('Could not find state element for state TestState'))
   })
 })
 

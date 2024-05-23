@@ -1,5 +1,7 @@
 import * as Sentry from '@sentry/browser'
 
+import scope from '@sx/utils/sentry'
+
 import camelToSnake from '../utils/camel-to-snake'
 
 import changeEstimate from './change-estimate'
@@ -104,7 +106,7 @@ export class KeyboardShortcuts {
         chrome.runtime.sendMessage({action: 'sendEvent', data: {eventName: 'keyboard-shortcut', params: {shortcutAction: camelToSnake(func.name)}}})
         func().catch(e => {
           console.error('Error running shortcut:', e)
-          Sentry.captureException(e)
+          scope.captureException(e)
         })
       }
     }

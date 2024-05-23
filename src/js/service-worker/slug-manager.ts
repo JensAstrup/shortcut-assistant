@@ -1,4 +1,4 @@
-import * as Sentry from '@sentry/browser'
+import scope from '@sx/utils/sentry'
 
 import TabChangeInfo = chrome.tabs.TabChangeInfo
 
@@ -18,7 +18,7 @@ export class SlugManager {
 
   static async getCompanySlug(): Promise<string | null>{
     const result: {[key: string]: string} = await chrome.storage.sync.get('companySlug')
-    const value = result['companySlug']
+    const value = result.companySlug
     if (value !== undefined) {
       return value
     }
@@ -32,7 +32,7 @@ export class SlugManager {
     if (companySlug) {
       this.setCompanySlug(companySlug).catch(e => {
         console.error('Error setting company slug:', e)
-        Sentry.captureException(e)
+        scope.captureException(e)
       })
     }
   }

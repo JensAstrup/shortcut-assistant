@@ -1,5 +1,3 @@
-import * as Sentry from '@sentry/browser'
-
 import {AiFunctions} from '@sx/analyze/ai-functions'
 
 import {analyzeStoryDescription} from './analyze/analyze-story-description'
@@ -15,13 +13,6 @@ import {getSyncedSetting} from './utils/get-synced-setting'
 import {logError} from './utils/log-error'
 import storyPageIsReady from './utils/story-page-is-ready'
 
-
-const manifestData = chrome.runtime.getManifest()
-Sentry.init({
-  dsn: 'https://966b241d3d57856bd13a0945fa9fa162@o49777.ingest.sentry.io/4506624214368256',
-  release: manifestData.version,
-  environment: process.env.NODE_ENV
-})
 
 
 export async function activate() {

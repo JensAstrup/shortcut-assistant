@@ -1,6 +1,8 @@
 import * as Sentry from '@sentry/browser'
 import dayjs from 'dayjs'
 
+import scope from '@sx/utils/sentry'
+
 import {findFirstMatchingElementForState} from '../development-time/find-first-matching-element-for-state'
 
 import {getActiveTabUrl} from './get-active-tab-url'
@@ -127,7 +129,7 @@ export class Story {
     }
     catch (e) {
       console.warn(`Could not find state element for state ${state}`)
-      Sentry.captureException(e)
+      scope.captureException(e)
     }
     return storyState.includes(state)
   }
