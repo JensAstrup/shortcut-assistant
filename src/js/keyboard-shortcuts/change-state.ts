@@ -23,7 +23,8 @@ async function changeState(): Promise<void> {
     }
     const input: HTMLInputElement | null = inputParent.querySelector('[type="search"]')
     if (input) {
-      await sleep(100)
+      const WAIT_TIME = 100
+      await sleep(WAIT_TIME)
       input.value = ''
       input.focus()
     }

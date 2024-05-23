@@ -1,7 +1,10 @@
-import {getSyncedSetting} from '@sx/utils/get-synced-setting'
+import {max} from 'lodash'
+
 import {hoursBetweenExcludingWeekends} from '@sx/utils/hours-between-excluding-weekends'
+import sleep from '@sx/utils/sleep'
 import {Story} from '@sx/utils/story'
 import storyPageIsReady from '@sx/utils/story-page-is-ready'
+import Workspace from '@sx/workspace/workspace'
 
 
 export class CycleTime {
@@ -15,15 +18,20 @@ export class CycleTime {
 
   static async set() {
     await storyPageIsReady()
+    const WAIT_TIME = 300
+    await sleep(WAIT_TIME)
     this.clear()
-    const doneText = await getSyncedSetting('doneText', 'Completed')
-    const isCompleted = Story.isInState(doneText)
+    const isCompleted = await Story.isCompleted()
     if (!isCompleted) {
       return
     }
+    const states = await Workspace.states()
     const createdDiv = document.querySelector('.story-date-created')
-    const inDevelopmentText = await getSyncedSetting('inDevelopmentText', 'In Development')
-    const inDevelopmentDateString = Story.getDateInState(inDevelopmentText)
+    const inDevelopmentDates: Array<string | null> = []
+    for(const state of states.Started){
+      inDevelopmentDates.push(Story.getDateInState(state))
+    }
+    const inDevelopmentDateString: undefined | null | string = max(inDevelopmentDates)
     const completedDiv = document.querySelector('.story-date-completed')
     const completedValue = completedDiv?.querySelector('.value')
     const completedDateString = completedValue?.innerHTML
@@ -47,7 +55,8 @@ export class CycleTime {
 
     if (isNaN(cycleTimeHours)) return
 
-    const cycleTimeDisplay = cycleTimeHours > 24 ? `${(cycleTimeHours / 24).toFixed(2)} days` : `${cycleTimeHours.toFixed(2)} hours`
+    const ONE_DAY = 24
+    const cycleTimeDisplay = cycleTimeHours > ONE_DAY ? `${(cycleTimeHours / ONE_DAY).toFixed(2)} days` : `${cycleTimeHours.toFixed(2)} hours`
     cycleTimeDiv.innerHTML = `
             <span class='name'>Cycle Time</span>
             <span class='value'>${cycleTimeDisplay}</span>`

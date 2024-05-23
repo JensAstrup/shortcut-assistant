@@ -2,6 +2,8 @@ import * as Sentry from '@sentry/browser'
 import dayjs from 'dayjs'
 
 import scope from '@sx/utils/sentry'
+import {ShortcutWorkflowState, ShortcutWorkflowStates} from '@sx/utils/get-states'
+import Workspace from '@sx/workspace/workspace'
 
 import {findFirstMatchingElementForState} from '../development-time/find-first-matching-element-for-state'
 
@@ -109,8 +111,8 @@ export class Story {
       return null
     }
 
-    const parentDiv = latestUpdateElements.element.parentElement
-    const dateElement = parentDiv?.querySelector('.date')
+    const parentDiv: HTMLElement | null = latestUpdateElements.element.parentElement
+    const dateElement: Element | null | undefined = parentDiv?.querySelector('.date')
     return dateElement ? dateElement.innerHTML : null
   }
 
@@ -122,7 +124,14 @@ export class Story {
     return storyStateDiv.querySelector('.value')
   }
 
-  static isInState(state: string): boolean {
+  static async isCompleted(): Promise<boolean> {
+    const states: ShortcutWorkflowStates = await Workspace.states()
+    const doneStates: string[] = states.Done
+    const state: string = this.state?.textContent || ''
+    return doneStates.some((doneState) => state.includes(doneState))
+  }
+
+  static async isInState(state: ShortcutWorkflowState | string): Promise<boolean> {
     let storyState = ''
     try {
       storyState = this.state?.textContent || ''
@@ -131,6 +140,9 @@ export class Story {
       console.warn(`Could not find state element for state ${state}`)
       scope.captureException(e)
     }
-    return storyState.includes(state)
+
+    const states = await Workspace.states()
+    // @ts-expect-error - If not found it's because it comes from the user's settings
+    return states[state].some((state) => storyState.includes(state))
   }
 }
