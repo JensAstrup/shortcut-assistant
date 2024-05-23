@@ -13,17 +13,11 @@ import {NotesPopup} from './notes-popup'
  */
 export class Popup {
   private todoistCheckbox: HTMLInputElement
-  private inDevelopmentText: HTMLInputElement
-  private inReviewText: HTMLInputElement
-  private completedText: HTMLInputElement
   private saveButton: HTMLButtonElement
   private changelogButton: HTMLButtonElement
 
   constructor() {
     const todoistCheckbox = document.getElementById('todoistOptions') as HTMLInputElement
-    const inDevelopmentText = document.getElementById('inDevelopmentText') as HTMLInputElement
-    const inReviewText = document.getElementById('inReviewText') as HTMLInputElement
-    const completedText = document.getElementById('completedText') as HTMLInputElement
     const saveButton = document.getElementById('saveKeyButton') as HTMLButtonElement
 
     const changelogButton = document.getElementById('changelog') as HTMLButtonElement
@@ -33,9 +27,6 @@ export class Popup {
     }
 
     this.todoistCheckbox = todoistCheckbox
-    this.inDevelopmentText = inDevelopmentText
-    this.inReviewText = inReviewText
-    this.completedText = completedText
     this.saveButton = saveButton
     this.changelogButton = changelogButton
     this.saveButton.addEventListener('click', this.saveButtonClicked.bind(this))
@@ -61,9 +52,6 @@ export class Popup {
   async saveOptions() {
     const enableTodoistOptions = this.todoistCheckbox.checked
     await chrome.storage.sync.set({'enableTodoistOptions': enableTodoistOptions})
-    await chrome.storage.sync.set({'inDevelopmentText': this.inDevelopmentText.value})
-    await chrome.storage.sync.set({'inReviewText': this.inReviewText.value})
-    await chrome.storage.sync.set({'completedText': this.completedText.value})
   }
 
   async saveButtonClicked() {
@@ -76,7 +64,8 @@ export class Popup {
     await this.saveOptions()
     this.saveButton.disabled = false
     this.saveButton.textContent = 'Saved!'
-    await sleep(3000)
+    const THREE_SECONDS = 3000
+    await sleep(THREE_SECONDS)
     this.saveButton.textContent = 'Save'
   }
 
@@ -119,12 +108,6 @@ export class Popup {
       && this.todoistCheckbox.hasAttribute('checked')) {
       this.todoistCheckbox.removeAttribute('checked')
     }
-
-    this.inDevelopmentText.value = await getSyncedSetting('inDevelopmentText', 'In Development')
-
-    this.inReviewText.value = await getSyncedSetting('inReviewText', 'Ready for Review')
-
-    this.completedText.value = await getSyncedSetting('completedText', 'Completed')
   }
 
   async popupLoaded() {

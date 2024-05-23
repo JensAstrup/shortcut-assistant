@@ -1,4 +1,27 @@
-import {getSyncedSetting} from '../../src/js/utils/get-synced-setting'
+import {getSyncedSetting} from '@sx/utils/get-synced-setting'
+
+
+global.chrome = {
+  ...global.chrome,
+  // @ts-expect-error Mocking chrome storage
+  storage: {
+    ...global.chrome.storage,
+    sync: {
+      get: jest.fn((key, callback) => {
+        const data = {test: 'expectedValue'}
+        if (typeof callback === 'function') {
+          callback(data)
+        }
+        return data
+      }) as jest.Mock,
+      set: jest.fn((data, callback) => {
+        if (typeof callback === 'function') {
+          callback()
+        }
+      }) as jest.Mock
+    }
+  } as unknown as jest.Mocked<chrome.storage.StorageArea>,
+}
 
 
 describe('getSyncedSetting function', () => {
@@ -6,15 +29,6 @@ describe('getSyncedSetting function', () => {
     const setting = 'test'
     const defaultValue = 'defaultValue'
     const expectedValue = 'expectedValue'
-
-    chrome.storage.sync.get.mockImplementation((key, callback) => {
-      const data = {test: 'expectedValue'} // Simulate the expected stored data
-      if (typeof callback === 'function') {
-        return callback(data)
-      }
-      return data
-    })
-
 
     const syncedSetting = await getSyncedSetting(setting, defaultValue)
     expect(syncedSetting).toEqual(expectedValue)
@@ -24,7 +38,7 @@ describe('getSyncedSetting function', () => {
     const setting = 'test'
     const defaultValue = 'defaultValue'
 
-    chrome.storage.sync.get.mockImplementation((key, callback) => {
+    global.chrome.storage.sync.get = jest.fn().mockImplementation((key, callback) => {
       if (typeof callback === 'function') {
         callback({})
       }
@@ -39,9 +53,7 @@ describe('getSyncedSetting function', () => {
     const setting = 'test'
     const defaultValue = 'defaultValue'
     const error = new Error('Failed to fetch')
-    console.error = jest.fn()
-    chrome.storage.sync.get.mockImplementation((key, callback) => {
-      const data = {[key]: 'expectedValue'} // Simulate the expected stored data
+    global.chrome.storage.sync.get = jest.fn().mockImplementation((key, callback) => {
       if (typeof callback === 'function') {
         throw error
       }
