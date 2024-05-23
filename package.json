@@ -54,7 +54,7 @@
     "@sentry/browser": "8.2.1",
     "@sentry/webpack-plugin": "2.16.1",
     "dotenv-webpack": "8.1.0",
-    "dayjs": "^1.11.10",
+    "dayjs": "^1.11.11",
     "lodash": "^4.17.21",
     "node-html-parser": "^6.1.13",
     "openai": "4.38.5",
