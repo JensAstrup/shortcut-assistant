@@ -1,9 +1,8 @@
-import {captureException} from '@sentry/browser'
-
 import {
   findFirstMatchingElementForState
 } from '@sx/development-time/find-first-matching-element-for-state'
 import * as urlModule from '@sx/utils/get-active-tab-url'
+import scope from '@sx/utils/sentry'
 import {ShortcutWorkflowStates} from '@sx/utils/get-states'
 import {Story} from '@sx/utils/story'
 import Workspace from '@sx/workspace/workspace'
@@ -18,9 +17,7 @@ const mockNow = {
 jest.mock('dayjs', () => {
   return () => (mockNow)
 })
-jest.mock('@sentry/browser', () => ({
-  captureException: jest.fn()
-}))
+jest.mock('@sx/utils/sentry')
 jest.mock('@sx/utils/hours-between-excluding-weekends', () => ({
   // eslint-disable-next-line no-magic-numbers
   hoursBetweenExcludingWeekends: jest.fn().mockReturnValue(24)
@@ -295,7 +292,7 @@ describe('isInState function', () => {
     })
     Story.isInState('Started')
     expect(console.warn).toHaveBeenCalledWith('Could not find state element for state Started')
-    expect(captureException).toHaveBeenCalledWith(new Error('Could not find state element for state TestState'))
+    expect(scope.captureException).toHaveBeenCalledWith(new Error('Could not find state element for state TestState'))
   })
 })
 

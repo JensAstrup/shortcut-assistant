@@ -1,23 +1,15 @@
-import * as Sentry from '@sentry/browser'
-
 import {sendEvent} from '@sx/analytics/event'
 import {handleCommands} from '@sx/service-worker/handlers'
 import checkHost from '@sx/utils/check-host'
 import {getSyncedSetting} from '@sx/utils/get-synced-setting'
 import {logError} from '@sx/utils/log-error'
+import scope from '@sx/utils/sentry'
 import {Story} from '@sx/utils/story'
 import Workspace from '@sx/workspace/workspace'
 
 import {onInstallAndUpdate} from './on-install-and-update'
 import {SlugManager} from './slug-manager'
 
-
-const manifestData = chrome.runtime.getManifest()
-Sentry.init({
-  dsn: 'https://966b241d3d57856bd13a0945fa9fa162@o49777.ingest.sentry.io/4506624214368256',
-  release: manifestData.version,
-  environment: process.env.NODE_ENV
-})
 
 chrome.commands.onCommand.addListener(handleCommands)
 
@@ -29,7 +21,7 @@ chrome.tabs.onUpdated.addListener(async function (tabId, changeInfo) {
 
     SlugManager.refreshCompanySlug(tabId, changeInfo).catch(e => {
       console.error('Error refreshing company slug:', e)
-      Sentry.captureException(e)
+      scope.captureException(e)
     })
     chrome.tabs.sendMessage(tabId, {
       message: 'update',
@@ -43,7 +35,7 @@ chrome.tabs.onUpdated.addListener(async function (tabId, changeInfo) {
       })
       sendEvent('init_development_time').catch(e => {
         console.error('Error sending event:', e)
-        Sentry.captureException(e)
+        scope.captureException(e)
       })
     }
     const enableTodoistOptions = await getSyncedSetting('enableTodoistOptions', false)
@@ -54,7 +46,7 @@ chrome.tabs.onUpdated.addListener(async function (tabId, changeInfo) {
       })
       sendEvent('init_todos').catch(e => {
         console.error('Error sending event:', e)
-        Sentry.captureException(e)
+        scope.captureException(e)
       })
     }
     chrome.tabs.sendMessage(tabId, {

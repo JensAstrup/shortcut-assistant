@@ -1,4 +1,4 @@
-import * as Sentry from '@sentry/browser'
+import scope from '@sx/utils/sentry'
 
 import InstalledDetails = chrome.runtime.InstalledDetails
 
@@ -13,7 +13,7 @@ class InstallAndUpdate {
     })
     chrome.storage.sync.set({'enableTodoistOptions': false}).catch(e => {
       console.error('Error setting enableTodoistOptions:', e)
-      Sentry.captureException(e)
+      scope.captureException(e)
     })
   }
 
@@ -33,7 +33,7 @@ function onInstallAndUpdate(details: InstalledDetails) {
     if (process.env.CHANGELOG_VERSION === process.env.VERSION) {
       InstallAndUpdate.onUpdate().catch(e => {
         console.error('Error updating:', e)
-        Sentry.captureException(e)
+        scope.captureException(e)
       })
     }
   }

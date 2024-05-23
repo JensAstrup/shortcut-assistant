@@ -10,7 +10,6 @@ import storyPageIsReady from '@sx/utils/story-page-is-ready'
 import Manifest = chrome.runtime.Manifest
 
 
-jest.mock('@sentry/browser')
 jest.mock('@sx/cycle-time/cycle-time', () => ({
   CycleTime: {
     set: jest.fn().mockResolvedValue(null)

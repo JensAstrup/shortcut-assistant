@@ -1,6 +1,7 @@
 const fs = require('fs')
 require('dotenv').config()
 
+
 const manifestTemplate = fs.readFileSync('src/manifest.template.json', 'utf8')
 const version = process.env.VERSION
 if (!version) {

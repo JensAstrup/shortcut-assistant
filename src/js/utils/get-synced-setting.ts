@@ -5,7 +5,8 @@ export async function getSyncedSetting<T>(setting: string, defaultValue: T | und
     const result = await chrome.storage.sync.get(setting)
     const {[setting]: value = defaultValue} = result
     return value
-  } catch (error) {
+  }
+  catch (error) {
     console.error('Error getting setting value:', error)
     throw error
   }

@@ -1,14 +1,11 @@
-import * as Sentry from '@sentry/browser'
-
 import {sendEvent} from '@sx/analytics/event'
 import {AiFunctions} from '@sx/analyze/ai-functions'
 import {AiProcessMessage, AiProcessMessageType} from '@sx/analyze/types/AiProcessMessage'
+import scope from '@sx/utils/sentry'
 import {Story} from '@sx/utils/story'
 
 
-jest.mock('@sentry/browser', () => ({
-  captureException: jest.fn()
-}))
+jest.mock('@sx/utils/sentry')
 jest.mock('@sx/analytics/event', () => ({
   sendEvent: jest.fn().mockResolvedValue(null)
 }))
@@ -64,7 +61,7 @@ describe('AiFunctions', () => {
     // We need to wait for the next tick or use a delay to catch the async error handling
     setTimeout(() => {
       expect(console.error).toHaveBeenCalledWith(error)
-      expect(Sentry.captureException).toHaveBeenCalledWith(error)
+      expect(scope.captureException).toHaveBeenCalledWith(error)
     }, 3)
   })
 
@@ -143,6 +140,6 @@ describe('AiFunctions', () => {
 
     expect(mockSendEvent).toHaveBeenCalledWith('ai_request_failed')
     expect(console.error).toHaveBeenCalledWith(new Error('Failed to send event'))
-    expect(Sentry.captureException).toHaveBeenCalledWith(new Error('Failed to send event'))
+    expect(scope.captureException).toHaveBeenCalledWith(new Error('Failed to send event'))
   })
 })
