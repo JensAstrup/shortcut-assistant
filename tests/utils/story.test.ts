@@ -203,20 +203,31 @@ describe('Story.state', () => {
     expect(Story.state).toBeNull()
   })
 })
-//
-// describe('isCompleted', () => {
-//   it('should return true if the story is in a done state', async () => {
-//     jest.spyOn(Story, 'state', 'get').mockReturnValue({textContent: 'Done'} as unknown as HTMLElement)
-//     const result = await Story.isCompleted()
-//     expect(result).toBe(true)
-//   })
-//
-//   it('should return false if the story is not in a done state', async () => {
-//     jest.spyOn(Story, 'state', 'get').mockReturnValue({textContent: 'In Development'} as unknown as HTMLElement)
-//     const result = await Story.isCompleted()
-//     expect(result).toBe(false)
-//   })
-// })
+
+
+describe('isCompleted', () => {
+  beforeEach(() => {
+    jest.spyOn(Workspace, 'states').mockImplementation(async (): Promise<ShortcutWorkflowStates | null> => {
+      return {
+        'Backlog': ['To Do'],
+        'Unstarted': ['Waiting'],
+        'Started': ['In Development'],
+        'Done': ['Done']
+      }
+    })
+  })
+  it('should return true if the story is in a done state', async () => {
+    jest.spyOn(Story, 'state', 'get').mockReturnValue({textContent: 'Done'} as unknown as HTMLElement)
+    const result = await Story.isCompleted()
+    expect(result).toBe(true)
+  })
+
+  it('should return false if the story is not in a done state', async () => {
+    jest.spyOn(Story, 'state', 'get').mockReturnValue({textContent: 'In Development'} as unknown as HTMLElement)
+    const result = await Story.isCompleted()
+    expect(result).toBe(false)
+  })
+})
 
 
 describe('isInState function', () => {
@@ -231,7 +242,6 @@ describe('isInState function', () => {
         'Done': []
       }
     })
-
   })
 
   it('returns true if the state is same as the story state', async () => {
