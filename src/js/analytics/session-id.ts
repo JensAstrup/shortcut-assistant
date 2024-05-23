@@ -11,7 +11,8 @@ export async function getOrCreateSessionId(): Promise<string> {
     if (durationInMin > SESSION_EXPIRATION_IN_MIN) {
       // Delete old session id to start a new session
       sessionData = null
-    } else {
+    }
+    else {
       // Update timestamp to keep session alive
       sessionData.timestamp = currentTimeInMs
       await chrome.storage.session.set({sessionData})

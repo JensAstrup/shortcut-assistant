@@ -1,5 +1,3 @@
-import {captureException} from '@sentry/browser'
-
 import {AiFunctions} from '@sx/analyze/ai-functions'
 import {analyzeStoryDescription} from '@sx/analyze/analyze-story-description'
 import {activate, handleMessage} from '@sx/content-scripts'
@@ -69,10 +67,6 @@ jest.mock('@sx/utils/get-synced-setting', () => ({
 }))
 const mockedGetSyncedSetting = getSyncedSetting as jest.MockedFunction<typeof getSyncedSetting>
 
-jest.mock('@sentry/browser', () => ({
-  captureException: jest.fn(),
-  init: jest.fn()
-}))
 jest.mock('@sx/utils/log-error', () => jest.fn())
 jest.mock('@sx/keyboard-shortcuts/change-state', () => jest.fn())
 jest.mock('@sx/keyboard-shortcuts/change-iteration', () => jest.fn())

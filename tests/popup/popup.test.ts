@@ -1,13 +1,12 @@
-import * as Sentry from '@sentry/browser'
-
 import {sendEvent} from '@sx/analytics/event'
 import {NotesPopup} from '@sx/popup/notes-popup'
 import {Popup} from '@sx/popup/popup'
 import {getSyncedSetting} from '@sx/utils/get-synced-setting'
+import scope from '@sx/utils/sentry'
 import sleep from '@sx/utils/sleep'
 
 
-jest.mock('@sentry/browser')
+jest.mock('@sx/utils/sentry')
 jest.mock('@sx/analytics/event', () => ({
   sendEvent: jest.fn().mockResolvedValue(null)
 }))
@@ -109,7 +108,7 @@ describe('Popup', () => {
     // Wait for the promise passed to addEventListener to resolve
     await sleep(100)
     expect(console.error).toHaveBeenCalledWith(new Error('test error'))
-    expect(Sentry.captureException).toHaveBeenCalled()
+    expect(scope.captureException).toHaveBeenCalled()
   })
 
   test('setOpenAIToken sets token in chrome storage', async () => {
@@ -271,7 +270,7 @@ describe('popupLoaded', () => {
 
   beforeEach(() => {
     // @ts-expect-error Migrating from JS
-    Sentry.captureException.mockClear()
+    scope.captureException.mockClear()
     // @ts-expect-error Migrating from JS
     sendEvent.mockClear()
     // @ts-expect-error Migrating from JS
@@ -427,6 +426,6 @@ describe('popupLoaded', () => {
     await popup.popupLoaded()
 
     expect(console.error).toHaveBeenCalledWith(new Error('test error'))
-    expect(Sentry.captureException).toHaveBeenCalled()
+    expect(scope.captureException).toHaveBeenCalled()
   })
 })

@@ -1,12 +1,15 @@
-import * as Sentry from '@sentry/browser'
 import 'jest-chrome'
 
 import {
   InstallAndUpdate,
   onInstallAndUpdate
 } from '@sx/service-worker/on-install-and-update'
+import scope from '@sx/utils/sentry'
 
 import OnInstalledReason = chrome.runtime.OnInstalledReason
+
+
+jest.mock('@sx/utils/sentry')
 
 
 describe('onInstall function', () => {
@@ -36,7 +39,7 @@ describe('onInstall function', () => {
     // @ts-expect-error Migrating from JS
     chrome.storage.sync.set.mockRejectedValue(error)
     console.error = jest.fn()
-    const captureException = jest.spyOn(Sentry, 'captureException')
+    const captureException = jest.spyOn(scope, 'captureException')
 
     await InstallAndUpdate.onInstall()
 
@@ -87,7 +90,7 @@ describe('onInstallAndUpdate function', () => {
   test('it logs to console and Sentry when an error occurs', async () => {
     process.env.CHANGELOG_VERSION = '1.0.0'
     process.env.VERSION = '1.0.0'
-    const captureException = jest.spyOn(Sentry, 'captureException')
+    const captureException = jest.spyOn(scope, 'captureException')
     const error = new Error('Test error')
     onUpdate.mockRejectedValue(error)
     console.error = jest.fn()

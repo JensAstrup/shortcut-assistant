@@ -1,7 +1,9 @@
-import * as Sentry from '@sentry/browser'
+import {SlugManager} from '@sx/service-worker/slug-manager'
+import Sentry from '@sx/utils/sentry'
+import scope from '@sx/utils/sentry'
 
-import {SlugManager} from '../../src/js/service-worker/slug-manager'
 
+jest.mock('@sx/utils/sentry')
 
 global.chrome = {
   // @ts-expect-error Migrating from JS
@@ -110,7 +112,7 @@ describe('SlugManager', () => {
     it('should log an error and capture an exception if an error occurs', async () => {
       jest.spyOn(SlugManager, 'getCompanySlugFromTab')
       const setSpy = jest.spyOn(SlugManager, 'setCompanySlug').mockRejectedValue('error')
-      const sentrySpy = jest.spyOn(Sentry, 'captureException')
+      const sentrySpy = jest.spyOn(scope, 'captureException')
       console.error = jest.fn()
 
       await SlugManager.refreshCompanySlug(1, {url: 'https://testing.com/newCompanySlug/page'})

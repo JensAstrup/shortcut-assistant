@@ -1,16 +1,13 @@
-import * as Sentry from '@sentry/browser'
-
 import callOpenAI from '@sx/ai/call-openai'
 import {fetchCompletion} from '@sx/ai/fetch-completion'
 import getCompletionFromProxy from '@sx/ai/get-completion-from-proxy'
 import getOpenAiToken from '@sx/ai/get-openai-token'
 import {sendEvent} from '@sx/analytics/event'
 import {OpenAIError} from '@sx/utils/errors'
+import scope from '@sx/utils/sentry'
 
 
-jest.mock('@sentry/browser', () => ({
-  captureException: jest.fn()
-}))
+jest.mock('@sx/utils/sentry')
 
 jest.mock('@sx/analytics/event', () => ({
   sendEvent: jest.fn().mockResolvedValue(undefined),
@@ -100,6 +97,6 @@ describe('callOpenAI', () => {
     await callOpenAI(description, 'analyze', tabId) // Ensure this waits for all promises
 
     expect(console.error).toHaveBeenCalledWith('Error sending event:', error)
-    expect(Sentry.captureException).toHaveBeenCalledWith(error)
+    expect(scope.captureException).toHaveBeenCalledWith(error)
   })
 })

@@ -1,18 +1,17 @@
 import {chrome} from 'jest-chrome'
 
 import {sendEvent} from '@sx/analytics/event'
-
-import Tab = chrome.tabs.Tab
-
 import {
   handleGetOpenAiToken,
   handleGetSavedNotes,
   handleOpenAICall
 } from '@sx/service-worker/handlers'
 
+import Tab = chrome.tabs.Tab
 import ManifestV3 = chrome.runtime.ManifestV3
 
 
+jest.mock('@sx/utils/sentry')
 jest.mock('@sx/service-worker/handlers', () => ({
   handleOpenAICall: jest.fn().mockResolvedValue({data: 'mock'}),
   handleGetOpenAiToken: jest.fn().mockResolvedValue({token: 'mock'}),

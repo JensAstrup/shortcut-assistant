@@ -1,5 +1,5 @@
-import {logError} from '../../src/js/utils/log-error'
-import * as Sentry from '@sentry/browser'
+import {logError} from '@sx/utils/log-error'
+import scope from '@sx/utils/sentry'
 
 
 describe('logError', () => {
@@ -15,12 +15,12 @@ describe('logError', () => {
   })
 
   it('logs the error using Sentry SDK', () => {
-    Sentry.captureException = jest.fn()
+    scope.captureException = jest.fn()
 
     const error = new Error('An error occurred!')
 
     logError(error)
 
-    expect(Sentry.captureException).toHaveBeenCalledWith(error)
+    expect(scope.captureException).toHaveBeenCalledWith(error)
   })
 })

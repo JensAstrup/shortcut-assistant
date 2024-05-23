@@ -21,7 +21,8 @@ function getStateDiv(text: string): HTMLElement | null {
         return div
       }
     }
-  } else {
+  }
+  else {
     console.error('The parent div with class "list apply-on-click" was not found.')
   }
   return null

@@ -1,9 +1,8 @@
-import * as Sentry from '@sentry/browser'
-
 import {sendEvent} from '@sx/analytics/event'
 import {AiPromptType} from '@sx/analyze/types/ai-prompt-type'
 import {AiProcessMessage, AiProcessMessageType} from '@sx/analyze/types/AiProcessMessage'
 import '@sx/analyze/listeners'
+import scope from '@sx/utils/sentry'
 import sleep from '@sx/utils/sleep'
 import {Story} from '@sx/utils/story'
 
@@ -58,7 +57,7 @@ export class AiFunctions {
       const story = new Story()
       story.addButton(newButton, feature.key).catch((e) => {
         console.error(e)
-        Sentry.captureException(e)
+        scope.captureException(e)
       })
     }
   }
@@ -106,7 +105,7 @@ export class AiFunctions {
     }
     sendEvent('ai_request_failed').catch((e) => {
       console.error(e)
-      Sentry.captureException(e)
+      scope.captureException(e)
     })
   }
 

@@ -1,7 +1,6 @@
-import * as Sentry from '@sentry/browser'
-
 import {sendEvent} from '@sx/analytics/event'
 import {getSyncedSetting} from '@sx/utils/get-synced-setting'
+import scope from '@sx/utils/sentry'
 import sleep from '@sx/utils/sleep'
 
 import {NotesPopup} from './notes-popup'
@@ -47,11 +46,11 @@ export class Popup {
 
     sendEvent('popup_view').catch((e) => {
       console.error(e)
-      Sentry.captureException(e)
+      scope.captureException(e)
     })
     this.popupLoaded().catch((e) => {
       console.error(e)
-      Sentry.captureException(e)
+      scope.captureException(e)
     })
   }
 
@@ -148,7 +147,7 @@ export class Popup {
 
     this.handleNewVersionBadge().catch((e) => {
       console.error(e)
-      Sentry.captureException(e)
+      scope.captureException(e)
     })
     const versionSpan = document.getElementById('versionInfo')
     if (versionSpan === null) {
@@ -159,7 +158,7 @@ export class Popup {
     new NotesPopup()
     sendEvent('popup_loaded', {page_title: 'Popup', page_location: '/popup.html'}).catch((e) => {
       console.error(e)
-      Sentry.captureException(e)
+      scope.captureException(e)
     })
   }
 }

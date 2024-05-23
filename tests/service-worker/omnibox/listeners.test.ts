@@ -1,17 +1,12 @@
-import * as Sentry from '@sentry/browser'
-
 import {sendEvent} from '@sx/analytics/event'
 import {
   redirectFromOmnibox,
   setOmniboxSuggestion
 } from '@sx/service-worker/omnibox/omnibox'
+import scope from '@sx/utils/sentry'
 
 
-jest.mock('@sentry/browser', () => ({
-  captureException: jest.fn()
-}))
-
-
+jest.mock('@sx/utils/sentry')
 
 jest.mock('@sx/analytics/event', () => ({
   sendEvent: jest.fn(() => Promise.resolve())
@@ -31,6 +26,7 @@ describe('Omnibox interactions', () => {
 
   beforeAll(() => {
     global.chrome = {
+      ...global.chrome,
       omnibox: {
         // @ts-expect-error Migrating from TS
         onInputChanged: {
@@ -72,7 +68,7 @@ describe('Omnibox interactions', () => {
     sendEvent.mockImplementationOnce(() => Promise.reject(new Error('Test Error')))
     // @ts-expect-error Migrating from TS
     await inputEnteredCallback('test query', 'currentTab')
-    expect(Sentry.captureException).toHaveBeenCalled()
+    expect(scope.captureException).toHaveBeenCalled()
     expect(console.error).toHaveBeenCalled()
   })
 })
