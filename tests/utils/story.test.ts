@@ -4,11 +4,16 @@ import {
   findFirstMatchingElementForState
 } from '@sx/development-time/find-first-matching-element-for-state'
 import * as urlModule from '@sx/utils/get-active-tab-url'
+import {ShortcutWorkflowStates} from '@sx/utils/get-states'
 import {Story} from '@sx/utils/story'
+import Workspace from '@sx/workspace/workspace'
 
 
 const mockNow = {
-  format: jest.fn().mockReturnValueOnce('Feb 1 2022, 2:00 AM')
+  format: jest.fn().mockReturnValueOnce('Feb 1 2022, 2:00 AM'),
+  subtract: jest.fn().mockReturnValueOnce({format: jest.fn().mockReturnValueOnce('Jan 31 2022, 2:00 AM')}),
+  isAfter: jest.fn().mockReturnValueOnce(true),
+  add: jest.fn().mockReturnValueOnce({format: jest.fn().mockReturnValueOnce('Feb 2 2022, 2:00 AM')})
 }
 jest.mock('dayjs', () => {
   return () => (mockNow)
@@ -16,17 +21,25 @@ jest.mock('dayjs', () => {
 jest.mock('@sentry/browser', () => ({
   captureException: jest.fn()
 }))
-jest.mock('../../src/js/utils/hours-between-excluding-weekends', () => ({
+jest.mock('@sx/utils/hours-between-excluding-weekends', () => ({
+  // eslint-disable-next-line no-magic-numbers
   hoursBetweenExcludingWeekends: jest.fn().mockReturnValue(24)
 }))
-jest.mock('../../src/js/development-time/find-first-matching-element-for-state', () => ({
+jest.mock('@sx/development-time/find-first-matching-element-for-state', () => ({
   findFirstMatchingElementForState: jest.fn()
 }))
-jest.mock('../../src/js/utils/sleep', () => jest.fn().mockResolvedValue(undefined))
-jest.mock('../../src/js/utils/get-active-tab-url', () => ({
+jest.mock('@sx/utils/sleep', () => jest.fn().mockResolvedValue(undefined))
+jest.mock('@sx/utils/get-active-tab-url', () => ({
   getActiveTabUrl: jest.fn()
 }))
-
+jest.spyOn(Workspace, 'states').mockImplementation(async (): Promise<ShortcutWorkflowStates | null> => {
+  return {
+    'Backlog': ['To Do'],
+    'Unstarted': ['Waiting'],
+    'Started': ['In Development'],
+    'Done': []
+  }
+})
 
 describe('Story.title', () => {
   it('should return story title when set', () => {
@@ -192,14 +205,47 @@ describe('Story.state', () => {
 })
 
 
+describe('isCompleted', () => {
+  beforeEach(() => {
+    jest.spyOn(Workspace, 'states').mockImplementation(async (): Promise<ShortcutWorkflowStates | null> => {
+      return {
+        'Backlog': ['To Do'],
+        'Unstarted': ['Waiting'],
+        'Started': ['In Development'],
+        'Done': ['Done']
+      }
+    })
+  })
+  it('should return true if the story is in a done state', async () => {
+    jest.spyOn(Story, 'state', 'get').mockReturnValue({textContent: 'Done'} as unknown as HTMLElement)
+    const result = await Story.isCompleted()
+    expect(result).toBe(true)
+  })
+
+  it('should return false if the story is not in a done state', async () => {
+    jest.spyOn(Story, 'state', 'get').mockReturnValue({textContent: 'In Development'} as unknown as HTMLElement)
+    const result = await Story.isCompleted()
+    expect(result).toBe(false)
+  })
+})
+
+
 describe('isInState function', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     document.body.innerHTML = '<div id="story-dialog-state-dropdown"><span class="value">In Development</span></div>'
+    jest.spyOn(Workspace, 'states').mockImplementation(async (): Promise<ShortcutWorkflowStates | null> => {
+      return {
+        'Backlog': ['To Do'],
+        'Unstarted': ['Waiting'],
+        'Started': ['In Development'],
+        'Done': []
+      }
+    })
   })
 
-  it('returns true if the state is same as the story state', () => {
-    const state = 'TestState'
+  it('returns true if the state is same as the story state', async () => {
+    const state = 'In Development'
     document.getElementById = jest.fn(() => {
       return {
         querySelector: jest.fn(() => {
@@ -207,22 +253,21 @@ describe('isInState function', () => {
         })
       } as unknown as HTMLElement
     })
-    expect(Story.isInState(state)).toBe(true)
+    expect(await Story.isInState('Started')).toBe(true)
   })
 
-  it('returns true if the state is found within the story state', () => {
-    const state = 'TestState'
+  it('returns true if the state is found within the story state', async () => {
     document.getElementById = jest.fn(() => {
       return {
         querySelector: jest.fn(() => {
-          return {textContent: 'TestState, TestState2'}
+          return {textContent: 'TestState, In Development'}
         })
       } as unknown as HTMLElement
     })
-    expect(Story.isInState(state)).toBe(true)
+    expect(await Story.isInState('Started')).toBe(true)
   })
 
-  it('returns false if the state does not have a value', () => {
+  it('returns false if the state does not have a value', async () => {
     const state = 'TestState'
     document.getElementById = jest.fn(() => {
       return {
@@ -231,18 +276,16 @@ describe('isInState function', () => {
         })
       } as unknown as HTMLElement
     })
-    expect(Story.isInState(state)).toBe(false)
+    expect(await Story.isInState('Started')).toBe(false)
   })
 
-  it('returns false if the state is different from the story state', () => {
-    const state = 'DifferentState'
-    expect(Story.isInState(state)).toBe(false)
+  it('returns false if the state is different from the story state', async () => {
+    expect(await Story.isInState('Started')).toBe(false)
   })
 
-  it('returns false if the state is not found', () => {
+  it('returns false if the state is not found', async () => {
     document.getElementById = jest.fn(() => null)
-    const state = 'TestState'
-    expect(Story.isInState(state)).toBe(false)
+    expect(await Story.isInState('Started')).toBe(false)
   })
 
   it('logs a warning if the state is not found', () => {
@@ -250,9 +293,8 @@ describe('isInState function', () => {
     document.getElementById = jest.fn().mockImplementation(() => {
       throw new Error('Could not find state element for state TestState')
     })
-    const state = 'TestState'
-    Story.isInState(state)
-    expect(console.warn).toHaveBeenCalledWith('Could not find state element for state TestState')
+    Story.isInState('Started')
+    expect(console.warn).toHaveBeenCalledWith('Could not find state element for state Started')
     expect(captureException).toHaveBeenCalledWith(new Error('Could not find state element for state TestState'))
   })
 })
