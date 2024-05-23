@@ -1,5 +1,3 @@
-import * as Sentry from '@sentry/browser'
-
 import scope from '@sx/utils/sentry'
 
 

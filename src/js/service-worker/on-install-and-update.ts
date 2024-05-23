@@ -1,8 +1,6 @@
-import * as Sentry from '@sentry/browser'
+import scope from '@sx/utils/sentry'
 
 import InstalledDetails = chrome.runtime.InstalledDetails
-
-import scope from '@sx/utils/sentry'
 
 
 class InstallAndUpdate {

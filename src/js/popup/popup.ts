@@ -1,5 +1,3 @@
-import * as Sentry from '@sentry/browser'
-
 import {sendEvent} from '@sx/analytics/event'
 import {getSyncedSetting} from '@sx/utils/get-synced-setting'
 import scope from '@sx/utils/sentry'

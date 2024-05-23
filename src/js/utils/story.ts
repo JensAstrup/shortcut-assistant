@@ -1,8 +1,7 @@
-import * as Sentry from '@sentry/browser'
 import dayjs from 'dayjs'
 
-import scope from '@sx/utils/sentry'
 import {ShortcutWorkflowState, ShortcutWorkflowStates} from '@sx/utils/get-states'
+import scope from '@sx/utils/sentry'
 import Workspace from '@sx/workspace/workspace'
 
 import {findFirstMatchingElementForState} from '../development-time/find-first-matching-element-for-state'

@@ -1,5 +1,3 @@
-import * as Sentry from '@sentry/browser'
-
 import {sendEvent} from '@sx/analytics/event'
 import {AiPromptType} from '@sx/analyze/types/ai-prompt-type'
 import {AiProcessMessage, AiProcessMessageType} from '@sx/analyze/types/AiProcessMessage'

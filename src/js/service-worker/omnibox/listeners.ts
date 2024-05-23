@@ -1,8 +1,5 @@
-import * as Sentry from '@sentry/browser'
-
+import {sendEvent} from '@sx/analytics/event'
 import scope from '@sx/utils/sentry'
-
-import {sendEvent} from '../../analytics/event'
 
 import {redirectFromOmnibox, setOmniboxSuggestion} from './omnibox'
 
