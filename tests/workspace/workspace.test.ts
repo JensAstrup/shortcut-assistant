@@ -76,6 +76,7 @@ describe('Workspace', () => {
   it('should fetch states if they are not in storage', async () => {
     const states = { 'Backlog': [], 'Unstarted': [], 'Started': [], 'Done': [] }
     const getStorageSpy = jest.spyOn(chrome.storage.local, 'get')
+    const setStorageSpy = jest.spyOn(chrome.storage.local, 'set')
     getStorageSpy.mockImplementation((key, callback) => {
       if (typeof callback !== 'function') {
         return {states: states, stateRefreshDate: dayjs().add(1, 'day').format()}
@@ -84,5 +85,6 @@ describe('Workspace', () => {
     })
     const result = await Workspace.states(true)
     expect(result).toEqual(states)
+    expect(setStorageSpy).toHaveBeenCalledWith({states, stateRefreshDate: dayjs().add(1, 'week').format()})
   })
 })

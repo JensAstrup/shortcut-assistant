@@ -38,7 +38,7 @@ export default class Workspace {
     else {
       states = await _getStates()
     }
-    await chrome.storage.local.set({states, stateRefreshDate: now.add(2, 'week').format()})
+    await chrome.storage.local.set({states, stateRefreshDate: now.add(1, 'week').format()})
     return states
   }
 }
