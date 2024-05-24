@@ -21,19 +21,19 @@ export class Story {
    * @returns {Promise<boolean>} - A promise that resolves to true when the page is ready,
    * and false if the page is not ready after 10 seconds.
    **/
-  static async isReady(): Promise<boolean> {
+  static async isReady(loop: number = 0): Promise<boolean> {
     const WAIT_FOR_PAGE_TO_LOAD_TIMEOUT: number = 1_000
-    let storyTitle: Element | null = document.querySelector('.story-name')
-    const historicalActivity: Element | null = document.querySelector('.historical-change-v2')
-    let loop: number = 0
     const MAX_ATTEMPTS: number = 10
-    while (storyTitle === null && loop < MAX_ATTEMPTS) {
-      await sleep(loop * WAIT_FOR_PAGE_TO_LOAD_TIMEOUT)
-      storyTitle = document.querySelector('.story-name')
-      loop += 1
+    const storyTitle: Element | null = document.querySelector('.story-name')
+
+    if (storyTitle !== null || loop >= MAX_ATTEMPTS) {
+      const waitTime = 200
+      await sleep(waitTime)
+      return storyTitle !== null
     }
-    await sleep(200)
-    return storyTitle !== null
+
+    await sleep(loop * WAIT_FOR_PAGE_TO_LOAD_TIMEOUT)
+    return this.isReady(loop + 1)
   }
 
   static get title(): string | null {
