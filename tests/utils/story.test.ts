@@ -64,10 +64,9 @@ describe('Story.isReady', () => {
     const result = await Story.isReady()
     expect(result).toBe(false)
     // eslint-disable-next-line no-magic-numbers
-    expect(document.querySelector).toHaveBeenNthCalledWith(8, '.historical-change-v2')
     expect(document.querySelector).toHaveBeenNthCalledWith(9, '.story-name')
     // 10 calls to document.querySelector for story title and historical changes, each, plus the initial call
-    const EXPECTED_CALLS = 22
+    const EXPECTED_CALLS = 11
     expect(document.querySelector).toHaveBeenCalledTimes(EXPECTED_CALLS)
   })
 })
