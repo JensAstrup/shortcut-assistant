@@ -5,6 +5,8 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 require('dotenv').config()
 const Dotenv = require('dotenv-webpack')
 const {sentryWebpackPlugin} = require('@sentry/webpack-plugin')
+
+
 const copyConfig = new CopyWebpackPlugin({
   patterns: [
     {from: './src/manifest.json', to: 'manifest.json'},
@@ -34,7 +36,7 @@ module.exports = {
     'js/contentScripts/bundle': [
       './src/js/content-scripts.ts',
       './src/js/index.ts',
-      './src/js/comment-box/content-script.ts',
+      './src/js/additional-content/content-script.ts',
     ],
     'js/analytics/bundle': './src/js/analytics/event.ts'
   },

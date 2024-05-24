@@ -1,21 +1,18 @@
 import {CycleTime} from '@sx/cycle-time/cycle-time'
 import {hoursBetweenExcludingWeekends} from '@sx/utils/hours-between-excluding-weekends'
 import {Story} from '@sx/utils/story'
-import storyPageIsReady from '@sx/utils/story-page-is-ready'
 
 
 jest.mock('@sx/utils/hours-between-excluding-weekends', () => ({
   hoursBetweenExcludingWeekends: jest.fn()
 }))
 const mockedHoursBetweenExcludingWeekends = hoursBetweenExcludingWeekends as jest.MockedFunction<typeof hoursBetweenExcludingWeekends>
-jest.mock('@sx/utils/story-page-is-ready', () => jest.fn())
-const mockedStoryPageIsReady = storyPageIsReady as jest.MockedFunction<typeof storyPageIsReady>
 jest.mock('@sx/utils/story', () => ({
   Story: {
     isInState: jest.fn(),
     getDateInState: jest.fn(),
     isCompleted: jest.fn(),
-
+    isReady: jest.fn().mockResolvedValue(true)
   }
 }))
 jest.mock('@sx/workspace/workspace', () => {
@@ -47,7 +44,6 @@ describe('set function', () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
-    mockedStoryPageIsReady.mockClear()
     document.querySelector = jest.fn().mockImplementation(selector => {
       if (selector === '.story-date-cycle-time') return null // simulate absence initially
       if (selector === '.story-date-created') return createdDiv
@@ -81,7 +77,7 @@ describe('set function', () => {
 
     await CycleTime.set()
 
-    expect(storyPageIsReady).toHaveBeenCalledTimes(1)
+    expect(Story.isReady).toHaveBeenCalledTimes(1)
     expect(mockedStory.isCompleted).toHaveBeenCalledTimes(1)
     expect(storyCreatedDivParent.insertBefore).not.toHaveBeenCalled()
   })
@@ -117,7 +113,7 @@ describe('set function', () => {
 
     await CycleTime.set()
 
-    expect(storyPageIsReady).toHaveBeenCalledTimes(1)
+    expect(Story.isReady).toHaveBeenCalledTimes(1)
     expect(mockedStory.isCompleted).toHaveBeenCalledTimes(1)
     expect(mockedStory.getDateInState).toHaveBeenCalledWith('In Development')
     expect(mockedHoursBetweenExcludingWeekends).toHaveBeenCalledWith('2022-08-23', '2022-09-23')
@@ -133,7 +129,7 @@ describe('set function', () => {
 
     await CycleTime.set()
 
-    expect(storyPageIsReady).toHaveBeenCalledTimes(1)
+    expect(Story.isReady).toHaveBeenCalledTimes(1)
     expect(mockedStory.isCompleted).toHaveBeenCalledTimes(1)
     expect(mockedStory.getDateInState).toHaveBeenCalledWith('In Development')
     expect(mockedHoursBetweenExcludingWeekends).toHaveBeenCalledWith('2022-08-23', '2022-09-23')

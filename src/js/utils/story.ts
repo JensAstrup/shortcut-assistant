@@ -4,7 +4,9 @@ import {ShortcutWorkflowState, ShortcutWorkflowStates} from '@sx/utils/get-state
 import scope from '@sx/utils/sentry'
 import Workspace from '@sx/workspace/workspace'
 
-import {findFirstMatchingElementForState} from '../development-time/find-first-matching-element-for-state'
+import {
+  findFirstMatchingElementForState
+} from '../development-time/find-first-matching-element-for-state'
 
 import {getActiveTabUrl} from './get-active-tab-url'
 import {hoursBetweenExcludingWeekends} from './hours-between-excluding-weekends'
@@ -12,6 +14,28 @@ import sleep from './sleep'
 
 
 export class Story {
+
+  /**
+   * Waits for the story title/name and historical activity (such as the story being created) to be
+   * present on the page which indicates that the page is ready.
+   * @returns {Promise<boolean>} - A promise that resolves to true when the page is ready,
+   * and false if the page is not ready after 10 seconds.
+   **/
+  static async isReady(loop: number = 0): Promise<boolean> {
+    const WAIT_FOR_PAGE_TO_LOAD_TIMEOUT: number = 1_000
+    const MAX_ATTEMPTS: number = 10
+    const storyTitle: Element | null = document.querySelector('.story-name')
+
+    if (storyTitle !== null || loop >= MAX_ATTEMPTS) {
+      const waitTime = 200
+      await sleep(waitTime)
+      return storyTitle !== null
+    }
+
+    await sleep(loop * WAIT_FOR_PAGE_TO_LOAD_TIMEOUT)
+    return this.isReady(loop + 1)
+  }
+
   static get title(): string | null {
     const titleDiv: Element | null = document.querySelector('.story-name')
     const title: string | null | undefined = titleDiv?.textContent
@@ -72,18 +96,13 @@ export class Story {
     })
   }
 
-  static async getEditDescriptionButtonContainer(): Promise<HTMLElement | null | undefined> {
-    let container: HTMLElement | null | undefined
-    let attempts = 0
-    while (!container) {
-      const ONE_SECOND = 1000
-      await sleep(ONE_SECOND)
-      container = document.querySelector('#story-description-v2') as HTMLElement
-      attempts++
-      const MAX_ATTEMPTS = 10
-      if (attempts > MAX_ATTEMPTS) {
-        break
-      }
+  static async getEditDescriptionButtonContainer(attempts: number = 0): Promise<HTMLElement | null | undefined> {
+    const ONE_SECOND = 1000
+    await sleep(ONE_SECOND)
+    const container = document.querySelector('#story-description-v2') as HTMLElement
+    const MAX_ATTEMPTS = 10
+    if (!container && attempts < MAX_ATTEMPTS) {
+      return this.getEditDescriptionButtonContainer(attempts + 1)
     }
     return container
   }

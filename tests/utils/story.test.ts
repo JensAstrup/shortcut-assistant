@@ -2,8 +2,8 @@ import {
   findFirstMatchingElementForState
 } from '@sx/development-time/find-first-matching-element-for-state'
 import * as urlModule from '@sx/utils/get-active-tab-url'
-import scope from '@sx/utils/sentry'
 import {ShortcutWorkflowStates} from '@sx/utils/get-states'
+import scope from '@sx/utils/sentry'
 import {Story} from '@sx/utils/story'
 import Workspace from '@sx/workspace/workspace'
 
@@ -38,7 +38,43 @@ jest.spyOn(Workspace, 'states').mockImplementation(async (): Promise<ShortcutWor
   }
 })
 
+describe('Story.isReady', () => {
+  const originalDocumentQuerySelector = document.querySelector
+  beforeEach(() => {
+    jest.clearAllMocks()
+    jest.mock('@sx/utils/sleep', () => jest.fn().mockResolvedValue(undefined))
+
+    document.querySelector = jest.fn((selector) => {
+      return (selector === '.story-name') ? {} : null
+    })
+  })
+
+  afterAll(() => {
+    jest.clearAllMocks()
+    jest.restoreAllMocks()
+    document.querySelector = originalDocumentQuerySelector
+  })
+
+  it('should resolve to true when a story title can be found on the page', async () => {
+    await expect(Story.isReady()).resolves.toBe(true)
+  })
+
+  it('should keep checking for story title until it is found', async () => {
+    document.querySelector = jest.fn().mockReturnValue(null)
+    const result = await Story.isReady()
+    expect(result).toBe(false)
+    // eslint-disable-next-line no-magic-numbers
+    expect(document.querySelector).toHaveBeenNthCalledWith(9, '.story-name')
+    // 10 calls to document.querySelector for story title and historical changes, each, plus the initial call
+    const EXPECTED_CALLS = 11
+    expect(document.querySelector).toHaveBeenCalledTimes(EXPECTED_CALLS)
+  })
+})
+
 describe('Story.title', () => {
+  beforeEach(() => {
+    jest.clearAllMocks()
+  })
   it('should return story title when set', () => {
     document.body.innerHTML = '<div class="story-name">Sample Title</div>'
     expect(Story.title).toEqual('Sample Title')
@@ -57,6 +93,9 @@ describe('Story.title', () => {
 
 
 describe('Story.description', () => {
+  beforeEach(() => {
+    jest.clearAllMocks()
+  })
   it('should return story description when set', () => {
     document.body.innerHTML = '<div id="story-description-v2">Sample Description</div>'
     expect(Story.description).toEqual('Sample Description')
@@ -110,7 +149,8 @@ describe('getEditDescriptionButtonContainer', () => {
     const container = await promise
 
     expect(container).toBeNull()
-    expect(document.querySelector).toHaveBeenCalledTimes(11)
+    const expectedAttempts = 11
+    expect(document.querySelector).toHaveBeenCalledTimes(expectedAttempts)
   })
 })
 
@@ -139,7 +179,8 @@ describe('Story.getTimeInState', () => {
     const state = 'ExpectedState'
     const result = Story.getTimeInState(state)
     expect(mockNow.format).toHaveBeenCalledWith('MMM D YYYY, h:mm A')
-    expect(result).toBe(24)
+    const ONE_DAY = 24
+    expect(result).toBe(ONE_DAY)
   })
 
   it('returns the difference between now and the date in state', () => {
@@ -265,7 +306,6 @@ describe('isInState function', () => {
   })
 
   it('returns false if the state does not have a value', async () => {
-    const state = 'TestState'
     document.getElementById = jest.fn(() => {
       return {
         querySelector: jest.fn(() => {

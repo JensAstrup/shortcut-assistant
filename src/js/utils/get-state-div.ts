@@ -1,31 +1,29 @@
-function findDivWithText(element: HTMLElement, searchText: string) {
+function findDivWithText(element: HTMLElement, searchText: string): boolean {
   // Check if current element is a div and matches the searchText
   if (element.tagName === 'DIV' && element.innerText.trim() === searchText) {
     return true
   }
-  // Otherwise, recurse through all child elements
-  for (const child of element.children) {
-    if (findDivWithText(<HTMLElement>child, searchText)) {
-      return true
-    }
-  }
-  return false
+  // Otherwise, check all child elements
+  return Array.from(element.children).some(child => findDivWithText(<HTMLElement>child, searchText))
 }
 
 function getStateDiv(text: string): HTMLElement | null {
   const parentDiv: HTMLElement | null = document.querySelector('[data-perma-id="popover"]')
+  let foundDiv: HTMLElement | null = null
+
   if (parentDiv) {
-    const childDivs: Iterable<HTMLElement> = parentDiv.querySelectorAll('li') as Iterable<HTMLElement>
-    for (const div of childDivs) {
+    const childDivs: NodeListOf<HTMLElement> = parentDiv.querySelectorAll('li')
+    childDivs.forEach((div) => {
       if (findDivWithText(div, text)) {
-        return div
+        foundDiv = div
       }
-    }
+    })
   }
   else {
     console.error('The parent div with class "list apply-on-click" was not found.')
   }
-  return null
+
+  return foundDiv
 }
 
 export {getStateDiv}

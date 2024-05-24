@@ -1,5 +1,17 @@
-import {getOrCreateSessionId} from '../../src/js/analytics/session-id'
+import {getOrCreateSessionId} from '@sx/analytics/session-id'
 
+
+global.chrome = {
+  ...global.chrome,
+  storage: {
+    ...global.chrome.storage,
+    session: {
+      ...global.chrome.storage.session,
+      get: jest.fn().mockResolvedValue({}),
+      set: jest.fn()
+    }
+  }
+}
 
 describe('getOrCreateSessionId', () => {
   const originalNow = Date.now
@@ -13,13 +25,11 @@ describe('getOrCreateSessionId', () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
-    global.chrome.storage.session.get.mockClear()
-    global.chrome.storage.session.set.mockClear()
   })
 
   it('creates a new session when none exists', async () => {
-    Date.now.mockReturnValue(new Date('2020-01-01').getTime())
-    global.chrome.storage.session.get.mockResolvedValue({})
+    (Date.now as jest.Mock).mockReturnValue(new Date('2020-01-01').getTime())
+    chrome.storage.session.get = jest.fn().mockResolvedValue({})
 
     const sessionId = await getOrCreateSessionId()
 
@@ -33,13 +43,12 @@ describe('getOrCreateSessionId', () => {
   })
 
   it('returns existing session if within expiration limit', async () => {
-    const currentTime = new Date('2020-01-01T00:15:00').getTime() // 15 minutes later
-    Date.now.mockReturnValue(currentTime)
+    (Date.now as jest.Mock).mockReturnValue(new Date('2020-01-01T00:15:00').getTime())
     const sessionData = {
       session_id: 'existing-session-id',
       timestamp: new Date('2020-01-01').getTime().toString() // Session started at 2020-01-01 00:00:00
-    };
-    global.chrome.storage.session.get.mockResolvedValue({sessionData})
+    }
+    global.chrome.storage.session.get = jest.fn().mockResolvedValue({sessionData})
 
     const sessionId = await getOrCreateSessionId()
 
@@ -49,20 +58,20 @@ describe('getOrCreateSessionId', () => {
     expect(global.chrome.storage.session.set).toHaveBeenCalledWith({
       sessionData: {
         session_id: 'existing-session-id', // Keep the existing session ID
-        timestamp: currentTime // Update the timestamp to current time
+        timestamp: new Date('2020-01-01T00:15:00').getTime() // Update the timestamp to current time
       }
-    });
-  });
+    })
+  })
 
 
   it('creates a new session when existing one is past expiration', async () => {
     const currentTime = new Date('2020-01-01T00:31:00').getTime() // 31 minutes later
-    Date.now.mockReturnValue(currentTime)
+    Date.now = jest.fn().mockReturnValue(currentTime)
     const sessionData = {
       session_id: 'expired-session-id',
       timestamp: new Date('2020-01-01').getTime().toString()
     }
-    global.chrome.storage.session.get.mockResolvedValue({sessionData})
+    global.chrome.storage.session.get = jest.fn().mockResolvedValue({sessionData})
 
     const sessionId = await getOrCreateSessionId()
 

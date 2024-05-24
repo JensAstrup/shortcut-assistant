@@ -8,28 +8,28 @@ dayjs.extend(weekday)
 dayjs.extend(isSameOrBefore)
 dayjs.extend(minMax)
 
-export function hoursBetweenExcludingWeekends(startStr: string, endStr: string): number {
+export function hoursBetweenExcludingWeekends(startStr: string, endStr: string, hours: number = 0.0): number {
   const start = dayjs(startStr)
   const end = dayjs(endStr)
 
-  let hours = 0.0
+  const current = start
 
-  let current = start
-  while (current.isSameOrBefore(end)) {
-    // Initialize nextDayStart at the beginning of each loop iteration
-    const nextDayStart = current.add(1, 'day').startOf('day')
-
-    if (current.weekday() !== 0 && current.weekday() !== 6) { // Excludes Saturday (6) and Sunday (0)
-      const dailyEnd = dayjs.min(end, nextDayStart)
-      if (dailyEnd) {
-        const dailyHours = dailyEnd.diff(current, 'hour', true)
-        hours += dailyHours
-      }
-    }
-
-    // Move to start of the next day
-    current = nextDayStart
+  // Base case: if current is after end, return the accumulated hours
+  if (current.isAfter(end)) {
+    return hours
   }
 
-  return hours
+  // Initialize nextDayStart at the beginning of each recursive call
+  const nextDayStart = current.add(1, 'day').startOf('day')
+
+  if (current.weekday() !== 0 && current.weekday() !== 6) { // Excludes Saturday (6) and Sunday (0)
+    const dailyEnd = dayjs.min(end, nextDayStart)
+    if (dailyEnd) {
+      const dailyHours = dailyEnd.diff(current, 'hour', true)
+      hours += dailyHours
+    }
+  }
+
+  // Recursive call with the start of the next day and the updated hours
+  return hoursBetweenExcludingWeekends(nextDayStart.format(), endStr, hours)
 }
