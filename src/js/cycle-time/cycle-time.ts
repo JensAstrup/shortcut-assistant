@@ -3,7 +3,6 @@ import {max} from 'lodash'
 import {hoursBetweenExcludingWeekends} from '@sx/utils/hours-between-excluding-weekends'
 import sleep from '@sx/utils/sleep'
 import {Story} from '@sx/utils/story'
-import storyPageIsReady from '@sx/utils/story-page-is-ready'
 import Workspace from '@sx/workspace/workspace'
 
 
@@ -17,7 +16,7 @@ export class CycleTime {
   }
 
   static async set() {
-    await storyPageIsReady()
+    await Story.isReady()
     const WAIT_TIME = 300
     await sleep(WAIT_TIME)
     this.clear()
