@@ -4,7 +4,7 @@ import {logError} from '../utils/log-error'
 
 
 export class AdditionalContent {
-  static async populate(text: string): Promise<void> {
+  static async populate(text?: string): Promise<void> {
     if (text === undefined) {
       return
     }
@@ -19,9 +19,6 @@ export class AdditionalContent {
       throw new Error('Could not find task section')
     }
     const clone = taskSection?.cloneNode(true)
-    if (!clone) {
-      throw new Error('Could not clone task section')
-    }
     const parent = taskSection.parentNode
     if (!parent) {
       throw new Error('Could not find parent of task section')

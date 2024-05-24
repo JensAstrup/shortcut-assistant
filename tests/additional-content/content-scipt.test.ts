@@ -12,7 +12,6 @@ describe('AdditionalContent', () => {
   })
 
   afterEach(() => {
-    // Clean up the DOM
     document.body.innerHTML = ''
   })
 
@@ -30,6 +29,19 @@ describe('AdditionalContent', () => {
     expect(clone).toBeDefined()
   })
 
+  test('duplicateTasks should throw an error if task section is not found', () => {
+    document.body.innerHTML = '' // Remove all elements
+    expect(() => AdditionalContent.duplicateTasks()).toThrow('Could not find task section')
+  })
+
+  test('duplicateTasks should throw an error if parent of task section is not found', () => {
+    const taskSection = document.querySelector('[data-type="task"]')
+    if (taskSection) {
+      jest.spyOn(taskSection, 'parentNode', 'get').mockReturnValue(null)
+    }
+    expect(() => AdditionalContent.duplicateTasks()).toThrow('Could not find parent of task section')
+  })
+
   test('refactorSection should modify the section as expected', () => {
     const section = document.querySelector('[data-type="task"]') as HTMLElement
     const refactoredSection = AdditionalContent.refactorSection(section)
@@ -43,5 +55,9 @@ describe('AdditionalContent', () => {
 
     section = AdditionalContent.getSection()
     expect(section).toBe(document.querySelector('[data-type="ai-response"]'))
+  })
+
+  test('populate should not throw error if text is undefined', async () => {
+    await expect(AdditionalContent.populate(undefined)).resolves.toBeUndefined()
   })
 })
