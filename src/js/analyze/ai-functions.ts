@@ -51,14 +51,18 @@ export class AiFunctions {
   }
 
   public async addButtons() {
+    const story = new Story()
+    // eslint-disable-next-line no-loops/no-loops
     for (const feature of Object.values(AiFunctions.features)) {
       const newButton = AiFunctions.createButton(feature)
       AiFunctions.buttons[feature.key] = newButton
-      const story = new Story()
-      story.addButton(newButton, feature.key).catch((e) => {
+      try {
+        await story.addButton(newButton, feature.key)
+      }
+      catch (e) {
         console.error(e)
         scope.captureException(e)
-      })
+      }
     }
   }
 

@@ -33,15 +33,12 @@ export class DevelopmentTime {
     if (!inDevelopment) {
       return
     }
-    let inDevelopmentTime: number = 0
-    for(const state of inDevelopmentStates){
-      inDevelopmentTime += Story.getTimeInState(state) || 0
-    }
+    const inDevelopmentTime: number = inDevelopmentStates.reduce((totalTime, state) => {
+      return totalTime + (Story.getTimeInState(state) || 0)
+    }, 0)
 
-    if (inDevelopment) {
-      if (inDevelopmentTime) {
-        this.setTimeSpan(inDevelopmentTime)
-      }
+    if (inDevelopmentTime) {
+      this.setTimeSpan(inDevelopmentTime)
     }
   }
 }
