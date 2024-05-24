@@ -5,11 +5,16 @@ import {KeyboardShortcuts} from '@sx/keyboard-shortcuts/keyboard-shortcuts'
 import {NotesButton} from '@sx/notes/notes-button'
 import {Todoist} from '@sx/todoist/todoist'
 import {getSyncedSetting} from '@sx/utils/get-synced-setting'
-import storyPageIsReady from '@sx/utils/story-page-is-ready'
+import {Story} from '@sx/utils/story'
 
 import Manifest = chrome.runtime.Manifest
 
 
+jest.mock('@sx/utils/story', () => ({
+  Story: {
+    isReady: jest.fn().mockResolvedValue(true)
+  }
+}))
 jest.mock('@sx/cycle-time/cycle-time', () => ({
   CycleTime: {
     set: jest.fn().mockResolvedValue(null)
@@ -25,7 +30,6 @@ jest.mock('@sx/notes/notes-button')
 jest.mock('@sx/analyze/ai-functions')
 jest.mock('@sx/keyboard-shortcuts/keyboard-shortcuts')
 jest.mock('@sx/analyze/analyze-story-description')
-jest.mock('@sx/utils/story-page-is-ready', () => jest.fn().mockResolvedValue(null))
 jest.mock('@sx/utils/get-synced-setting', () => ({
   getSyncedSetting: jest.fn()
 }))
@@ -56,7 +60,7 @@ describe('activate function', () => {
 
   it('waits for 3 seconds before proceeding', async () => {
     await activate()
-    expect(storyPageIsReady).toHaveBeenCalled()
+    expect(Story.isReady).toHaveBeenCalled()
   })
 
   it('initializes CycleTime', async () => {

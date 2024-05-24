@@ -4,7 +4,9 @@ import {ShortcutWorkflowState, ShortcutWorkflowStates} from '@sx/utils/get-state
 import scope from '@sx/utils/sentry'
 import Workspace from '@sx/workspace/workspace'
 
-import {findFirstMatchingElementForState} from '../development-time/find-first-matching-element-for-state'
+import {
+  findFirstMatchingElementForState
+} from '../development-time/find-first-matching-element-for-state'
 
 import {getActiveTabUrl} from './get-active-tab-url'
 import {hoursBetweenExcludingWeekends} from './hours-between-excluding-weekends'
@@ -12,6 +14,28 @@ import sleep from './sleep'
 
 
 export class Story {
+
+  /**
+   * Waits for the story title/name and historical activity (such as the story being created) to be
+   * present on the page which indicates that the page is ready.
+   * @returns {Promise<boolean>} - A promise that resolves to true when the page is ready,
+   * and false if the page is not ready after 10 seconds.
+   **/
+  static async isReady(): Promise<boolean> {
+    const WAIT_FOR_PAGE_TO_LOAD_TIMEOUT: number = 1_000
+    let storyTitle: Element | null = document.querySelector('.story-name')
+    let historicalActivity: Element | null = document.querySelector('.historical-change-v2')
+    let loop: number = 0
+    const MAX_ATTEMPTS: number = 10
+    while (storyTitle === null && historicalActivity === null && loop < MAX_ATTEMPTS) {
+      await sleep(loop * WAIT_FOR_PAGE_TO_LOAD_TIMEOUT)
+      storyTitle = document.querySelector('.story-name')
+      historicalActivity = document.querySelector('.historical-change-v2')
+      loop += 1
+    }
+    return storyTitle !== null || historicalActivity !== null
+  }
+
   static get title(): string | null {
     const titleDiv: Element | null = document.querySelector('.story-name')
     const title: string | null | undefined = titleDiv?.textContent

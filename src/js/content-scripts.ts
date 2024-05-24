@@ -1,4 +1,5 @@
 import {AiFunctions} from '@sx/analyze/ai-functions'
+import {Story} from '@sx/utils/story'
 
 import {analyzeStoryDescription} from './analyze/analyze-story-description'
 import {CycleTime} from './cycle-time/cycle-time'
@@ -11,12 +12,11 @@ import {NotesButton} from './notes/notes-button'
 import {Todoist} from './todoist/todoist'
 import {getSyncedSetting} from './utils/get-synced-setting'
 import {logError} from './utils/log-error'
-import storyPageIsReady from './utils/story-page-is-ready'
 
 
 
 export async function activate() {
-  await storyPageIsReady()
+  await Story.isReady()
 
   new KeyboardShortcuts().activate()
 

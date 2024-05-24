@@ -2,8 +2,6 @@ import {DevelopmentTime} from '@sx/development-time/development-time'
 import {Story} from '@sx/utils/story'
 
 
-jest.mock('@sx/utils/story-page-is-ready', () => jest.fn().mockResolvedValue(true))
-
 jest.mock('@sx/workspace/workspace', () => {
   class MockWorkspace {
     async activate() {
@@ -30,6 +28,7 @@ describe('DevelopmentTime.setTimeSpan', () => {
   beforeEach(() => {
     document.createElement = jest.fn().mockReturnValue(document.createElement('span'))
     jest.clearAllMocks()
+    jest.spyOn(Story, 'isReady').mockResolvedValue(true)
   })
 
   it('throws an error if Story.state is not found', () => {
@@ -76,6 +75,8 @@ describe('DevelopmentTime.remove', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     document.querySelector = jest.fn().mockImplementation(() => mockTimeSpan)
+    jest.spyOn(Story, 'isReady').mockResolvedValue(true)
+
   })
 
   it('removes the time span', () => {
@@ -96,6 +97,7 @@ describe('DevelopmentTime.set', () => {
 
     jest.spyOn(Story, 'isInState').mockResolvedValue(false)
     jest.spyOn(Story, 'getTimeInState').mockReturnValue(0)
+    jest.spyOn(Story, 'isReady').mockResolvedValue(true)
 
     jest.spyOn(DevelopmentTime, 'setTimeSpan').mockImplementation(() => {
     })

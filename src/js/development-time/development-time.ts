@@ -1,5 +1,4 @@
 import {Story} from '@sx/utils/story'
-import storyPageIsReady from '@sx/utils/story-page-is-ready'
 import Workspace from '@sx/workspace/workspace'
 
 
@@ -9,7 +8,8 @@ export class DevelopmentTime {
     if (!stateSpan) {
       throw new Error('Story state span not found')
     }
-    let daysElapsed = hoursElapsed / 24
+    const ONE_DAY = 24
+    let daysElapsed = hoursElapsed / ONE_DAY
     daysElapsed = Math.abs(daysElapsed)
     const timeSpan = document.createElement('span')
     timeSpan.setAttribute('data-assistant', 'true')
@@ -25,7 +25,7 @@ export class DevelopmentTime {
   }
 
   static async set() {
-    await storyPageIsReady()
+    await Story.isReady()
     this.remove()
     const states = await Workspace.states()
     const inDevelopmentStates = states.Started

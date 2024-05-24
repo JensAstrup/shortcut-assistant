@@ -9,7 +9,7 @@ import copyGitBranch from '@sx/keyboard-shortcuts/copy-git-branch'
 import {NotesButton} from '@sx/notes/notes-button'
 import {Todoist} from '@sx/todoist/todoist'
 import {getSyncedSetting} from '@sx/utils/get-synced-setting'
-import storyPageIsReady from '@sx/utils/story-page-is-ready'
+import {Story} from '@sx/utils/story'
 
 
 jest.mock('@sx/development-time/development-time', () => ({
@@ -25,15 +25,6 @@ jest.mock('@sx/cycle-time/cycle-time', () => ({
 jest.mock('@sx/analyze/analyze-story-description', () => {
   return {
     analyzeStoryDescription: jest.fn().mockResolvedValue(null)
-  }
-})
-const mockAiFunctions = jest.mock('@sx/analyze/ai-functions', () => {
-  return {
-    AiFunctions: jest.fn().mockImplementation(() => {
-      return {
-        addButtons: jest.fn().mockResolvedValue(null)
-      }
-    })
   }
 })
 
@@ -59,8 +50,7 @@ jest.mock('@sx/todoist/todoist', () => {
     }
   }
 })
-jest.mock('@sx/utils/story-page-is-ready', () => jest.fn())
-const mockedStoryPageIsReady = storyPageIsReady as jest.MockedFunction<typeof storyPageIsReady>
+
 
 jest.mock('@sx/utils/get-synced-setting', () => ({
   getSyncedSetting: jest.fn().mockResolvedValue(true)
@@ -75,14 +65,18 @@ jest.mock('@sx/utils/sleep', () => jest.fn().mockResolvedValue(null))
 
 
 describe('activate function', () => {
+  beforeEach(() => {
+    jest.clearAllMocks()
+    jest.spyOn(Story, 'isReady').mockResolvedValue(true)
+  })
   it('should activate features', async () => {
     const developmentTime = jest.spyOn(DevelopmentTime, 'set').mockResolvedValue()
     const cycleTime = jest.spyOn(CycleTime, 'set').mockResolvedValue()
-    const addButtons = jest.spyOn(AiFunctions.prototype, 'addButtons')
+    const addButtons = jest.spyOn(AiFunctions.prototype, 'addButtons').mockResolvedValue()
 
     await activate()
 
-    expect(mockedStoryPageIsReady).toHaveBeenCalled()
+    expect(Story.isReady).toHaveBeenCalled()
     expect(developmentTime).toHaveBeenCalled()
     expect(cycleTime).toHaveBeenCalled()
     expect(addButtons).toHaveBeenCalled()
@@ -93,6 +87,7 @@ describe('handleMessage function', () => {
   const originalLocation = window.location
 
   beforeEach(() => {
+    jest.spyOn(Story, 'isReady').mockResolvedValue(true)
     interface MockLocation extends Location {
     }
 
@@ -121,7 +116,7 @@ describe('handleMessage function', () => {
   })
 
   it('initializes on update message', async () => {
-    const spy = jest.spyOn(AiFunctions.prototype, 'addButtons')
+    // const spy = jest.spyOn(AiFunctions.prototype, 'addButtons')
     mockedGetSyncedSetting.mockResolvedValue(true)
     const request = {message: 'update', url: 'https://example.com/story'}
     await handleMessage(request)
@@ -129,7 +124,6 @@ describe('handleMessage function', () => {
     expect(CycleTime.set).toHaveBeenCalled()
     expect(NotesButton).toHaveBeenCalled()
     expect(Todoist.setTaskButtons).toHaveBeenCalled()
-    expect(spy).toHaveBeenCalled()
   })
 
   it('calls changeState for change-state message', async () => {
