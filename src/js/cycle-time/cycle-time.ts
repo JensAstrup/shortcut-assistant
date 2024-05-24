@@ -26,11 +26,8 @@ export class CycleTime {
     }
     const states = await Workspace.states()
     const createdDiv = document.querySelector('.story-date-created')
-    const inDevelopmentDates: Array<string | null> = []
-    for(const state of states.Started){
-      inDevelopmentDates.push(Story.getDateInState(state))
-    }
-    const inDevelopmentDateString: undefined | null | string = max(inDevelopmentDates)
+    const inDevelopmentDates: Array<string | null> = states.Started.map((state) => Story.getDateInState(state))
+    const inDevelopmentDateString: string | undefined | null = max(inDevelopmentDates)
     const completedDiv = document.querySelector('.story-date-completed')
     const completedValue = completedDiv?.querySelector('.value')
     const completedDateString = completedValue?.innerHTML

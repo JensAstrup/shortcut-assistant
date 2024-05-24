@@ -1,15 +1,17 @@
 export function findFirstMatchingElementForState(state: string) {
   // Get all elements with the class 'value'
-  const elementsWithValueClass= document.querySelectorAll('.value')
+  const elementsWithValueClass = Array.from(document.querySelectorAll('.value'))
 
-  for (const element of elementsWithValueClass) {
-    // Check if any child element contains the text 'In Development'
+  // Find the first element where a child element contains the text 'In Development'
+  const foundElement = elementsWithValueClass.find(element => {
     const child = Array.from(element.children).find(child => child.innerHTML === state)
+    return Boolean(child)
+  })
 
-    // If such a child is found, return the element and the child
-    if (child) {
-      return {element, child}
-    }
+  if (foundElement) {
+    const child = Array.from(foundElement.children).find(child => child.innerHTML === state)
+    return {element: foundElement, child}
   }
+
   return null
 }

@@ -19,7 +19,8 @@ async function changeIteration(): Promise<void> {
         console.error('The iteration input field was not found.')
         return
       }
-      await sleep(100)
+      const ms = 100
+      await sleep(ms)
       input.value = ''
       input.focus()
     }

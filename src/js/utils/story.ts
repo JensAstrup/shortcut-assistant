@@ -21,19 +21,18 @@ export class Story {
    * @returns {Promise<boolean>} - A promise that resolves to true when the page is ready,
    * and false if the page is not ready after 10 seconds.
    **/
-  static async isReady(): Promise<boolean> {
+  static async isReady(attempts: number = 0): Promise<boolean> {
     const WAIT_FOR_PAGE_TO_LOAD_TIMEOUT: number = 1_000
-    let storyTitle: Element | null = document.querySelector('.story-name')
-    let historicalActivity: Element | null = document.querySelector('.historical-change-v2')
-    let loop: number = 0
+    const storyTitle: Element | null = document.querySelector('.story-name')
+    const historicalActivity: Element | null = document.querySelector('.historical-change-v2')
     const MAX_ATTEMPTS: number = 10
-    while (storyTitle === null && historicalActivity === null && loop < MAX_ATTEMPTS) {
-      await sleep(loop * WAIT_FOR_PAGE_TO_LOAD_TIMEOUT)
-      storyTitle = document.querySelector('.story-name')
-      historicalActivity = document.querySelector('.historical-change-v2')
-      loop += 1
+
+    if (storyTitle !== null || historicalActivity !== null || attempts >= MAX_ATTEMPTS) {
+      return storyTitle !== null || historicalActivity !== null
     }
-    return storyTitle !== null || historicalActivity !== null
+
+    await sleep(attempts * WAIT_FOR_PAGE_TO_LOAD_TIMEOUT)
+    return this.isReady(attempts + 1)
   }
 
   static get title(): string | null {
@@ -96,18 +95,13 @@ export class Story {
     })
   }
 
-  static async getEditDescriptionButtonContainer(): Promise<HTMLElement | null | undefined> {
-    let container: HTMLElement | null | undefined
-    let attempts = 0
-    while (!container) {
-      const ONE_SECOND = 1000
-      await sleep(ONE_SECOND)
-      container = document.querySelector('#story-description-v2') as HTMLElement
-      attempts++
-      const MAX_ATTEMPTS = 10
-      if (attempts > MAX_ATTEMPTS) {
-        break
-      }
+  static async getEditDescriptionButtonContainer(attempts: number = 0): Promise<HTMLElement | null | undefined> {
+    const ONE_SECOND = 1000
+    await sleep(ONE_SECOND)
+    const container = document.querySelector('#story-description-v2') as HTMLElement
+    const MAX_ATTEMPTS = 10
+    if (!container && attempts < MAX_ATTEMPTS) {
+      return this.getEditDescriptionButtonContainer(attempts + 1)
     }
     return container
   }

@@ -32,9 +32,11 @@ export async function fetchCompletion(description: string, type: AiPromptType, t
     model: 'gpt-4-turbo-preview',
     stream: true
   })
+  // eslint-disable-next-line no-loops/no-loops
   for await (const chunk of stream) {
     const content = chunk.choices[0]?.delta?.content || ''
     const data = {content, type}
+    // TODO: Not awaiting here could be the cause of the issue where message content is misplaced
     chrome.tabs.sendMessage(tabId, {type: AiProcessMessageType.updated, data} as AiProcessMessage)
   }
   chrome.runtime.sendMessage({type: AiProcessMessageType.completed, message: type} as AiProcessMessage)

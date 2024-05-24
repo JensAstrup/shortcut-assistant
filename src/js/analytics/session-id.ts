@@ -6,7 +6,8 @@ export async function getOrCreateSessionId(): Promise<string> {
   const currentTimeInMs = Date.now()
   if (sessionData && sessionData.timestamp) {
     // Calculate how long ago the session was last updated
-    const durationInMin = (currentTimeInMs - sessionData.timestamp) / 60000
+    const millisecondsPerMinute = 60000
+    const durationInMin = (currentTimeInMs - sessionData.timestamp) / millisecondsPerMinute
     // Check if last update lays past the session expiration threshold
     if (durationInMin > SESSION_EXPIRATION_IN_MIN) {
       // Delete old session id to start a new session

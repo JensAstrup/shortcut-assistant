@@ -1,7 +1,6 @@
-import _ from 'lodash'
+import {forEach, kebabCase} from 'lodash'
 
 import {logError} from '@sx/utils/log-error'
-import sleep from '@sx/utils/sleep'
 import {Story} from '@sx/utils/story'
 
 
@@ -21,7 +20,7 @@ export class Todoist {
     newButton.tabIndex = 2
     newButton.style.marginTop = '10px'
     newButton.setAttribute('data-todoist', 'true')
-    const titleAttribute = `data-${_.kebabCase(title)}`
+    const titleAttribute = `data-${kebabCase(title)}`
     newButton.setAttribute(titleAttribute, 'true')
     return newButton
   }
@@ -54,13 +53,13 @@ export class Todoist {
     newButton.append(' ' + title + '   ')
 
     const story = new Story()
-    await story.addButton(newButton, _.kebabCase(title))
+    await story.addButton(newButton, kebabCase(title))
   }
 
   static async setTaskButtons() {
     if (Todoist.buttonExists()) return
-    for (const [tooltip, title] of Object.entries(Todoist.tasks)) {
-      Todoist.setTaskButton(tooltip, title).catch(logError)
-    }
+    forEach(Todoist.tasks, ([tooltip, title]) => {
+      Todoist.setTaskButton(title, tooltip).catch(logError)
+    })
   }
 }
