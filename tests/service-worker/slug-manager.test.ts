@@ -1,5 +1,4 @@
 import {SlugManager} from '@sx/service-worker/slug-manager'
-import Sentry from '@sx/utils/sentry'
 import scope from '@sx/utils/sentry'
 
 
