@@ -2,7 +2,7 @@ name: Auto Reviewer
 
 on:
   pull_request:
-    types: [ opened, synchronize ]
+    types: [ opened ]
 
 jobs:
   review:
