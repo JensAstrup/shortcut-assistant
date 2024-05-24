@@ -392,6 +392,32 @@ describe('popupLoaded', () => {
     await expect(popup.popupLoaded()).rejects.toThrow(expected)
   })
 
+  test('throws new error if versionSpan is not found', async () => {
+    mockedGetSyncedSetting.mockResolvedValueOnce(false)
+    const popup = new Popup()
+    popup.handleNewVersionBadge = jest.fn().mockResolvedValue(null)
+    document.getElementById = jest.fn().mockImplementation((id) => {
+      if (id !== 'versionInfo') {
+        return mockElement()
+      }
+      return null
+    })
+
+    await expect(popup.popupLoaded()).rejects.toThrow('versionSpan not found')
+    expect(document.getElementById).toHaveBeenCalledWith('actionsTab')
+    expect(document.getElementById).toHaveBeenCalledWith('settingsTab')
+    expect(document.getElementById).toHaveBeenCalledWith('infoTab')
+    expect(document.getElementById).toHaveBeenCalledWith('versionInfo')
+
+    expect(mockedGetSyncedSetting).toHaveBeenCalledWith('enableTodoistOptions', false)
+    // @ts-expect-error Migrating from JS
+    expect(popup.todoistCheckbox.removeAttribute).toHaveBeenCalledWith('checked')
+
+    expect(NotesPopup).not.toHaveBeenCalled()
+
+    expect(popup.handleNewVersionBadge).toHaveBeenCalled()
+  })
+
   test('popupLoaded sets up correctly with todoist disabled', async () => {
     mockedGetSyncedSetting.mockResolvedValueOnce(false)
     const popup = new Popup()

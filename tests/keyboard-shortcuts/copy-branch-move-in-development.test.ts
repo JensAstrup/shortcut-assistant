@@ -3,6 +3,7 @@ import copyBranchAndMoveToInDevelopment
   from '@sx/keyboard-shortcuts/copy-branch-move-to-in-development'
 import copyGitBranch from '@sx/keyboard-shortcuts/copy-git-branch'
 import {getStateDiv} from '@sx/utils/get-state-div'
+import {logError} from '@sx/utils/log-error'
 import sleep from '@sx/utils/sleep'
 
 
@@ -12,23 +13,33 @@ jest.mock('@sx/keyboard-shortcuts/copy-git-branch', () => ({
 }))
 jest.mock('@sx/keyboard-shortcuts/change-state', () => ({
   __esModule: true,
-  default: jest.fn().mockResolvedValue(undefined), // Assuming it resolves to undefined
+  default: jest.fn().mockResolvedValue(undefined),
 }))
 jest.mock('@sx/utils/get-state-div', () => ({
   __esModule: true,
   getStateDiv: jest.fn(),
 }))
 jest.mock('@sx/utils/sleep', () => jest.fn(() => Promise.resolve()))
+jest.mock('@sx/utils/log-error')
 
-global.chrome.storage.sync = {get: jest.fn()} as unknown as jest.Mocked<typeof chrome.storage.sync>
+jest.mock('@sx/workspace/workspace', () => {
+  class MockWorkspace {
+    async activate() {
+      await MockWorkspace.states()
+    }
 
-// @ts-expect-error - TS doesn't know about the mock implementation
-global.chrome.storage.sync.get.mockImplementation((key, callback) => {
-  const data = {inDevelopmentText: 'In Development'}
-  if (typeof callback === 'function') {
-    callback(data)
+    static async states(fetch = true) {
+      if (!fetch) {
+        return null
+      }
+      return { Started: ['In Development'] }
+    }
   }
-  return data
+
+  return {
+    __esModule: true,
+    default: MockWorkspace,
+  }
 })
 
 
@@ -41,13 +52,26 @@ const mockedChangeState = changeState as jest.MockedFunction<typeof changeState>
 const mockedGetStateDiv = getStateDiv as jest.MockedFunction<typeof getStateDiv>
 
 describe('copyBranchAndMoveToInDevelopment', () => {
-  it('sends an event to the background script', async () => {
-    chrome.runtime.sendMessage = jest.fn()
+
+  afterEach(() => {
+    jest.clearAllMocks()
+  })
+
+  it('sends an event to track event', async () => {
+    chrome.runtime.sendMessage = jest.fn().mockResolvedValue(undefined)
     await copyBranchAndMoveToInDevelopment()
     expect(chrome.runtime.sendMessage).toHaveBeenCalledWith({
       action: 'sendEvent',
       data: {eventName: 'copy_git_branch_and_move_to_in_development'}
     })
+  })
+
+  it('logs an error if the event message fails', async () => {
+    const error = new Error('Error')
+    chrome.runtime.sendMessage = jest.fn().mockRejectedValue(error)
+    console.error = jest.fn()
+    await copyBranchAndMoveToInDevelopment()
+    expect(logError).toHaveBeenCalledWith(error)
   })
 
   it('calls copyGitBranch and then changes state', async () => {
