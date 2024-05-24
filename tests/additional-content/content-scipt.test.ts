@@ -1,0 +1,47 @@
+import {AdditionalContent} from '@sx/additional-content/content-script'
+
+
+describe('AdditionalContent', () => {
+  beforeEach(() => {
+    document.body.innerHTML = (`
+      <div data-type="task">
+        <div class="section-head">Tasks</div>
+        <div class="tasks"></div>
+      </div>
+    `)
+  })
+
+  afterEach(() => {
+    // Clean up the DOM
+    document.body.innerHTML = ''
+  })
+
+  test('populate should append text to the section', async () => {
+    const text = 'Sample text'
+    await AdditionalContent.populate(text)
+    const section = document.querySelector('[data-type="ai-response"]') as HTMLElement
+    expect(section.innerText).toContain(text)
+  })
+
+  test('duplicateTasks should clone the task section', () => {
+    const clone = AdditionalContent.duplicateTasks()
+    const taskSections = document.querySelectorAll('[data-type="task"]')
+    expect(taskSections.length).toBe(2)
+    expect(clone).toBeDefined()
+  })
+
+  test('refactorSection should modify the section as expected', () => {
+    const section = document.querySelector('[data-type="task"]') as HTMLElement
+    const refactoredSection = AdditionalContent.refactorSection(section)
+    expect(refactoredSection.getAttribute('data-type')).toBe('ai-response')
+    expect(refactoredSection.className).toBe('markdown-formatted')
+  })
+
+  test('getSection should return existing section or create a new one', () => {
+    let section = AdditionalContent.getSection()
+    expect(section.getAttribute('data-type')).toBe('ai-response')
+
+    section = AdditionalContent.getSection()
+    expect(section).toBe(document.querySelector('[data-type="ai-response"]'))
+  })
+})
