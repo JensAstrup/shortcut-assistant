@@ -1,4 +1,4 @@
-import {SlugManager} from '../slug-manager'
+import { SlugManager } from '../slug-manager'
 
 
 /**
@@ -12,7 +12,7 @@ import {SlugManager} from '../slug-manager'
  *
  * @return {void}
  */
-export async function redirectFromOmnibox(text: string, disposition: 'currentTab' | 'newForegroundTab' | 'newBackgroundTab') {
+export async function redirectFromOmnibox(text: string, disposition: 'currentTab' | 'newForegroundTab' | 'newBackgroundTab'): Promise<void> {
   let url
   // Redirect to exact story if text is a number
   if (!isNaN(Number(text))) {
@@ -30,27 +30,27 @@ export async function redirectFromOmnibox(text: string, disposition: 'currentTab
 
   switch (disposition) {
   case 'currentTab':
-    await chrome.tabs.update({url})
+    await chrome.tabs.update({ url })
     break
   case 'newForegroundTab':
-    await chrome.tabs.create({url})
+    await chrome.tabs.create({ url })
     break
   case 'newBackgroundTab':
-    await chrome.tabs.create({url, active: false})
+    await chrome.tabs.create({ url, active: false })
     break
   default:
-    await chrome.tabs.update({url})
+    await chrome.tabs.update({ url })
     break
   }
 }
 
-export async function setOmniboxSuggestion(text: string) {
+export async function setOmniboxSuggestion(text: string): Promise<void> {
   if (!isNaN(Number(text))) {
     const companySlug = await SlugManager.getCompanySlug()
     if (companySlug) {
-      chrome.omnibox.setDefaultSuggestion({description: `Open story sc-${text}`})
+      chrome.omnibox.setDefaultSuggestion({ description: `Open story sc-${text}` })
       return
     }
   }
-  chrome.omnibox.setDefaultSuggestion({description: `Search shortcut for ${text}`})
+  chrome.omnibox.setDefaultSuggestion({ description: `Search shortcut for ${text}` })
 }

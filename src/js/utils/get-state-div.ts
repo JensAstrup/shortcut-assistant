@@ -26,4 +26,4 @@ function getStateDiv(text: string): HTMLElement | null {
   return foundDiv
 }
 
-export {getStateDiv}
+export { getStateDiv }

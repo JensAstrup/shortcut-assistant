@@ -1,5 +1,5 @@
 import sleep from '@sx/utils/sleep'
-import {Story} from '@sx/utils/story'
+import { Story } from '@sx/utils/story'
 
 
 export class NotesPopup {
@@ -10,28 +10,28 @@ export class NotesPopup {
     if (saveButton === null) {
       throw new Error('saveButton not found')
     }
-    saveButton!.addEventListener('click', this.save.bind(this))
+    saveButton.addEventListener('click', this.save.bind(this))
     this.set.bind(this)().catch(console.error)
     this.saveButton = saveButton
   }
 
-  _autoExpandTextarea(event: Event) {
+  _autoExpandTextarea(event: Event): void {
     const target = event.target as HTMLTextAreaElement
     target.style.height = 'auto'
     target.style.height = (target.scrollHeight) + 'px'
   }
 
-  async resizeInput() {
+  async resizeInput(): Promise<void> {
     const storyNotesInput = this.getInput()
     storyNotesInput.addEventListener('input', this._autoExpandTextarea)
   }
 
-  async save() {
+  async save(): Promise<void> {
     const storyId = await Story.id()
     if (!storyId) {
       throw new Error('Story ID not found')
     }
-    const data = {[this.getKey(storyId)]: this.getInput().value}
+    const data = { [this.getKey(storyId)]: this.getInput().value }
     await chrome.storage.sync.set(data)
     this.saveButton.textContent = 'Saved!'
     const TWO_SECONDS = 2000
