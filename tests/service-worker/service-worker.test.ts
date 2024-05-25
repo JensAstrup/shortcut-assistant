@@ -22,6 +22,7 @@ jest.mock('../../src/js/analytics/event', () => ({
   sendEvent: jest.fn().mockResolvedValue({}),
 }))
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 Object.assign(global, require('jest-chrome'))
 
 

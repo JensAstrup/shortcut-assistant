@@ -48,7 +48,7 @@ describe('onInstall function', () => {
   })
 })
 
-describe('onUpdate function ', () => {
+describe('onUpdate function', () => {
   beforeEach(() => {
     // @ts-expect-error Migrating from JS
     chrome.windows.create.mockClear()

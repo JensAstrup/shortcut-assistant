@@ -1,4 +1,4 @@
-import changeIteration from '../../src/js/keyboard-shortcuts/change-iteration'
+import changeIteration from '@sx/keyboard-shortcuts/change-iteration'
 
 
 interface MockedButtonElement extends HTMLElement {
@@ -19,7 +19,10 @@ describe('change iteration', () => {
   it('should send an event to the background script', async () => {
     chrome.runtime.sendMessage = jest.fn()
     await changeIteration()
-    expect(chrome.runtime.sendMessage).toHaveBeenCalledWith({action: 'sendEvent', data: {eventName: 'change_iteration'}})
+    expect(chrome.runtime.sendMessage).toHaveBeenCalledWith({
+      action: 'sendEvent',
+      data: {eventName: 'change_iteration'}
+    })
   })
 
   it('should open the iteration dropdown', async () => {
@@ -35,7 +38,8 @@ describe('change iteration', () => {
     jest.spyOn(document, 'querySelector').mockImplementation((selector): Element | null => {
       if (selector === '[data-perma-id="iteration-select"]') {
         return mockedIterationSelect
-      } else if (selector === '.iteration-selector') {
+      }
+      else if (selector === '.iteration-selector') {
         return mockedIterationPopup
       }
       return null
@@ -52,7 +56,7 @@ describe('change iteration', () => {
 
   it('should error to console if no input select is found in changeIteration function', async () => {
     const mockChildButton = {click: jest.fn()}
-    console.log = jest.fn()
+    jest.spyOn(console, 'error')
     jest.spyOn(document, 'querySelector').mockReturnValueOnce(null)
     const mockedIterationSelect = {
       querySelector: jest.fn().mockReturnValue(mockChildButton),
@@ -78,7 +82,8 @@ describe('change iteration', () => {
     jest.spyOn(document, 'querySelector').mockImplementation((selector): HTMLElement | null => {
       if (selector === '[data-perma-id="iteration-select"]') {
         return mockedIterationSelect
-      } else if (selector === '.iteration-selector') {
+      }
+      else if (selector === '.iteration-selector') {
         return mockedIterationPopup
       }
       return null
@@ -93,7 +98,7 @@ describe('change iteration', () => {
     expect(mockInput.focus).not.toHaveBeenCalled()
   })
 
-  it.skip('changeIteration function with no childButton', async () => {
+  it('changeIteration function with no childButton', async () => {
     const mockChildButton = null
     const mockedIterationSelect = {
       querySelector: jest.fn().mockReturnValue(mockChildButton),
@@ -105,7 +110,8 @@ describe('change iteration', () => {
     jest.spyOn(document, 'querySelector').mockImplementation((selector): HTMLElement | null => {
       if (selector === '[data-perma-id="iteration-select"]') {
         return mockedIterationSelect
-      } else if (selector === '.iteration-selector') {
+      }
+      else if (selector === '.iteration-selector') {
         return mockedIterationPopup
       }
       return null
@@ -119,7 +125,7 @@ describe('change iteration', () => {
     expect(mockInput.focus).not.toHaveBeenCalled()
   })
 
-  it.skip('changeIteration function with no popup', async () => {
+  it('changeIteration function with no popup', async () => {
     const mockChildButton = {click: jest.fn()} as MockedButtonElement
     const mockedIterationSelect = {
       querySelector: jest.fn().mockReturnValue(mockChildButton),
@@ -131,7 +137,8 @@ describe('change iteration', () => {
     jest.spyOn(document, 'querySelector').mockImplementation((selector): HTMLElement | null => {
       if (selector === '[data-perma-id="iteration-select"]') {
         return mockedIterationSelect
-      } else if (selector === '.iteration-selector') {
+      }
+      else if (selector === '.iteration-selector') {
         return mockedIterationPopup
       }
       return null

@@ -105,11 +105,12 @@ describe('DevelopmentTime.set', () => {
 
   it('calls setTimeSpan with hours from In Development state', async () => {
     jest.spyOn(Story, 'isInState').mockImplementation(async (state) => state === 'Started')
-    jest.spyOn(Story, 'getTimeInState').mockReturnValue(24)
+    const hours = 24
+    jest.spyOn(Story, 'getTimeInState').mockReturnValue(hours)
 
     await DevelopmentTime.set()
 
-    expect(DevelopmentTime.setTimeSpan).toHaveBeenCalledWith(24)
+    expect(DevelopmentTime.setTimeSpan).toHaveBeenCalledWith(hours)
   })
 
   it('does not call setTimeSpan with hours if hours are null', async () => {

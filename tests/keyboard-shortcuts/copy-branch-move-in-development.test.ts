@@ -85,7 +85,8 @@ describe('copyBranchAndMoveToInDevelopment', () => {
 
     expect(mockedCopyGitBranch).toHaveBeenCalled()
     expect(mockedChangeState).toHaveBeenCalled()
-    expect(sleep).toHaveBeenCalledWith(300)
+    const expected = 300
+    expect(sleep).toHaveBeenCalledWith(expected)
   })
 
   it('clicks the state div if it is found', async () => {

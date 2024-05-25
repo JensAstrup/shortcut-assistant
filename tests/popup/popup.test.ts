@@ -106,7 +106,8 @@ describe('Popup', () => {
     window.dispatchEvent(new Event('load'))
     expect(mockedSendEvent).toHaveBeenCalledWith('popup_view')
     // Wait for the promise passed to addEventListener to resolve
-    await sleep(100)
+    const wait = 100
+    await sleep(wait)
     expect(console.error).toHaveBeenCalledWith(new Error('test error'))
     expect(scope.captureException).toHaveBeenCalled()
   })

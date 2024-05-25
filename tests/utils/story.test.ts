@@ -106,7 +106,7 @@ describe('Story.description', () => {
     expect(Story.description).toBeNull()
   })
 
-  it('should return null when description is not set', () => {
+  it('should return null when description is not found', () => {
     document.body.innerHTML = '<div></div>'
     expect(Story.description).toBeNull()
   })
@@ -183,7 +183,7 @@ describe('Story.getTimeInState', () => {
     expect(result).toBe(ONE_DAY)
   })
 
-  it('returns the difference between now and the date in state', () => {
+  it('returns the null if getDateInState is null', () => {
     jest.spyOn(Story, 'getDateInState').mockReturnValue(null)
     const result = Story.getTimeInState('13')
     expect(mockNow.format).toHaveBeenCalledWith('MMM D YYYY, h:mm A')
@@ -342,23 +342,23 @@ describe('Story.notes', () => {
     jest.restoreAllMocks()
   })
 
-  it('should return story notes when set', () => {
+  it('should return story notes when set', async () => {
     jest.spyOn(Story, 'id').mockResolvedValue('123')
     // @ts-expect-error Remnants from before typescript implementation
     chrome.storage.sync.get.mockResolvedValue({notes_123: 'Test note'})
-    expect(Story.notes()).resolves.toBe('Test note')
+    await expect(Story.notes()).resolves.toBe('Test note')
   })
 
-  it('should return null when notes are not set', () => {
+  it('should return null when notes are not set', async () => {
     jest.spyOn(Story, 'id').mockResolvedValue('123')
     // @ts-expect-error Remnants from before typescript implementation
     chrome.storage.sync.get.mockResolvedValue({})
-    expect(Story.notes()).resolves.toBeNull()
+    await expect(Story.notes()).resolves.toBeNull()
   })
 
-  it('should return null when story ID is not set', () => {
+  it('should return null when story ID is not set', async () => {
     jest.spyOn(Story, 'id').mockResolvedValue(null)
-    expect(Story.notes()).resolves.toBeNull()
+    await expect(Story.notes()).resolves.toBeNull()
   })
 })
 

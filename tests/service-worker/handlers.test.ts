@@ -57,12 +57,15 @@ describe('Handle Get Saved Notes', () => {
 })
 
 describe('Handle Commands', () => {
-  it('should send a message to the active tab based on the command', async () => {
+  describe('Handle Commands', () => {
     const activeTab = {id: 123}
     const commands = ['change-state', 'change-iteration', 'copy-git-branch']
-    for (const command of commands) {
-      await handleCommands(command)
-      expect(sendMessage).toHaveBeenCalledWith(activeTab.id, {message: command})
-    }
+
+    commands.forEach(command => {
+      it(`should send a message to the active tab with command: ${command}`, async () => {
+        await handleCommands(command)
+        expect(sendMessage).toHaveBeenCalledWith(activeTab.id, {message: command})
+      })
+    })
   })
 })

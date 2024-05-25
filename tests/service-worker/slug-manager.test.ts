@@ -56,7 +56,7 @@ describe('SlugManager', () => {
 
       await SlugManager.setCompanySlug(companySlug)
 
-      expect(global.chrome.storage.sync.set).toBeCalledWith({companySlug})
+      expect(global.chrome.storage.sync.set).toHaveBeenCalledWith({companySlug})
     })
   })
 
@@ -73,7 +73,7 @@ describe('SlugManager', () => {
 
       const result = await SlugManager.getCompanySlug()
 
-      expect(global.chrome.storage.sync.get).toBeCalledWith('companySlug')
+      expect(global.chrome.storage.sync.get).toHaveBeenCalledWith('companySlug')
       expect(result).toEqual('companySlug')
     })
 
@@ -89,7 +89,7 @@ describe('SlugManager', () => {
 
       const result = await SlugManager.getCompanySlug()
 
-      expect(global.chrome.storage.sync.get).toBeCalledWith('companySlug')
+      expect(global.chrome.storage.sync.get).toHaveBeenCalledWith('companySlug')
       expect(result).toEqual(null)
     })
   })

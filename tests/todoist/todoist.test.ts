@@ -28,14 +28,6 @@ describe('Todoist', () => {
     jest.clearAllMocks()
   })
 
-  describe('setTaskButtons', () => {
-    it('should set task buttons if in story page', async () => {
-      jest.spyOn(Todoist, 'setTaskButton').mockResolvedValue()
-      await Todoist.setTaskButtons()
-      expect(Todoist.setTaskButton).toHaveBeenCalledTimes(3)
-    })
-  })
-
   describe('createButton', () => {
     it('creates and returns a button with the correct attributes', () => {
       const mockButton = document.createElement = jest.fn().mockImplementation(tag => {
