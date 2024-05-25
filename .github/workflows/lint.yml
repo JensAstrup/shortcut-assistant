@@ -22,5 +22,7 @@ jobs:
         run: npm install -g yarn
       - name: Install dependencies
         run: yarn install --immutable
-      - name: Run linter
-        run: npm run lint
+      - name: Run ESLint on changed files
+        uses: tj-actions/eslint-changed-files@v25
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}

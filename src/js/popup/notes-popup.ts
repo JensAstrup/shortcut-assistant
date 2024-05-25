@@ -1,5 +1,5 @@
 import sleep from '@sx/utils/sleep'
-import {Story} from '@sx/utils/story'
+import { Story } from '@sx/utils/story'
 
 
 export class NotesPopup {
@@ -10,28 +10,30 @@ export class NotesPopup {
     if (saveButton === null) {
       throw new Error('saveButton not found')
     }
-    saveButton!.addEventListener('click', this.save.bind(this))
+    saveButton.addEventListener('click', this.save.bind(this))
     this.set.bind(this)().catch(console.error)
     this.saveButton = saveButton
   }
 
-  _autoExpandTextarea(event: Event) {
+  public static _autoExpandTextarea(event: Event): void {
     const target = event.target as HTMLTextAreaElement
     target.style.height = 'auto'
     target.style.height = (target.scrollHeight) + 'px'
   }
 
-  async resizeInput() {
+  resizeInput(): void {
     const storyNotesInput = this.getInput()
-    storyNotesInput.addEventListener('input', this._autoExpandTextarea)
+    // Static method doesn't need to be bound
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    storyNotesInput?.addEventListener('input', NotesPopup._autoExpandTextarea)
   }
 
-  async save() {
+  async save(): Promise<void> {
     const storyId = await Story.id()
     if (!storyId) {
       throw new Error('Story ID not found')
     }
-    const data = {[this.getKey(storyId)]: this.getInput().value}
+    const data = { [this.getKey(storyId)]: this.getInput()?.value }
     await chrome.storage.sync.set(data)
     this.saveButton.textContent = 'Saved!'
     const TWO_SECONDS = 2000
@@ -39,16 +41,16 @@ export class NotesPopup {
     this.saveButton.textContent = 'Save'
   }
 
-  getInput() {
-    return document.getElementById('storyNotes') as HTMLInputElement
+  getInput(): HTMLInputElement | null {
+    return document.getElementById('storyNotes') as HTMLInputElement | null
   }
 
-  getKey(storyId: string) {
+  getKey(storyId: string): string {
     return 'notes_' + storyId
   }
 
-  async set() {
-    this.resizeInput().catch(console.error)
+  async set(): Promise<void> {
+    this.resizeInput()
     const storyId = await Story.id()
     if (!storyId) {
       throw new Error('Story ID not found')
@@ -56,7 +58,7 @@ export class NotesPopup {
     const key = this.getKey(storyId)
     const storyNotesInput: HTMLInputElement | null = this.getInput()
     const result = await chrome.storage.sync.get(key)
-    const value = result[key]
+    const value = result[key] as string | undefined
     if (storyNotesInput === null) {
       throw new Error('storyNotesInput not found')
     }
@@ -65,7 +67,7 @@ export class NotesPopup {
     }
   }
 
-  static async handleMessage(message: Record<string, string>) {
+  static handleMessage(message: Record<string, string>): void {
     if (message.message === 'checkNotes') {
       new NotesPopup()
     }
@@ -73,4 +75,5 @@ export class NotesPopup {
 }
 
 
+// eslint-disable-next-line @typescript-eslint/unbound-method
 chrome.runtime.onMessage.addListener(NotesPopup.handleMessage)
