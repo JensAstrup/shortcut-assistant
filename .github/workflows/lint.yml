@@ -14,8 +14,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Fetch changes
-        run: git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
       - name: Use Node.js
         uses: actions/setup-node@v4.0.2
         with:
@@ -24,8 +22,15 @@ jobs:
         run: npm install -g yarn
       - name: Install dependencies
         run: yarn install --immutable
-      - name: Get list of changed files
-        id: files
-        run: echo "::set-output name=files::$(git diff --name-only origin/${{ github.base_ref }}..${{ github.head_ref }} | xargs)"
-      - name: Run linter on changed files
-        run: echo ${{ steps.files.outputs.files }} | xargs npm run lint
+      - name: Get changed files
+        id: changed-files
+        run: |
+          git fetch origin develop
+          git diff --name-only origin/develop...HEAD | grep -E '\.(js|ts|tsx)$' > changed_files.txt
+      - name: Run linter
+        run: |
+          if [ -s changed_files.txt ]; then
+            xargs npm run lint -- < changed_files.txt
+          else
+            echo "No JavaScript or TypeScript files changed"
+          fi
