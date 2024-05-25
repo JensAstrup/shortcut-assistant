@@ -1,11 +1,11 @@
 import dayjs from 'dayjs'
 
-import _getStates, {ShortcutWorkflowStates} from '@sx/utils/get-states'
-import {logError} from '@sx/utils/log-error'
+import _getStates, { ShortcutWorkflowStates } from '@sx/utils/get-states'
+import { logError } from '@sx/utils/log-error'
 
 
 export default class Workspace {
-  static async activate(): Promise<void> {
+  static activate(): void {
     Workspace.states().catch(logError)
   }
 
@@ -21,24 +21,25 @@ export default class Workspace {
     let states: ShortcutWorkflowStates
     const storage = await chrome.storage.local.get(['states', 'stateRefreshDate'])
     // Consider the states stale if they are beyond the refresh date
-    const refreshDateString = storage.stateRefreshDate
+    const refreshDateString: string = <string>storage.stateRefreshDate
     // If the refresh date is not set, default to yesterday
     const refreshDate = refreshDateString ? dayjs(refreshDateString) : dayjs().subtract(1, 'day')
     const now = dayjs()
     // Confirm that we have states and they actually have values
-    if ((storage.states && storage.states.Started.length > 0) || now.isAfter(refreshDate)) {
-      states = storage.states
-      if(!fetch) {
+    const storageStates = <ShortcutWorkflowStates | undefined>storage.states
+    if ((storageStates && storageStates.Started.length > 0) || now.isAfter(refreshDate)) {
+      states = <ShortcutWorkflowStates>storage.states
+      if (!fetch) {
         return null
       }
     }
-    else if(!fetch) {
+    else if (!fetch) {
       return null
     }
     else {
       states = await _getStates()
     }
-    await chrome.storage.local.set({states, stateRefreshDate: now.add(1, 'week').format()})
+    await chrome.storage.local.set({ states, stateRefreshDate: now.add(1, 'week').format() })
     return states
   }
 }

@@ -1,50 +1,37 @@
-import {sendEvent} from '@sx/analytics/event'
-import {handleCommands} from '@sx/service-worker/handlers'
+import { sendEvent } from '@sx/analytics/event'
+import { handleCommands } from '@sx/service-worker/handlers'
 import checkHost from '@sx/utils/check-host'
-import {getSyncedSetting} from '@sx/utils/get-synced-setting'
-import {logError} from '@sx/utils/log-error'
+import { getSyncedSetting } from '@sx/utils/get-synced-setting'
 import scope from '@sx/utils/sentry'
-import {Story} from '@sx/utils/story'
+import { Story } from '@sx/utils/story'
 import Workspace from '@sx/workspace/workspace'
 
-import {onInstallAndUpdate} from './on-install-and-update'
-import {SlugManager} from './slug-manager'
+import { onInstallAndUpdate } from './on-install-and-update'
+import { SlugManager } from './slug-manager'
 
 
+// eslint-disable-next-line @typescript-eslint/no-misused-promises
 chrome.commands.onCommand.addListener(handleCommands)
 
 chrome.runtime.onInstalled.addListener(onInstallAndUpdate)
 
+// eslint-disable-next-line @typescript-eslint/no-misused-promises
 chrome.tabs.onUpdated.addListener(async function (tabId, changeInfo) {
   if (changeInfo.url && checkHost(changeInfo.url) && changeInfo.url.includes('story')) {
-    Workspace.activate().catch(logError)
+    Workspace.activate()
 
-    SlugManager.refreshCompanySlug(tabId, changeInfo).catch(e => {
-      console.error('Error refreshing company slug:', e)
-      scope.captureException(e)
-    })
+    SlugManager.refreshCompanySlug(tabId, changeInfo)
     chrome.tabs.sendMessage(tabId, {
       message: 'update',
       url: changeInfo.url
     })
-    const enableStalledWorkWarnings = await getSyncedSetting('enableStalledWorkWarnings', true)
-    if (enableStalledWorkWarnings) {
-      chrome.tabs.sendMessage(tabId, {
-        message: 'initDevelopmentTime',
-        url: changeInfo.url
-      })
-      sendEvent('init_development_time').catch(e => {
-        console.error('Error sending event:', e)
-        scope.captureException(e)
-      })
-    }
     const enableTodoistOptions = await getSyncedSetting('enableTodoistOptions', false)
     if (enableTodoistOptions) {
       chrome.tabs.sendMessage(tabId, {
         message: 'initTodos',
         url: changeInfo.url
       })
-      sendEvent('init_todos').catch(e => {
+      sendEvent('init_todos').catch((e) => {
         console.error('Error sending event:', e)
         scope.captureException(e)
       })

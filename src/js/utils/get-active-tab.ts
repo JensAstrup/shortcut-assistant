@@ -1,8 +1,8 @@
-import Tab = chrome.tabs.Tab;
+import Tab = chrome.tabs.Tab
 
 
 export async function getActiveTab(): Promise<Tab | undefined> {
-  const tabs = await chrome.tabs.query({active: true, currentWindow: true})
+  const tabs = await chrome.tabs.query({ active: true, currentWindow: true })
   if (chrome.runtime.lastError) {
     throw chrome.runtime.lastError
   }
