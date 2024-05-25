@@ -75,4 +75,5 @@ export class NotesPopup {
 }
 
 
+// eslint-disable-next-line @typescript-eslint/unbound-method
 chrome.runtime.onMessage.addListener(NotesPopup.handleMessage)
