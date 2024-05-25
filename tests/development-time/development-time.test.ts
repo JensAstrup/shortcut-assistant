@@ -1,5 +1,5 @@
-import {DevelopmentTime} from '@sx/development-time/development-time'
-import {Story} from '@sx/utils/story'
+import { DevelopmentTime } from '@sx/development-time/development-time'
+import { Story } from '@sx/utils/story'
 
 
 jest.mock('@sx/workspace/workspace', () => {
@@ -24,7 +24,6 @@ jest.mock('@sx/workspace/workspace', () => {
 
 
 describe('DevelopmentTime.setTimeSpan', () => {
-
   beforeEach(() => {
     document.createElement = jest.fn().mockReturnValue(document.createElement('span'))
     jest.clearAllMocks()
@@ -34,11 +33,13 @@ describe('DevelopmentTime.setTimeSpan', () => {
   it('throws an error if Story.state is not found', () => {
     jest.spyOn(Story, 'state', 'get').mockReturnValue(null)
     const ONE_DAY = 24
-    expect(() => DevelopmentTime.setTimeSpan(ONE_DAY)).toThrow('Story state span not found')
+    expect(() => {
+      DevelopmentTime.setTimeSpan(ONE_DAY)
+    }).toThrow('Story state span not found')
   })
 
   it('appends a correctly formatted time span for positive hours', () => {
-    const mockElement = {appendChild: jest.fn()} as unknown as HTMLElement
+    const mockElement = { appendChild: jest.fn() } as unknown as HTMLElement
     jest.spyOn(Story, 'state', 'get').mockReturnValue(mockElement)
     const hoursElapsed = 48 // 2 days
     DevelopmentTime.setTimeSpan(hoursElapsed)
@@ -48,7 +49,7 @@ describe('DevelopmentTime.setTimeSpan', () => {
   })
 
   it('appends a correctly formatted time span for negative hours', () => {
-    const mockElement = {appendChild: jest.fn()} as unknown as HTMLElement
+    const mockElement = { appendChild: jest.fn() } as unknown as HTMLElement
     jest.spyOn(Story, 'state', 'get').mockReturnValue(mockElement)
     const hoursElapsed = -72 // -3 days, but should be 3 days after abs
     DevelopmentTime.setTimeSpan(hoursElapsed)
@@ -58,7 +59,7 @@ describe('DevelopmentTime.setTimeSpan', () => {
   })
 
   it('appends a correctly formatted time span for zero hours', () => {
-    const mockElement = {appendChild: jest.fn()} as unknown as HTMLElement
+    const mockElement = { appendChild: jest.fn() } as unknown as HTMLElement
     jest.spyOn(Story, 'state', 'get').mockReturnValue(mockElement)
     const hoursElapsed = 0
     DevelopmentTime.setTimeSpan(hoursElapsed)
@@ -70,13 +71,12 @@ describe('DevelopmentTime.setTimeSpan', () => {
 
 
 describe('DevelopmentTime.remove', () => {
-  const mockTimeSpan = {remove: jest.fn()}
+  const mockTimeSpan = { remove: jest.fn() }
 
   beforeEach(() => {
     jest.clearAllMocks()
     document.querySelector = jest.fn().mockImplementation(() => mockTimeSpan)
     jest.spyOn(Story, 'isReady').mockResolvedValue(true)
-
   })
 
   it('removes the time span', () => {
@@ -104,7 +104,7 @@ describe('DevelopmentTime.set', () => {
   })
 
   it('calls setTimeSpan with hours from In Development state', async () => {
-    jest.spyOn(Story, 'isInState').mockImplementation(async (state) => state === 'Started')
+    jest.spyOn(Story, 'isInState').mockImplementation(async state => state === 'Started')
     const hours = 24
     jest.spyOn(Story, 'getTimeInState').mockReturnValue(hours)
 
@@ -114,7 +114,7 @@ describe('DevelopmentTime.set', () => {
   })
 
   it('does not call setTimeSpan with hours if hours are null', async () => {
-    jest.spyOn(Story, 'isInState').mockImplementation(async (state) => state === 'Started')
+    jest.spyOn(Story, 'isInState').mockImplementation(async state => state === 'Started')
     jest.spyOn(Story, 'getTimeInState').mockReturnValue(null)
 
     await DevelopmentTime.set()

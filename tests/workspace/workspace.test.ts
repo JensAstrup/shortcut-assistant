@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
 
-import {logError} from '@sx/utils/log-error'
+import { logError } from '@sx/utils/log-error'
 import Workspace from '@sx/workspace/workspace'
 
 
@@ -8,11 +8,12 @@ jest.mock('@sx/utils/log-error')
 jest.mock('@sx/utils/get-states', () => ({
   __esModule: true, // This property tells Jest that we're mocking an ES module
   default: jest.fn().mockResolvedValue({
-    'Backlog': [],
-    'Unstarted': [],
-    'Started': [],
-    'Done': []
+    Backlog: [],
+    Unstarted: [],
+    Started: [],
+    Done: []
   }), // Mock the default export, which is the _getStates function
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access
   ShortcutWorkflowStates: jest.requireActual('@sx/utils/get-states').ShortcutWorkflowStates // Optionally export actual types or constants if needed
 }))
 
@@ -32,20 +33,20 @@ global.chrome = {
   },
 }
 
-const states = { 'Backlog': [], 'Unstarted': [], 'Started': [], 'Done': [] }
+const states = { Backlog: [], Unstarted: [], Started: [], Done: [] }
 
 
 describe('Workspace', () => {
-  it('should get states on activation', async () => {
-    const states = { 'Backlog': [], 'Unstarted': [], 'Started': [], 'Done': [] }
+  it('should get states on activation', () => {
+    const states = { Backlog: [], Unstarted: [], Started: [], Done: [] }
     jest.spyOn(Workspace, 'states').mockResolvedValue(states)
-    await Workspace.activate()
+    Workspace.activate()
     expect(Workspace.states).toHaveBeenCalled()
   })
 
-  it('should log error if states cannot be fetched', async () => {
+  it('should log error if states cannot be fetched', (): void => {
     jest.spyOn(Workspace, 'states').mockRejectedValue(new Error('Failed to fetch states'))
-    await Workspace.activate()
+    Workspace.activate()
     expect(logError).toHaveBeenCalled()
   })
 
@@ -74,17 +75,20 @@ describe('Workspace', () => {
   })
 
   it('should fetch states if they are not in storage', async () => {
-    const states = { 'Backlog': [], 'Unstarted': [], 'Started': [], 'Done': [] }
+    const states = { Backlog: [], Unstarted: [], Started: [], Done: [] }
     const getStorageSpy = jest.spyOn(chrome.storage.local, 'get')
     const setStorageSpy = jest.spyOn(chrome.storage.local, 'set')
     getStorageSpy.mockImplementation((key, callback) => {
       if (typeof callback !== 'function') {
-        return {states: states, stateRefreshDate: dayjs().add(1, 'day').format()}
+        return { states: states, stateRefreshDate: dayjs().add(1, 'day').format() }
       }
-      callback({states: states, stateRefreshDate: dayjs().add(1, 'day').format()})
+      callback({ states: states, stateRefreshDate: dayjs().add(1, 'day').format() })
     })
     const result = await Workspace.states(true)
     expect(result).toEqual(states)
-    expect(setStorageSpy).toHaveBeenCalledWith({states, stateRefreshDate: dayjs().add(1, 'week').format()})
+    expect(setStorageSpy).toHaveBeenCalledWith({
+      states,
+      stateRefreshDate: dayjs().add(1, 'week').format()
+    })
   })
 })

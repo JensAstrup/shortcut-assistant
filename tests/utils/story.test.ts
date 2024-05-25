@@ -1,40 +1,46 @@
-import {
-  findFirstMatchingElementForState
-} from '@sx/development-time/find-first-matching-element-for-state'
 import * as urlModule from '@sx/utils/get-active-tab-url'
-import {ShortcutWorkflowStates} from '@sx/utils/get-states'
+import { ShortcutWorkflowStates } from '@sx/utils/get-states'
 import scope from '@sx/utils/sentry'
-import {Story} from '@sx/utils/story'
+import { Story } from '@sx/utils/story'
 import Workspace from '@sx/workspace/workspace'
+
+import Mock = jest.Mock
+import SpyInstance = jest.SpyInstance
 
 
 const mockNow = {
   format: jest.fn().mockReturnValueOnce('Feb 1 2022, 2:00 AM'),
-  subtract: jest.fn().mockReturnValueOnce({format: jest.fn().mockReturnValueOnce('Jan 31 2022, 2:00 AM')}),
+  subtract: jest.fn().mockReturnValueOnce({ format: jest.fn().mockReturnValueOnce('Jan 31 2022, 2:00 AM') }),
   isAfter: jest.fn().mockReturnValueOnce(true),
-  add: jest.fn().mockReturnValueOnce({format: jest.fn().mockReturnValueOnce('Feb 2 2022, 2:00 AM')})
+  add: jest.fn().mockReturnValueOnce({ format: jest.fn().mockReturnValueOnce('Feb 2 2022, 2:00 AM') })
 }
 jest.mock('dayjs', () => {
-  return () => (mockNow)
+  return (): {
+    add: Mock<unknown, unknown[], unknown>
+    format: Mock<unknown, unknown[], unknown>
+    isAfter: Mock<unknown, unknown[], unknown>
+    subtract: Mock<unknown, unknown[], unknown>
+  } => (mockNow)
 })
 jest.mock('@sx/utils/sentry')
 jest.mock('@sx/utils/hours-between-excluding-weekends', () => ({
   // eslint-disable-next-line no-magic-numbers
   hoursBetweenExcludingWeekends: jest.fn().mockReturnValue(24)
 }))
-jest.mock('@sx/development-time/find-first-matching-element-for-state', () => ({
+const mockFindFirstMatchingElementForState = jest.mock('@sx/development-time/find-first-matching-element-for-state', () => ({
   findFirstMatchingElementForState: jest.fn()
-}))
+})) as unknown as jest.Mock
 jest.mock('@sx/utils/sleep', () => jest.fn().mockResolvedValue(undefined))
 jest.mock('@sx/utils/get-active-tab-url', () => ({
   getActiveTabUrl: jest.fn()
 }))
+// eslint-disable-next-line @typescript-eslint/require-await
 jest.spyOn(Workspace, 'states').mockImplementation(async (): Promise<ShortcutWorkflowStates | null> => {
   return {
-    'Backlog': ['To Do'],
-    'Unstarted': ['Waiting'],
-    'Started': ['In Development'],
-    'Done': []
+    Backlog: ['To Do'],
+    Unstarted: ['Waiting'],
+    Started: ['In Development'],
+    Done: []
   }
 })
 
@@ -113,25 +119,18 @@ describe('Story.description', () => {
 })
 
 describe('getEditDescriptionButtonContainer', () => {
-  // @ts-expect-error Remnants from before typescript implementation
-  let originalQuerySelector
-
+  let mockDocumentQuerySelector: SpyInstance
   beforeEach(() => {
-    originalQuerySelector = document.querySelector
-
-    document.querySelector = jest.fn()
+    mockDocumentQuerySelector = jest.spyOn(document, 'querySelector')
   })
 
   afterEach(() => {
-    // @ts-expect-error Remnants from before typescript implementation
-    document.querySelector = originalQuerySelector
     jest.clearAllTimers()
   })
 
   it('should return the container immediately if the button is found', async () => {
     const mockContainer = document.createElement('div')
-    // @ts-expect-error Remnants from before typescript implementation
-    document.querySelector.mockReturnValue(mockContainer)
+    mockDocumentQuerySelector.mockReturnValue(mockContainer)
 
     const container = await Story.getEditDescriptionButtonContainer()
 
@@ -141,8 +140,7 @@ describe('getEditDescriptionButtonContainer', () => {
 
 
   it('should return null if the button is not found within the maximum number of attempts', async () => {
-    // @ts-expect-error Remnants from before typescript implementation
-    document.querySelector.mockReturnValue(null)
+    mockDocumentQuerySelector.mockReturnValue(null)
 
     const promise = Story.getEditDescriptionButtonContainer()
 
@@ -201,30 +199,26 @@ describe('Story.getDateInState', () => {
   })
 
   it('returns null when no elements match the state', () => {
-    // @ts-expect-error Remnants from before typescript implementation
-    findFirstMatchingElementForState.mockReturnValueOnce(null)
+    mockFindFirstMatchingElementForState.mockReturnValueOnce(null)
 
     const result = Story.getDateInState('NonExistentState')
     expect(result).toBeNull()
-
   })
 
   it('returns the date when state matches and date element exists', () => {
     const latestUpdateElement = {
       parentElement: {
-        querySelector: jest.fn().mockReturnValueOnce({innerHTML: '2022-03-01'})
+        querySelector: jest.fn().mockReturnValueOnce({ innerHTML: '2022-03-01' })
       }
     }
-    // @ts-expect-error Remnants from before typescript implementation
-    findFirstMatchingElementForState.mockReturnValueOnce({element: latestUpdateElement})
+    mockFindFirstMatchingElementForState.mockReturnValueOnce({ element: latestUpdateElement })
 
     const result = Story.getDateInState('ExpectedState2')
     expect(result).toBe('2022-03-01')
   })
 
   it('returns null when state div and date element do not exist', () => {
-    // @ts-expect-error Remnants from before typescript implementation
-    findFirstMatchingElementForState.mockReturnValueOnce({element: {parentElement: {querySelector: jest.fn().mockReturnValueOnce(null)}}})
+    mockFindFirstMatchingElementForState.mockReturnValueOnce({ element: { parentElement: { querySelector: jest.fn().mockReturnValueOnce(null) } } })
     const result = Story.getDateInState('ExpectedState')
     expect(result).toBeNull()
   })
@@ -245,23 +239,24 @@ describe('Story.state', () => {
 
 describe('isCompleted', () => {
   beforeEach(() => {
-    jest.spyOn(Workspace, 'states').mockImplementation(async (): Promise<ShortcutWorkflowStates | null> => {
+    jest.spyOn(Workspace, 'states').mockImplementation((): Promise<ShortcutWorkflowStates> => {
       return {
-        'Backlog': ['To Do'],
-        'Unstarted': ['Waiting'],
-        'Started': ['In Development'],
-        'Done': ['Done']
+        // @ts-expect-error Remnants from before typescript implementation
+        Backlog: ['To Do'],
+        Unstarted: ['Waiting'],
+        Started: ['In Development'],
+        Done: ['Done']
       }
     })
   })
   it('should return true if the story is in a done state', async () => {
-    jest.spyOn(Story, 'state', 'get').mockReturnValue({textContent: 'Done'} as unknown as HTMLElement)
+    jest.spyOn(Story, 'state', 'get').mockReturnValue({ textContent: 'Done' } as unknown as HTMLElement)
     const result = await Story.isCompleted()
     expect(result).toBe(true)
   })
 
   it('should return false if the story is not in a done state', async () => {
-    jest.spyOn(Story, 'state', 'get').mockReturnValue({textContent: 'In Development'} as unknown as HTMLElement)
+    jest.spyOn(Story, 'state', 'get').mockReturnValue({ textContent: 'In Development' } as unknown as HTMLElement)
     const result = await Story.isCompleted()
     expect(result).toBe(false)
   })
@@ -272,12 +267,13 @@ describe('isInState function', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     document.body.innerHTML = '<div id="story-dialog-state-dropdown"><span class="value">In Development</span></div>'
+    // eslint-disable-next-line @typescript-eslint/require-await
     jest.spyOn(Workspace, 'states').mockImplementation(async (): Promise<ShortcutWorkflowStates | null> => {
       return {
-        'Backlog': ['To Do'],
-        'Unstarted': ['Waiting'],
-        'Started': ['In Development'],
-        'Done': []
+        Backlog: ['To Do'],
+        Unstarted: ['Waiting'],
+        Started: ['In Development'],
+        Done: []
       }
     })
   })
@@ -287,7 +283,7 @@ describe('isInState function', () => {
     document.getElementById = jest.fn(() => {
       return {
         querySelector: jest.fn(() => {
-          return {textContent: state}
+          return { textContent: state }
         })
       } as unknown as HTMLElement
     })
@@ -298,7 +294,7 @@ describe('isInState function', () => {
     document.getElementById = jest.fn(() => {
       return {
         querySelector: jest.fn(() => {
-          return {textContent: 'TestState, In Development'}
+          return { textContent: 'TestState, In Development' }
         })
       } as unknown as HTMLElement
     })
@@ -345,13 +341,15 @@ describe('Story.notes', () => {
   it('should return story notes when set', async () => {
     jest.spyOn(Story, 'id').mockResolvedValue('123')
     // @ts-expect-error Remnants from before typescript implementation
-    chrome.storage.sync.get.mockResolvedValue({notes_123: 'Test note'})
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    chrome.storage.sync.get.mockResolvedValue({ notes_123: 'Test note' })
     await expect(Story.notes()).resolves.toBe('Test note')
   })
 
   it('should return null when notes are not set', async () => {
     jest.spyOn(Story, 'id').mockResolvedValue('123')
     // @ts-expect-error Remnants from before typescript implementation
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     chrome.storage.sync.get.mockResolvedValue({})
     await expect(Story.notes()).resolves.toBeNull()
   })
@@ -365,24 +363,28 @@ describe('Story.notes', () => {
 describe('Story id', () => {
   it('returns the correct story ID from a valid URL', async () => {
     // @ts-expect-error Remnants from before typescript implementation
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     urlModule.getActiveTabUrl.mockResolvedValue('https://app.shortcut.com/story/12345')
     await expect(Story.id()).resolves.toBe('12345')
   })
 
   it('returns null if the URL does not contain a story ID', async () => {
     // @ts-expect-error Remnants from before typescript implementation
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     urlModule.getActiveTabUrl.mockResolvedValue('https://app.shortcut.com/profile')
     await expect(Story.id()).resolves.toBeNull()
   })
 
   it('handles URLs with additional path segments correctly', async () => {
     // @ts-expect-error Remnants from before typescript implementation
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     urlModule.getActiveTabUrl.mockResolvedValue('https://app.shortcut.com/story/12345/details')
     await expect(Story.id()).resolves.toBe('12345')
   })
 
   it('returns null if getActiveTabUrl rejects', async () => {
     // @ts-expect-error Remnants from before typescript implementation
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     urlModule.getActiveTabUrl.mockRejectedValue(new Error('Error fetching URL'))
     await expect(Story.id()).rejects.toThrow('Error fetching URL')
   })
