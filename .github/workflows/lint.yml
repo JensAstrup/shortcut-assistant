@@ -14,6 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
       - name: Use Node.js
         uses: actions/setup-node@v4.0.2
         with:
@@ -25,10 +27,12 @@ jobs:
       - name: Get changed files
         id: changed-files
         run: |
-          git fetch origin +refs/pull/*:refs/remotes/origin/pull/*
-          PR_BRANCH=$(git symbolic-ref --short HEAD)
           BASE_BRANCH=$(jq -r '.pull_request.base.ref' "$GITHUB_EVENT_PATH")
-          git diff --name-only origin/$BASE_BRANCH...$PR_BRANCH | grep -E '\.(js|ts|tsx)$' > changed_files.txt
+          git fetch origin $BASE_BRANCH
+          git checkout $BASE_BRANCH
+          git checkout -b temp-branch
+          git merge $GITHUB_REF --no-commit --no-ff
+          git diff --name-only HEAD | grep -E '\.(js|ts|tsx)$' > changed_files.txt
       - name: Run linter
         run: |
           if [ -s changed_files.txt ]; then
