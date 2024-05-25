@@ -25,5 +25,4 @@ jobs:
       - name: Run ESLint on changed files
         uses: tj-actions/eslint-changed-files@v25
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          eslint_args: --ext .js,.ts,.tsx
+          token: ${{ secrets.GITHUB_TOKEN }}
