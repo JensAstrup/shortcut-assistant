@@ -14,8 +14,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 2
       - name: Use Node.js
         uses: actions/setup-node@v4.0.2
         with:
@@ -24,19 +22,8 @@ jobs:
         run: npm install -g yarn
       - name: Install dependencies
         run: yarn install --immutable
-      - name: Get changed files
-        id: changed-files
-        run: |
-          BASE_BRANCH=$(jq -r '.pull_request.base.ref' "$GITHUB_EVENT_PATH")
-          git fetch origin $BASE_BRANCH
-          git checkout $BASE_BRANCH
-          git checkout -b temp-branch
-          git merge $GITHUB_REF --no-commit --no-ff
-          git diff --name-only HEAD | grep -E '\.(js|ts|tsx)$' > changed_files.txt
-      - name: Run linter
-        run: |
-          if [ -s changed_files.txt ]; then
-            xargs npm run lint -- < changed_files.txt
-          else
-            echo "No JavaScript or TypeScript files changed"
-          fi
+      - name: Run ESLint on changed files
+        uses: tj-actions/eslint-changed-files@v25
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          eslint_args: --ext .js,.ts,.tsx
