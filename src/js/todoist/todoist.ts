@@ -1,7 +1,7 @@
-import {forEach, kebabCase} from 'lodash'
+import { forEach, kebabCase } from 'lodash'
 
-import {logError} from '@sx/utils/log-error'
-import {Story} from '@sx/utils/story'
+import { logError } from '@sx/utils/log-error'
+import { Story } from '@sx/utils/story'
 
 
 export class Todoist {
@@ -58,7 +58,7 @@ export class Todoist {
 
   static async setTaskButtons() {
     if (Todoist.buttonExists()) return
-    forEach(Todoist.tasks, ([tooltip, title]) => {
+    forEach(Todoist.tasks, (tooltip, title) => {
       Todoist.setTaskButton(title, tooltip).catch(logError)
     })
   }
