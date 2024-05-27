@@ -1,26 +1,26 @@
-import {AiProcessMessage, AiProcessMessageType} from '@sx/analyze/types/AiProcessMessage'
+import { AiProcessMessage, AiProcessMessageType } from '@sx/analyze/types/AiProcessMessage'
 
-import {getOrCreateClientId} from '../analytics/client-id'
-import {OpenAIError} from '../utils/errors'
+import { getOrCreateClientId } from '../analytics/client-id'
+import { OpenAIError } from '../utils/errors'
 
 
-export function readStream(reader: ReadableStreamDefaultReader<Uint8Array>, type: string, tabId: number) {
-  reader?.read().then(({done, value}) => {
+export function readStream(reader: ReadableStreamDefaultReader<Uint8Array>, type: string, tabId: number): void {
+  reader.read().then(({ done, value }) => {
     if (done) {
       chrome.tabs.sendMessage(tabId, {
         type: AiProcessMessageType.completed,
         message: 'Stream completed',
-        data: {content: '', type}
+        data: { content: '', type }
       } as AiProcessMessage)
       return
     }
     const content = new TextDecoder().decode(value)
-    const data = {content, type}
-    chrome.tabs.sendMessage(tabId, {type: AiProcessMessageType.updated, data} as AiProcessMessage)
+    const data = { content, type }
+    chrome.tabs.sendMessage(tabId, { type: AiProcessMessageType.updated, data } as AiProcessMessage)
 
     // Recursive call to continue reading
     readStream(reader, type, tabId)
-  }).catch(error => {
+  }).catch((error) => {
     console.error('Stream reading failed:', error)
     chrome.tabs.sendMessage(tabId, {
       type: AiProcessMessageType.failed,

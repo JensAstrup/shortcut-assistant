@@ -1,8 +1,8 @@
 import OpenAI from 'openai'
 
-import {fetchCompletion} from '@sx/ai/fetch-completion'
+import { fetchCompletion } from '@sx/ai/fetch-completion'
 import getOpenAiToken from '@sx/ai/get-openai-token'
-import {AiProcessMessageType} from '@sx/analyze/types/AiProcessMessage'
+import { AiProcessMessageType } from '@sx/analyze/types/AiProcessMessage'
 
 // Mock the required modules
 jest.mock('openai')
@@ -22,7 +22,7 @@ describe('fetchCompletion', () => {
 
     const mockCreate = jest.fn().mockImplementation(() => {
       const mockStream = (async function* () {
-        yield {choices: [{delta: {content: 'response from OpenAI'}}]}
+        yield { choices: [{ delta: { content: 'response from OpenAI' } }] }
       })()
       return mockStream
     })
@@ -41,7 +41,7 @@ describe('fetchCompletion', () => {
     await fetchCompletion(description, 'analyze', tabId)
 
     // Check OpenAI was initialized correctly
-    expect(mockOpenAI).toHaveBeenCalledWith({apiKey: fakeToken})
+    expect(mockOpenAI).toHaveBeenCalledWith({ apiKey: fakeToken })
 
     // Verify messages sent to the Chrome tab
     expect(chrome.tabs.sendMessage).toHaveBeenCalledWith(tabId, {
@@ -53,8 +53,6 @@ describe('fetchCompletion', () => {
     })
 
     // Check final message to runtime
-    expect(chrome.runtime.sendMessage).toHaveBeenCalledWith({type: AiProcessMessageType.completed, message: 'analyze'})
+    expect(chrome.runtime.sendMessage).toHaveBeenCalledWith({ type: AiProcessMessageType.completed, message: 'analyze' })
   })
-
-  // Additional tests for error scenarios...
 })

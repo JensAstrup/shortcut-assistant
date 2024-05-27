@@ -1,7 +1,6 @@
 import { sendEvent } from '@sx/analytics/event'
 import { AiPromptType } from '@sx/analyze/types/ai-prompt-type'
 import {
-  handleGetOpenAiToken,
   handleGetSavedNotes,
   handleOpenAICall
 } from '@sx/service-worker/handlers'
@@ -22,11 +21,6 @@ function registerAiListeners(): void {
       }
       handleOpenAICall(request.data.prompt, request.data.type, sender.tab.id).then(sendResponse)
       return true // Keep the message channel open for the async response
-    }
-
-    if (request.message === 'getOpenAiToken') {
-      handleGetOpenAiToken().then(sendResponse)
-      return true
     }
   })
 }
@@ -59,6 +53,4 @@ function registerListeners(): void {
 }
 
 export { registerAiListeners, registerAnalyticsListeners, registerNotesListeners }
-export default registerListeners
-
 registerListeners()

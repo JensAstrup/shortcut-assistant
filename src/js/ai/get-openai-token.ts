@@ -1,6 +1,6 @@
-async function getOpenAiToken() {
+async function getOpenAiToken(): Promise<string | null> {
   try {
-    const result = await chrome.storage.local.get('openAIToken')
+    const result: { [p: string]: string | null | undefined } = await chrome.storage.local.get('openAIToken')
     const value = result.openAIToken
     if (value !== undefined) {
       return value
