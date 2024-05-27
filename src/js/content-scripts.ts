@@ -1,17 +1,17 @@
-import {AiFunctions} from '@sx/analyze/ai-functions'
-import {Story} from '@sx/utils/story'
+import { AiFunctions } from '@sx/analyze/ai-functions'
+import { Story } from '@sx/utils/story'
 
-import {analyzeStoryDescription} from './analyze/analyze-story-description'
-import {CycleTime} from './cycle-time/cycle-time'
-import {DevelopmentTime} from './development-time/development-time'
+import { analyzeStoryDescription } from './analyze/analyze-story-description'
+import { CycleTime } from './cycle-time/cycle-time'
+import { DevelopmentTime } from './development-time/development-time'
 import changeIteration from './keyboard-shortcuts/change-iteration'
 import changeState from './keyboard-shortcuts/change-state'
 import copyGitBranch from './keyboard-shortcuts/copy-git-branch'
-import {KeyboardShortcuts} from './keyboard-shortcuts/keyboard-shortcuts'
-import {NotesButton} from './notes/notes-button'
-import {Todoist} from './todoist/todoist'
-import {getSyncedSetting} from './utils/get-synced-setting'
-import {logError} from './utils/log-error'
+import { KeyboardShortcuts } from './keyboard-shortcuts/keyboard-shortcuts'
+import { NotesButton } from './notes/notes-button'
+import { Todoist } from './todoist/todoist'
+import { getSyncedSetting } from './utils/get-synced-setting'
+import { logError } from './utils/log-error'
 
 
 
@@ -35,14 +35,13 @@ export async function activate() {
     if (enableTodoistOptions) {
       // Wait on response because AiFunctions.addAnalyzeButton() will also set a button
       // and async could affect the order
-      await Todoist.setTaskButtons()
+      Todoist.setTaskButtons()
     }
   }
   catch (e) {
     console.error(e)
   }
   new NotesButton()
-
 }
 
 export async function handleMessage(request: { message: string, url: string }) {
@@ -50,7 +49,7 @@ export async function handleMessage(request: { message: string, url: string }) {
   if (request.message === 'analyzeStoryDescription') {
     await analyzeStoryDescription(activeTabUrl)
   }
-  if(request.message === 'update'){
+  if (request.message === 'update') {
     DevelopmentTime.set().catch(logError)
     CycleTime.set().catch(logError)
     new NotesButton()
