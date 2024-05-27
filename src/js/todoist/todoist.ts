@@ -1,7 +1,7 @@
-import {forEach, kebabCase} from 'lodash'
+import { kebabCase } from 'lodash'
 
-import {logError} from '@sx/utils/log-error'
-import {Story} from '@sx/utils/story'
+import { logError } from '@sx/utils/log-error'
+import { Story } from '@sx/utils/story'
 
 
 export class Todoist {
@@ -11,7 +11,7 @@ export class Todoist {
     'Follow up': 'Set task to follow up on story'
   }
 
-  static createButton(tooltip: string, title: string) {
+  static createButton(tooltip: string, title: string): HTMLButtonElement {
     const newButton = document.createElement('button')
     newButton.className = 'action edit-description add-task micro flat-white'
     newButton.dataset.tabindex = ''
@@ -25,7 +25,7 @@ export class Todoist {
     return newButton
   }
 
-  static createTooltipText(taskTitle: string | null, title: string) {
+  static createTooltipText(taskTitle: string | null, title: string): string {
     const storyTitle = Story.title
     const storyLink = window.location.href
     if (!taskTitle) {
@@ -36,11 +36,11 @@ export class Todoist {
     }
   }
 
-  static buttonExists() {
+  static buttonExists(): Element | null {
     return document.querySelector('button[data-todoist="true"]')
   }
 
-  static async setTaskButton(title: string, tooltip: string, taskTitle: string | null = null) {
+  static async setTaskButton(title: string, tooltip: string, taskTitle: string | null = null): Promise<void> {
     const newButton = Todoist.createButton(tooltip, title)
     taskTitle = Todoist.createTooltipText(taskTitle, title)
     newButton.addEventListener('click', function () {
@@ -56,10 +56,16 @@ export class Todoist {
     await story.addButton(newButton, kebabCase(title))
   }
 
-  static async setTaskButtons() {
+  static async setTaskButtons(): Promise<void> {
     if (Todoist.buttonExists()) return
-    forEach(Todoist.tasks, ([tooltip, title]) => {
-      Todoist.setTaskButton(title, tooltip).catch(logError)
-    })
+
+    for (const [title, tooltip] of Object.entries(Todoist.tasks)) {
+      try {
+        await Todoist.setTaskButton(title, tooltip)
+      }
+      catch (error: unknown) {
+        logError(error as Error)
+      }
+    }
   }
 }

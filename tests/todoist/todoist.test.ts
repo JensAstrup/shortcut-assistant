@@ -1,5 +1,6 @@
-import {Todoist} from '@sx/todoist/todoist'
-import {Story} from '@sx/utils/story'
+import { Todoist } from '@sx/todoist/todoist'
+import { logError } from '@sx/utils/log-error'
+import { Story } from '@sx/utils/story'
 
 
 jest.mock('@sx/utils/log-error')
@@ -7,7 +8,7 @@ jest.mock('@sx/utils/sleep', () => jest.fn().mockResolvedValue(null))
 
 describe('Todoist', () => {
   beforeAll(() => {
-    document.createElement = jest.fn().mockImplementation(tag => {
+    document.createElement = jest.fn().mockImplementation((tag: string) => {
       return {
         appendChild: jest.fn(),
         setAttribute: jest.fn(),
@@ -24,21 +25,13 @@ describe('Todoist', () => {
     // @ts-expect-error Migrating from JS
     delete window.location
     // @ts-expect-error Migrating from JS
-    window.location = {href: 'https://example.com/story'}
+    window.location = { href: 'https://example.com/story' }
     jest.clearAllMocks()
-  })
-
-  describe('setTaskButtons', () => {
-    it('should set task buttons if in story page', async () => {
-      jest.spyOn(Todoist, 'setTaskButton').mockResolvedValue()
-      await Todoist.setTaskButtons()
-      expect(Todoist.setTaskButton).toHaveBeenCalledTimes(3)
-    })
   })
 
   describe('createButton', () => {
     it('creates and returns a button with the correct attributes', () => {
-      const mockButton = document.createElement = jest.fn().mockImplementation(tag => {
+      const mockButton = document.createElement = jest.fn().mockImplementation((tag: string) => {
         return {
           appendChild: jest.fn(),
           setAttribute: jest.fn(),
@@ -73,15 +66,13 @@ describe('Todoist', () => {
 
   describe('buttonExists', () => {
     it('returns false when no button exists', () => {
-      document.querySelector = jest.fn()
-      // @ts-expect-error Migrating from JS
-      document.querySelector.mockReturnValue(null)
+      jest.spyOn(document, 'querySelector').mockReturnValue(null)
       expect(Todoist.buttonExists()).toBe(null)
     })
 
     it('returns true when a button exists', () => {
-      // @ts-expect-error Migrating from JS
-      document.querySelector.mockReturnValue(document.createElement('button'))
+      const querySelector = jest.spyOn(document, 'querySelector')
+      querySelector.mockReturnValue(document.createElement('button'))
       expect(Todoist.buttonExists()).toBeTruthy()
     })
   })
@@ -101,9 +92,10 @@ describe('Todoist', () => {
     beforeEach(() => {
       jest.clearAllMocks()
     })
+
     it('should return if button exists', async () => {
       const addButton = jest.spyOn(Story.prototype, 'addButton').mockResolvedValue()
-      jest.spyOn(Todoist, 'buttonExists').mockReturnValue({value: 'test'} as unknown as HTMLElement)
+      jest.spyOn(Todoist, 'buttonExists').mockReturnValue({ value: 'test' } as unknown as HTMLElement)
       await Todoist.setTaskButtons()
       expect(addButton).not.toHaveBeenCalled()
     })
@@ -113,6 +105,24 @@ describe('Todoist', () => {
       jest.spyOn(Todoist, 'setTaskButton').mockResolvedValue()
       await Todoist.setTaskButtons()
       expect(Todoist.setTaskButton).toHaveBeenCalledTimes(3)
+    })
+
+    it('should set correct task buttons for each task', async () => {
+      jest.spyOn(Todoist, 'buttonExists').mockReturnValue(null)
+      const setTaskButtonSpy = jest.spyOn(Todoist, 'setTaskButton').mockResolvedValue()
+
+      await Todoist.setTaskButtons()
+
+      expect(setTaskButtonSpy).toHaveBeenCalledWith('Work on', 'Set task to work on story')
+      expect(setTaskButtonSpy).toHaveBeenCalledWith('Review', 'Set task to review story')
+      expect(setTaskButtonSpy).toHaveBeenCalledWith('Follow up', 'Set task to follow up on story')
+    })
+
+    it('should log error if setTaskButton throws an error', async () => {
+      jest.spyOn(Todoist, 'buttonExists').mockReturnValue(null)
+      jest.spyOn(Todoist, 'setTaskButton').mockRejectedValue(new Error('Test error'))
+      await Todoist.setTaskButtons()
+      expect(logError).toHaveBeenCalled()
     })
   })
 })
