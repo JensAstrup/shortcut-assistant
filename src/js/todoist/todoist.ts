@@ -59,7 +59,6 @@ export class Todoist {
   static async setTaskButtons(): Promise<void> {
     if (Todoist.buttonExists()) return
 
-    // eslint-disable-next-line no-loops/no-loops
     for (const [title, tooltip] of Object.entries(Todoist.tasks)) {
       try {
         await Todoist.setTaskButton(title, tooltip)

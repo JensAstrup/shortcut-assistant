@@ -3291,10 +3291,10 @@ escodegen@^2.0.0:
   optionalDependencies:
     source-map "~0.6.1"
 
-eslint-config-yenz@^5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/eslint-config-yenz/-/eslint-config-yenz-5.0.0.tgz#10ec1a2ca18b5bdecbc45739c59f768eedebbf96"
-  integrity sha512-mznW+pr///K3s6IbpNaRq59hIWqFQJyK5EcbzdgTRzWaVWL9J1s/SFb/HaEYQs2/ju8QUpn6z6qA++x3FGZT8A==
+eslint-config-yenz@^5.2.0:
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/eslint-config-yenz/-/eslint-config-yenz-5.2.0.tgz#5e721ebda0246ff18e3c7c6e85131addd0aa4e8d"
+  integrity sha512-jxEyqD5P/jC6o686c06KJv80Y5+w6TDtjDMrAfsxqWDAu0ZcOcQz11AiVA4A1DlgDe/iY9xfbBYH0endtU3VGQ==
   dependencies:
     "@eslint/js" "^9.3.0"
     "@stylistic/eslint-plugin" "^2.1.0"
@@ -3303,9 +3303,8 @@ eslint-config-yenz@^5.0.0:
     eslint "^8.49.0"
     eslint-plugin-import "^2.29.1"
     eslint-plugin-jest "^28.5.0"
-    eslint-plugin-no-loops "^0.3.0"
     eslint-plugin-perfectionist "^2.9.0"
-    eslint-plugin-yenz "^1.0.0"
+    eslint-plugin-yenz "^1.1.0"
     typescript "^5.4.5"
     typescript-eslint "^7.10.0"
 
@@ -3355,11 +3354,6 @@ eslint-plugin-jest@^28.5.0:
   dependencies:
     "@typescript-eslint/utils" "^6.0.0 || ^7.0.0"
 
-eslint-plugin-no-loops@^0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-no-loops/-/eslint-plugin-no-loops-0.3.0.tgz#e81fecb4eaaf494a926d9caba9a7cd84d1fede7d"
-  integrity sha512-qI0oMgD0mA2Kpad2P/WncEqeVzvJKpHs/6+PA1SW4E6gXSXRmeV2cPv6+fnEgFwC7i+QtFRay2jUQ8DCH02nZg==
-
 eslint-plugin-perfectionist@^2.10.0, eslint-plugin-perfectionist@^2.9.0:
   version "2.10.0"
   resolved "https://registry.yarnpkg.com/eslint-plugin-perfectionist/-/eslint-plugin-perfectionist-2.10.0.tgz#15cf9f5545ce2db24d1ccdf3226645a097480faf"
@@ -3369,10 +3363,10 @@ eslint-plugin-perfectionist@^2.10.0, eslint-plugin-perfectionist@^2.9.0:
     minimatch "^9.0.3"
     natural-compare-lite "^1.4.0"
 
-eslint-plugin-yenz@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-yenz/-/eslint-plugin-yenz-1.0.0.tgz#e6f7268584f2d7ae8fc6092502cfb77d8c6ea005"
-  integrity sha512-+DbHy7NMyeUfxbO9SGZNxh7A3+i3Rx1Hk1iLL9yT9Esal5p/sJIOSDQxkxyoWacYyKRnWDGER3yjY6M2OTXAbg==
+eslint-plugin-yenz@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-yenz/-/eslint-plugin-yenz-1.1.0.tgz#81b691d4eb396f3528c1f57fb7167420fa8ed208"
+  integrity sha512-EBRVOnamSNSozBdRz5ZP9A1dDRQ6xNMXR0BsDrUUBHCBwdYwQu1kYYLcvTxRYtH++lBoKTUb8P/YyqwOXabBXw==
 
 eslint-scope@5.1.1:
   version "5.1.1"
