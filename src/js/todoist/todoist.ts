@@ -1,4 +1,4 @@
-import { forEach, kebabCase } from 'lodash'
+import { kebabCase } from 'lodash'
 
 import { logError } from '@sx/utils/log-error'
 import { Story } from '@sx/utils/story'
