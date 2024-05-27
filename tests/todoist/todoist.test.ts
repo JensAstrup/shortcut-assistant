@@ -1,4 +1,5 @@
 import { Todoist } from '@sx/todoist/todoist'
+import { logError } from '@sx/utils/log-error'
 import { Story } from '@sx/utils/story'
 
 
@@ -115,6 +116,13 @@ describe('Todoist', () => {
       expect(setTaskButtonSpy).toHaveBeenCalledWith('Work on', 'Set task to work on story')
       expect(setTaskButtonSpy).toHaveBeenCalledWith('Review', 'Set task to review story')
       expect(setTaskButtonSpy).toHaveBeenCalledWith('Follow up', 'Set task to follow up on story')
+    })
+
+    it('should log error if setTaskButton throws an error', async () => {
+      jest.spyOn(Todoist, 'buttonExists').mockReturnValue(null)
+      jest.spyOn(Todoist, 'setTaskButton').mockRejectedValue(new Error('Test error'))
+      await Todoist.setTaskButtons()
+      expect(logError).toHaveBeenCalled()
     })
   })
 })
