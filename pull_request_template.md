@@ -11,3 +11,4 @@
 - [ ] View cycle time on a completed story
   - [ ] On page load
   - [ ] On SPA navigation
+- [ ] Add notes to a story
