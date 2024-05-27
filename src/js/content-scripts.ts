@@ -15,7 +15,7 @@ import { logError } from './utils/log-error'
 
 
 
-export async function activate() {
+export async function activate(): Promise<void> {
   await Story.isReady()
 
   new KeyboardShortcuts().activate()
@@ -44,7 +44,7 @@ export async function activate() {
   new NotesButton()
 }
 
-export async function handleMessage(request: { message: string, url: string }) {
+export async function handleMessage(request: { message: string, url: string }): Promise<void> {
   const activeTabUrl = window.location.href
   if (request.message === 'analyzeStoryDescription') {
     await analyzeStoryDescription(activeTabUrl)
