@@ -80,7 +80,7 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 
 Standard: `MAJOR.MINOR.PATCH.INTERNAL`
 
-**Major**: Breaking changes
+**Major**: Breaking changes or significant feature changes
 
 **Minor**: New features
 
