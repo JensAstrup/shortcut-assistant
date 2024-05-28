@@ -77,7 +77,7 @@ describe('chrome.runtime.onMessage listener', () => {
     expect(sendResponse).toHaveBeenCalled()
   })
 
-  it('calls sendEvent when action is "sendEvent" and data is valid', async () => {
+  it('calls sendEvent when action is "sendEvent" and data is valid', () => {
     const sendResponse = jest.fn()
     const mockEventName = 'userLogin'
     const mockParams = { user: 'testUser' }
