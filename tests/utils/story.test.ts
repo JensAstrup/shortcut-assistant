@@ -361,26 +361,22 @@ describe('Story.notes', () => {
 
 describe('Story id', () => {
   it('returns the correct story ID from a valid URL', async () => {
-    // @ts-expect-error Remnants from before typescript implementation
-    urlModule.getActiveTabUrl.mockResolvedValue('https://app.shortcut.com/story/12345')
+    jest.spyOn(urlModule, 'getActiveTabUrl').mockResolvedValue('https://app.shortcut.com/story/12345')
     await expect(Story.id()).resolves.toBe('12345')
   })
 
   it('returns null if the URL does not contain a story ID', async () => {
-    // @ts-expect-error Remnants from before typescript implementation
-    urlModule.getActiveTabUrl.mockResolvedValue('https://app.shortcut.com/profile')
+    jest.spyOn(urlModule, 'getActiveTabUrl').mockResolvedValue('https://app.shortcut.com/profile')
     await expect(Story.id()).resolves.toBeNull()
   })
 
   it('handles URLs with additional path segments correctly', async () => {
-    // @ts-expect-error Remnants from before typescript implementation
-    urlModule.getActiveTabUrl.mockResolvedValue('https://app.shortcut.com/story/12345/details')
+    jest.spyOn(urlModule, 'getActiveTabUrl').mockResolvedValue('https://app.shortcut.com/story/12345/details')
     await expect(Story.id()).resolves.toBe('12345')
   })
 
   it('returns null if getActiveTabUrl rejects', async () => {
-    // @ts-expect-error Remnants from before typescript implementation
-    urlModule.getActiveTabUrl.mockRejectedValue(new Error('Error fetching URL'))
+    jest.spyOn(urlModule, 'getActiveTabUrl').mockRejectedValue(new Error('Error fetching URL'))
     await expect(Story.id()).rejects.toThrow('Error fetching URL')
   })
 })
