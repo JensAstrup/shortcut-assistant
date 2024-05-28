@@ -10,7 +10,7 @@ Shortcut Assistant is a Chrome extension that adds various additional features t
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
-If you're looking to install the extension
+If you're looking to install the extension, visit the [Chrome Web Store](https://chromewebstore.google.com/detail/shortcut-assistant/kmdlofehocppnlkpokdbiaalcelhedef).
 ### Prerequisites
 
 - [Node.js](https://nodejs.org/)
