@@ -26,6 +26,10 @@ If you're looking to install the extension, visit the [Chrome Web Store](https:/
    ```bash
    npm install
    ```
+   or
+    ```bash
+    yarn install
+    ```
 
 3. **Set up Environment Variables**
 
@@ -83,6 +87,9 @@ Standard: `MAJOR.MINOR.PATCH.INTERNAL`
 **Patch**: Bug fixes
 
 **Internal**: Internal changes not affecting the user experience
+
+To increment the version, update the `VERSION` variable in the `.env` file along with the `SENTRY_RELEASE` variable.
+Then run `npm run manifest` to propagate the changes to the `manifest.json` file.
 
 ## Authors
 
