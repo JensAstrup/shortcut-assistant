@@ -78,15 +78,13 @@ included in the GitHub repository secrets.
 
 We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](/tags).
 
-Standard: `MAJOR.MINOR.PATCH.INTERNAL`
+Standard: `MAJOR.MINOR.PATCH`
 
 **Major**: Breaking changes or significant feature changes
 
 **Minor**: New features
 
-**Patch**: Bug fixes
-
-**Internal**: Internal changes not affecting the user experience
+**Patch**: Bug fixes or internal changes not affecting the user experience
 
 To increment the version, update the `VERSION` variable in the `.env` file along with the `SENTRY_RELEASE` variable.
 Then run `npm run manifest` to propagate the changes to the `manifest.json` file.
