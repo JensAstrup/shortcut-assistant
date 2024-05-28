@@ -24,13 +24,11 @@ export class Story {
     const WAIT_FOR_PAGE_TO_LOAD_TIMEOUT: number = 1_000
     const MAX_ATTEMPTS: number = 10
     const storyTitle: Element | null = document.querySelector('.story-name')
-
-    if (storyTitle !== null || loop >= MAX_ATTEMPTS) {
-      const waitTime = 200
-      await sleep(waitTime)
+    const storyDescription: Element | null = document.querySelector('#story-description-v2')
+    const storyDescriptionText: string | null | undefined = storyDescription?.textContent
+    if ((storyTitle !== null && storyDescriptionText) || loop >= MAX_ATTEMPTS) {
       return storyTitle !== null
     }
-
     await sleep(loop * WAIT_FOR_PAGE_TO_LOAD_TIMEOUT)
     return this.isReady(loop + 1)
   }

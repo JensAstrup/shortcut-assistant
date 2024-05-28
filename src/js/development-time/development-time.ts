@@ -1,4 +1,4 @@
-import {Story} from '@sx/utils/story'
+import { Story } from '@sx/utils/story'
 import Workspace from '@sx/workspace/workspace'
 
 
@@ -17,14 +17,14 @@ export class DevelopmentTime {
     stateSpan.appendChild(timeSpan)
   }
 
-  static remove() {
+  static remove(): void {
     const timeSpan = document.querySelector('[data-assistant="true"]')
     if (timeSpan) {
       timeSpan.remove()
     }
   }
 
-  static async set() {
+  static async set(): Promise<void> {
     await Story.isReady()
     this.remove()
     const states = await Workspace.states()
