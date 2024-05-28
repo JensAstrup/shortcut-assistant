@@ -1,14 +1,11 @@
 import OpenAI from 'openai'
 
-import {fetchCompletion} from '@sx/ai/fetch-completion'
-import getOpenAiToken from '@sx/ai/get-openai-token'
-import {AiProcessMessageType} from '@sx/analyze/types/AiProcessMessage'
+import { fetchCompletion } from '@sx/ai/fetch-completion'
+import { AiProcessMessageType } from '@sx/analyze/types/AiProcessMessage'
 
 // Mock the required modules
 jest.mock('openai')
-jest.mock('@sx/ai/get-openai-token')
 
-const mockGetOpenAiToken = getOpenAiToken as jest.MockedFunction<typeof getOpenAiToken>
 const mockOpenAI = OpenAI as jest.MockedClass<typeof OpenAI>
 
 describe('fetchCompletion', () => {
@@ -18,11 +15,10 @@ describe('fetchCompletion', () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
-    mockGetOpenAiToken.mockResolvedValue(fakeToken)
 
     const mockCreate = jest.fn().mockImplementation(() => {
-      const mockStream = (async function* () {
-        yield {choices: [{delta: {content: 'response from OpenAI'}}]}
+      const mockStream = (function* (): Generator<{ choices: [{ delta: { content: string } }] }> {
+        yield { choices: [{ delta: { content: 'response from OpenAI' } }] }
       })()
       return mockStream
     })
@@ -38,10 +34,10 @@ describe('fetchCompletion', () => {
   })
 
   it('successfully fetches and handles data from OpenAI', async () => {
-    await fetchCompletion(description, 'analyze', tabId)
+    await fetchCompletion(description, 'analyze', tabId, 'fake_token')
 
     // Check OpenAI was initialized correctly
-    expect(mockOpenAI).toHaveBeenCalledWith({apiKey: fakeToken})
+    expect(mockOpenAI).toHaveBeenCalledWith({ apiKey: fakeToken })
 
     // Verify messages sent to the Chrome tab
     expect(chrome.tabs.sendMessage).toHaveBeenCalledWith(tabId, {
@@ -53,8 +49,6 @@ describe('fetchCompletion', () => {
     })
 
     // Check final message to runtime
-    expect(chrome.runtime.sendMessage).toHaveBeenCalledWith({type: AiProcessMessageType.completed, message: 'analyze'})
+    expect(chrome.runtime.sendMessage).toHaveBeenCalledWith({ type: AiProcessMessageType.completed, message: 'analyze' })
   })
-
-  // Additional tests for error scenarios...
 })

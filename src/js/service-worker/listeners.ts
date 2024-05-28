@@ -1,7 +1,6 @@
-import {sendEvent} from '@sx/analytics/event'
-import {AiPromptType} from '@sx/analyze/types/ai-prompt-type'
+import { sendEvent } from '@sx/analytics/event'
+import { AiPromptType } from '@sx/analyze/types/ai-prompt-type'
 import {
-  handleGetOpenAiToken,
   handleGetSavedNotes,
   handleOpenAICall
 } from '@sx/service-worker/handlers'
@@ -9,12 +8,12 @@ import scope from '@sx/utils/sentry'
 
 
 type Request = {
-  action?: string,
-  data?: { eventName?: string, params?: Record<string, string>, prompt: string, type: AiPromptType },
-  message?: string,
+  action?: string
+  data?: { eventName?: string, params?: Record<string, string>, prompt: string, type: AiPromptType }
+  message?: string
 }
 
-function registerAiListeners() {
+function registerAiListeners(): void {
   chrome.runtime.onMessage.addListener((request: Request, sender: chrome.runtime.MessageSender, sendResponse: (response: unknown) => void) => {
     if (request.action === 'callOpenAI' && request.data) {
       if (!sender.tab || !sender.tab.id) {
@@ -23,15 +22,10 @@ function registerAiListeners() {
       handleOpenAICall(request.data.prompt, request.data.type, sender.tab.id).then(sendResponse)
       return true // Keep the message channel open for the async response
     }
-
-    if (request.message === 'getOpenAiToken') {
-      handleGetOpenAiToken().then(sendResponse)
-      return true
-    }
   })
 }
 
-function registerNotesListeners() {
+function registerNotesListeners(): void {
   chrome.runtime.onMessage.addListener((request: Request, sender: chrome.runtime.MessageSender, sendResponse: (response: unknown) => void) => {
     if (request.action === 'getSavedNotes') {
       handleGetSavedNotes().then(sendResponse)
@@ -40,11 +34,11 @@ function registerNotesListeners() {
   })
 }
 
-function registerAnalyticsListeners() {
+function registerAnalyticsListeners(): void {
   chrome.runtime.onMessage.addListener((request: Request) => {
     if (request.action === 'sendEvent') {
       if (!request.data || !request.data.eventName) return true
-      sendEvent(request.data.eventName, request.data.params).catch(e => {
+      sendEvent(request.data.eventName, request.data.params).catch((e) => {
         console.error('Error sending event:', e)
         scope.captureException(e)
       })
@@ -52,13 +46,13 @@ function registerAnalyticsListeners() {
   })
 }
 
-function registerListeners() {
+function registerListeners(): void {
   registerAiListeners()
   registerAnalyticsListeners()
   registerNotesListeners()
 }
 
-export {registerAiListeners, registerAnalyticsListeners, registerNotesListeners}
+export { registerAiListeners, registerAnalyticsListeners, registerNotesListeners }
 export default registerListeners
 
 registerListeners()

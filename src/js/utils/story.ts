@@ -1,20 +1,19 @@
 import dayjs from 'dayjs'
 
-import {ShortcutWorkflowState, ShortcutWorkflowStates} from '@sx/utils/get-states'
+import { ShortcutWorkflowState, ShortcutWorkflowStates } from '@sx/utils/get-states'
 import scope from '@sx/utils/sentry'
 import Workspace from '@sx/workspace/workspace'
 
 import {
-  findFirstMatchingElementForState
+  findFirstMatchingElementForState,
 } from '../development-time/find-first-matching-element-for-state'
 
-import {getActiveTabUrl} from './get-active-tab-url'
-import {hoursBetweenExcludingWeekends} from './hours-between-excluding-weekends'
+import { getActiveTabUrl } from './get-active-tab-url'
+import { hoursBetweenExcludingWeekends } from './hours-between-excluding-weekends'
 import sleep from './sleep'
 
 
 export class Story {
-
   /**
    * Waits for the story title/name and historical activity (such as the story being created) to be
    * present on the page which indicates that the page is ready.
@@ -25,13 +24,11 @@ export class Story {
     const WAIT_FOR_PAGE_TO_LOAD_TIMEOUT: number = 1_000
     const MAX_ATTEMPTS: number = 10
     const storyTitle: Element | null = document.querySelector('.story-name')
-
-    if (storyTitle !== null || loop >= MAX_ATTEMPTS) {
-      const waitTime = 200
-      await sleep(waitTime)
+    const storyDescription: Element | null = document.querySelector('#story-description-v2')
+    const storyDescriptionText: string | null | undefined = storyDescription?.textContent
+    if ((storyTitle !== null && storyDescriptionText) || loop >= MAX_ATTEMPTS) {
       return storyTitle !== null
     }
-
     await sleep(loop * WAIT_FOR_PAGE_TO_LOAD_TIMEOUT)
     return this.isReady(loop + 1)
   }
@@ -64,7 +61,7 @@ export class Story {
     if (result[key] === undefined) {
       return null
     }
-    return result[key]
+    return <string>result[key]
   }
 
   static async id(): Promise<string | null> {
@@ -76,11 +73,11 @@ export class Story {
     return match[1]
   }
 
-  private buttonExists(identifier: string) {
+  private buttonExists(identifier: string): Element | null {
     return document.querySelector(`button[data-${identifier}="true"]`)
   }
 
-  public async addButton(newButton: HTMLButtonElement, identifier: string) {
+  public async addButton(newButton: HTMLButtonElement, identifier: string): Promise<void> {
     const existingButton = this.buttonExists(identifier)
     if (!existingButton) {
       const container = await Story.getEditDescriptionButtonContainer()
@@ -99,7 +96,7 @@ export class Story {
   static async getEditDescriptionButtonContainer(attempts: number = 0): Promise<HTMLElement | null | undefined> {
     const ONE_SECOND = 1000
     await sleep(ONE_SECOND)
-    const container = document.querySelector('#story-description-v2') as HTMLElement
+    const container: HTMLElement | null = document.querySelector('#story-description-v2')
     const MAX_ATTEMPTS = 10
     if (!container && attempts < MAX_ATTEMPTS) {
       return this.getEditDescriptionButtonContainer(attempts + 1)
@@ -146,10 +143,10 @@ export class Story {
     const states: ShortcutWorkflowStates = await Workspace.states()
     const doneStates: string[] = states.Done
     const state: string = this.state?.textContent || ''
-    return doneStates.some((doneState) => state.includes(doneState))
+    return doneStates.some(doneState => state.includes(doneState))
   }
 
-  static async isInState(state: ShortcutWorkflowState | string): Promise<boolean> {
+  static async isInState(state: ShortcutWorkflowState): Promise<boolean> {
     let storyState = ''
     try {
       storyState = this.state?.textContent || ''
@@ -160,7 +157,6 @@ export class Story {
     }
 
     const states = await Workspace.states()
-    // @ts-expect-error - If not found it's because it comes from the user's settings
-    return states[state].some((state) => storyState.includes(state))
+    return states[state].some(state => storyState.includes(state))
   }
 }

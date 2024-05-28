@@ -1,9 +1,9 @@
-import {sendEvent} from '@sx/analytics/event'
-import {getSyncedSetting} from '@sx/utils/get-synced-setting'
+import { sendEvent } from '@sx/analytics/event'
+import { getSyncedSetting } from '@sx/utils/get-synced-setting'
 import scope from '@sx/utils/sentry'
 import sleep from '@sx/utils/sleep'
 
-import {NotesPopup} from './notes-popup'
+import { NotesPopup } from './notes-popup'
 
 
 /**
@@ -17,10 +17,9 @@ export class Popup {
   private changelogButton: HTMLButtonElement
 
   constructor() {
-    const todoistCheckbox = document.getElementById('todoistOptions') as HTMLInputElement
-    const saveButton = document.getElementById('saveKeyButton') as HTMLButtonElement
-
-    const changelogButton = document.getElementById('changelog') as HTMLButtonElement
+    const todoistCheckbox = document.getElementById('todoistOptions') as HTMLInputElement | null
+    const saveButton = document.getElementById('saveKeyButton') as HTMLButtonElement | null
+    const changelogButton = document.getElementById('changelog') as HTMLButtonElement | null
 
     if (saveButton === null || todoistCheckbox === null || changelogButton === null) {
       throw new Error('saveButton, todoistCheckbox, or changelogButton not found')
@@ -32,7 +31,7 @@ export class Popup {
     this.saveButton.addEventListener('click', this.saveButtonClicked.bind(this))
 
     this.changelogButton.addEventListener('click', async () => {
-      await chrome.action.setBadgeText({text: ''})
+      await chrome.action.setBadgeText({ text: '' })
     })
 
     sendEvent('popup_view').catch((e) => {
@@ -45,16 +44,16 @@ export class Popup {
     })
   }
 
-  async setOpenAIToken(token: string) {
-    await chrome.storage.local.set({'openAIToken': token})
+  async setOpenAIToken(token: string): Promise<void> {
+    await chrome.storage.local.set({ openAIToken: token })
   }
 
-  async saveOptions() {
+  async saveOptions(): Promise<void> {
     const enableTodoistOptions = this.todoistCheckbox.checked
-    await chrome.storage.sync.set({'enableTodoistOptions': enableTodoistOptions})
+    await chrome.storage.sync.set({ enableTodoistOptions: enableTodoistOptions })
   }
 
-  async saveButtonClicked() {
+  async saveButtonClicked(): Promise<void> {
     this.saveButton.disabled = true
     const openAITokenInput = document.getElementById('openAIToken') as HTMLInputElement
     const openAIToken = openAITokenInput.value
@@ -69,13 +68,17 @@ export class Popup {
     this.saveButton.textContent = 'Save'
   }
 
-  setSectionDisplay(tabToShow: HTMLElement, sectionToShow: HTMLElement, tabsToHide: HTMLElement[], sectionsToHide: HTMLElement[]) {
+  setSectionDisplay(tabToShow: HTMLElement, sectionToShow: HTMLElement, tabsToHide: HTMLElement[], sectionsToHide: HTMLElement[]): void {
     tabToShow.addEventListener('click', function (e) {
       e.preventDefault()
       sectionToShow.classList.remove('hidden')
-      sectionsToHide.forEach(section => section.classList.add('hidden'))
+      sectionsToHide.forEach((section) => {
+        section.classList.add('hidden')
+      })
       tabToShow.classList.add('tab-active')
-      tabsToHide.forEach(tab => tab.classList.remove('tab-active'))
+      tabsToHide.forEach((tab) => {
+        tab.classList.remove('tab-active')
+      })
     })
   }
 
@@ -86,7 +89,7 @@ export class Popup {
     const badgeBackgroundText = await chrome.action.getBadgeText({})
     if (badgeBackgroundText === '') {
       const infoTab = document.getElementById('infoTab')
-      const tabBadge = infoTab?.querySelector('.badge') as HTMLElement
+      const tabBadge = infoTab?.querySelector('.badge') as HTMLElement | null
       if (!tabBadge) {
         throw new Error('tabBadge not found')
       }
@@ -99,7 +102,7 @@ export class Popup {
     }
   }
 
-  async updateFromSettings() {
+  async updateFromSettings(): Promise<void> {
     const todoistEnabled = await getSyncedSetting('enableTodoistOptions', false)
     if (todoistEnabled) {
       this.todoistCheckbox.setAttribute('checked', 'checked')
@@ -110,7 +113,7 @@ export class Popup {
     }
   }
 
-  async popupLoaded() {
+  async popupLoaded(): Promise<void> {
     const actionsTab = document.getElementById('actionsTab')
     const settingsTab = document.getElementById('settingsTab')
     const infoTab = document.getElementById('infoTab')
@@ -136,10 +139,10 @@ export class Popup {
     if (versionSpan === null) {
       throw new Error('versionSpan not found')
     }
-    const version = await chrome.runtime.getManifest().version
+    const version = chrome.runtime.getManifest().version
     versionSpan.textContent = `Version: ${version}`
     new NotesPopup()
-    sendEvent('popup_loaded', {page_title: 'Popup', page_location: '/popup.html'}).catch((e) => {
+    sendEvent('popup_loaded', { page_title: 'Popup', page_location: '/popup.html' }).catch((e) => {
       console.error(e)
       scope.captureException(e)
     })

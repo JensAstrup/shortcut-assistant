@@ -14,7 +14,7 @@ let scope: Scope
 
 if (!isTestEnv) {
   const manifestData = chrome.runtime.getManifest()
-  const integrations = getDefaultIntegrations({}).filter(defaultIntegration => {
+  const integrations = getDefaultIntegrations({}).filter((defaultIntegration) => {
     return !['Breadcrumbs', 'BrowserApiErrors', 'GlobalHandlers', 'TryCatch'].includes(defaultIntegration.name)
   })
 
