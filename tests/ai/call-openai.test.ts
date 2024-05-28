@@ -1,9 +1,9 @@
 import callOpenAI from '@sx/ai/call-openai'
-import {fetchCompletion} from '@sx/ai/fetch-completion'
+import { fetchCompletion } from '@sx/ai/fetch-completion'
 import getCompletionFromProxy from '@sx/ai/get-completion-from-proxy'
 import getOpenAiToken from '@sx/ai/get-openai-token'
-import {sendEvent} from '@sx/analytics/event'
-import {OpenAIError} from '@sx/utils/errors'
+import { sendEvent } from '@sx/analytics/event'
+import { OpenAIError } from '@sx/utils/errors'
 import scope from '@sx/utils/sentry'
 
 
@@ -63,8 +63,8 @@ describe('callOpenAI', () => {
 
     await callOpenAI(description, 'analyze', tabId)
 
-    expect(mockFetchCompletion).toHaveBeenCalledWith(description, 'analyze', tabId)
-    expect(sendEvent).toHaveBeenCalledWith('ai', {token_provided: true, type: 'analyze'})
+    expect(mockFetchCompletion).toHaveBeenCalledWith(description, 'analyze', tabId, token)
+    expect(sendEvent).toHaveBeenCalledWith('ai', { token_provided: true, type: 'analyze' })
   })
 
   it('should throw OpenAIError when fetchCompletion fails', async () => {

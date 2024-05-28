@@ -1,8 +1,7 @@
-import {chrome} from 'jest-chrome'
+import { chrome } from 'jest-chrome'
 
-import {sendEvent} from '@sx/analytics/event'
+import { sendEvent } from '@sx/analytics/event'
 import {
-  handleGetOpenAiToken,
   handleGetSavedNotes,
   handleOpenAICall
 } from '@sx/service-worker/handlers'
@@ -13,15 +12,15 @@ import ManifestV3 = chrome.runtime.ManifestV3
 
 jest.mock('@sx/utils/sentry')
 jest.mock('@sx/service-worker/handlers', () => ({
-  handleOpenAICall: jest.fn().mockResolvedValue({data: 'mock'}),
-  handleGetOpenAiToken: jest.fn().mockResolvedValue({token: 'mock'}),
-  handleGetSavedNotes: jest.fn().mockResolvedValue({data: 'mock'}),
+  handleOpenAICall: jest.fn().mockResolvedValue({ data: 'mock' }),
+  handleGetSavedNotes: jest.fn().mockResolvedValue({ data: 'mock' }),
 }))
 
 jest.mock('../../src/js/analytics/event', () => ({
   sendEvent: jest.fn().mockResolvedValue({}),
 }))
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 Object.assign(global, require('jest-chrome'))
 
 
@@ -47,8 +46,8 @@ describe('chrome.runtime.onMessage listener', () => {
 
     chrome.runtime.onMessage.callListeners({
       action: 'callOpenAI',
-      data: {prompt: mockPrompt}
-    }, {tab: {id: mockTabId, index: 0, pinned: false, windowId: 1, active: true} as Tab}, sendResponse)
+      data: { prompt: mockPrompt }
+    }, { tab: { id: mockTabId, index: 0, pinned: false, windowId: 1, active: true } as Tab }, sendResponse)
 
     expect(handleOpenAICall).toHaveBeenCalledWith(mockPrompt, undefined, mockTabId)
     await new Promise(process.nextTick) // Wait for all promises to resolve
@@ -59,23 +58,11 @@ describe('chrome.runtime.onMessage listener', () => {
     const sendResponse = jest.fn()
     chrome.runtime.onMessage.callListeners({
       action: 'callOpenAI',
-      data: {prompt: 'prompt'}
+      data: { prompt: 'prompt' }
     }, {}, sendResponse)
 
     expect(sendResponse).not.toHaveBeenCalled()
     expect(handleOpenAICall).not.toHaveBeenCalled()
-  })
-
-  it('calls handleGetOpenAiToken when message is "getOpenAiToken"', async () => {
-    const sendResponse = jest.fn()
-
-    chrome.runtime.onMessage.callListeners({
-      message: 'getOpenAiToken'
-    }, {}, sendResponse)
-
-    await new Promise(process.nextTick)
-    expect(handleGetOpenAiToken).toHaveBeenCalled()
-    expect(sendResponse).toHaveBeenCalled()
   })
 
   it('calls handleGetSavedNotes when action is "getSavedNotes"', async () => {
@@ -93,13 +80,13 @@ describe('chrome.runtime.onMessage listener', () => {
   it('calls sendEvent when action is "sendEvent" and data is valid', async () => {
     const sendResponse = jest.fn()
     const mockEventName = 'userLogin'
-    const mockParams = {user: 'testUser'}
+    const mockParams = { user: 'testUser' }
 
     require('@sx/service-worker/service-worker')
 
     chrome.runtime.onMessage.callListeners({
       action: 'sendEvent',
-      data: {eventName: mockEventName, params: mockParams}
+      data: { eventName: mockEventName, params: mockParams }
     }, {}, sendResponse)
 
     // await new Promise(process.nextTick)
