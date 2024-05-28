@@ -76,7 +76,7 @@ included in the GitHub repository secrets.
 
 ## Versioning
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](/tags).
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/JensAstrup/shortcut-assistant/tags).
 
 Standard: `MAJOR.MINOR.PATCH`
 
