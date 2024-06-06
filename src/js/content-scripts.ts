@@ -35,7 +35,7 @@ export async function activate(): Promise<void> {
     if (enableTodoistOptions) {
       // Wait on response because AiFunctions.addAnalyzeButton() will also set a button
       // and async could affect the order
-      Todoist.setTaskButtons()
+      await Todoist.setTaskButtons()
     }
   }
   catch (e) {

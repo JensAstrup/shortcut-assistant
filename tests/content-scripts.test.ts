@@ -1,15 +1,15 @@
-import {AiFunctions} from '@sx/analyze/ai-functions'
-import {analyzeStoryDescription} from '@sx/analyze/analyze-story-description'
-import {activate, handleMessage} from '@sx/content-scripts'
-import {CycleTime} from '@sx/cycle-time/cycle-time'
-import {DevelopmentTime} from '@sx/development-time/development-time'
+import { AiFunctions } from '@sx/analyze/ai-functions'
+import { analyzeStoryDescription } from '@sx/analyze/analyze-story-description'
+import { activate, handleMessage } from '@sx/content-scripts'
+import { CycleTime } from '@sx/cycle-time/cycle-time'
+import { DevelopmentTime } from '@sx/development-time/development-time'
 import changeIteration from '@sx/keyboard-shortcuts/change-iteration'
 import changeState from '@sx/keyboard-shortcuts/change-state'
 import copyGitBranch from '@sx/keyboard-shortcuts/copy-git-branch'
-import {NotesButton} from '@sx/notes/notes-button'
-import {Todoist} from '@sx/todoist/todoist'
-import {getSyncedSetting} from '@sx/utils/get-synced-setting'
-import {Story} from '@sx/utils/story'
+import { NotesButton } from '@sx/notes/notes-button'
+import { Todoist } from '@sx/todoist/todoist'
+import { getSyncedSetting } from '@sx/utils/get-synced-setting'
+import { Story } from '@sx/utils/story'
 
 
 jest.mock('@sx/development-time/development-time', () => ({
@@ -110,7 +110,7 @@ describe('handleMessage function', () => {
 
 
   it('calls analyzeStoryDescription for analyzeStoryDescription message', async () => {
-    const request = {message: 'analyzeStoryDescription', url: ''}
+    const request = { message: 'analyzeStoryDescription', url: '' }
     await handleMessage(request)
     expect(analyzeStoryDescription).toHaveBeenCalledWith('https://example.com/story')
   })
@@ -118,7 +118,7 @@ describe('handleMessage function', () => {
   it('initializes on update message', async () => {
     // const spy = jest.spyOn(AiFunctions.prototype, 'addButtons')
     mockedGetSyncedSetting.mockResolvedValue(true)
-    const request = {message: 'update', url: 'https://example.com/story'}
+    const request = { message: 'update', url: 'https://example.com/story' }
     await handleMessage(request)
     expect(DevelopmentTime.set).toHaveBeenCalled()
     expect(CycleTime.set).toHaveBeenCalled()
@@ -127,19 +127,19 @@ describe('handleMessage function', () => {
   })
 
   it('calls changeState for change-state message', async () => {
-    const request = {message: 'change-state', url: 'https://example.com/story'}
+    const request = { message: 'change-state', url: 'https://example.com/story' }
     await handleMessage(request)
     expect(changeState).toHaveBeenCalled()
   })
 
   it('calls changeIteration for change-iteration message', async () => {
-    const request = {message: 'change-iteration', url: 'https://example.com/story'}
+    const request = { message: 'change-iteration', url: 'https://example.com/story' }
     await handleMessage(request)
     expect(changeIteration).toHaveBeenCalled()
   })
 
   it('calls copyGitBranch for copy-git-branch message', async () => {
-    const request = {message: 'copy-git-branch', url: 'https://example.com/story'}
+    const request = { message: 'copy-git-branch', url: 'https://example.com/story' }
     await handleMessage(request)
     expect(copyGitBranch).toHaveBeenCalled()
   })
