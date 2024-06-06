@@ -52,7 +52,6 @@ export async function handleMessage(request: { message: string, url: string }): 
   if (request.message === 'update') {
     DevelopmentTime.set().catch(logError)
     CycleTime.set().catch(logError)
-    new NotesButton()
     const functions = new AiFunctions()
     await functions.addButtons()
     const enableTodoistOptions = await getSyncedSetting('enableTodoistOptions', false)
@@ -61,6 +60,7 @@ export async function handleMessage(request: { message: string, url: string }): 
       // and async could affect the order
       await Todoist.setTaskButtons()
     }
+    new NotesButton()
   }
   if (request.message === 'change-state') {
     await changeState()
