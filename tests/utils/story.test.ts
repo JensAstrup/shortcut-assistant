@@ -1,10 +1,9 @@
-// import { chrome } from 'jest-chrome'
-
 import {
   findFirstMatchingElementForState
 } from '@sx/development-time/find-first-matching-element-for-state'
 import * as urlModule from '@sx/utils/get-active-tab-url'
 import scope from '@sx/utils/sentry'
+import sleep from '@sx/utils/sleep'
 import { Story } from '@sx/utils/story'
 import Workspace from '@sx/workspace/workspace'
 
@@ -389,15 +388,18 @@ describe('Story addButton', () => {
     const story = new Story()
     await story.addButton(button, 'test')
     expect(container.children).toContain(button)
+    // eslint-disable-next-line no-magic-numbers
+    expect(sleep).toHaveBeenCalledWith(200)
   })
 
   it('should not add a button if it already exists', async () => {
     const button = document.createElement('button')
     const container = document.createElement('div')
-    container.appendChild(button)
+    const querySelector = jest.spyOn(document, 'querySelector')
+    querySelector.mockReturnValue(button)
     jest.spyOn(Story, 'getEditDescriptionButtonContainer').mockResolvedValue(container)
     const story = new Story()
     await story.addButton(button, 'test')
-    expect(container.children.length).toBe(1)
+    expect(container.children.length).toBe(0)
   })
 })

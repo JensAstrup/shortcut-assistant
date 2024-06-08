@@ -1,7 +1,7 @@
 # Shortcut Assistant
 
 [![codecov](https://codecov.io/gh/JensAstrup/shortcut-assistant/graph/badge.svg?token=BNRO19POX5)](https://codecov.io/gh/JensAstrup/shortcut-assistant)
-![Status Page](https://img.shields.io/website?url=https%3A%2F%2Fstatus.jensastrup.io%2F&label=Status%20Page)
+[![Status Page](https://img.shields.io/website?url=https%3A%2F%2Fstatus.jensastrup.io%2F&label=Status%20Page)](https://status.jensastrup.io/)
 [![Chrome Web Store Version](https://img.shields.io/chrome-web-store/v/kmdlofehocppnlkpokdbiaalcelhedef)](https://chromewebstore.google.com/detail/shortcut-assistant/kmdlofehocppnlkpokdbiaalcelhedef?hl=en&authuser=0)
 [![Chrome Web Store Users](https://img.shields.io/chrome-web-store/users/kmdlofehocppnlkpokdbiaalcelhedef)](https://chromewebstore.google.com/detail/shortcut-assistant/kmdlofehocppnlkpokdbiaalcelhedef?hl=en&authuser=0)
 
@@ -10,7 +10,7 @@ Shortcut Assistant is a Chrome extension that adds various additional features t
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
-If you're looking to install the extension
+If you're looking to install the extension, visit the [Chrome Web Store](https://chromewebstore.google.com/detail/shortcut-assistant/kmdlofehocppnlkpokdbiaalcelhedef).
 ### Prerequisites
 
 - [Node.js](https://nodejs.org/)
@@ -26,6 +26,10 @@ If you're looking to install the extension
    ```bash
    npm install
    ```
+   or
+    ```bash
+    yarn install
+    ```
 
 3. **Set up Environment Variables**
 
@@ -72,17 +76,18 @@ included in the GitHub repository secrets.
 
 ## Versioning
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](/tags).
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/JensAstrup/shortcut-assistant/tags).
 
-Standard: `MAJOR.MINOR.PATCH.INTERNAL`
+Standard: `MAJOR.MINOR.PATCH`
 
-**Major**: Breaking changes
+**Major**: Breaking changes or significant feature changes
 
 **Minor**: New features
 
-**Patch**: Bug fixes
+**Patch**: Bug fixes or internal changes not affecting the user experience
 
-**Internal**: Internal changes not affecting the user experience
+To increment the version, update the `VERSION` variable in the `.env` file along with the `SENTRY_RELEASE` variable.
+Then run `npm run manifest` to propagate the changes to the `manifest.json` file.
 
 ## Authors
 

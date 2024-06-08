@@ -84,8 +84,8 @@ export class Story {
       container?.appendChild(newButton)
     }
     // Prevent duplicate buttons
-    const TWO_SECONDS = 2000
-    sleep(TWO_SECONDS).then(() => {
+    const WAIT = 200
+    sleep(WAIT).then(() => {
       const existingButtons = document.querySelectorAll(`button[data-${identifier}="true"]`)
       if (existingButtons.length > 1) {
         existingButtons[0].remove()
