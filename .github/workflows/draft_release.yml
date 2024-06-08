@@ -87,7 +87,7 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            const script = require('./.github/scripts/createOrUpdateDraftRelease.js');
+            const script = require('./.github/scripts/create-or-update-draft-release.js');
             script({ github, context, core });
 
   upload-release-asset:
