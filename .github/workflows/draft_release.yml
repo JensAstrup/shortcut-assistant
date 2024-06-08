@@ -1,4 +1,4 @@
-name: Prepare Release Assets
+name: Release Version
 
 on:
   pull_request:
@@ -6,14 +6,12 @@ on:
       - main
     types:
       - opened
+      - closed
       - synchronize
 
 permissions:
   contents: write
   pull-requests: write
-
-env:
-  NODE_ENV: production
 
 jobs:
   prepare-release-assets:
@@ -30,44 +28,20 @@ jobs:
         with:
           node-version: '21'
 
-      - name: Install all dependencies
-        env:
-          NODE_ENV: development
+      - name: Install dependencies
         run: cd src && yarn
 
       - name: Extract tag name
         id: extract_tag
-        run: echo "VERSION=${{ github.event.pull_request.title }}" >> $GITHUB_ENV
+        run: | 
+         echo "VERSION=${{ github.event.pull_request.title }}" >> $GITHUB_ENV
+         echo GOOGLE_ANALYTICS_API_SECRET=${{ secrets.GOOGLE_ANALYTICS_API_SECRET }} >> .env
 
-      - name: Add API_SECRET and VERSION to .env
-        run: |
-          echo VERSION=${{ github.event.pull_request.title }} >> .env
-          echo GOOGLE_ANALYTICS_API_SECRET=${{ secrets.GOOGLE_ANALYTICS_API_SECRET }} >> .env
-
-      - name: Build extension
-        env:
-          NODE_ENV: development
-          VERSION: ${{ env.VERSION }}
+      - name: Build and zip the extension
         run: |
           mkdir dist
           cd src
-          yarn run manifest
           yarn run build-css
-
-      - name: Build extension
-        run: |
-          cd src
-          yarn run build
-        env:
-          SENTRY_RELEASE: "shortcut-assistant@${{ env.VERSION }}"
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          VERSION: ${{ env.VERSION }}
-
-      - name: Zip extension
-        run: |
-          cd src
-          rm -rf node_modules
-          yarn install --production
           yarn run dist
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
@@ -86,5 +60,73 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            const script = require('./.github/scripts/create-or-update-draft-release.js');
-            script({ github, context, core });
+            const { owner, repo } = context.repo;
+            const pr = context.payload.pull_request;
+            const releaseTag = pr.title;
+            const releaseNotes = pr.body;
+            const releases = await github.rest.repos.listReleases({
+              owner,
+              repo,
+            });
+            let draftRelease = releases.data.find(release => release.tag_name === releaseTag && release.draft === true);
+            if (!draftRelease) {
+            console.log(`Creating draft release`);
+              draftRelease = await github.rest.repos.createRelease({
+                owner,
+                repo,
+                tag_name: releaseTag,
+                name: releaseTag,
+                body: releaseNotes,
+                draft: true,
+              });
+              console.log(`Draft release created`);
+            }
+            console.log(draftRelease)
+            core.setOutput("upload_url", draftRelease.upload_url);
+            core.setOutput("release_id", draftRelease.id);
+
+  upload-release-asset:
+    needs: prepare-release-assets
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    steps:
+      - name: Download dist.zip artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: dist-zip
+          path: dist
+
+      - name: Upload release asset
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const { owner, repo } = context.repo;
+            const pr = context.payload.pull_request;
+            const releases = await github.rest.repos.listReleases({
+              owner,
+              repo,
+            });
+            const releaseTag = pr.title;
+            let draftRelease = releases.data.find(release => release.tag_name === releaseTag && release.draft === true);
+            const releaseId = draftRelease.id;
+            const assetPath = './dist/dist.zip';
+            const assetName = 'ChromeExtension.zip';
+            const assetContentType = 'application/zip'; 
+            const data = require('fs').readFileSync(assetPath);
+            console.log(`Uploading asset ${assetPath} to release ${releaseId}`);
+            console.log(`Release published: https://github.com/${owner}/${repo}/releases/tag/${releaseId}`);
+            release = await github.rest.repos.updateRelease({
+              owner,
+              repo,
+              release_id: releaseId,
+              draft: false,
+            });
+            await github.rest.repos.uploadReleaseAsset({
+              owner,
+              repo,
+              release_id: releaseId,
+              name: assetName,
+              data,
+            });
+            console.log('Asset uploaded');

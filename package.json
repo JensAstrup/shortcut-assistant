@@ -11,9 +11,8 @@
     "test-coverage": "TZ='UTC' jest --coverage --config jest.config.js",
     "lint": "eslint --ext .ts src",
     "lint-fix": "eslint --ext .ts src --fix",
-    "manifest": "node src/build-manifest.ts",
-    "build": "npx webpack && cp -r node_modules build/",
-    "dist": "cd build && zip -r ../dist/dist.zip . -x \"coverage*\" \"*/*.test.js\""
+    "build": "node src/build-manifest.ts",
+    "dist": "npx webpack && cp -r node_modules build/ && cd build && zip -r ../dist/dist.zip . -x \"coverage*\" \"*/*.test.js\""
   },
   "devDependencies": {
     "@babel/core": "^7.24.6",
