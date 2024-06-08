@@ -1,4 +1,4 @@
-name: Release Version
+name: Prepare Release Assets
 
 on:
   pull_request:
@@ -6,7 +6,6 @@ on:
       - main
     types:
       - opened
-      - closed
       - synchronize
 
 permissions:
@@ -18,7 +17,6 @@ env:
 
 jobs:
   prepare-release-assets:
-    if: github.event.action == 'opened' || github.event.action == 'synchronize'
     runs-on: ubuntu-latest
     outputs:
       upload_url: ${{ steps.draft_release.outputs.upload_url }}
@@ -90,48 +88,3 @@ jobs:
           script: |
             const script = require('./.github/scripts/create-or-update-draft-release.js');
             script({ github, context, core });
-
-  upload-release-asset:
-    runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true
-    steps:
-      - name: Download dist.zip artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: dist-zip
-          path: dist
-
-      - name: Upload release asset
-        uses: actions/github-script@v6
-        with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          script: |
-            const { owner, repo } = context.repo;
-            const pr = context.payload.pull_request;
-            const releases = await github.rest.repos.listReleases({
-              owner,
-              repo,
-            });
-            const releaseTag = pr.title;
-            let draftRelease = releases.data.find(release => release.tag_name === releaseTag && release.draft === true);
-            const releaseId = draftRelease.id;
-            const assetPath = './dist/dist.zip';
-            const assetName = 'ChromeExtension.zip';
-            const assetContentType = 'application/zip'; 
-            const data = require('fs').readFileSync(assetPath);
-            console.log(`Uploading asset ${assetPath} to release ${releaseId}`);
-            console.log(`Release published: https://github.com/${owner}/${repo}/releases/tag/${releaseId}`);
-            release = await github.rest.repos.updateRelease({
-              owner,
-              repo,
-              release_id: releaseId,
-              draft: false,
-            });
-            await github.rest.repos.uploadReleaseAsset({
-              owner,
-              repo,
-              release_id: releaseId,
-              name: assetName,
-              data,
-            });
-            console.log('Asset uploaded');
