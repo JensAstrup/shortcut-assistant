@@ -18,6 +18,7 @@ env:
 
 jobs:
   prepare-release-assets:
+    if: github.event.action == 'opened' || github.event.action == 'synchronize'
     runs-on: ubuntu-latest
     outputs:
       upload_url: ${{ steps.draft_release.outputs.upload_url }}
