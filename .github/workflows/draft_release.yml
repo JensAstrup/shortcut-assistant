@@ -92,7 +92,6 @@ jobs:
             script({ github, context, core });
 
   upload-release-asset:
-    needs: prepare-release-assets
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged == true
     steps:
