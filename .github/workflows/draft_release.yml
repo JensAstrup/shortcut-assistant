@@ -1,9 +1,13 @@
 name: Release Version
 
 on:
-  push:
+  pull_request:
     branches:
       - main
+    types:
+      - opened
+      - closed
+      - synchronize
 
 permissions:
   contents: write
@@ -36,11 +40,12 @@ jobs:
         id: extract_tag
         run: echo "VERSION=${{ github.event.pull_request.title }}" >> $GITHUB_ENV
 
-      - name: Add API_KEY to .env
+      - name: Add API_SECRET and VERSION to .env
         run: |
+          echo VERSION=${{ github.event.pull_request.title }} >> .env
           echo GOOGLE_ANALYTICS_API_SECRET=${{ secrets.GOOGLE_ANALYTICS_API_SECRET }} >> .env
 
-      - name: Build extension assets
+      - name: Build extension
         env:
           NODE_ENV: development
           VERSION: ${{ env.VERSION }}
@@ -66,7 +71,9 @@ jobs:
           yarn install --production
           yarn run dist
         env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           VERSION: ${{ env.VERSION }}
+          SENTRY_RELEASE: "shortcut-assistant@${{ env.VERSION }}"
 
       - name: Upload dist.zip as an artifact
         uses: actions/upload-artifact@v3
@@ -75,12 +82,13 @@ jobs:
           path: dist/dist.zip
 
       - name: Create or update draft release
-        uses: actions/github-script@v7
+        id: draft_release
+        uses: actions/github-script@v6
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-              const script = require('./.github/scripts/createOrUpdateDraftRelease.js');
-              script({ github, context, core });
+            const script = require('./.github/scripts/create-or-update-draft-release.js');
+            script({ github, context, core });
 
   upload-release-asset:
     needs: prepare-release-assets
