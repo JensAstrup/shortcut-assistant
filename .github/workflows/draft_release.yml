@@ -33,7 +33,9 @@ jobs:
 
       - name: Extract tag name
         id: extract_tag
-        run: echo "VERSION=${{ github.event.pull_request.title }}" >> $GITHUB_ENV
+        run: | 
+         echo "VERSION=${{ github.event.pull_request.title }}" >> $GITHUB_ENV
+         echo GOOGLE_ANALYTICS_API_SECRET=${{ secrets.GOOGLE_ANALYTICS_API_SECRET }} >> .env
 
       - name: Build and zip the extension
         run: |
