@@ -86,9 +86,6 @@ Standard: `MAJOR.MINOR.PATCH`
 
 **Patch**: Bug fixes or internal changes not affecting the user experience
 
-To increment the version, update the `VERSION` variable in the `.env` file along with the `SENTRY_RELEASE` variable.
-Then run `npm run manifest` to propagate the changes to the `manifest.json` file.
-
 ## Authors
 
 - **Jens Astrup** - [JensAstrup](https://github.com/JensAstrup)
