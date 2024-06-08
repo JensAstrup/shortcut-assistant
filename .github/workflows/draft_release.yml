@@ -43,6 +43,7 @@ jobs:
       - name: Build extension assets
         env:
           NODE_ENV: development
+          VERSION: ${{ env.VERSION }}
         run: |
           mkdir dist
           cd src
