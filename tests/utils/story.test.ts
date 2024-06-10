@@ -41,7 +41,6 @@ jest.spyOn(Workspace, 'states').mockResolvedValue({
 })
 
 
-
 describe('Story.isReady', () => {
   const originalDocumentQuerySelector = document.querySelector
   beforeEach(() => {
@@ -49,7 +48,7 @@ describe('Story.isReady', () => {
     jest.mock('@sx/utils/sleep', () => jest.fn().mockResolvedValue(undefined))
 
     document.querySelector = jest.fn((selector) => {
-      if (selector === '.story-name') {
+      if (selector === '.story-name' || selector === '.historical-change-v2') {
         return {}
       }
       else if (selector === '#story-description-v2') {
@@ -73,12 +72,13 @@ describe('Story.isReady', () => {
 
   it('should keep checking for story title until it is found', async () => {
     document.querySelector = jest.fn().mockReturnValue(null)
-    const result = await Story.isReady()
-    expect(result).toBe(false)
+    await expect(Story.isReady()).rejects.toThrow('Story page did not load in time')
     // eslint-disable-next-line no-magic-numbers
-    expect(document.querySelector).toHaveBeenNthCalledWith(9, '.story-name')
-    // 10 calls to document.querySelector for story title and historical changes, each, plus the initial call
-    const EXPECTED_CALLS = 22
+    expect(document.querySelector).toHaveBeenNthCalledWith(7, '.story-name')
+    expect(document.querySelector).toHaveBeenNthCalledWith(8, '#story-description-v2')
+    expect(document.querySelector).toHaveBeenNthCalledWith(9, '.historical-change-v2')
+    // 20 calls to document.querySelector for story title, description, and historical changes, each, plus the initial call
+    const EXPECTED_CALLS = 63
     expect(document.querySelector).toHaveBeenCalledTimes(EXPECTED_CALLS)
   })
 })
