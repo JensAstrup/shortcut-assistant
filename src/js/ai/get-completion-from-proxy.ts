@@ -40,7 +40,7 @@ export default async function getCompletionFromProxy(description: string, type: 
     response = await fetch(url, {
       method: 'POST',
       body: JSON.stringify({
-        description: description,
+        content: description,
         instanceId: instanceId,
         promptType: type,
       }),
