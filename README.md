@@ -1,9 +1,9 @@
 # Shortcut Assistant
 
-[![codecov](https://codecov.io/gh/JensAstrup/shortcut-assistant/graph/badge.svg?token=BNRO19POX5)](https://codecov.io/gh/JensAstrup/shortcut-assistant)
-[![Status Page](https://img.shields.io/website?url=https%3A%2F%2Fstatus.jensastrup.io%2F&label=Status%20Page)](https://status.jensastrup.io/)
-[![Chrome Web Store Version](https://img.shields.io/chrome-web-store/v/kmdlofehocppnlkpokdbiaalcelhedef)](https://chromewebstore.google.com/detail/shortcut-assistant/kmdlofehocppnlkpokdbiaalcelhedef?hl=en&authuser=0)
-[![Chrome Web Store Users](https://img.shields.io/chrome-web-store/users/kmdlofehocppnlkpokdbiaalcelhedef)](https://chromewebstore.google.com/detail/shortcut-assistant/kmdlofehocppnlkpokdbiaalcelhedef?hl=en&authuser=0)
+[![Codecov](https://img.shields.io/codecov/c/github/JensAstrup/shortcut-assistant?style=for-the-badge&link=https%3A%2F%2Fapp.codecov.io%2Fgh%2FJensAstrup%2Fshortcut-assistant)](https://app.codecov.io/gh/JensAstrup/shortcut-assistant)
+[![Status Page](https://img.shields.io/website?style=for-the-badge&url=https%3A%2F%2Fstatus.jensastrup.io%2F&label=Status%20Page)](https://status.jensastrup.io/)
+[![Chrome Web Store Version](https://img.shields.io/chrome-web-store/v/kmdlofehocppnlkpokdbiaalcelhedef?style=for-the-badge&)](https://chromewebstore.google.com/detail/shortcut-assistant/kmdlofehocppnlkpokdbiaalcelhedef?hl=en&authuser=0)
+[![Chrome Web Store Users](https://img.shields.io/chrome-web-store/users/kmdlofehocppnlkpokdbiaalcelhedef?style=for-the-badge&)](https://chromewebstore.google.com/detail/shortcut-assistant/kmdlofehocppnlkpokdbiaalcelhedef?hl=en&authuser=0)
 
 Shortcut Assistant is a Chrome extension that adds various additional features to Shortcut.
 
