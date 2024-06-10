@@ -14,6 +14,18 @@ import sleep from './sleep'
 
 
 export class Story {
+  private static storyTitleLoaded(): boolean {
+    return document.querySelector('.story-name') !== null
+  }
+
+  private static storyDescriptionLoaded(): boolean {
+    return document.querySelector('#story-description-v2') !== null
+  }
+
+  private static historicalActivityLoaded(): boolean {
+    return document.querySelector('.historical-change-v2') !== null
+  }
+
   /**
    * Waits for the story title/name and historical activity (such as the story being created) to be
    * present on the page which indicates that the page is ready.
@@ -21,15 +33,19 @@ export class Story {
    * and false if the page is not ready after 10 seconds.
    **/
   static async isReady(loop: number = 0): Promise<boolean> {
-    const WAIT_FOR_PAGE_TO_LOAD_TIMEOUT: number = 1_000
-    const MAX_ATTEMPTS: number = 10
-    const storyTitle: Element | null = document.querySelector('.story-name')
-    const storyDescription: Element | null = document.querySelector('#story-description-v2')
-    const storyDescriptionText: string | null | undefined = storyDescription?.textContent
-    if ((storyTitle !== null && storyDescriptionText) || loop >= MAX_ATTEMPTS) {
-      return storyTitle !== null
+    const WAIT_FOR_PAGE_TO_LOAD_TIMEOUT: number = 300
+    const MAX_ATTEMPTS: number = 20
+    const storyTitleReady: boolean = this.storyTitleLoaded()
+    const storyDescriptionReady: boolean = this.storyDescriptionLoaded()
+    const historyActivityReady: boolean = this.historicalActivityLoaded()
+    if (storyTitleReady && storyDescriptionReady && historyActivityReady) {
+      return true
     }
-    await sleep(loop * WAIT_FOR_PAGE_TO_LOAD_TIMEOUT)
+    if (loop >= MAX_ATTEMPTS) {
+      throw new Error('Story page did not load in time')
+    }
+    const HALF_LOOP = 0.5
+    await sleep((loop * HALF_LOOP) * WAIT_FOR_PAGE_TO_LOAD_TIMEOUT)
     return this.isReady(loop + 1)
   }
 
