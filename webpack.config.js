@@ -1,9 +1,14 @@
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const path = require('path')
 
+// eslint-disable-next-line import/order,@typescript-eslint/no-var-requires
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config()
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const Dotenv = require('dotenv-webpack')
+// eslint-disable-next-line import/order,@typescript-eslint/no-var-requires
 const { sentryWebpackPlugin } = require('@sentry/webpack-plugin')
 
 
