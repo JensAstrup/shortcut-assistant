@@ -1,0 +1,11 @@
+codecov:
+  require_ci_to_pass: true
+coverage:
+  status:
+    project:
+      default:
+        target: auto
+        informational: true
+comment:
+  layout: "reach, diff, flags, files"
+  behavior: default

@@ -34,6 +34,11 @@ export class Popup {
       await chrome.action.setBadgeText({ text: '' })
     })
 
+    const newAiFeatures = document.getElementById('newAiFeatures')
+    if (process.env.NEW_AI_FEATURES_ENABLED !== 'true') {
+      newAiFeatures?.classList.add('hidden')
+    }
+
     sendEvent('popup_view').catch((e) => {
       console.error(e)
       scope.captureException(e)

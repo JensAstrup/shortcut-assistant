@@ -32,11 +32,10 @@
             Save
         </button>
     </div>
-
 </div>
 
-<div id="settingsSection" class="hidden pt-4 mb-4"  style="margin-bottom: 10px">
-    <div class="flex items-center form-control"  style="margin-bottom: 10px" >
+<div id="settingsSection" class="hidden pt-4 mb-4" style="margin-bottom: 10px">
+    <div class="flex items-center form-control" style="margin-bottom: 10px">
         <label for="todoistOptions" class="text-white font-bold">
         <input type="checkbox" id="todoistOptions" class="checkbox checkbox-xs" checked>
             <span class="label-text">&nbsp;Todoist Shortcuts</span>
@@ -50,19 +49,37 @@
             </button>
         </div>
     </div>
+        <div class="divider"></div>
+
+    <div class="flex items-center" id="newAiFeatures">
+        <input id="shortcutToken" type="password" class="input input-sm input-bordered flex mr-4 mb-2" placeholder="Shortcut API Key">
+    </div>
+    <p class="text-gray-400 text-xs mb-2">
+        This is required to enable advanced AI features. For added security, you must click "Authenticate" to log in with Google before we will save the Shortcut API Key on our end.
+    </p>
+    <div class="flex items-center">
+        <div class="text-right">
+            <button style="margin-bottom: 10px; margin-top: 5px" id="oauth" class="btn btn-outline btn-xs">
+                Authenticate
+            </button>
+            <button style="margin-bottom: 10px; margin-top: 5px" id="saveShortcutToken" class="btn btn-outline btn-xs">
+                Save
+            </button>
+        </div>
+    </div>
 </div>
 
 <div id="infoSection" class="hidden flex flex-col w-full" style="margin-bottom: 10px">
-      <div class="text-center mt-4">
-          <h3 class="text-lg font-bold text-white mb-2">Keyboard Shortcuts</h3>
-          <span class="text-gray-400">Windows: Replace Cmd with Ctrl</span>
-          <br/>
-          <kbd class="kbd">Cmd</kbd> + <kbd class="kbd">Shift</kbd> + <kbd class="kbd">S</kbd> - Change State<br>
-          <kbd class="kbd">Cmd</kbd> + <kbd class="kbd">Shift</kbd> + <kbd class="kbd">I</kbd> - Change Iteration<br>
-          <kbd class="kbd">Cmd</kbd> + <kbd class="kbd">Shift</kbd> + <kbd class="kbd">E</kbd> - Change Estimate<br>
-          <kbd class="kbd">Cmd</kbd> + <kbd class="kbd">Shift</kbd> + <kbd class="kbd">G</kbd> - Copy Branch Name<br>
-          <kbd class="kbd">Cmd</kbd> + <kbd class="kbd">Shift</kbd> + <kbd class="kbd">.</kbd><br>Copy Branch & Move to In Development<br>
-      </div>
+    <div class="text-center mt-4">
+        <h3 class="text-lg font-bold text-white mb-2">Keyboard Shortcuts</h3>
+        <span class="text-gray-400">Windows: Replace Cmd with Ctrl</span>
+        <br/>
+        <kbd class="kbd">Cmd</kbd> + <kbd class="kbd">Shift</kbd> + <kbd class="kbd">S</kbd> - Change State<br>
+        <kbd class="kbd">Cmd</kbd> + <kbd class="kbd">Shift</kbd> + <kbd class="kbd">I</kbd> - Change Iteration<br>
+        <kbd class="kbd">Cmd</kbd> + <kbd class="kbd">Shift</kbd> + <kbd class="kbd">E</kbd> - Change Estimate<br>
+        <kbd class="kbd">Cmd</kbd> + <kbd class="kbd">Shift</kbd> + <kbd class="kbd">G</kbd> - Copy Branch Name<br>
+        <kbd class="kbd">Cmd</kbd> + <kbd class="kbd">Shift</kbd> + <kbd class="kbd">.</kbd> - Copy Branch & Move to In Development<br>
+    </div>
     <div class="divider"></div>
     <div class="text-center mb-4">
         <h3 class="text-lg font-bold text-white mb-2">Extension Information</h3>
@@ -78,8 +95,6 @@
         <a href="https://shortcut-assistant.jensastrup.io/privacy" target="_blank" class="btn btn-outline btn-xs mb-2">Privacy Policy</a>
     </div>
 </div>
-
-
 </body>
 <script type="module" src="../js/popup/bundle.js"></script>
 <script type="module" src="../js/analyze/analyze.js"></script>
