@@ -4,15 +4,15 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 require('dotenv').config()
 const Dotenv = require('dotenv-webpack')
-const {sentryWebpackPlugin} = require('@sentry/webpack-plugin')
+const { sentryWebpackPlugin } = require('@sentry/webpack-plugin')
 
 
 const copyConfig = new CopyWebpackPlugin({
   patterns: [
-    {from: './src/manifest.json', to: 'manifest.json'},
-    {from: './src/assets', to: 'assets'},
-    {from: './src/styles', to: 'styles'},
-    {from: './src/html', to: 'html'},
+    { from: './src/manifest.json', to: 'manifest.json' },
+    { from: './src/assets', to: 'assets' },
+    { from: './src/styles', to: 'styles' },
+    { from: './src/html', to: 'html' },
   ]
 })
 
@@ -26,12 +26,14 @@ module.exports = {
     'js/popup/bundle': [
       './src/js/popup/popup.ts',
       './src/js/popup/notes-popup.ts',
-      './src/js/popup/initializer.ts'
+      './src/js/popup/initializer.ts',
+      './src/js/oauth/oauth.ts',
     ],
     'js/service_worker/bundle': [
       './src/js/service-worker/service-worker.ts',
       './src/js/service-worker/omnibox/listeners.ts',
-      './src/js/service-worker/listeners'
+      './src/js/service-worker/listeners',
+      './src/js/oauth/service-worker/oauth.ts'
     ],
     'js/contentScripts/bundle': [
       './src/js/content-scripts.ts',

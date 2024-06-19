@@ -63,13 +63,21 @@
     "48": "assets/assistant.png",
     "128": "assets/assistant.png"
   },
+  "key": "__EXTENSION_KEY__",
   "manifest_version": 3,
   "name": "Shortcut Assistant",
+  "oauth2": {
+    "client_id": "__GOOGLE_CLIENT_ID__",
+    "scopes": [
+      ""
+    ]
+  },
   "omnibox": { "keyword" : "sc" },
   "permissions": [
     "activeTab",
     "clipboardWrite",
     "commands",
+    "identity",
     "storage",
     "tabs"
   ],

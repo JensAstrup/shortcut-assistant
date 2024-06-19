@@ -1,21 +1,18 @@
 import { sendEvent } from '@sx/analytics/event'
-import { AiPromptType } from '@sx/analyze/types/ai-prompt-type'
 import {
   handleGetSavedNotes,
   handleOpenAICall
 } from '@sx/service-worker/handlers'
+import IpcRequest from '@sx/types/ipc-request'
 import scope from '@sx/utils/sentry'
+import '@sx/oauth/service-worker/oauth'
 
 
-type Request = {
-  action?: string
-  data?: { eventName?: string, params?: Record<string, string>, prompt: string, type: AiPromptType }
-  message?: string
-}
+
 
 function registerAiListeners(): void {
-  chrome.runtime.onMessage.addListener((request: Request, sender: chrome.runtime.MessageSender, sendResponse: (response: unknown) => void) => {
-    if (request.action === 'callOpenAI' && request.data) {
+  chrome.runtime.onMessage.addListener((request: IpcRequest, sender: chrome.runtime.MessageSender, sendResponse: (response: unknown) => void) => {
+    if (request.action === 'callOpenAI') {
       if (!sender.tab || !sender.tab.id) {
         return
       }
@@ -26,7 +23,7 @@ function registerAiListeners(): void {
 }
 
 function registerNotesListeners(): void {
-  chrome.runtime.onMessage.addListener((request: Request, sender: chrome.runtime.MessageSender, sendResponse: (response: unknown) => void) => {
+  chrome.runtime.onMessage.addListener((request: IpcRequest, sender: chrome.runtime.MessageSender, sendResponse: (response: unknown) => void) => {
     if (request.action === 'getSavedNotes') {
       handleGetSavedNotes().then(sendResponse)
       return true
@@ -35,9 +32,8 @@ function registerNotesListeners(): void {
 }
 
 function registerAnalyticsListeners(): void {
-  chrome.runtime.onMessage.addListener((request: Request) => {
+  chrome.runtime.onMessage.addListener((request: IpcRequest) => {
     if (request.action === 'sendEvent') {
-      if (!request.data || !request.data.eventName) return true
       sendEvent(request.data.eventName, request.data.params).catch((e) => {
         console.error('Error sending event:', e)
         scope.captureException(e)
@@ -53,6 +49,5 @@ function registerListeners(): void {
 }
 
 export { registerAiListeners, registerAnalyticsListeners, registerNotesListeners }
-export default registerListeners
 
 registerListeners()

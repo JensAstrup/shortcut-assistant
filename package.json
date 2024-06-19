@@ -11,7 +11,7 @@
     "test-coverage": "TZ='UTC' jest --coverage --config jest.config.js",
     "lint": "eslint --ext .ts src",
     "lint-fix": "eslint --ext .ts src --fix",
-    "build": "node src/build-manifest.ts",
+    "build": "ts-node src/build-manifest.ts",
     "dist": "npx webpack && cp -r node_modules build/ && cd build && zip -r ../dist/dist.zip . -x \"coverage*\" \"*/*.test.js\""
   },
   "devDependencies": {
@@ -44,7 +44,6 @@
     "postcss-cli": "11.0.0",
     "postcss-import": "16.1.0",
     "tailwindcss": "3.4.3",
-    "ts-jest": "^29.1.2",
     "ts-loader": "^9.5.1",
     "typescript": "^5.4.3",
     "webpack": "^5.90.3",

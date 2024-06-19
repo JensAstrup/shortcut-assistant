@@ -1,7 +1,7 @@
-import {sendEvent} from '@sx/analytics/event'
-import {NotesPopup} from '@sx/popup/notes-popup'
-import {Popup} from '@sx/popup/popup'
-import {getSyncedSetting} from '@sx/utils/get-synced-setting'
+import { sendEvent } from '@sx/analytics/event'
+import { NotesPopup } from '@sx/popup/notes-popup'
+import { Popup } from '@sx/popup/popup'
+import { getSyncedSetting } from '@sx/utils/get-synced-setting'
 import scope from '@sx/utils/sentry'
 import sleep from '@sx/utils/sleep'
 
@@ -28,9 +28,14 @@ global.chrome = {
 }
 
 
-const mockElement = (options = {}) => {
+const mockElement = (options = {}): object => {
   return {
     addEventListener: jest.fn(),
+    classList: {
+      add: jest.fn(),
+      remove: jest.fn(),
+      contains: jest.fn(() => false)
+    },
     click: jest.fn(),
     querySelector: jest.fn(() => ({
       style: {
@@ -46,7 +51,6 @@ describe('Popup', () => {
   let getElementById: jest.SpyInstance
 
   beforeEach(() => {
-
     // @ts-expect-error Migrating from JS
     getElementById = jest.spyOn(document, 'getElementById').mockImplementation((id) => {
       return mockElement({
@@ -91,7 +95,21 @@ describe('Popup', () => {
     expect(() => new Popup()).toThrow(expected)
   })
 
-  test('sendEvent is called on window load', async () => {
+  it('hides newAiFeatures if NEW_AI_FEATURES_ENABLED is not true', () => {
+    process.env.NEW_AI_FEATURES_ENABLED = 'false'
+    const mockNewAiFeatures = { classList: { add: jest.fn() } }
+    document.getElementById = jest.fn().mockImplementation((id) => {
+      if (id === 'newAiFeatures') {
+        return mockNewAiFeatures
+      }
+      return mockElement()
+    })
+
+    popup = new Popup()
+    expect(mockNewAiFeatures.classList.add).toHaveBeenCalledWith('hidden')
+  })
+
+  test('sendEvent is called on window load', (): void => {
     mockedSendEvent.mockResolvedValue(undefined)
     popup = new Popup()
     window.dispatchEvent(new Event('load'))
@@ -113,23 +131,23 @@ describe('Popup', () => {
 
   test('setOpenAIToken sets token in chrome storage', async () => {
     await popup.setOpenAIToken('test-token')
-    expect(chrome.storage.local.set).toHaveBeenCalledWith({openAIToken: 'test-token'})
+    expect(chrome.storage.local.set).toHaveBeenCalledWith({ openAIToken: 'test-token' })
   })
 
   test('saveOptions sets options in chrome storage', async () => {
     // @ts-expect-error Migrating from JS
-    popup.todoistCheckbox = {checked: true}
+    popup.todoistCheckbox = { checked: true }
     await popup.saveOptions()
-    expect(chrome.storage.sync.set).toHaveBeenCalledWith({enableTodoistOptions: true})
+    expect(chrome.storage.sync.set).toHaveBeenCalledWith({ enableTodoistOptions: true })
   })
 
   test('saveButtonClicked', async () => {
     // @ts-expect-error Migrating from JS
     popup.saveButton = {
       disabled: false,
-      get textContent() {
+      get textContent(): string {
         // @ts-expect-error Migrating from JS
-        return this._textContent
+        return <string> this._textContent
       },
       set textContent(value) {
         // @ts-expect-error Migrating from JS
@@ -152,7 +170,6 @@ describe('Popup', () => {
     expect(popup.saveButton.textChanges).toContain('Saved!')
     // @ts-expect-error Migrating from JS
     expect(popup.saveButton.textChanges).toContain('Save')
-
   })
 
   test('setSectionDisplay', () => {
@@ -166,11 +183,11 @@ describe('Popup', () => {
     tabToShow.dispatchEvent(new Event('click'))
 
     expect(sectionToShow.classList.contains('hidden')).toBeFalsy()
-    sectionsToHide.forEach(section => {
+    sectionsToHide.forEach((section) => {
       expect(section.classList.contains('hidden')).toBeTruthy()
     })
     expect(tabToShow.classList.contains('tab-active')).toBeTruthy()
-    tabsToHide.forEach(tab => {
+    tabsToHide.forEach((tab) => {
       expect(tab.classList.contains('tab-active')).toBeFalsy()
     })
   })
@@ -181,11 +198,11 @@ describe('handleNewVersionBadge', () => {
     document.getElementById = jest.fn().mockImplementation((id) => {
       if (id === 'infoTab') {
         return {
-          querySelector: jest.fn().mockReturnValue({style: {display: ''}})
+          querySelector: jest.fn().mockReturnValue({ style: { display: '' } })
         }
       }
       else if (id === 'whatsNewBadge') {
-        return {style: {display: ''}}
+        return { style: { display: '' } }
       }
       else {
         return mockElement()
@@ -238,7 +255,7 @@ describe('handleNewVersionBadge', () => {
     await popup.handleNewVersionBadge()
 
     const infoTab = document.getElementById('infoTab') as HTMLAnchorElement
-    const tabBadge = infoTab!.querySelector('.badge')
+    const tabBadge = infoTab.querySelector('.badge')
     const whatsNewBadge = document.getElementById('whatsNewBadge')
 
     // @ts-expect-error Style does exist
@@ -261,12 +278,11 @@ describe('handleNewVersionBadge', () => {
 
     const popup = new Popup()
     await expect(popup.handleNewVersionBadge()).rejects.toThrow('whatsNewBadge not found')
-
   })
 })
 
 describe('popupLoaded', () => {
-  let mockVersionSpan: {textContent: string}
+  let mockVersionSpan: { textContent: string }
 
   beforeEach(() => {
     // @ts-expect-error Migrating from JS
