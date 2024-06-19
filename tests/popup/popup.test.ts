@@ -109,14 +109,14 @@ describe('Popup', () => {
     expect(mockNewAiFeatures.classList.add).toHaveBeenCalledWith('hidden')
   })
 
-  test('sendEvent is called on window load', (): void => {
+  it('sendEvent is called on window load', (): void => {
     mockedSendEvent.mockResolvedValue(undefined)
     popup = new Popup()
     window.dispatchEvent(new Event('load'))
     expect(mockedSendEvent).toHaveBeenCalledWith('popup_view')
   })
 
-  test('sendEvent is called on window load, logs errors', async () => {
+  it('is called on window load, logs errors', async () => {
     console.error = jest.fn()
     const error = new Error('test error')
     mockedSendEvent.mockRejectedValue(error)
@@ -129,19 +129,19 @@ describe('Popup', () => {
     expect(scope.captureException).toHaveBeenCalled()
   })
 
-  test('setOpenAIToken sets token in chrome storage', async () => {
+  it('setOpenAIToken sets token in chrome storage', async () => {
     await popup.setOpenAIToken('test-token')
     expect(chrome.storage.local.set).toHaveBeenCalledWith({ openAIToken: 'test-token' })
   })
 
-  test('saveOptions sets options in chrome storage', async () => {
+  it('saveOptions sets options in chrome storage', async () => {
     // @ts-expect-error Migrating from JS
     popup.todoistCheckbox = { checked: true }
     await popup.saveOptions()
     expect(chrome.storage.sync.set).toHaveBeenCalledWith({ enableTodoistOptions: true })
   })
 
-  test('saveButtonClicked', async () => {
+  it('saveButtonClicked', async () => {
     // @ts-expect-error Migrating from JS
     popup.saveButton = {
       disabled: false,
@@ -172,7 +172,7 @@ describe('Popup', () => {
     expect(popup.saveButton.textChanges).toContain('Save')
   })
 
-  test('setSectionDisplay', () => {
+  it('setSectionDisplay', () => {
     const tabToShow = document.createElement('div')
     const sectionToShow = document.createElement('div')
     const tabsToHide = [document.createElement('div'), document.createElement('div')]
@@ -408,7 +408,7 @@ describe('popupLoaded', () => {
     await expect(popup.popupLoaded()).rejects.toThrow(expected)
   })
 
-  test('throws new error if versionSpan is not found', async () => {
+  it('throws new error if versionSpan is not found', async () => {
     mockedGetSyncedSetting.mockResolvedValueOnce(false)
     const popup = new Popup()
     popup.handleNewVersionBadge = jest.fn().mockResolvedValue(null)
@@ -434,7 +434,7 @@ describe('popupLoaded', () => {
     expect(popup.handleNewVersionBadge).toHaveBeenCalled()
   })
 
-  test('popupLoaded sets up correctly with todoist disabled', async () => {
+  it('sets up correctly with todoist disabled', async () => {
     mockedGetSyncedSetting.mockResolvedValueOnce(false)
     const popup = new Popup()
     popup.handleNewVersionBadge = jest.fn().mockResolvedValue(null)
