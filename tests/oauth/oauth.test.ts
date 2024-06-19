@@ -32,7 +32,7 @@ describe('handleOAuthButton', () => {
     jest.clearAllMocks()
   })
 
-  test('should log error if button is not found', () => {
+  it('should log error if button is not found', () => {
     document.body.innerHTML = '' // Clear the button
     const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {})
 
@@ -42,12 +42,12 @@ describe('handleOAuthButton', () => {
     consoleErrorSpy.mockRestore()
   })
 
-  test('should add click event listener to the button', () => {
+  it('should add click event listener to the button', () => {
     expect(button).not.toBeNull()
     expect(addEventListenerSpy).toHaveBeenCalledWith('click', expect.any(Function))
   })
 
-  test('should call chrome.identity.getAuthToken when button is clicked', () => {
+  it('should call chrome.identity.getAuthToken when button is clicked', () => {
     const getAuthTokenMock = global.chrome.identity.getAuthToken as jest.Mock
 
     button?.click()
@@ -55,7 +55,7 @@ describe('handleOAuthButton', () => {
     expect(getAuthTokenMock).toHaveBeenCalledWith({ interactive: true }, expect.any(Function))
   })
 
-  test('should log chrome.runtime.lastError if present', () => {
+  it('should log chrome.runtime.lastError if present', () => {
     const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {})
     global.chrome.runtime.lastError = new Error('Test Error')
 
@@ -70,7 +70,7 @@ describe('handleOAuthButton', () => {
     consoleErrorSpy.mockRestore()
   })
 
-  test('should log error if no token is received', () => {
+  it('should log error if no token is received', () => {
     const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {})
     global.chrome.runtime.lastError = undefined
 
@@ -85,7 +85,7 @@ describe('handleOAuthButton', () => {
     consoleErrorSpy.mockRestore()
   })
 
-  test('should send message with token', () => {
+  it('should send message with token', () => {
     const token = 'test-token'
     global.chrome.runtime.lastError = undefined
 
