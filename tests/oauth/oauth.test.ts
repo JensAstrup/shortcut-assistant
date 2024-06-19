@@ -2,7 +2,6 @@ import { handleOAuthButton } from '@sx/oauth/oauth'
 import { IpcRequestSaveUserToken } from '@sx/types/ipc-request'
 
 
-// Mock chrome APIs
 global.chrome = {
   ...global.chrome,
   identity: {
