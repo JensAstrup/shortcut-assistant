@@ -4,12 +4,17 @@ const path = require('path')
 // eslint-disable-next-line import/order,@typescript-eslint/no-var-requires
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-require('dotenv').config()
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const Dotenv = require('dotenv-webpack')
 // eslint-disable-next-line import/order,@typescript-eslint/no-var-requires
 const { sentryWebpackPlugin } = require('@sentry/webpack-plugin')
+
+
+const envFile = process.env.NODE_ENV === 'development' ? './.local.env' : './.env'
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+require('dotenv').config({ path: envFile })
+
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const Dotenv = require('dotenv-webpack')
 
 
 const copyConfig = new CopyWebpackPlugin({
@@ -22,9 +27,8 @@ const copyConfig = new CopyWebpackPlugin({
 })
 
 module.exports = {
-  mode: 'production',
-
-  devtool: 'source-map',
+  mode: process.env.NODE_ENV === 'development' ? 'development' : 'production',
+  devtool: process.env.NODE_ENV === 'development' ? 'inline-source-map' : 'source-map',
 
   entry: {
     'js/analyze/analyze': './src/js/analyze/listeners.ts',
@@ -77,7 +81,8 @@ module.exports = {
     extensions: ['.tsx', '.ts', '.js']
   },
 
-  plugins: [new Dotenv(),
+  plugins: [
+    new Dotenv({ path: envFile }),
     copyConfig,
     sentryWebpackPlugin({
       authToken: process.env.SENTRY_AUTH_TOKEN,

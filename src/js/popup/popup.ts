@@ -15,20 +15,24 @@ export class Popup {
   private todoistCheckbox: HTMLInputElement
   private saveButton: HTMLButtonElement
   private changelogButton: HTMLButtonElement
+  private saveShortcutToken: HTMLButtonElement
 
   constructor() {
     const todoistCheckbox = document.getElementById('todoistOptions') as HTMLInputElement | null
     const saveButton = document.getElementById('saveKeyButton') as HTMLButtonElement | null
+    const saveShortcutToken = document.getElementById('saveShortcutToken') as HTMLButtonElement | null
     const changelogButton = document.getElementById('changelog') as HTMLButtonElement | null
 
-    if (saveButton === null || todoistCheckbox === null || changelogButton === null) {
-      throw new Error('saveButton, todoistCheckbox, or changelogButton not found')
+    if (saveButton === null || todoistCheckbox === null || changelogButton === null || saveShortcutToken === null) {
+      throw new Error('saveButton, todoistCheckbox, changelogButton, or saveShortcutToken not found')
     }
 
     this.todoistCheckbox = todoistCheckbox
     this.saveButton = saveButton
+    this.saveShortcutToken = saveShortcutToken
     this.changelogButton = changelogButton
     this.saveButton.addEventListener('click', this.saveButtonClicked.bind(this))
+    this.saveShortcutToken.addEventListener('click', this.saveShortcutTokenButtonClicked.bind(this))
 
     this.changelogButton.addEventListener('click', async () => {
       await chrome.action.setBadgeText({ text: '' })
@@ -53,24 +57,37 @@ export class Popup {
     await chrome.storage.local.set({ openAIToken: token })
   }
 
+  async setShortcutApiToken(token: string): Promise<void> {
+    await chrome.storage.sync.set({ shortcutApiToken: token })
+  }
+
   async saveOptions(): Promise<void> {
     const enableTodoistOptions = this.todoistCheckbox.checked
     await chrome.storage.sync.set({ enableTodoistOptions: enableTodoistOptions })
   }
 
-  async saveButtonClicked(): Promise<void> {
-    this.saveButton.disabled = true
-    const openAITokenInput = document.getElementById('openAIToken') as HTMLInputElement
-    const openAIToken = openAITokenInput.value
-    if (openAIToken !== '') {
-      await this.setOpenAIToken(openAIToken)
+  async handleSaveButtonClick(button: HTMLButtonElement, input: HTMLInputElement, saveFunction: (value: string) => Promise<void>): Promise<void> {
+    button.disabled = true
+    const inputValue = input.value
+    if (inputValue !== '') {
+      await saveFunction(inputValue)
     }
     await this.saveOptions()
-    this.saveButton.disabled = false
-    this.saveButton.textContent = 'Saved!'
+    button.disabled = false
+    button.textContent = 'Saved!'
     const THREE_SECONDS = 3000
     await sleep(THREE_SECONDS)
-    this.saveButton.textContent = 'Save'
+    button.textContent = 'Save'
+  }
+
+  async saveButtonClicked(): Promise<void> {
+    const openAITokenInput = document.getElementById('openAIToken') as HTMLInputElement
+    await this.handleSaveButtonClick(this.saveButton, openAITokenInput, this.setOpenAIToken.bind(this))
+  }
+
+  async saveShortcutTokenButtonClicked(): Promise<void> {
+    const shortcutTokenInput = document.getElementById('shortcutToken') as HTMLInputElement
+    await this.handleSaveButtonClick(this.saveShortcutToken, shortcutTokenInput, this.setShortcutApiToken.bind(this))
   }
 
   setSectionDisplay(tabToShow: HTMLElement, sectionToShow: HTMLElement, tabsToHide: HTMLElement[], sectionsToHide: HTMLElement[]): void {
