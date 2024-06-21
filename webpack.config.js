@@ -8,10 +8,18 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const { sentryWebpackPlugin } = require('@sentry/webpack-plugin')
 
 
-const envFile = process.env.NODE_ENV === 'development' ? './.local.env' : './.env'
+const envFiles = {
+  development: './.env.local',
+  staging: './.env.staging',
+  production: './.env'
+}
+
+const envFile = envFiles[process.env.NODE_ENV] || './.env'
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config({ path: envFile })
 
+
+process.env.SENTRY_RELEASE = process.env.VERSION
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const Dotenv = require('dotenv-webpack')
