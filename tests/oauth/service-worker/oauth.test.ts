@@ -26,6 +26,14 @@ describe('fetchUserInfo', () => {
     )
   })
 
+  it('should handle error if response is not ok', async () => {
+    const token = 'test_token'
+    const mockResponseData = { ok: false, status: 400 }
+    mockFetch.mockResolvedValueOnce(mockResponseData)
+
+    await expect(fetchUserInfo(token)).rejects.toThrow('HTTP error. Status: 400')
+  })
+
   it('should handle fetch errors gracefully', async () => {
     const token = 'test_token'
 
