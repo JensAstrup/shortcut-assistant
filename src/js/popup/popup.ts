@@ -1,4 +1,5 @@
 import { sendEvent } from '@sx/analytics/event'
+import { IpcRequestSaveUserToken } from '@sx/types/ipc-request'
 import { getSyncedSetting } from '@sx/utils/get-synced-setting'
 import scope from '@sx/utils/sentry'
 import sleep from '@sx/utils/sleep'
@@ -15,24 +16,24 @@ export class Popup {
   private todoistCheckbox: HTMLInputElement
   private saveButton: HTMLButtonElement
   private changelogButton: HTMLButtonElement
-  private saveShortcutToken: HTMLButtonElement
+  private authenticateButton: HTMLButtonElement
 
   constructor() {
     const todoistCheckbox = document.getElementById('todoistOptions') as HTMLInputElement | null
     const saveButton = document.getElementById('saveKeyButton') as HTMLButtonElement | null
-    const saveShortcutToken = document.getElementById('saveShortcutToken') as HTMLButtonElement | null
+    const authenticateButton = document.getElementById('oauth') as HTMLButtonElement | null
     const changelogButton = document.getElementById('changelog') as HTMLButtonElement | null
 
-    if (saveButton === null || todoistCheckbox === null || changelogButton === null || saveShortcutToken === null) {
-      throw new Error('saveButton, todoistCheckbox, changelogButton, or saveShortcutToken not found')
+    if (saveButton === null || todoistCheckbox === null || changelogButton === null || authenticateButton === null) {
+      throw new Error('saveButton, todoistCheckbox, changelogButton, or authenticateButton not found')
     }
 
     this.todoistCheckbox = todoistCheckbox
     this.saveButton = saveButton
-    this.saveShortcutToken = saveShortcutToken
+    this.authenticateButton = authenticateButton
     this.changelogButton = changelogButton
     this.saveButton.addEventListener('click', this.saveButtonClicked.bind(this))
-    this.saveShortcutToken.addEventListener('click', this.saveShortcutTokenButtonClicked.bind(this))
+    this.authenticateButton.addEventListener('click', this.saveShortcutTokenButtonClicked.bind(this))
 
     this.changelogButton.addEventListener('click', async () => {
       await chrome.action.setBadgeText({ text: '' })
@@ -57,8 +58,19 @@ export class Popup {
     await chrome.storage.local.set({ openAIToken: token })
   }
 
-  async setShortcutApiToken(token: string): Promise<void> {
-    await chrome.storage.sync.set({ shortcutApiToken: token })
+  async setShortcutApiToken(shortcutToken: string): Promise<void> {
+    await chrome.storage.sync.set({ shortcutApiToken: shortcutToken })
+    chrome.identity.getAuthToken({ interactive: true }, (token) => {
+      if (chrome.runtime.lastError) {
+        console.error(chrome.runtime.lastError)
+        return
+      }
+      if (!token) {
+        console.error('No token received')
+        return
+      }
+      chrome.runtime.sendMessage({ action: 'saveUserToken', data: { token } } as IpcRequestSaveUserToken)
+    })
   }
 
   async saveOptions(): Promise<void> {
@@ -66,7 +78,7 @@ export class Popup {
     await chrome.storage.sync.set({ enableTodoistOptions: enableTodoistOptions })
   }
 
-  async handleSaveButtonClick(button: HTMLButtonElement, input: HTMLInputElement, saveFunction: (value: string) => Promise<void>): Promise<void> {
+  async handleSaveButtonClick(button: HTMLButtonElement, input: HTMLInputElement, saveFunction: (value: string) => Promise<void>, savedText: string): Promise<void> {
     button.disabled = true
     const inputValue = input.value
     if (inputValue !== '') {
@@ -77,17 +89,17 @@ export class Popup {
     button.textContent = 'Saved!'
     const THREE_SECONDS = 3000
     await sleep(THREE_SECONDS)
-    button.textContent = 'Save'
+    button.textContent = savedText
   }
 
   async saveButtonClicked(): Promise<void> {
     const openAITokenInput = document.getElementById('openAIToken') as HTMLInputElement
-    await this.handleSaveButtonClick(this.saveButton, openAITokenInput, this.setOpenAIToken.bind(this))
+    await this.handleSaveButtonClick(this.saveButton, openAITokenInput, this.setOpenAIToken.bind(this), 'Save')
   }
 
   async saveShortcutTokenButtonClicked(): Promise<void> {
     const shortcutTokenInput = document.getElementById('shortcutToken') as HTMLInputElement
-    await this.handleSaveButtonClick(this.saveShortcutToken, shortcutTokenInput, this.setShortcutApiToken.bind(this))
+    await this.handleSaveButtonClick(this.authenticateButton, shortcutTokenInput, this.setShortcutApiToken.bind(this), 'Authenticate')
   }
 
   setSectionDisplay(tabToShow: HTMLElement, sectionToShow: HTMLElement, tabsToHide: HTMLElement[], sectionsToHide: HTMLElement[]): void {
