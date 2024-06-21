@@ -11,13 +11,13 @@ describe('fetchUserInfo', () => {
 
   it('should call fetch with the correct URL and headers', async (): Promise<void> => {
     const token = 'test_token'
-    const mockResponseData = { id: '123', name: 'Test User' }
-    mockFetch.mockResolvedValueOnce(JSON.stringify(mockResponseData))
+    const mockResponseData = { id: '123', name: 'Test User', ok: true, json: jest.fn() }
+    mockFetch.mockResolvedValueOnce(mockResponseData)
 
     await fetchUserInfo(token)
 
     expect(mockFetch).toHaveBeenCalledWith(
-      'https://www.googleapis.com/oauth2/v1/userinfo?alt=json',
+      'https://www.googleapis.com/oauth2/v2/userinfo',
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -31,16 +31,8 @@ describe('fetchUserInfo', () => {
 
     const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation()
     mockFetch.mockRejectedValueOnce(new Error('Test error'))
-    await fetchUserInfo(token)
+    await expect(fetchUserInfo(token)).rejects.toThrow('Test error')
     expect(mockFetch).toHaveBeenCalled()
     expect(consoleErrorSpy).toHaveBeenCalledWith('Error fetching user info:', new Error('Test error'))
-  })
-
-  it('should call sendUserToBackend with user info and token', async () => {
-    const token = 'test_token'
-    const mockResponseData = { id: '123', name: 'Test User' }
-    mockFetch.mockResolvedValueOnce(JSON.stringify(mockResponseData))
-
-    await expect(fetchUserInfo(token)).resolves.toBeUndefined()
   })
 })

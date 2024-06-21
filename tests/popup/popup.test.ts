@@ -83,7 +83,7 @@ describe('Popup', () => {
     expect(sendEvent).toHaveBeenCalledWith('popup_view')
   })
 
-  it('constructor throws an error if saveButton, todoistCheckbox, or changelogButton is not found', () => {
+  it('constructor throws an error if saveButton, todoistCheckbox, changelogButton, or saveShortcutToken not found', () => {
     document.getElementById = jest.fn().mockImplementation((id) => {
       if (id === 'saveKeyButton' || id === 'todoistOptions' || id === 'changelog') {
         return null
@@ -91,7 +91,7 @@ describe('Popup', () => {
       return mockElement()
     })
 
-    const expected = 'saveButton, todoistCheckbox, or changelogButton not found'
+    const expected = 'saveButton, todoistCheckbox, changelogButton, or saveShortcutToken not found'
     expect(() => new Popup()).toThrow(expected)
   })
 

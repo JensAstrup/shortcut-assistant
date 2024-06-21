@@ -11,8 +11,9 @@ chrome.runtime.onMessage.addListener((request: IpcRequest) => {
 
 export async function fetchUserInfo(token: string): Promise<Record<string, string>> {
   const url = 'https://www.googleapis.com/oauth2/v2/userinfo'
-  const headers = new Headers()
-  headers.append('Authorization', `Bearer ${token}`)
+  const headers = {
+    Authorization: `Bearer ${token}`
+  }
 
   try {
     const response = await fetch(url, { headers })
