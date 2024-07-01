@@ -56,22 +56,31 @@
   "description": "An extension by and for Shortcut power users. Adds AI functionality, keyboard shortcuts, and more.",
   "host_permissions": [
     "https://api.openai.com/*",
-    "https://proxy-zcffd.ondigitalocean.app/*"
+    "https://proxy-zcffd.ondigitalocean.app/*",
+    "https://www.googleapis.com/*"
   ],
   "icons": {
     "16": "assets/assistant.png",
     "48": "assets/assistant.png",
     "128": "assets/assistant.png"
   },
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAus6PbWXROXHE0r4auNCgdnyPORxKySdO2JVdOIaPAaBFDFCIkkPmsmb9mYSPeLrdQZFSDqDWT1TQtRkeH5G7zIqsS8qFM6BfcfpoX3/CwmSzFdjgDTyxDjiDAvcWYPh/FP+wTHlTsc7u+RZGLwwQqHUBRdY35kjphaloOoakn+Kf48xW5IiiS2K4hHl90Ar85VA8ERDLF6XREOi9i9Oi3T13NSIctmkVnRg9TLZIrUDjZQ9awsl2RHDYeHotv96gimq2Enb+Rysa2sTWTFHn9PYNrdllTMAF8PcYKFcxAZpvhHNpnqYMbtl8gcU+DftwA3I9BZ0BITwtH6r/8mU9XQIDAQAB",
   "manifest_version": 3,
   "name": "Shortcut Assistant",
+  "oauth2": {
+    "client_id": "727785983930-8c15m8fn5nqgku8komnhacd4frb5c3eh.apps.googleusercontent.com",
+    "scopes": [
+      ""
+    ]
+  },
   "omnibox": { "keyword" : "sc" },
   "permissions": [
     "activeTab",
     "clipboardWrite",
     "commands",
+    "identity",
     "storage",
     "tabs"
   ],
-  "version": "3.4.5"
+  "version": "3.5.0"
 }
