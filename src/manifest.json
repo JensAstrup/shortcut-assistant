@@ -56,7 +56,8 @@
   "description": "An extension by and for Shortcut power users. Adds AI functionality, keyboard shortcuts, and more.",
   "host_permissions": [
     "https://api.openai.com/*",
-    "https://proxy-zcffd.ondigitalocean.app/*"
+    "https://proxy-zcffd.ondigitalocean.app/*",
+    "https://www.googleapis.com/*"
   ],
   "icons": {
     "16": "assets/assistant.png",
@@ -69,8 +70,7 @@
   "oauth2": {
     "client_id": "727785983930-8c15m8fn5nqgku8komnhacd4frb5c3eh.apps.googleusercontent.com",
     "scopes": [
-      "https://www.googleapis.com/auth/userinfo.email",
-      "https://www.googleapis.com/auth/userinfo.profile"
+      ""
     ]
   },
   "omnibox": { "keyword" : "sc" },
@@ -82,5 +82,5 @@
     "storage",
     "tabs"
   ],
-  "version": "3.4.5"
+  "version": "3.5.0"
 }
