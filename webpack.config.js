@@ -25,7 +25,7 @@ process.env.SENTRY_RELEASE = process.env.VERSION
 const Dotenv = require('dotenv-webpack')
 
 
-const copyConfig = new CopyWebpackPlugin({
+export const copyConfig = new CopyWebpackPlugin({
   patterns: [
     { from: './src/manifest.json', to: 'manifest.json' },
     { from: './src/assets', to: 'assets' },

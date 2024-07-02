@@ -8,6 +8,6 @@ module.exports = {
   devtool: 'inline-source-map',
   watch: true,
   plugins: [
-    ...baseConfig.plugins,
+    ...baseConfig.copyConfig
   ]
 }
