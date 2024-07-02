@@ -7,21 +7,8 @@ const { sentryWebpackPlugin } = require('@sentry/webpack-plugin')
 const baseConfig = require('./webpack.config.base')
 
 
-const envFiles = {
-  development: './.env.local',
-  staging: './.env.staging',
-  production: './.env'
-}
-
-const envFile = envFiles[process.env.NODE_ENV] || './.env'
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-require('dotenv').config({ path: envFile })
-
-
 process.env.SENTRY_RELEASE = process.env.VERSION
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires,import/order
-const Dotenv = require('dotenv-webpack')
 
 
 module.exports = {
@@ -82,7 +69,6 @@ module.exports = {
 
   plugins: [
     ...baseConfig.plugins,
-    new Dotenv({ path: envFile }),
     sentryWebpackPlugin({
       authToken: process.env.SENTRY_AUTH_TOKEN,
       org: 'jens-astrup',
