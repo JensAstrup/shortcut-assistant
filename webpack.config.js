@@ -44,13 +44,13 @@ module.exports = {
       './src/js/popup/popup.ts',
       './src/js/popup/notes-popup.ts',
       './src/js/popup/initializer.ts',
-      './src/js/oauth/oauth.ts',
+      './src/js/auth/oauth/oauth.ts',
     ],
     'js/service_worker/bundle': [
       './src/js/service-worker/service-worker.ts',
       './src/js/service-worker/omnibox/listeners.ts',
       './src/js/service-worker/listeners',
-      './src/js/oauth/service-worker/listener.ts'
+      './src/js/auth/oauth/service-worker/listener.ts'
     ],
     'js/contentScripts/bundle': [
       './src/js/content-scripts.ts',
