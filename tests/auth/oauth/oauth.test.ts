@@ -1,4 +1,4 @@
-import { handleOAuthButton } from '@sx/oauth/oauth'
+import { handleOAuthButton } from '@sx/auth/oauth/oauth'
 import { IpcRequestSaveUserToken } from '@sx/types/ipc-request'
 
 
