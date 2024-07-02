@@ -5,7 +5,7 @@ import {
 } from '@sx/service-worker/handlers'
 import IpcRequest from '@sx/types/ipc-request'
 import scope from '@sx/utils/sentry'
-import '@sx/oauth/service-worker/oauth'
+import '@sx/auth/oauth/service-worker/listener'
 
 
 

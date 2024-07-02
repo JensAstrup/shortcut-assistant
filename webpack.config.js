@@ -50,7 +50,7 @@ module.exports = {
       './src/js/service-worker/service-worker.ts',
       './src/js/service-worker/omnibox/listeners.ts',
       './src/js/service-worker/listeners',
-      './src/js/oauth/service-worker/oauth.ts'
+      './src/js/oauth/service-worker/listener.ts'
     ],
     'js/contentScripts/bundle': [
       './src/js/content-scripts.ts',
