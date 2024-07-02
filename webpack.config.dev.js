@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const { copyConfig } = require('./copyConfig')
+const baseWebPack = require('./webpack.config.base')
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const baseConfig = require('./webpack.config.js')
 
@@ -10,6 +10,6 @@ module.exports = {
   devtool: 'inline-source-map',
   watch: true,
   plugins: [
-    copyConfig
+    ...baseWebPack.plugins
   ]
 }

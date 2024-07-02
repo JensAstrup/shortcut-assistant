@@ -4,7 +4,7 @@ const path = require('path')
 // eslint-disable-next-line import/order,@typescript-eslint/no-var-requires
 const { sentryWebpackPlugin } = require('@sentry/webpack-plugin')
 // eslint-disable-next-line import/order,@typescript-eslint/no-var-requires
-const copyConfig = require('./copyConfig')
+const baseConfig = require('./webpack.config.base')
 
 
 const envFiles = {
@@ -81,8 +81,8 @@ module.exports = {
   },
 
   plugins: [
+    ...baseConfig.plugins,
     new Dotenv({ path: envFile }),
-    copyConfig,
     sentryWebpackPlugin({
       authToken: process.env.SENTRY_AUTH_TOKEN,
       org: 'jens-astrup',
