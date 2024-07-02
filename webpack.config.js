@@ -2,10 +2,9 @@
 const path = require('path')
 
 // eslint-disable-next-line import/order,@typescript-eslint/no-var-requires
-const CopyWebpackPlugin = require('copy-webpack-plugin')
-
-// eslint-disable-next-line import/order,@typescript-eslint/no-var-requires
 const { sentryWebpackPlugin } = require('@sentry/webpack-plugin')
+// eslint-disable-next-line import/order,@typescript-eslint/no-var-requires
+const copyConfig = require('./copyConfig')
 
 
 const envFiles = {
@@ -21,20 +20,12 @@ require('dotenv').config({ path: envFile })
 
 process.env.SENTRY_RELEASE = process.env.VERSION
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+// eslint-disable-next-line @typescript-eslint/no-var-requires,import/order
 const Dotenv = require('dotenv-webpack')
 
 
-export const copyConfig = new CopyWebpackPlugin({
-  patterns: [
-    { from: './src/manifest.json', to: 'manifest.json' },
-    { from: './src/assets', to: 'assets' },
-    { from: './src/styles', to: 'styles' },
-    { from: './src/html', to: 'html' },
-  ]
-})
-
 module.exports = {
+
   mode: process.env.NODE_ENV === 'development' ? 'development' : 'production',
   devtool: process.env.NODE_ENV === 'development' ? 'inline-source-map' : 'source-map',
 
