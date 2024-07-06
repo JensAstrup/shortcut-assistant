@@ -148,22 +148,22 @@ export class Popup {
   }
 
   async popupLoaded(): Promise<void> {
-    const actionsTab = document.getElementById('actionsTab')
+    const notesTab = document.getElementById('notesTab')
     const settingsTab = document.getElementById('settingsTab')
     const infoTab = document.getElementById('infoTab')
     const actionsSection = document.getElementById('actionsSection')
     const settingsSection = document.getElementById('settingsSection')
     const infoSection = document.getElementById('infoSection')
 
-    if (actionsTab === null || settingsTab === null || infoTab === null || actionsSection === null || settingsSection === null || infoSection === null) {
-      throw new Error('actionsTab, settingsTab, infoTab, actionsSection, settingsSection, or infoSection not found')
+    if (notesTab === null || settingsTab === null || infoTab === null || actionsSection === null || settingsSection === null || infoSection === null) {
+      throw new Error('notesTab, settingsTab, infoTab, actionsSection, settingsSection, or infoSection not found')
     }
 
     await this.updateFromSettings()
 
-    this.setSectionDisplay(actionsTab, actionsSection, [settingsTab, infoTab], [settingsSection, infoSection])
-    this.setSectionDisplay(settingsTab, settingsSection, [actionsTab, infoTab], [actionsSection, infoSection])
-    this.setSectionDisplay(infoTab, infoSection, [actionsTab, settingsTab], [actionsSection, settingsSection])
+    this.setSectionDisplay(notesTab, actionsSection, [settingsTab, infoTab], [settingsSection, infoSection])
+    this.setSectionDisplay(settingsTab, settingsSection, [notesTab, infoTab], [actionsSection, infoSection])
+    this.setSectionDisplay(infoTab, infoSection, [notesTab, settingsTab], [actionsSection, settingsSection])
 
     this.handleNewVersionBadge().catch((e) => {
       console.error(e)
