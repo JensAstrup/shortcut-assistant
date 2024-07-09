@@ -28,7 +28,7 @@ describe('readStream', () => {
     readStream(reader, type, tabId)
     await new Promise(resolve => setTimeout(resolve, 0))
     expect(chrome.tabs.sendMessage).toHaveBeenCalledWith(tabId, {
-      type: AiProcessMessageType.updated,
+      status: AiProcessMessageType.updated,
       data: { content: '', type }
     })
   })
@@ -42,7 +42,7 @@ describe('readStream', () => {
     readStream(reader, type, tabId)
     await new Promise(resolve => setTimeout(resolve, 0))
     expect(chrome.tabs.sendMessage).toHaveBeenCalledWith(tabId, {
-      type: AiProcessMessageType.completed,
+      status: AiProcessMessageType.completed,
       message: 'Stream completed',
       data: { content: '', type }
     })
@@ -57,7 +57,7 @@ describe('readStream', () => {
     readStream(reader, type, tabId)
     await new Promise(resolve => setTimeout(resolve, 0))
     expect(chrome.tabs.sendMessage).toHaveBeenCalledWith(tabId, {
-      type: AiProcessMessageType.failed,
+      status: AiProcessMessageType.failed,
       message: 'error'
     })
   })

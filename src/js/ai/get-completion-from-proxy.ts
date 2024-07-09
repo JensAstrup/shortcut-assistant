@@ -8,7 +8,7 @@ export function readStream(reader: ReadableStreamDefaultReader<Uint8Array>, type
   reader.read().then(({ done, value }) => {
     if (done) {
       chrome.tabs.sendMessage(tabId, {
-        type: AiProcessMessageType.completed,
+        status: AiProcessMessageType.completed,
         message: 'Stream completed',
         data: { content: '', type }
       } as AiProcessMessage)
@@ -16,14 +16,14 @@ export function readStream(reader: ReadableStreamDefaultReader<Uint8Array>, type
     }
     const content = new TextDecoder().decode(value)
     const data = { content, type }
-    chrome.tabs.sendMessage(tabId, { type: AiProcessMessageType.updated, data } as AiProcessMessage)
+    chrome.tabs.sendMessage(tabId, { status: AiProcessMessageType.updated, data } as AiProcessMessage)
 
     // Recursive call to continue reading
     readStream(reader, type, tabId)
   }).catch((error: Error) => {
     console.error('Stream reading failed:', error)
     chrome.tabs.sendMessage(tabId, {
-      type: AiProcessMessageType.failed,
+      status: AiProcessMessageType.failed,
       message: error.message,
     } as AiProcessMessage)
   })

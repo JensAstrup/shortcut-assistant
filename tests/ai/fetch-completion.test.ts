@@ -41,7 +41,7 @@ describe('fetchCompletion', () => {
 
     // Verify messages sent to the Chrome tab
     expect(chrome.tabs.sendMessage).toHaveBeenCalledWith(tabId, {
-      type: AiProcessMessageType.updated,
+      status: AiProcessMessageType.updated,
       data: {
         content: 'response from OpenAI',
         type: 'analyze'
@@ -49,6 +49,6 @@ describe('fetchCompletion', () => {
     })
 
     // Check final message to runtime
-    expect(chrome.runtime.sendMessage).toHaveBeenCalledWith({ type: AiProcessMessageType.completed, message: 'analyze' })
+    expect(chrome.runtime.sendMessage).toHaveBeenCalledWith({ status: AiProcessMessageType.completed, message: 'analyze' })
   })
 })

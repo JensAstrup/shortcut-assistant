@@ -1,6 +1,6 @@
-import {AiProcessMessage, AiProcessMessageType} from '@sx/analyze/types/AiProcessMessage'
+import { AiProcessMessage, AiProcessMessageType } from '@sx/analyze/types/AiProcessMessage'
 
-import {logError} from '../utils/log-error'
+import { logError } from '../utils/log-error'
 
 
 export class AdditionalContent {
@@ -18,7 +18,7 @@ export class AdditionalContent {
     if (!taskSection) {
       throw new Error('Could not find task section')
     }
-    const clone = taskSection?.cloneNode(true)
+    const clone = taskSection.cloneNode(true)
     const parent = taskSection.parentNode
     if (!parent) {
       throw new Error('Could not find parent of task section')
@@ -44,12 +44,11 @@ export class AdditionalContent {
     }
     return section as HTMLElement
   }
-
 }
 
 
 chrome.runtime.onMessage.addListener((request: AiProcessMessage) => {
-  if (request.type === AiProcessMessageType.updated && request.data) {
+  if (request.status === AiProcessMessageType.updated && request.data) {
     AdditionalContent.populate(request.data.content).catch(logError)
   }
 })

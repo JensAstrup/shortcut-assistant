@@ -1,4 +1,6 @@
+import Labels from '@sx/ai/content-scripts/labels'
 import { AiFunctions } from '@sx/analyze/ai-functions'
+import { logError } from '@sx/utils/log-error'
 import { Story } from '@sx/utils/story'
 
 import { analyzeStoryDescription } from './analyze/analyze-story-description'
@@ -11,7 +13,6 @@ import { KeyboardShortcuts } from './keyboard-shortcuts/keyboard-shortcuts'
 import { NotesButton } from './notes/notes-button'
 import { Todoist } from './todoist/todoist'
 import { getSyncedSetting } from './utils/get-synced-setting'
-import { logError } from './utils/log-error'
 
 
 
@@ -26,6 +27,7 @@ export async function activate(): Promise<void> {
   DevelopmentTime.set().catch((error) => {
     console.error(error)
   })
+  Labels.init()
 
   const aiFunctions = new AiFunctions()
   // Run synchronously to ensure the buttons are added in the correct order
@@ -39,7 +41,7 @@ export async function activate(): Promise<void> {
     }
   }
   catch (e) {
-    console.error(e)
+    logError(e as Error)
   }
   new NotesButton()
 }
@@ -61,6 +63,7 @@ export async function handleMessage(request: { message: string, url: string }): 
       await Todoist.setTaskButtons()
     }
     new NotesButton()
+    Labels.init()
   }
   if (request.message === 'change-state') {
     await changeState()

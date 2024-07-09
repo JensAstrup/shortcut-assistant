@@ -1,4 +1,4 @@
-import {AdditionalContent} from '@sx/additional-content/content-script'
+import { AdditionalContent } from '@sx/additional-content/content-script'
 
 
 describe('AdditionalContent', () => {
