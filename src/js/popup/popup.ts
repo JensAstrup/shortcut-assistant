@@ -59,7 +59,7 @@ export class Popup {
   }
 
   async setShortcutApiToken(shortcutToken: string): Promise<void> {
-    await chrome.storage.sync.set({ shortcutApiToken: shortcutToken })
+    await chrome.storage.local.set({ shortcutApiToken: shortcutToken })
     chrome.identity.getAuthToken({ interactive: true }, (token) => {
       if (chrome.runtime.lastError) {
         console.error(chrome.runtime.lastError)
