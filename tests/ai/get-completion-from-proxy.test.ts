@@ -65,7 +65,7 @@ describe('readStream', () => {
 
 describe('getCompletionFromProxy', () => {
   beforeEach(() => {
-    process.env.PROXY_URL = 'https://proxy.example.com';
+    process.env.PROXY_OPENAI_URL = 'https://proxy.example.com';
     (getOrCreateClientId as jest.Mock).mockResolvedValue('test-instance-id')
   })
 
@@ -96,10 +96,10 @@ describe('getCompletionFromProxy', () => {
     })
   })
 
-  it('throws an error if PROXY_URL is not set', async () => {
-    delete process.env.PROXY_URL
+  it('throws an error if PROXY_OPENAI_URL is not set', async () => {
+    delete process.env.PROXY_OPENAI_URL
     await expect(getCompletionFromProxy('description', 'type', 3))
-      .rejects.toThrow(new OpenAIError('Error getting completion from proxy: OpenAIError: PROXY_URL is not set'))
+      .rejects.toThrow(new OpenAIError('Error getting completion from proxy: OpenAIError: PROXY_OPENAI_URL is not set'))
   })
 
   it('throws an error if fetch fails', async () => {
