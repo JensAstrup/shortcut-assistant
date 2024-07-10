@@ -8,8 +8,9 @@ export enum AiProcessMessageType {
   updated = 0,
 }
 
+
 export interface AiProcessMessage extends IpcRequestBase {
   status: AiProcessMessageType
   message?: string
-  data: { content: string, type: AiPromptType }
+  data?: { content: string, type: AiPromptType }
 }

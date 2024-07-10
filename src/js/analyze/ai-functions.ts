@@ -117,6 +117,9 @@ export class AiFunctions {
 
   public async processOpenAIResponse(message: AiProcessMessage): Promise<void> {
     if (message.status === AiProcessMessageType.completed || message.status === AiProcessMessageType.failed) {
+      if (!message.data) {
+        return
+      }
       const feature = AiFunctions.features[message.data.type]
       await feature.callbackFunc()
     }
