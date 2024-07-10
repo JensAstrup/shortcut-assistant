@@ -1,7 +1,7 @@
 import { AiPromptType } from '@sx/analyze/types/ai-prompt-type'
 
 
-type IpcAction = 'callOpenAI' | 'getSavedNotes' | 'sendEvent' | 'saveUserToken'
+type IpcAction = 'callOpenAI' | 'getSavedNotes' | 'sendEvent' | 'saveUserToken' | 'addLabels'
 
 interface IpcRequestBase {
   action: IpcAction
