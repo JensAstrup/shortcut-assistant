@@ -14,7 +14,7 @@ class LabelsServiceWorker {
         throw new OpenAIError('PROXY_URL is not set')
       }
 
-      const url = `${baseUrl}/labels?storyId=${storyId}`
+      const url = `${baseUrl}/labels`
 
       response = await fetch(url, {
         method: 'POST',
