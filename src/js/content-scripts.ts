@@ -22,15 +22,9 @@ export async function activate(): Promise<void> {
 
   new KeyboardShortcuts().activate()
 
-  CycleTime.set().catch((error) => {
-    console.error(error)
-  })
-  DevelopmentTime.set().catch((error) => {
-    console.error(error)
-  })
-  if (process.env.NEW_AI_FEATURES_ENABLED === 'true') {
-    LabelsContentScript.init()
-  }
+  CycleTime.set().catch(logError)
+  DevelopmentTime.set().catch(logError)
+  LabelsContentScript.init().catch(logError)
   const aiFunctions = new AiFunctions()
   // Run synchronously to ensure the buttons are added in the correct order
   await aiFunctions.addButtons()
@@ -56,10 +50,7 @@ export async function handleMessage(request: { message: string, url: string }): 
   if (request.message === 'update') {
     DevelopmentTime.set().catch(logError)
     CycleTime.set().catch(logError)
-
-    if (process.env.NEW_AI_FEATURES_ENABLED === 'true') {
-      LabelsContentScript.init()
-    }
+    LabelsContentScript.init().catch(logError)
 
     const functions = new AiFunctions()
     await functions.addButtons()
