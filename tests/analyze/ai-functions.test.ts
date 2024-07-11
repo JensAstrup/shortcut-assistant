@@ -52,7 +52,7 @@ describe('AiFunctions', () => {
     })
   })
 
-  it('constructor should handle exceptions', async () => {
+  it('constructor should handle exceptions', () => {
     const error = new Error('Failed to add buttons')
     jest.spyOn(AiFunctions.prototype, 'addButtons').mockRejectedValue(error)
 
