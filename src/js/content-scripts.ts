@@ -1,4 +1,7 @@
+
+import LabelsContentScript from '@sx/ai/labels/content-script'
 import { AiFunctions } from '@sx/analyze/ai-functions'
+import { logError } from '@sx/utils/log-error'
 import { Story } from '@sx/utils/story'
 
 import { analyzeStoryDescription } from './analyze/analyze-story-description'
@@ -11,7 +14,6 @@ import { KeyboardShortcuts } from './keyboard-shortcuts/keyboard-shortcuts'
 import { NotesButton } from './notes/notes-button'
 import { Todoist } from './todoist/todoist'
 import { getSyncedSetting } from './utils/get-synced-setting'
-import { logError } from './utils/log-error'
 
 
 
@@ -20,13 +22,9 @@ export async function activate(): Promise<void> {
 
   new KeyboardShortcuts().activate()
 
-  CycleTime.set().catch((error) => {
-    console.error(error)
-  })
-  DevelopmentTime.set().catch((error) => {
-    console.error(error)
-  })
-
+  CycleTime.set().catch(logError)
+  DevelopmentTime.set().catch(logError)
+  LabelsContentScript.init().catch(logError)
   const aiFunctions = new AiFunctions()
   // Run synchronously to ensure the buttons are added in the correct order
   await aiFunctions.addButtons()
@@ -39,7 +37,7 @@ export async function activate(): Promise<void> {
     }
   }
   catch (e) {
-    console.error(e)
+    logError(e as Error)
   }
   new NotesButton()
 }
@@ -52,8 +50,11 @@ export async function handleMessage(request: { message: string, url: string }): 
   if (request.message === 'update') {
     DevelopmentTime.set().catch(logError)
     CycleTime.set().catch(logError)
+    LabelsContentScript.init().catch(logError)
+
     const functions = new AiFunctions()
     await functions.addButtons()
+
     const enableTodoistOptions = await getSyncedSetting('enableTodoistOptions', false)
     if (enableTodoistOptions) {
       // Wait on response because AiFunctions.addAnalyzeButton() will also set a button

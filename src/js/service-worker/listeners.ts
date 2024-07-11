@@ -6,7 +6,7 @@ import {
 import IpcRequest from '@sx/types/ipc-request'
 import scope from '@sx/utils/sentry'
 import '@sx/auth/oauth/service-worker/listener'
-
+import '@sx/ai/labels/listener'
 
 
 

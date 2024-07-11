@@ -24,7 +24,13 @@ global.chrome = {
   action: {
     ...global.chrome.action,
     getBadgeText: jest.fn().mockResolvedValue(() => Promise.resolve('New!')),
-  }
+  },
+  identity: {
+    ...global.chrome.identity,
+    getAuthToken: jest.fn().mockImplementation((options, callback) => {
+      callback('test-google-token')
+    })
+  },
 }
 
 
@@ -132,6 +138,28 @@ describe('Popup', () => {
   it('setOpenAIToken sets token in chrome storage', async () => {
     await popup.setOpenAIToken('test-token')
     expect(chrome.storage.local.set).toHaveBeenCalledWith({ openAIToken: 'test-token' })
+  })
+
+  it('setShortcutApiToken registers with Google and sends message', () => {
+    const googleToken = 'test-google-token'
+    const shortcutToken = 'test-shortcut-token'
+    const message = { action: 'saveUserToken', data: { googleToken, shortcutToken } }
+
+    popup.setShortcutApiToken(shortcutToken)
+
+    expect(chrome.identity.getAuthToken).toHaveBeenCalledWith({ interactive: true }, expect.any(Function))
+    expect(chrome.runtime.sendMessage).toHaveBeenCalledWith(message)
+  })
+
+  it('setShortcutApiToken logs error if Google token not received', () => {
+    console.error = jest.fn()
+    chrome.identity.getAuthToken = jest.fn().mockImplementation((options, callback) => {
+      callback()
+    })
+
+    popup.setShortcutApiToken('test-token')
+
+    expect(console.error).toHaveBeenCalledWith('No token received')
   })
 
   it('saveOptions sets options in chrome storage', async () => {

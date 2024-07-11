@@ -47,6 +47,9 @@ Service worker scripts should be placed under the relevant feature's `service-wo
 Note that a feature may, and most likely should, have multiple service worker files. They can be named
 according to their purpose, e.g. `service-worker/cache.js`, `service-worker/register.js`, etc.
 
+If a feature is not complex enough to warrant a separate directory, the service worker file can be
+placed directly under the feature's root directory.
+
 ### Content Scripts
 
 Content scripts should be placed under the relevant feature's `content-scripts` directory.
@@ -57,6 +60,9 @@ Content scripts should be placed under the relevant feature's `content-scripts` 
   content-scripts/
     content-script.js
 ```
+If a feature is not complex enough to warrant a separate directory, the content-scripts file can be
+placed directly under the feature's root directory.
+
 
 ## Best Practices
 

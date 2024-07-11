@@ -1,16 +1,14 @@
-async function registerUser(token: string): Promise<void> {
+async function registerUser(googleToken: string, shortcutToken: string): Promise<void> {
   const url = `${process.env.PROXY_URL}/users/register`
-  const result = await chrome.storage.local.get('shortcutApiToken')
-  const shortcutApiToken = result.shortcutApiToken
   const response = await fetch(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `${shortcutApiToken}`
+      'Authorization': shortcutToken
     },
     body: JSON.stringify({
-      shortcutApiToken: shortcutApiToken,
-      googleAuthToken: token,
+      shortcutApiToken: shortcutToken,
+      googleAuthToken: googleToken,
     }),
   })
   if (!response.ok) {
