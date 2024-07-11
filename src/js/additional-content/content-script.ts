@@ -1,10 +1,8 @@
 import { AiProcessMessage, AiProcessMessageType } from '@sx/analyze/types/AiProcessMessage'
 
-import { logError } from '../utils/log-error'
-
 
 export class AdditionalContent {
-  static async populate(text?: string): Promise<void> {
+  static populate(text?: string): void {
     if (text === undefined) {
       return
     }
@@ -13,7 +11,7 @@ export class AdditionalContent {
     taskSection.innerText = taskSection.innerText + text
   }
 
-  static duplicateTasks() {
+  static duplicateTasks(): Element {
     const taskSection = document.querySelector('[data-type="task"]')
     if (!taskSection) {
       throw new Error('Could not find task section')
@@ -23,32 +21,32 @@ export class AdditionalContent {
     if (!parent) {
       throw new Error('Could not find parent of task section')
     }
-    return parent.insertBefore(clone, taskSection)
+    return parent.insertBefore(clone, taskSection) as Element
   }
 
-  static refactorSection(section: HTMLElement) {
-    const header = section.querySelector('.section-head') as HTMLElement
+  static refactorSection(section: HTMLDivElement): HTMLDivElement {
+    const header = section.querySelector('.section-head') as HTMLDivElement
     header.innerText = 'AI Response'
-    section = section.querySelector('.tasks') as HTMLElement
+    section = section.querySelector('.tasks')!
     section.innerHTML = ''
     section.setAttribute('data-type', 'ai-response')
     section.className = 'markdown-formatted'
     return section
   }
 
-  static getSection() {
+  static getSection(): HTMLDivElement {
     const section = document.querySelector('[data-type="ai-response"]')
     if (!section) {
       const duplicate = this.duplicateTasks()
-      return this.refactorSection(duplicate as HTMLElement)
+      return this.refactorSection(duplicate as HTMLDivElement)
     }
-    return section as HTMLElement
+    return section as HTMLDivElement
   }
 }
 
 
 chrome.runtime.onMessage.addListener((request: AiProcessMessage) => {
   if (request.status === AiProcessMessageType.updated && request.data) {
-    AdditionalContent.populate(request.data.content).catch(logError)
+    AdditionalContent.populate(request.data.content)
   }
 })
