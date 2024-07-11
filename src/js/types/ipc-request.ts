@@ -24,7 +24,7 @@ interface IpcRequestGetSavedNotes extends IpcRequestBase {
 
 interface IpcRequestSaveUserToken extends IpcRequestBase {
   action: 'saveUserToken'
-  data: { token: string }
+  data: { googleToken: string, shortcutToken: string }
 }
 
 type IpcRequest = IpcRequestSendEvent | IpcRequestCallOpenAI | IpcRequestGetSavedNotes | IpcRequestSaveUserToken

@@ -69,7 +69,7 @@ export class Popup {
         console.error('No token received')
         return
       }
-      chrome.runtime.sendMessage({ action: 'saveUserToken', data: { token } } as IpcRequestSaveUserToken)
+      chrome.runtime.sendMessage({ action: 'saveUserToken', data: { token, shortcutToken } } as IpcRequestSaveUserToken)
     })
   }
 
