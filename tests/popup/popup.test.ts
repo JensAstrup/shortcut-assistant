@@ -140,7 +140,7 @@ describe('Popup', () => {
     expect(chrome.storage.local.set).toHaveBeenCalledWith({ openAIToken: 'test-token' })
   })
 
-  it('setShortcutApiToken registers with Google and sends message', async () => {
+  it('setShortcutApiToken registers with Google and sends message', () => {
     const googleToken = 'test-google-token'
     const shortcutToken = 'test-shortcut-token'
     const message = { action: 'saveUserToken', data: { googleToken, shortcutToken } }
