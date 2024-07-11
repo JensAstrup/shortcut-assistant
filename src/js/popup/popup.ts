@@ -58,8 +58,8 @@ export class Popup {
     await chrome.storage.local.set({ openAIToken: token })
   }
 
+  // eslint-disable-next-line @typescript-eslint/require-await
   async setShortcutApiToken(shortcutToken: string): Promise<void> {
-    await chrome.storage.local.set({ shortcutApiToken: shortcutToken })
     chrome.identity.getAuthToken({ interactive: true }, (googleToken) => {
       if (chrome.runtime.lastError) {
         console.error(chrome.runtime.lastError)
