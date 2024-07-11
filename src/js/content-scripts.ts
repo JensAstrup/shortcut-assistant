@@ -1,3 +1,4 @@
+
 import LabelsContentScript from '@sx/ai/labels/content-script'
 import { AiFunctions } from '@sx/analyze/ai-functions'
 import { logError } from '@sx/utils/log-error'
@@ -27,8 +28,9 @@ export async function activate(): Promise<void> {
   DevelopmentTime.set().catch((error) => {
     console.error(error)
   })
-  LabelsContentScript.init()
-
+  if (process.env.NEW_AI_FEATURES_ENABLED === 'true') {
+    LabelsContentScript.init()
+  }
   const aiFunctions = new AiFunctions()
   // Run synchronously to ensure the buttons are added in the correct order
   await aiFunctions.addButtons()
@@ -54,7 +56,10 @@ export async function handleMessage(request: { message: string, url: string }): 
   if (request.message === 'update') {
     DevelopmentTime.set().catch(logError)
     CycleTime.set().catch(logError)
-    LabelsContentScript.init()
+
+    if (process.env.NEW_AI_FEATURES_ENABLED === 'true') {
+      LabelsContentScript.init()
+    }
 
     const functions = new AiFunctions()
     await functions.addButtons()
