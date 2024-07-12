@@ -1,4 +1,5 @@
 import { AiProcessMessage } from '@sx/analyze/types/AiProcessMessage'
+import { Story } from '@sx/utils/story'
 
 
 class LabelsContentScript {
@@ -8,8 +9,14 @@ class LabelsContentScript {
       await chrome.action.openPopup()
       return
     }
+    const button = document.querySelector('[data-assistant="add-labels"]')
+    if (!button) {
+      throw new Error('Could not find button')
+    }
+    button.textContent = 'Adding labels...'
     const message: AiProcessMessage = <AiProcessMessage>{ action: 'addLabels' }
-    chrome.runtime.sendMessage(message)
+    await chrome.runtime.sendMessage(message)
+    button.textContent = 'Auto Add Labels...'
   }
 
   static async isAuthenticated(): Promise<boolean> {
@@ -33,6 +40,7 @@ class LabelsContentScript {
     const newButton = document.createElement('button')
     const isAuthenticated = await this.isAuthenticated()
     newButton.className = isAuthenticated ? 'add-labels action micro' : 'micro action'
+    newButton.dataset.assistant = 'add-labels'
     newButton.style.marginTop = '5px'
     newButton.dataset.tooltip = isAuthenticated ? 'Use AI to add relevant labels' : 'Please authenticate w/ Shortcut Assistant to use this feature'
     newButton.addEventListener('click', LabelsContentScript.onClick)
@@ -43,6 +51,7 @@ class LabelsContentScript {
   static async init(): Promise<void> {
     const featureEnabled = process.env.NEW_AI_FEATURES_ENABLED
     if (featureEnabled === 'true') {
+      await Story.isReady()
       await this.addButton()
     }
   }
