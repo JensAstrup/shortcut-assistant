@@ -48,6 +48,7 @@ export async function handleMessage(request: { message: string, url: string }): 
     await analyzeStoryDescription(activeTabUrl)
   }
   if (request.message === 'update') {
+    await Story.isReady()
     DevelopmentTime.set().catch(logError)
     CycleTime.set().catch(logError)
     LabelsContentScript.init().catch(logError)

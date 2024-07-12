@@ -1,6 +1,12 @@
 import LabelsContentScript from '@sx/ai/labels/content-script'
 
 
+jest.mock('@sx/utils/story', () => ({
+  Story: {
+    isReady: jest.fn(),
+  },
+}))
+
 global.chrome = {
   ...chrome,
   action: {
@@ -28,10 +34,21 @@ describe('LabelsContentScript', () => {
     isAuthenticatedSpy.mockRestore()
   })
 
+  it('should throw error if button not found', async () => {
+    const fakeButton = null
+    document.querySelector = jest.fn().mockReturnValue(fakeButton)
+    jest.spyOn(LabelsContentScript, 'isAuthenticated').mockResolvedValue(true)
+
+    await expect(LabelsContentScript.onClick).rejects.toThrow('Could not find button')
+  })
+
   it('should send message if authenticated', async () => {
     const sendMessageSpy = jest.spyOn(chrome.runtime, 'sendMessage')
     const isAuthenticatedSpy = jest.spyOn(LabelsContentScript, 'isAuthenticated').mockResolvedValue(true)
-
+    const fakeButton = document.createElement('button')
+    fakeButton.textContent = 'Auto Add'
+    fakeButton.dataset.assistant = 'add-labels'
+    document.querySelector = jest.fn().mockReturnValue(fakeButton)
     await LabelsContentScript.onClick()
 
     expect(sendMessageSpy).toHaveBeenCalledWith({ action: 'addLabels' })
@@ -77,6 +94,7 @@ describe('LabelsContentScript', () => {
     const isAuthenticatedSpy = jest.spyOn(LabelsContentScript, 'isAuthenticated').mockResolvedValue(true)
     const button = await LabelsContentScript.createButton()
     expect(button.className).toBe('add-labels action micro')
+    expect(button.dataset.assistant).toBe('add-labels')
     expect(button.style.marginTop).toBe('5px')
     expect(button.dataset.tooltip).toBe('Use AI to add relevant labels')
     expect(button.textContent).toBe('Auto Add Labels...')
