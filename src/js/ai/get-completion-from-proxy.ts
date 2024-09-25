@@ -8,7 +8,7 @@ export function readStream(reader: ReadableStreamDefaultReader<Uint8Array>, type
   reader.read().then(({ done, value }) => {
     if (done) {
       chrome.tabs.sendMessage(tabId, {
-        type: AiProcessMessageType.completed,
+        status: AiProcessMessageType.completed,
         message: 'Stream completed',
         data: { content: '', type }
       } as AiProcessMessage)
@@ -16,14 +16,14 @@ export function readStream(reader: ReadableStreamDefaultReader<Uint8Array>, type
     }
     const content = new TextDecoder().decode(value)
     const data = { content, type }
-    chrome.tabs.sendMessage(tabId, { type: AiProcessMessageType.updated, data } as AiProcessMessage)
+    chrome.tabs.sendMessage(tabId, { status: AiProcessMessageType.updated, data } as AiProcessMessage)
 
     // Recursive call to continue reading
     readStream(reader, type, tabId)
   }).catch((error: Error) => {
     console.error('Stream reading failed:', error)
     chrome.tabs.sendMessage(tabId, {
-      type: AiProcessMessageType.failed,
+      status: AiProcessMessageType.failed,
       message: error.message,
     } as AiProcessMessage)
   })
@@ -32,9 +32,9 @@ export function readStream(reader: ReadableStreamDefaultReader<Uint8Array>, type
 export default async function getCompletionFromProxy(description: string, type: string, tabId: number): Promise<void> {
   let response
   try {
-    const url = process.env.PROXY_URL
+    const url = process.env.PROXY_OPENAI_URL
     if (!url) {
-      throw new OpenAIError('PROXY_URL is not set')
+      throw new OpenAIError('PROXY_OPENAI_URL is not set')
     }
     const instanceId = await getOrCreateClientId()
     response = await fetch(url, {

@@ -1,8 +1,8 @@
-import {sendEvent} from '@sx/analytics/event'
-import {AiFunctions} from '@sx/analyze/ai-functions'
-import {AiProcessMessage, AiProcessMessageType} from '@sx/analyze/types/AiProcessMessage'
+import { sendEvent } from '@sx/analytics/event'
+import { AiFunctions } from '@sx/analyze/ai-functions'
+import { AiProcessMessage, AiProcessMessageType } from '@sx/analyze/types/AiProcessMessage'
 import scope from '@sx/utils/sentry'
-import {Story} from '@sx/utils/story'
+import { Story } from '@sx/utils/story'
 
 
 jest.mock('@sx/utils/sentry')
@@ -38,7 +38,7 @@ describe('AiFunctions', () => {
         add: jest.fn()
       }
     } as unknown as HTMLElement
-    document.createElement = jest.fn().mockImplementation(tag => {
+    document.createElement = jest.fn().mockImplementation((tag) => {
       if (tag === 'button') {
         return mockButton
       }
@@ -52,7 +52,7 @@ describe('AiFunctions', () => {
     })
   })
 
-  it('constructor should handle exceptions', async () => {
+  it('constructor should handle exceptions', () => {
     const error = new Error('Failed to add buttons')
     jest.spyOn(AiFunctions.prototype, 'addButtons').mockRejectedValue(error)
 
@@ -78,7 +78,7 @@ describe('AiFunctions', () => {
     await AiFunctions.triggerAnalysis()
     expect(chrome.runtime.sendMessage).toHaveBeenCalledWith({
       action: 'callOpenAI',
-      data: {prompt: Story.description, type: 'analyze'}
+      data: { prompt: Story.description, type: 'analyze' }
     })
   })
 
@@ -87,7 +87,7 @@ describe('AiFunctions', () => {
     await AiFunctions.triggerBreakUp()
     expect(chrome.runtime.sendMessage).toHaveBeenCalledWith({
       action: 'callOpenAI',
-      data: {prompt: Story.description, type: 'breakup'}
+      data: { prompt: Story.description, type: 'breakup' }
     })
   })
 
@@ -107,7 +107,7 @@ describe('AiFunctions', () => {
 
   it('processOpenAIResponse should handle completed message', async () => {
     const aiFuncs = new AiFunctions()
-    const message = {type: AiProcessMessageType.completed, data: {type: 'analyze'}} as AiProcessMessage
+    const message = { status: AiProcessMessageType.completed, data: { type: 'analyze' } } as AiProcessMessage
     AiFunctions.buttons.analyze = mockButton as HTMLButtonElement
     AiFunctions.features.analyze.callbackFunc = jest.fn()
     await aiFuncs.processOpenAIResponse(message)
@@ -116,9 +116,9 @@ describe('AiFunctions', () => {
 
   it('should handle failure and hide error states for processOpenAIResponse', async () => {
     const aiFuncs = new AiFunctions()
-    const message = {type: AiProcessMessageType.failed, data: {type: 'analyze'}} as AiProcessMessage
+    const message = { status: AiProcessMessageType.failed, data: { type: 'analyze' } } as AiProcessMessage
     document.getElementById = jest.fn().mockReturnValue({
-      style: {cssText: '', display: ''}
+      style: { cssText: '', display: '' }
     })
 
     await aiFuncs.processOpenAIResponse(message)
@@ -129,9 +129,9 @@ describe('AiFunctions', () => {
 
   it('should handle failure of sendEvent', async () => {
     const aiFuncs = new AiFunctions()
-    const message = {type: AiProcessMessageType.failed, data: {type: 'analyze'}} as AiProcessMessage
+    const message = { status: AiProcessMessageType.failed, data: { type: 'analyze' } } as AiProcessMessage
     document.getElementById = jest.fn().mockReturnValue({
-      style: {cssText: '', display: ''}
+      style: { cssText: '', display: '' }
     })
     mockSendEvent.mockRejectedValue(new Error('Failed to send event'))
 

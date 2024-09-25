@@ -1,4 +1,5 @@
 interface BackendHeaders {
+  [key: string]: string
   'Content-Type': string
   'Authorization': string
 }

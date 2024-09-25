@@ -1,10 +1,10 @@
-import {sendEvent} from '@sx/analytics/event'
-import {AiPromptType} from '@sx/analyze/types/ai-prompt-type'
-import {AiProcessMessage, AiProcessMessageType} from '@sx/analyze/types/AiProcessMessage'
+import { sendEvent } from '@sx/analytics/event'
+import { AiPromptType } from '@sx/analyze/types/ai-prompt-type'
+import { AiProcessMessage, AiProcessMessageType } from '@sx/analyze/types/AiProcessMessage'
 import '@sx/analyze/listeners'
 import scope from '@sx/utils/sentry'
 import sleep from '@sx/utils/sleep'
-import {Story} from '@sx/utils/story'
+import { Story } from '@sx/utils/story'
 
 
 interface AiFeature {
@@ -32,6 +32,7 @@ export class AiFunctions {
       callbackFunc: AiFunctions.breakupComplete
     },
   }
+
   public static buttons: Partial<Record<AiPromptType, HTMLButtonElement>> = {}
 
   static createButton(feature: AiFeature): HTMLButtonElement {
@@ -50,9 +51,8 @@ export class AiFunctions {
     return newButton
   }
 
-  public async addButtons() {
+  public async addButtons(): Promise<void> {
     const story = new Story()
-    // eslint-disable-next-line no-loops/no-loops
     for (const feature of Object.values(AiFunctions.features)) {
       const newButton = AiFunctions.createButton(feature)
       AiFunctions.buttons[feature.key] = newButton
@@ -66,40 +66,42 @@ export class AiFunctions {
     }
   }
 
-  static async triggerAnalysis() {
+  static async triggerAnalysis(): Promise<void> {
     const functions = new AiFunctions()
     AiFunctions.buttons.analyze!.textContent = 'Analyzing...'
     await functions.analyzeStoryDescription(window.location.href, 'analyze')
   }
 
-  static async triggerBreakUp() {
+  static async triggerBreakUp(): Promise<void> {
     const functions = new AiFunctions()
     AiFunctions.buttons.breakup!.textContent = 'Breaking Up...'
     await functions.analyzeStoryDescription(window.location.href, 'breakup')
   }
 
-  private async analyzeStoryDescription(activeTabUrl: string, type: AiPromptType) {
+  private async analyzeStoryDescription(activeTabUrl: string, type: AiPromptType): Promise<void> {
     if (activeTabUrl.includes('story')) {
       const description = Story.description
       await chrome.runtime.sendMessage({
         action: 'callOpenAI',
-        data: {prompt: description, type}
+        data: { prompt: description, type }
       })
     }
   }
 
-  static async analysisComplete() {
+  // eslint-disable-next-line @typescript-eslint/require-await
+  static async analysisComplete(): Promise<void> {
     AiFunctions.buttons.analyze!.textContent = AiFunctions.features.analyze.name
     AiFunctions.buttons.analyze!.classList.remove('cursor-progress')
   }
 
 
-  static async breakupComplete() {
+  // eslint-disable-next-line @typescript-eslint/require-await
+  static async breakupComplete(): Promise<void> {
     AiFunctions.buttons.breakup!.textContent = AiFunctions.features.breakup.name
     AiFunctions.buttons.breakup!.classList.remove('cursor-progress')
   }
 
-  private async handleFailure() {
+  private async handleFailure(): Promise<void> {
     const errorState = document.getElementById('errorState')
     if (errorState) {
       errorState.style.cssText = ''
@@ -113,14 +115,15 @@ export class AiFunctions {
     })
   }
 
-  public async processOpenAIResponse(message: AiProcessMessage) {
-    if (message.type === AiProcessMessageType.completed || message.type === AiProcessMessageType.failed) {
-      if (message.data) {
-        const feature = AiFunctions.features[message.data.type]
-        await feature.callbackFunc()
+  public async processOpenAIResponse(message: AiProcessMessage): Promise<void> {
+    if (message.status === AiProcessMessageType.completed || message.status === AiProcessMessageType.failed) {
+      if (!message.data) {
+        return
       }
+      const feature = AiFunctions.features[message.data.type]
+      await feature.callbackFunc()
     }
-    if (message.type === AiProcessMessageType.failed) {
+    if (message.status === AiProcessMessageType.failed) {
       await this.handleFailure()
     }
   }

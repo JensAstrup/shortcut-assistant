@@ -24,7 +24,13 @@ global.chrome = {
   action: {
     ...global.chrome.action,
     getBadgeText: jest.fn().mockResolvedValue(() => Promise.resolve('New!')),
-  }
+  },
+  identity: {
+    ...global.chrome.identity,
+    getAuthToken: jest.fn().mockImplementation((options, callback) => {
+      callback('test-google-token')
+    })
+  },
 }
 
 
@@ -132,6 +138,28 @@ describe('Popup', () => {
   it('setOpenAIToken sets token in chrome storage', async () => {
     await popup.setOpenAIToken('test-token')
     expect(chrome.storage.local.set).toHaveBeenCalledWith({ openAIToken: 'test-token' })
+  })
+
+  it('setShortcutApiToken registers with Google and sends message', () => {
+    const googleToken = 'test-google-token'
+    const shortcutToken = 'test-shortcut-token'
+    const message = { action: 'saveUserToken', data: { googleToken, shortcutToken } }
+
+    popup.setShortcutApiToken(shortcutToken)
+
+    expect(chrome.identity.getAuthToken).toHaveBeenCalledWith({ interactive: true }, expect.any(Function))
+    expect(chrome.runtime.sendMessage).toHaveBeenCalledWith(message)
+  })
+
+  it('setShortcutApiToken logs error if Google token not received', () => {
+    console.error = jest.fn()
+    chrome.identity.getAuthToken = jest.fn().mockImplementation((options, callback) => {
+      callback()
+    })
+
+    popup.setShortcutApiToken('test-token')
+
+    expect(console.error).toHaveBeenCalledWith('No token received')
   })
 
   it('saveOptions sets options in chrome storage', async () => {
@@ -317,7 +345,7 @@ describe('popupLoaded', () => {
     popup.handleNewVersionBadge = jest.fn().mockResolvedValue(null)
     await popup.popupLoaded()
 
-    expect(document.getElementById).toHaveBeenCalledWith('actionsTab')
+    expect(document.getElementById).toHaveBeenCalledWith('notesTab')
     expect(document.getElementById).toHaveBeenCalledWith('settingsTab')
     expect(document.getElementById).toHaveBeenCalledWith('infoTab')
     expect(document.getElementById).toHaveBeenCalledWith('versionInfo')
@@ -336,15 +364,15 @@ describe('popupLoaded', () => {
     })
   })
 
-  it('throws and error if actionsTab is not found', async () => {
+  it('throws and error if notesTab is not found', async () => {
     document.getElementById = jest.fn().mockImplementation((id) => {
-      if (id !== 'actionsTab') {
+      if (id !== 'notesTab') {
         return mockElement()
       }
       return null
     })
     const popup = new Popup()
-    const expected = 'actionsTab, settingsTab, infoTab, actionsSection, settingsSection, or infoSection not found'
+    const expected = 'notesTab, settingsTab, infoTab, actionsSection, settingsSection, or infoSection not found'
     await expect(popup.popupLoaded()).rejects.toThrow(expected)
   })
 
@@ -356,7 +384,7 @@ describe('popupLoaded', () => {
       return null
     })
     const popup = new Popup()
-    const expected = 'actionsTab, settingsTab, infoTab, actionsSection, settingsSection, or infoSection not found'
+    const expected = 'notesTab, settingsTab, infoTab, actionsSection, settingsSection, or infoSection not found'
     await expect(popup.popupLoaded()).rejects.toThrow(expected)
   })
 
@@ -368,7 +396,7 @@ describe('popupLoaded', () => {
       return null
     })
     const popup = new Popup()
-    const expected = 'actionsTab, settingsTab, infoTab, actionsSection, settingsSection, or infoSection not found'
+    const expected = 'notesTab, settingsTab, infoTab, actionsSection, settingsSection, or infoSection not found'
     await expect(popup.popupLoaded()).rejects.toThrow(expected)
   })
 
@@ -380,7 +408,7 @@ describe('popupLoaded', () => {
       return null
     })
     const popup = new Popup()
-    const expected = 'actionsTab, settingsTab, infoTab, actionsSection, settingsSection, or infoSection not found'
+    const expected = 'notesTab, settingsTab, infoTab, actionsSection, settingsSection, or infoSection not found'
     await expect(popup.popupLoaded()).rejects.toThrow(expected)
   })
 
@@ -392,7 +420,7 @@ describe('popupLoaded', () => {
       return null
     })
     const popup = new Popup()
-    const expected = 'actionsTab, settingsTab, infoTab, actionsSection, settingsSection, or infoSection not found'
+    const expected = 'notesTab, settingsTab, infoTab, actionsSection, settingsSection, or infoSection not found'
     await expect(popup.popupLoaded()).rejects.toThrow(expected)
   })
 
@@ -404,7 +432,7 @@ describe('popupLoaded', () => {
       return null
     })
     const popup = new Popup()
-    const expected = 'actionsTab, settingsTab, infoTab, actionsSection, settingsSection, or infoSection not found'
+    const expected = 'notesTab, settingsTab, infoTab, actionsSection, settingsSection, or infoSection not found'
     await expect(popup.popupLoaded()).rejects.toThrow(expected)
   })
 
@@ -420,7 +448,7 @@ describe('popupLoaded', () => {
     })
 
     await expect(popup.popupLoaded()).rejects.toThrow('versionSpan not found')
-    expect(document.getElementById).toHaveBeenCalledWith('actionsTab')
+    expect(document.getElementById).toHaveBeenCalledWith('notesTab')
     expect(document.getElementById).toHaveBeenCalledWith('settingsTab')
     expect(document.getElementById).toHaveBeenCalledWith('infoTab')
     expect(document.getElementById).toHaveBeenCalledWith('versionInfo')
@@ -440,7 +468,7 @@ describe('popupLoaded', () => {
     popup.handleNewVersionBadge = jest.fn().mockResolvedValue(null)
     await popup.popupLoaded()
 
-    expect(document.getElementById).toHaveBeenCalledWith('actionsTab')
+    expect(document.getElementById).toHaveBeenCalledWith('notesTab')
     expect(document.getElementById).toHaveBeenCalledWith('settingsTab')
     expect(document.getElementById).toHaveBeenCalledWith('infoTab')
     expect(document.getElementById).toHaveBeenCalledWith('versionInfo')

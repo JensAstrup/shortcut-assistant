@@ -70,7 +70,7 @@
   "oauth2": {
     "client_id": "727785983930-8c15m8fn5nqgku8komnhacd4frb5c3eh.apps.googleusercontent.com",
     "scopes": [
-      ""
+      "openid"
     ]
   },
   "omnibox": { "keyword" : "sc" },
@@ -82,5 +82,5 @@
     "storage",
     "tabs"
   ],
-  "version": "3.6.1"
+  "version": "3.6.2"
 }

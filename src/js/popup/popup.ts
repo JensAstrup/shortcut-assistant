@@ -58,18 +58,18 @@ export class Popup {
     await chrome.storage.local.set({ openAIToken: token })
   }
 
+  // eslint-disable-next-line @typescript-eslint/require-await
   async setShortcutApiToken(shortcutToken: string): Promise<void> {
-    await chrome.storage.sync.set({ shortcutApiToken: shortcutToken })
-    chrome.identity.getAuthToken({ interactive: true }, (token) => {
+    chrome.identity.getAuthToken({ interactive: true }, (googleToken) => {
       if (chrome.runtime.lastError) {
         console.error(chrome.runtime.lastError)
         return
       }
-      if (!token) {
+      if (!googleToken) {
         console.error('No token received')
         return
       }
-      chrome.runtime.sendMessage({ action: 'saveUserToken', data: { token } } as IpcRequestSaveUserToken)
+      chrome.runtime.sendMessage({ action: 'saveUserToken', data: { googleToken, shortcutToken } } as IpcRequestSaveUserToken)
     })
   }
 
@@ -148,22 +148,22 @@ export class Popup {
   }
 
   async popupLoaded(): Promise<void> {
-    const actionsTab = document.getElementById('actionsTab')
+    const notesTab = document.getElementById('notesTab')
     const settingsTab = document.getElementById('settingsTab')
     const infoTab = document.getElementById('infoTab')
     const actionsSection = document.getElementById('actionsSection')
     const settingsSection = document.getElementById('settingsSection')
     const infoSection = document.getElementById('infoSection')
 
-    if (actionsTab === null || settingsTab === null || infoTab === null || actionsSection === null || settingsSection === null || infoSection === null) {
-      throw new Error('actionsTab, settingsTab, infoTab, actionsSection, settingsSection, or infoSection not found')
+    if (notesTab === null || settingsTab === null || infoTab === null || actionsSection === null || settingsSection === null || infoSection === null) {
+      throw new Error('notesTab, settingsTab, infoTab, actionsSection, settingsSection, or infoSection not found')
     }
 
     await this.updateFromSettings()
 
-    this.setSectionDisplay(actionsTab, actionsSection, [settingsTab, infoTab], [settingsSection, infoSection])
-    this.setSectionDisplay(settingsTab, settingsSection, [actionsTab, infoTab], [actionsSection, infoSection])
-    this.setSectionDisplay(infoTab, infoSection, [actionsTab, settingsTab], [actionsSection, settingsSection])
+    this.setSectionDisplay(notesTab, actionsSection, [settingsTab, infoTab], [settingsSection, infoSection])
+    this.setSectionDisplay(settingsTab, settingsSection, [notesTab, infoTab], [actionsSection, infoSection])
+    this.setSectionDisplay(infoTab, infoSection, [notesTab, settingsTab], [actionsSection, settingsSection])
 
     this.handleNewVersionBadge().catch((e) => {
       console.error(e)

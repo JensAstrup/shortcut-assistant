@@ -37,13 +37,14 @@ describe('listener', () => {
     const request = {
       action: 'saveUserToken',
       data: {
-        token: 'test-token'
+        googleToken: 'test-token',
+        shortcutToken: 'test-shortcut-token'
       }
     } as IpcRequest
 
     addListenerCallback(request)
 
-    expect(registerUser).toHaveBeenCalledWith('test-token')
+    expect(registerUser).toHaveBeenCalledWith('test-token', 'test-shortcut-token')
   })
 
   it('should not call registerUser when action is not saveUserToken', () => {

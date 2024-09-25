@@ -70,7 +70,7 @@
   "oauth2": {
     "client_id": "__GOOGLE_CLIENT_ID__",
     "scopes": [
-      ""
+      "openid"
     ]
   },
   "omnibox": { "keyword" : "sc" },
