@@ -1,12 +1,9 @@
-import {sendEvent} from '@sx/analytics/event'
+import { sendEvent } from '@sx/analytics/event'
 import {
   redirectFromOmnibox,
   setOmniboxSuggestion
 } from '@sx/service-worker/omnibox/omnibox'
-import scope from '@sx/utils/sentry'
 
-
-jest.mock('@sx/utils/sentry')
 
 jest.mock('@sx/analytics/event', () => ({
   sendEvent: jest.fn(() => Promise.resolve())
@@ -60,15 +57,5 @@ describe('Omnibox interactions', () => {
     inputEnteredCallback('test query', 'currentTab')
     expect(redirectFromOmnibox).toHaveBeenCalledWith('test query', 'currentTab')
     expect(sendEvent).toHaveBeenCalledWith('omnibox_entered')
-  })
-
-  it('captures exception with Sentry if sendEvent fails', async () => {
-    console.error = jest.fn()
-    // @ts-expect-error Migrating from TS
-    sendEvent.mockImplementationOnce(() => Promise.reject(new Error('Test Error')))
-    // @ts-expect-error Migrating from TS
-    await inputEnteredCallback('test query', 'currentTab')
-    expect(scope.captureException).toHaveBeenCalled()
-    expect(console.error).toHaveBeenCalled()
   })
 })

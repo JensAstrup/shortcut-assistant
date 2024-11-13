@@ -1,9 +1,7 @@
-import {KeyboardShortcuts} from '@sx/keyboard-shortcuts/keyboard-shortcuts'
-import scope from '@sx/utils/sentry'
+import { KeyboardShortcuts } from '@sx/keyboard-shortcuts/keyboard-shortcuts'
 
 
-jest.mock('@sx/utils/sentry')
-jest.mock('../../src/js/utils/sleep', () => jest.fn().mockResolvedValue(undefined))
+jest.mock('@sx/utils/sleep', () => jest.fn().mockResolvedValue(undefined))
 
 describe('Shortcuts', () => {
   beforeEach(() => {
@@ -39,11 +37,11 @@ describe('Shortcuts', () => {
 
   it.each([
     // Define test cases as [input, expectedOutput]
-    [{key: 'A', shiftKey: false}, 'a-0-0-0-0'],
-    [{key: 'B', shiftKey: true, metaKey: true, altKey: true, ctrlKey: true}, 'b-1-1-1-1'],
-    [{key: 'C', shiftKey: true, ctrlKey: true}, 'c-0-1-0-1'],
-    [{key: 'd', metaKey: true, shiftKey: false}, 'd-1-0-0-0'],
-    [{key: 'e', altKey: true, shiftKey: true}, 'e-0-1-1-0']
+    [{ key: 'A', shiftKey: false }, 'a-0-0-0-0'],
+    [{ key: 'B', shiftKey: true, metaKey: true, altKey: true, ctrlKey: true }, 'b-1-1-1-1'],
+    [{ key: 'C', shiftKey: true, ctrlKey: true }, 'c-0-1-0-1'],
+    [{ key: 'd', metaKey: true, shiftKey: false }, 'd-1-0-0-0'],
+    [{ key: 'e', altKey: true, shiftKey: true }, 'e-0-1-1-0']
   ])('serializes shortcut %o to "%s"', (input, expectedOutput) => {
     const keyboardShortcuts = new KeyboardShortcuts()
     const serialized = keyboardShortcuts.serializeShortcut(input)
@@ -104,11 +102,12 @@ describe('Shortcuts', () => {
       })
 
       const preventDefaultSpy = jest.spyOn(event, 'preventDefault')
+      // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
       await keyboardShortcuts.handleKeyDown(event)
 
       expect(preventDefaultSpy).toHaveBeenCalled()
       expect(mockFunction).toHaveBeenCalled()
-      expect(chrome.runtime.sendMessage).toHaveBeenCalledWith({action: 'sendEvent', data: {eventName: 'keyboard-shortcut', params: {shortcutAction: 'bound mock_constructor'}}})
+      expect(chrome.runtime.sendMessage).toHaveBeenCalledWith({ action: 'sendEvent', data: { eventName: 'keyboard-shortcut', params: { shortcutAction: 'bound mock_constructor' } } })
     })
 
     it('does not call preventDefault or a function for a non-matching keydown event', async () => {
@@ -152,7 +151,6 @@ describe('Shortcuts', () => {
       expect(preventDefaultSpy).toHaveBeenCalled()
       expect(mockFunction).toHaveBeenCalled()
       expect(consoleErrorSpy).toHaveBeenCalledWith('Error running shortcut:', error)
-      expect(scope.captureException).toHaveBeenCalledWith(error)
     })
   })
 })

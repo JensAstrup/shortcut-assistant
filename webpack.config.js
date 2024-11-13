@@ -2,8 +2,6 @@
 const path = require('path')
 
 // eslint-disable-next-line import/order,@typescript-eslint/no-var-requires
-const { sentryWebpackPlugin } = require('@sentry/webpack-plugin')
-// eslint-disable-next-line import/order,@typescript-eslint/no-var-requires
 const baseConfig = require('./webpack.config.base')
 
 
@@ -64,17 +62,5 @@ module.exports = {
       '@sx': path.resolve(__dirname, './src/js/')
     },
     extensions: ['.tsx', '.ts', '.js']
-  },
-
-  plugins: [
-    ...baseConfig.plugins,
-    sentryWebpackPlugin({
-      authToken: process.env.SENTRY_AUTH_TOKEN,
-      org: 'jens-astrup',
-      project: 'shortcut-assistant',
-      environment: process.env.NODE_ENV,
-      sourcemaps: {
-        filesToDeleteAfterUpload: ['*.js.map']
-      }
-    })]
+  }
 }

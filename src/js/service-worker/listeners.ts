@@ -4,7 +4,6 @@ import {
   handleOpenAICall
 } from '@sx/service-worker/handlers'
 import IpcRequest from '@sx/types/ipc-request'
-import scope from '@sx/utils/sentry'
 import '@sx/auth/oauth/service-worker/listener'
 import '@sx/ai/labels/listener'
 
@@ -36,7 +35,6 @@ function registerAnalyticsListeners(): void {
     if (request.action === 'sendEvent') {
       sendEvent(request.data.eventName, request.data.params).catch((e) => {
         console.error('Error sending event:', e)
-        scope.captureException(e)
       })
     }
   })

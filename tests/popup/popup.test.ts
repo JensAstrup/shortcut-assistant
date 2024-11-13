@@ -2,11 +2,9 @@ import { sendEvent } from '@sx/analytics/event'
 import { NotesPopup } from '@sx/popup/notes-popup'
 import { Popup } from '@sx/popup/popup'
 import { getSyncedSetting } from '@sx/utils/get-synced-setting'
-import scope from '@sx/utils/sentry'
 import sleep from '@sx/utils/sleep'
 
 
-jest.mock('@sx/utils/sentry')
 jest.mock('@sx/analytics/event', () => ({
   sendEvent: jest.fn().mockResolvedValue(null)
 }))
@@ -132,7 +130,6 @@ describe('Popup', () => {
     // Wait for the promise passed to addEventListener to resolve
     await sleep(100)
     expect(console.error).toHaveBeenCalledWith(new Error('test error'))
-    expect(scope.captureException).toHaveBeenCalled()
   })
 
   it('setOpenAIToken sets token in chrome storage', async () => {
@@ -314,8 +311,6 @@ describe('popupLoaded', () => {
 
   beforeEach(() => {
     // @ts-expect-error Migrating from JS
-    scope.captureException.mockClear()
-    // @ts-expect-error Migrating from JS
     sendEvent.mockClear()
     // @ts-expect-error Migrating from JS
     NotesPopup.mockClear()
@@ -496,6 +491,5 @@ describe('popupLoaded', () => {
     await popup.popupLoaded()
 
     expect(console.error).toHaveBeenCalledWith(new Error('test error'))
-    expect(scope.captureException).toHaveBeenCalled()
   })
 })

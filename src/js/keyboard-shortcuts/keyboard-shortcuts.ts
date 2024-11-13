@@ -1,5 +1,3 @@
-import scope from '@sx/utils/sentry'
-
 import camelToSnake from '../utils/camel-to-snake'
 
 import changeEstimate from './change-estimate'
@@ -21,29 +19,29 @@ export type shortcut = ({
 export class KeyboardShortcuts {
   predefinedShortcuts: shortcut[] = [
     // MacOS
-    {key: 's', shiftKey: true, metaKey: true, func: changeState},
-    {key: 'i', shiftKey: true, metaKey: true, func: changeIteration},
-    {key: 'e', shiftKey: true, metaKey: true, func: changeEstimate},
-    {key: 'g', shiftKey: true, metaKey: true, func: copyGitBranch},
-    {key: '.', shiftKey: true, metaKey: true, func: copyBranchAndMoveToInDevelopment},
+    { key: 's', shiftKey: true, metaKey: true, func: changeState },
+    { key: 'i', shiftKey: true, metaKey: true, func: changeIteration },
+    { key: 'e', shiftKey: true, metaKey: true, func: changeEstimate },
+    { key: 'g', shiftKey: true, metaKey: true, func: copyGitBranch },
+    { key: '.', shiftKey: true, metaKey: true, func: copyBranchAndMoveToInDevelopment },
     // Windows
-    {key: 's', shiftKey: true, ctrlKey: true, func: changeState},
-    {key: 'i', shiftKey: true, ctrlKey: true, func: changeIteration},
-    {key: 'e', shiftKey: true, ctrlKey: true, func: changeEstimate},
-    {key: 'g', shiftKey: true, ctrlKey: true, func: copyGitBranch},
-    {key: '.', shiftKey: true, ctrlKey: true, func: copyBranchAndMoveToInDevelopment}
+    { key: 's', shiftKey: true, ctrlKey: true, func: changeState },
+    { key: 'i', shiftKey: true, ctrlKey: true, func: changeIteration },
+    { key: 'e', shiftKey: true, ctrlKey: true, func: changeEstimate },
+    { key: 'g', shiftKey: true, ctrlKey: true, func: copyGitBranch },
+    { key: '.', shiftKey: true, ctrlKey: true, func: copyBranchAndMoveToInDevelopment }
   ]
 
   shortcuts: Map<string, () => Promise<void>>
 
   constructor() {
     this.shortcuts = new Map()
-    this.predefinedShortcuts.forEach(shortcut => {
+    this.predefinedShortcuts.forEach((shortcut) => {
       this.registerShortcut(shortcut)
     })
   }
 
-  activate() {
+  activate(): void {
     document.addEventListener('keydown', this.handleKeyDown.bind(this))
   }
 
@@ -60,11 +58,11 @@ export class KeyboardShortcuts {
    * @returns {string} The serialized string representation of the shortcut.
    * @example {key: 'a', shiftKey: True, func: () => {} } => 'a-0-1-0-0'
    */
-  serializeShortcut({key, metaKey, shiftKey, altKey, ctrlKey}: {
-    altKey?: boolean,
-    ctrlKey?: boolean,
-    key: string,
-    metaKey?: boolean,
+  serializeShortcut({ key, metaKey, shiftKey, altKey, ctrlKey }: {
+    altKey?: boolean
+    ctrlKey?: boolean
+    key: string
+    metaKey?: boolean
     shiftKey: boolean
   }): string {
     return `${key.toLowerCase()}-${metaKey ? '1' : '0'}-${shiftKey ? '1' : '0'}-${altKey ? '1' : '0'}-${ctrlKey ? '1' : '0'}`
@@ -88,7 +86,7 @@ export class KeyboardShortcuts {
     this.shortcuts.set(serializedKey, shortcut.func.bind(this))
   }
 
-  handleKeyDown(event: KeyboardEvent) {
+  handleKeyDown(event: KeyboardEvent): void {
     const serializedEventKey = this.serializeShortcut({
       altKey: event.altKey,
       ctrlKey: event.ctrlKey,
@@ -101,10 +99,9 @@ export class KeyboardShortcuts {
       event.preventDefault()
       const func: (() => Promise<void>) | undefined = this.shortcuts.get(serializedEventKey)
       if (func) {
-        chrome.runtime.sendMessage({action: 'sendEvent', data: {eventName: 'keyboard-shortcut', params: {shortcutAction: camelToSnake(func.name)}}})
-        func().catch(e => {
+        chrome.runtime.sendMessage({ action: 'sendEvent', data: { eventName: 'keyboard-shortcut', params: { shortcutAction: camelToSnake(func.name) } } })
+        func().catch((e) => {
           console.error('Error running shortcut:', e)
-          scope.captureException(e)
         })
       }
     }
