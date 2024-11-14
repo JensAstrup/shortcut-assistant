@@ -12,6 +12,9 @@ export class SlugManager {
   }
 
   static async setCompanySlug(companySlug: string): Promise<void> {
+    if (!companySlug || typeof companySlug !== 'string' || companySlug.trim().length === 0) {
+      throw new Error('Invalid company slug')
+    }
     await chrome.storage.sync.set({ companySlug: companySlug })
   }
 
