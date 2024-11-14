@@ -102,7 +102,6 @@ describe('Shortcuts', () => {
       })
 
       const preventDefaultSpy = jest.spyOn(event, 'preventDefault')
-      // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
       await keyboardShortcuts.handleKeyDown(event)
 
       expect(preventDefaultSpy).toHaveBeenCalled()
