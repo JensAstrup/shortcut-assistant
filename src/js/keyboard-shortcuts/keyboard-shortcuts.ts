@@ -86,7 +86,8 @@ export class KeyboardShortcuts {
     this.shortcuts.set(serializedKey, shortcut.func.bind(this))
   }
 
-  handleKeyDown(event: KeyboardEvent): void {
+  // eslint-disable-next-line @typescript-eslint/require-await
+  async handleKeyDown(event: KeyboardEvent): Promise<void> {
     const serializedEventKey = this.serializeShortcut({
       altKey: event.altKey,
       ctrlKey: event.ctrlKey,

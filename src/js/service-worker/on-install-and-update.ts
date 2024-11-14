@@ -2,7 +2,8 @@ import InstalledDetails = chrome.runtime.InstalledDetails
 
 
 class InstallAndUpdate {
-  static onInstall(): void {
+  // eslint-disable-next-line @typescript-eslint/require-await
+  static async onInstall(): Promise<void> {
     chrome.windows.create({
       url: '../html/installed.html',
       type: 'popup',
@@ -21,10 +22,10 @@ class InstallAndUpdate {
 }
 
 
-function onInstallAndUpdate(details: InstalledDetails): void {
+async function onInstallAndUpdate(details: InstalledDetails): Promise<void> {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
   if (details.reason === 'install') {
-    InstallAndUpdate.onInstall()
+    await InstallAndUpdate.onInstall()
   }
   // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
   else if (details.reason === 'update') {

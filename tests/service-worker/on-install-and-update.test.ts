@@ -60,7 +60,6 @@ describe('onInstallAndUpdate function', () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
-    // @ts-expect-error Migrating from JS
     onInstall = jest.spyOn(InstallAndUpdate, 'onInstall').mockResolvedValue()
     onUpdate = jest.spyOn(InstallAndUpdate, 'onUpdate').mockResolvedValue()
   })
