@@ -22,15 +22,19 @@ class InstallAndUpdate {
 }
 
 
-async function onInstallAndUpdate(details: InstalledDetails): Promise<void> {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
-  if (details.reason === 'install') {
-    await InstallAndUpdate.onInstall()
+function isValidVersion(version: string): boolean {
+  return /^\d+\.\d+\.\d+$/.test(version)
+}
+
+function onInstallAndUpdate(details: InstalledDetails): void {
+  if (details.reason === chrome.runtime.OnInstalledReason.INSTALL) {
+    InstallAndUpdate.onInstall()
   }
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
-  else if (details.reason === 'update') {
-    // Only display the update page if the changelog has been updated for the current version
-    if (process.env.CHANGELOG_VERSION === process.env.VERSION) {
+  else if (details.reason === chrome.runtime.OnInstalledReason.UPDATE) {
+    const changelogVersion = process.env.CHANGELOG_VERSION
+    const currentVersion = process.env.VERSION
+
+    if (isValidVersion(changelogVersion!) && changelogVersion === currentVersion) {
       InstallAndUpdate.onUpdate().catch((e) => {
         console.error('Error updating:', e)
       })
