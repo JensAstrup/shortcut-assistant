@@ -1,6 +1,9 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const path = require('path')
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const baseConfig = require('./webpack.config.base')
+
 
 module.exports = {
 
@@ -55,5 +58,8 @@ module.exports = {
       '@sx': path.resolve(__dirname, './src/js/')
     },
     extensions: ['.tsx', '.ts', '.js']
-  }
+  },
+  plugins: [
+    ...baseConfig.plugins
+  ]
 }
