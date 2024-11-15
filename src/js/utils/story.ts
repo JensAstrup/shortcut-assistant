@@ -1,7 +1,6 @@
 import dayjs from 'dayjs'
 
 import { ShortcutWorkflowState, ShortcutWorkflowStates } from '@sx/utils/get-states'
-import scope from '@sx/utils/sentry'
 import Workspace from '@sx/workspace/workspace'
 
 import {
@@ -169,7 +168,6 @@ export class Story {
     }
     catch (e) {
       console.warn(`Could not find state element for state ${state}`)
-      scope.captureException(e)
     }
 
     const states = await Workspace.states()

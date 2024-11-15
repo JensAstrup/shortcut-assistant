@@ -1,8 +1,5 @@
-import {SlugManager} from '@sx/service-worker/slug-manager'
-import scope from '@sx/utils/sentry'
+import { SlugManager } from '@sx/service-worker/slug-manager'
 
-
-jest.mock('@sx/utils/sentry')
 
 global.chrome = {
   // @ts-expect-error Migrating from JS
@@ -10,7 +7,7 @@ global.chrome = {
     ...chrome.storage,
     sync: {
       get: jest.fn((key, callback) => {
-        const data = {'companySlug': 'companySlug1'}
+        const data = { companySlug: 'companySlug1' }
         if (typeof callback === 'function') {
           callback(data)
         }
@@ -56,7 +53,7 @@ describe('SlugManager', () => {
 
       await SlugManager.setCompanySlug(companySlug)
 
-      expect(global.chrome.storage.sync.set).toBeCalledWith({companySlug})
+      expect(global.chrome.storage.sync.set).toHaveBeenCalledWith({ companySlug })
     })
   })
 
@@ -64,32 +61,32 @@ describe('SlugManager', () => {
     it('should get the company slug from chrome storage', async () => {
       // @ts-expect-error Migrating from JS
       global.chrome.storage.sync.get.mockImplementation((key, callback) => {
-        const data = {'companySlug': 'companySlug'}
+        const data = { companySlug: 'companySlug' }
         if (typeof callback === 'function') {
-          callback({companySlug: 'companySlug'})
+          callback({ companySlug: 'companySlug' })
         }
         return data
       })
 
       const result = await SlugManager.getCompanySlug()
 
-      expect(global.chrome.storage.sync.get).toBeCalledWith('companySlug')
+      expect(global.chrome.storage.sync.get).toHaveBeenCalledWith('companySlug')
       expect(result).toEqual('companySlug')
     })
 
     it('should return null if the company slug is not found', async () => {
       // @ts-expect-error Migrating from JS
       global.chrome.storage.sync.get.mockImplementation((key, callback) => {
-        const data = {'companySlug': undefined}
+        const data = { companySlug: undefined }
         if (typeof callback === 'function') {
-          callback({companySlug: undefined})
+          callback({ companySlug: undefined })
         }
         return data
       })
 
       const result = await SlugManager.getCompanySlug()
 
-      expect(global.chrome.storage.sync.get).toBeCalledWith('companySlug')
+      expect(global.chrome.storage.sync.get).toHaveBeenCalledWith('companySlug')
       expect(result).toEqual(null)
     })
   })
@@ -103,7 +100,7 @@ describe('SlugManager', () => {
       jest.spyOn(SlugManager, 'getCompanySlugFromTab').mockResolvedValue('newCompanySlug')
       const setSpy = jest.spyOn(SlugManager, 'setCompanySlug')
 
-      await SlugManager.refreshCompanySlug(1, {url: 'https://testing.com/newCompanySlug/page'})
+      await SlugManager.refreshCompanySlug(1, { url: 'https://testing.com/newCompanySlug/page' })
 
       expect(setSpy).toHaveBeenCalledWith('newCompanySlug')
     })
@@ -111,21 +108,19 @@ describe('SlugManager', () => {
     it('should log an error and capture an exception if an error occurs', async () => {
       jest.spyOn(SlugManager, 'getCompanySlugFromTab')
       const setSpy = jest.spyOn(SlugManager, 'setCompanySlug').mockRejectedValue('error')
-      const sentrySpy = jest.spyOn(scope, 'captureException')
       console.error = jest.fn()
 
-      await SlugManager.refreshCompanySlug(1, {url: 'https://testing.com/newCompanySlug/page'})
+      await SlugManager.refreshCompanySlug(1, { url: 'https://testing.com/newCompanySlug/page' })
 
       expect(setSpy).toHaveBeenCalledWith('newCompanySlug')
       expect(console.error).toHaveBeenCalledWith('Error setting company slug:', 'error')
-      expect(sentrySpy).toHaveBeenCalledWith('error')
     })
 
     it('should not set the company slug if the company slug is not found', async () => {
       jest.spyOn(SlugManager, 'getCompanySlugFromTab').mockResolvedValue(null)
       const setSpy = jest.spyOn(SlugManager, 'setCompanySlug')
 
-      await SlugManager.refreshCompanySlug(1, {url: 'https://testing.com/newCompanySlug/page'})
+      await SlugManager.refreshCompanySlug(1, { url: 'https://testing.com/newCompanySlug/page' })
 
       expect(setSpy).not.toHaveBeenCalled()
     })

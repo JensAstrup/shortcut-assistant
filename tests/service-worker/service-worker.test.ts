@@ -10,13 +10,12 @@ import Tab = chrome.tabs.Tab
 import ManifestV3 = chrome.runtime.ManifestV3
 
 
-jest.mock('@sx/utils/sentry')
 jest.mock('@sx/service-worker/handlers', () => ({
   handleOpenAICall: jest.fn().mockResolvedValue({ data: 'mock' }),
   handleGetSavedNotes: jest.fn().mockResolvedValue({ data: 'mock' }),
 }))
 
-jest.mock('../../src/js/analytics/event', () => ({
+jest.mock('@sx/analytics/event', () => ({
   sendEvent: jest.fn().mockResolvedValue({}),
 }))
 
