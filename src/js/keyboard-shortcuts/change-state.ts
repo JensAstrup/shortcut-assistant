@@ -2,7 +2,7 @@ import sleep from '@sx/utils/sleep'
 
 
 async function changeState(): Promise<void> {
-  chrome.runtime.sendMessage({action: 'sendEvent', data: {eventName: 'change_state'}})
+  chrome.runtime.sendMessage({ action: 'sendEvent', data: { eventName: 'change_state' } })
   const dropdownParent: HTMLElement | null = document.getElementById('story-dialog-state-dropdown')
   if (!dropdownParent) {
     console.error('The state dropdown was not found.')

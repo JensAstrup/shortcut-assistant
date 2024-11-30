@@ -1,7 +1,7 @@
 const SESSION_EXPIRATION_IN_MIN = 30
 
 export async function getOrCreateSessionId(): Promise<string> {
-  let {sessionData} = await chrome.storage.session.get('sessionData')
+  let { sessionData } = await chrome.storage.session.get('sessionData')
   // Check if session exists and is still valid
   const currentTimeInMs = Date.now()
   if (sessionData && sessionData.timestamp) {
@@ -16,7 +16,7 @@ export async function getOrCreateSessionId(): Promise<string> {
     else {
       // Update timestamp to keep session alive
       sessionData.timestamp = currentTimeInMs
-      await chrome.storage.session.set({sessionData})
+      await chrome.storage.session.set({ sessionData })
     }
   }
   if (!sessionData) {
@@ -25,7 +25,7 @@ export async function getOrCreateSessionId(): Promise<string> {
       session_id: currentTimeInMs.toString(),
       timestamp: currentTimeInMs.toString(),
     }
-    await chrome.storage.session.set({sessionData})
+    await chrome.storage.session.set({ sessionData })
   }
   return sessionData.session_id
 }

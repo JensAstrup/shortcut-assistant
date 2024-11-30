@@ -1,4 +1,4 @@
-import {Popup} from './popup'
+import { Popup } from './popup'
 
 
 document.addEventListener('DOMContentLoaded', () => {
