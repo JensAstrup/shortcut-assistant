@@ -1,4 +1,4 @@
-import {v4 as uuidv4} from 'uuid'
+import { v4 as uuidv4 } from 'uuid'
 
 
 export async function getOrCreateClientId(): Promise<string> {
@@ -6,7 +6,7 @@ export async function getOrCreateClientId(): Promise<string> {
   let clientId: string = result.clientId
   if (!clientId) {
     clientId = uuidv4()
-    await chrome.storage.sync.set({clientId})
+    await chrome.storage.sync.set({ clientId })
   }
   return clientId
 }
