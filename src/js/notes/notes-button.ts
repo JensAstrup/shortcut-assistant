@@ -1,5 +1,5 @@
-import {logError} from '../utils/log-error'
-import {Story} from '../utils/story'
+import { logError } from '../utils/log-error'
+import { Story } from '../utils/story'
 
 
 export class NotesButton {
@@ -9,7 +9,7 @@ export class NotesButton {
     }
   }
 
-  async setContentExistsNotice() {
+  async setContentExistsNotice(): Promise<void> {
     const newButton = document.createElement('button')
     newButton.className = 'action edit-description view-notes micro flat-white'
     newButton.dataset.tabindex = ''
@@ -29,15 +29,15 @@ export class NotesButton {
     }
   }
 
-  remove() {
+  remove(): void {
     const element = document.querySelector('.view-notes')
     if (element !== null) {
       element.remove()
     }
   }
 
-  async setContentIfDataExists() {
-    const response = await chrome.runtime.sendMessage({action: 'getSavedNotes'})
+  async setContentIfDataExists(): Promise<void> {
+    const response = await chrome.runtime.sendMessage({ action: 'getSavedNotes' })
     const data = response.data
     if (!data) {
       this.remove()

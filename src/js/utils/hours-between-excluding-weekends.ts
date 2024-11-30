@@ -24,10 +24,8 @@ export function hoursBetweenExcludingWeekends(startStr: string, endStr: string, 
 
   if (current.weekday() !== 0 && current.weekday() !== 6) { // Excludes Saturday (6) and Sunday (0)
     const dailyEnd = dayjs.min(end, nextDayStart)
-    if (dailyEnd) {
-      const dailyHours = dailyEnd.diff(current, 'hour', true)
-      hours += dailyHours
-    }
+    const dailyHours = dailyEnd.diff(current, 'hour', true)
+    hours += dailyHours
   }
 
   // Recursive call with the start of the next day and the updated hours

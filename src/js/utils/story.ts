@@ -141,7 +141,7 @@ export class Story {
       return null
     }
 
-    const parentDiv: HTMLElement | null = latestUpdateElements.element.parentElement
+    const parentDiv: HTMLElement | null = latestUpdateElements.element?.parentElement || null
     const dateElement: Element | null | undefined = parentDiv?.querySelector('.date')
     return dateElement ? dateElement.innerHTML : null
   }

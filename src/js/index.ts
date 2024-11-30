@@ -1,4 +1,4 @@
-import {activate} from './content-scripts'
+import { activate } from './content-scripts'
 
 
 activate().catch(console.error)

@@ -1,21 +1,20 @@
-import {max} from 'lodash'
+import { max } from 'lodash'
 
-import {hoursBetweenExcludingWeekends} from '@sx/utils/hours-between-excluding-weekends'
+import { hoursBetweenExcludingWeekends } from '@sx/utils/hours-between-excluding-weekends'
 import sleep from '@sx/utils/sleep'
-import {Story} from '@sx/utils/story'
+import { Story } from '@sx/utils/story'
 import Workspace from '@sx/workspace/workspace'
 
 
 export class CycleTime {
-
-  static clear() {
+  static clear(): void {
     const cycleTimeDiv = document.querySelector('.story-date-cycle-time')
     if (cycleTimeDiv) {
       cycleTimeDiv.remove()
     }
   }
 
-  static async set() {
+  static async set(): Promise<void> {
     await Story.isReady()
     const WAIT_TIME = 300
     await sleep(WAIT_TIME)
@@ -26,7 +25,7 @@ export class CycleTime {
     }
     const states = await Workspace.states()
     const createdDiv = document.querySelector('.story-date-created')
-    const inDevelopmentDates: Array<string | null> = states.Started.map((state) => Story.getDateInState(state))
+    const inDevelopmentDates: Array<string | null> = states.Started.map(state => Story.getDateInState(state))
     const inDevelopmentDateString: string | undefined | null = max(inDevelopmentDates)
     const completedDiv = document.querySelector('.story-date-completed')
     const completedValue = completedDiv?.querySelector('.value')
