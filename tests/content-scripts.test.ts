@@ -5,7 +5,6 @@ import { CycleTime } from '@sx/cycle-time/cycle-time'
 import { DevelopmentTime } from '@sx/development-time/development-time'
 import changeIteration from '@sx/keyboard-shortcuts/change-iteration'
 import changeState from '@sx/keyboard-shortcuts/change-state'
-import copyGitBranch from '@sx/keyboard-shortcuts/copy-git-branch'
 import { NotesButton } from '@sx/notes/notes-button'
 import { Todoist } from '@sx/todoist/todoist'
 import { getSyncedSetting } from '@sx/utils/get-synced-setting'
@@ -60,7 +59,6 @@ const mockedGetSyncedSetting = getSyncedSetting as jest.MockedFunction<typeof ge
 jest.mock('@sx/utils/log-error', () => jest.fn())
 jest.mock('@sx/keyboard-shortcuts/change-state', () => jest.fn())
 jest.mock('@sx/keyboard-shortcuts/change-iteration', () => jest.fn())
-jest.mock('@sx/keyboard-shortcuts/copy-git-branch', () => jest.fn())
 jest.mock('@sx/utils/sleep', () => jest.fn().mockResolvedValue(null))
 
 
@@ -136,11 +134,5 @@ describe('handleMessage function', () => {
     const request = { message: 'change-iteration', url: 'https://example.com/story' }
     await handleMessage(request)
     expect(changeIteration).toHaveBeenCalled()
-  })
-
-  it('calls copyGitBranch for copy-git-branch message', async () => {
-    const request = { message: 'copy-git-branch', url: 'https://example.com/story' }
-    await handleMessage(request)
-    expect(copyGitBranch).toHaveBeenCalled()
   })
 })

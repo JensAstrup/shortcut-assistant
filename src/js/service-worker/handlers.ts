@@ -33,9 +33,6 @@ export async function handleCommands(command: string): Promise<void> {
   else if (command === 'change-iteration') {
     await chrome.tabs.sendMessage(activeTab.id, { message: 'change-iteration' })
   }
-  else if (command === 'copy-git-branch') {
-    await chrome.tabs.sendMessage(activeTab.id, { message: 'copy-git-branch' })
-  }
 }
 
 export { handleGetSavedNotes }

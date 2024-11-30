@@ -3,8 +3,6 @@ import camelToSnake from '../utils/camel-to-snake'
 import changeEstimate from './change-estimate'
 import changeIteration from './change-iteration'
 import changeState from './change-state'
-import copyBranchAndMoveToInDevelopment from './copy-branch-move-to-in-development'
-import copyGitBranch from './copy-git-branch'
 
 
 export type shortcut = ({
@@ -22,14 +20,10 @@ export class KeyboardShortcuts {
     { key: 's', shiftKey: true, metaKey: true, func: changeState },
     { key: 'i', shiftKey: true, metaKey: true, func: changeIteration },
     { key: 'e', shiftKey: true, metaKey: true, func: changeEstimate },
-    { key: 'g', shiftKey: true, metaKey: true, func: copyGitBranch },
-    { key: '.', shiftKey: true, metaKey: true, func: copyBranchAndMoveToInDevelopment },
     // Windows
     { key: 's', shiftKey: true, ctrlKey: true, func: changeState },
     { key: 'i', shiftKey: true, ctrlKey: true, func: changeIteration },
     { key: 'e', shiftKey: true, ctrlKey: true, func: changeEstimate },
-    { key: 'g', shiftKey: true, ctrlKey: true, func: copyGitBranch },
-    { key: '.', shiftKey: true, ctrlKey: true, func: copyBranchAndMoveToInDevelopment }
   ]
 
   shortcuts: Map<string, () => Promise<void>>
