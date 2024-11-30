@@ -1,5 +1,5 @@
 import callOpenAi from '@sx/ai/call-openai'
-import {handleCommands, handleOpenAICall} from '@sx/service-worker/handlers'
+import { handleCommands, handleOpenAICall } from '@sx/service-worker/handlers'
 
 
 jest.mock('@sx/ai/call-openai')
@@ -13,7 +13,7 @@ const sendMessage = jest.fn()
 global.chrome = {
   ...chrome,
   tabs: {
-    query: jest.fn().mockResolvedValue([{id: 123}]),
+    query: jest.fn().mockResolvedValue([{ id: 123 }]),
     sendMessage: sendMessage
   } as unknown as typeof chrome.tabs
 }
@@ -32,7 +32,7 @@ describe('Handle OpenAI Call', () => {
     const error = new Error('error')
     mockCallOpenAi.mockRejectedValue(error)
     const response = await handleOpenAICall(prompt, 'breakup', tabId)
-    expect(response).toEqual({error})
+    expect(response).toEqual({ error })
   })
 })
 
@@ -58,11 +58,11 @@ describe('Handle Get Saved Notes', () => {
 
 describe('Handle Commands', () => {
   it('should send a message to the active tab based on the command', async () => {
-    const activeTab = {id: 123}
-    const commands = ['change-state', 'change-iteration', 'copy-git-branch']
+    const activeTab = { id: 123 }
+    const commands = ['change-state', 'change-iteration']
     for (const command of commands) {
       await handleCommands(command)
-      expect(sendMessage).toHaveBeenCalledWith(activeTab.id, {message: command})
+      expect(sendMessage).toHaveBeenCalledWith(activeTab.id, { message: command })
     }
   })
 })

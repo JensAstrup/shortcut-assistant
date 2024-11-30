@@ -9,7 +9,6 @@ import { CycleTime } from './cycle-time/cycle-time'
 import { DevelopmentTime } from './development-time/development-time'
 import changeIteration from './keyboard-shortcuts/change-iteration'
 import changeState from './keyboard-shortcuts/change-state'
-import copyGitBranch from './keyboard-shortcuts/copy-git-branch'
 import { KeyboardShortcuts } from './keyboard-shortcuts/keyboard-shortcuts'
 import { NotesButton } from './notes/notes-button'
 import { Todoist } from './todoist/todoist'
@@ -69,9 +68,6 @@ export async function handleMessage(request: { message: string, url: string }): 
   }
   if (request.message === 'change-iteration') {
     await changeIteration()
-  }
-  if (request.message === 'copy-git-branch') {
-    await copyGitBranch()
   }
 }
 
