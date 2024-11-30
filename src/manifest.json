@@ -15,20 +15,6 @@
       },
       "description": "Update the state of the current story"
     },
-    "copy-git-branch": {
-      "suggested_key": {
-        "default": "Ctrl+G",
-        "mac": "Command+G"
-      },
-      "description": "Copy the current story's git branch"
-    },
-    "copy-git-branch-and-update": {
-      "suggested_key": {
-        "default": "Ctrl+Shift+G",
-        "mac": "Command+Shift+G"
-      },
-      "description": "Copy the current story's git branch and update the story's state to 'In Progress'"
-    },
     "change-iteration": {
       "suggested_key": {
         "default": "Ctrl+Shift+I",
@@ -82,5 +68,5 @@
     "storage",
     "tabs"
   ],
-  "version": "3.7.2"
+  "version": "3.7.3"
 }
