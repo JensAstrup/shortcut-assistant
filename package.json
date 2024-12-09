@@ -35,7 +35,7 @@
     "copy-webpack-plugin": "^12.0.2",
     "daisyui": "4.12.14",
     "dotenv": "16.4.5",
-    "eslint": "^8.57.0",
+    "eslint": "^9.16.0",
     "eslint-config-yenz": "^8.0.0",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-jest": "^28.8.3",
