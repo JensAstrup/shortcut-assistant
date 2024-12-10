@@ -18,7 +18,7 @@ jobs:
         uses: actions/download-artifact@v4.1.7
         with:
           name: dist-zip
-          path: dist
+          path: dist/dist.zip
 
       - name: Upload release asset
         uses: actions/github-script@v6
